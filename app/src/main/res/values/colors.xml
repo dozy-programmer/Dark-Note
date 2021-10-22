@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="darker_blue">#0099ff</color>
+    <color name="blue">#33bbff</color>
+    <color name="colorPrimary">#33bbff</color>
+    <color name="colorPrimaryDark">#0099ff</color>
+    <color name="red">#cc0000</color>
+    <color name="main">#435c6c</color>
+    <color name="ultra_white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="light_gray">#54545f</color>
+    <color name="light_gray_2">#60606c</color>
+    <color name="gray">#3c3c44</color>
+    <color name="pressed_blue">#0099ff</color>
+    <color name="orange_red">#ff6600</color>
+    <color name="orange">#ff8533</color>
+    <color name="dark_orange">#e67300</color>
+    <color name="ultra_light_gray">#303036</color>
+    <color name="dark_green">#009933</color>
+
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/havelock_blue</color>
+
+    <array name="randomColor">
+        <item>@color/cornflower_blue</item>
+        <item>@color/golden_rod</item>
+        <item>@color/mint_tulip</item>
+        <item>@color/sunflower</item>
+        <item>@color/aquamarine</item>
+        <item>@color/water_leaf</item>
+        <item>@color/sunset_orange</item>
+        <item>@color/emerald</item>
+        <item>@color/cavern_pink</item>
+        <item>@color/blue</item>
+        <item>@color/flamingo</item>
+        <item>@color/tan_hide</item>
+        <item>@color/de_york</item>
+        <item>@color/carnation</item>
+        <item>@color/saffron</item>
+        <item>@color/we_peep</item>
+        <item>@color/sandy_brown</item>
+        <item>@color/gumbo</item>
+        <item>@color/vermilion</item>
+        <item>@color/neptune</item>
+        <item>@color/magic_mint</item>
+        <item>@color/thunderbird</item>
+        <item>@color/tiara</item>
+        <item>@color/silver_tree</item>
+        <item>@color/chardonnay</item>
+        <item>@color/amaranth</item>
+        <item>@color/chetwode_blue</item>
+        <item>@color/havelock_blue</item>
+        <item>@color/horizon</item>
+        <item>@color/casper</item>
+    </array>
+
+
+    <color name="havelock_blue">#4792D8</color>
+    <color name="cornflower_blue">#619eea</color>
+    <color name="golden_rod">#fcd176</color>
+    <color name="mint_tulip">#bdf2e6</color>
+    <color name="sunflower">#e8d01d</color>
+    <color name="aquamarine">#8cfbee</color>
+    <color name="water_leaf">#a7eaea</color>
+    <color name="sunset_orange">#fd4f3f</color>
+    <color name="emerald">#3ec581</color>
+    <color name="cavern_pink">#e3c0bd</color>
+    <color name="flamingo">#f15f3e</color>
+    <color name="tan_hide">#fba364</color>
+    <color name="de_york">#7ec6a3</color>
+    <color name="carnation">#f95154</color>
+    <color name="saffron">#f4b63c</color>
+    <color name="we_peep">#f2cddd</color>
+    <color name="sandy_brown">#f1a066</color>
+    <color name="gumbo">#84a4a8</color>
+    <color name="vermilion">#f84807</color>
+    <color name="neptune">#86bdc1</color>
+    <color name="magic_mint">#f95154</color>
+    <color name="thunderbird">#b52714</color>
+    <color name="tiara">#c7d2d2</color>
+    <color name="silver_tree">#5dba83</color>
+    <color name="chardonnay">#ffcb7f</color>
+    <color name="amaranth">#e3314b</color>
+    <color name="chetwode_blue">#7a95d3</color>
+    <color name="horizon">#5f91a5</color>
+    <color name="casper">#acc6d4</color>
+</resources>

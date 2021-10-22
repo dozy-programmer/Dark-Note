@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray"
+        android:orientation="vertical"
+        android:weightSum="100">
+
+        <ImageView
+            android:id="@+id/lock_icon"
+            android:layout_width="50dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:src="@drawable/lock_icon"
+            android:layout_marginVertical="20dp">
+        </ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter pin to open"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/ultra_white"
+            android:layout_marginBottom="10dp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/note_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:maxLines="1"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/blue"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="30dp">
+        </TextView>
+
+        <com.andrognito.pinlockview.IndicatorDots
+            android:id="@+id/indicator_dots"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="40"
+            app:indicatorType="fillWithAnimation" />
+
+        <com.andrognito.pinlockview.PinLockView
+            android:id="@+id/pin_lock_view"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_weight="60"
+            app:pinLength="10"
+            app:keypadTextColor="#E6E6E6"
+            app:keypadTextSize="32dp"
+            app:keypadButtonSize="128dp"
+            app:keypadVerticalSpacing="36dp"
+            app:keypadHorizontalSpacing="48dp"
+            app:keypadDeleteButtonSize="24dp"
+            app:keypadShowDeleteButton="false"
+            app:keypadDeleteButtonPressedColor="#C8C8C8"
+            app:dotDiameter="20dp"/>
+
+        <ImageView
+            android:id="@+id/fingerprint_icon"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:src="@drawable/fingerprint_icon"
+            android:layout_marginVertical="20dp">
+        </ImageView>
+
+        <TextView
+            android:id="@+id/forgot_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="😔 Forgot password"
+            android:gravity="center|bottom"
+            android:textSize="24sp"
+            android:paddingVertical="20dp"
+            android:textColor="@color/darker_blue">
+        </TextView>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

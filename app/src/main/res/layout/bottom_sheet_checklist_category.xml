@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbarSize="2dp"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
+    android:background="@color/gray">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray">
+
+        <ImageView
+            android:id="@+id/close_filter"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="13dp"
+            android:src="@drawable/close_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="Categories   "
+            android:textColor="@color/orange"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/add_icon"
+            android:backgroundTint="@color/darker_blue"
+            app:fabSize="mini"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Categories"
+            android:textColor="@color/ultra_white"
+            android:textSize="14dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/categories"
+            app:layout_constraintEnd_toEndOf="@+id/categories"
+            app:layout_constraintStart_toStartOf="@+id/categories"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categories"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

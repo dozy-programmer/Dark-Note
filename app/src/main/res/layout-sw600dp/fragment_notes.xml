@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    android:orientation="vertical"
+    tools:context=".fragments.notes">
+
+    <LinearLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            app:contentInsetStart="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/search_close"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:gravity="center"
+                android:src="@drawable/back_icon"
+                android:visibility="gone">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/fragment_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:fontFamily="@font/baloo_bhai"
+                android:gravity="bottom"
+                android:text="Dark Note"
+                android:textColor="@color/ultra_white"
+                android:textSize="48sp">
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:gravity="right">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/restore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:visibility="gone"
+                    android:layout_marginRight="15dp"
+                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="16dp"
+                        android:src="@drawable/restore_icon">
+                    </ImageView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="15dp"
+                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="16dp"
+                        android:src="@drawable/folder_icon">
+                    </ImageView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="15dp"
+                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp">
+                    <ImageView
+                        android:id="@+id/filter_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/filter_icon">
+                    </ImageView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/search_padding"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="15dp"
+                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp">
+
+                    <EditText
+                        android:id="@+id/search_text"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:textSize="24sp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:hint="Search Notes"
+                        android:maxLines="1"
+                        android:textColor="@color/ultra_white"
+                        android:textColorHint="@color/light_gray"
+                        android:visibility="gone">
+                    </EditText>
+
+                    <ImageView
+                        android:id="@+id/search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="16dp"
+                        android:src="@drawable/search_icon">
+                    </ImageView>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/settings_toolbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="15dp"
+                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/settings_icon">
+                    </ImageView>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/sorted_by"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sorted by: "
+        android:visibility="gone"
+        android:textColor="@color/ultra_white"
+        android:gravity="right"
+        android:layout_marginHorizontal="15dp"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notes_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@+id/app_bar"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="4dp"
+        android:paddingBottom="75dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sorted_by" />
+
+    <ScrollView
+        android:id="@+id/empty_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/empty_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="Don't get lost in the universe trying to remember."
+                android:textColor="@color/blue"
+                android:textSize="20sp">
+            </TextView>
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:src="@drawable/astronaut_icon">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/empty_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Let me do it for you"
+                android:textColor="@color/ultra_white"
+                android:textSize="18sp">
+            </TextView>
+
+            <TextView
+                android:id="@+id/empty_sub_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Tap the bottom right button to create a note"
+                android:textColor="@color/light_gray"
+                android:textSize="18sp">
+            </TextView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:background="@android:color/transparent"
+        android:layout_marginRight="25dp"
+        android:animateLayoutChanges="true"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/regular_notes_layout"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@android:color/transparent"
+            android:layout_gravity="right">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@color/gray"
+                android:paddingVertical="2dp"
+                android:paddingHorizontal="5dp"
+                android:layout_gravity="center"
+                android:text="Checklist"
+                android:textColor="@color/white"
+                android:textSize="14sp">
+            </TextView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_checklist_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
+                app:borderWidth="0dp"
+                android:elevation="0dp"
+                android:src="@drawable/checklist_icon"
+                app:fabCustomSize="50dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:layout_gravity="right">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:background="@color/gray"
+                android:paddingVertical="2dp"
+                android:paddingHorizontal="5dp"
+                android:layout_gravity="center"
+                android:text="Note"
+                android:textColor="@color/white"
+                android:textSize="14sp">
+            </TextView>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_note_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
+                android:src="@drawable/note_icon"
+                app:borderWidth="0dp"
+                app:elevation="0dp"
+                app:fabCustomSize="50dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/regular_notes_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add_icon"
+        app:borderWidth="0dp"
+        android:layout_margin="10dp"
+        app:elevation="6dp"
+        app:fabCustomSize="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

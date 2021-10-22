@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <ImageView
+                        android:id="@+id/search_close"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:src="@drawable/back_icon"
+                        android:visibility="gone"></ImageView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="90"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/close_note"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="9dp"
+                                android:src="@drawable/back_icon"></ImageView>
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="10"
+                        android:gravity="right"
+                        android:orientation="horizontal"
+                        android:weightSum="100">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/menu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="5"
+                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="9dp"
+                                android:src="@drawable/expand_menu_icon"></ImageView>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/noteColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="5"
+                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="9dp"
+                                android:src="@drawable/color_icon"></ImageView>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/camera"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="5"
+                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="9dp"
+                                android:src="@drawable/camera_icon2"></ImageView>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/pinButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="5"
+                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:id="@+id/pinIcon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="9dp"
+                                android:src="@drawable/pin_icon"></ImageView>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/search_padding"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="5"
+                            android:visibility="gone"
+                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="0dp">
+
+                            <EditText
+                                android:id="@+id/search_text"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginRight="5dp"
+                                android:backgroundTint="@android:color/transparent"
+                                android:hint="Search inside note"
+                                android:maxLines="1"
+                                android:textColor="@color/ultra_white"
+                                android:textColorHint="@color/light_gray"
+                                android:visibility="gone"></EditText>
+
+                            <ImageView
+                                android:id="@+id/search"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="9dp"
+                                android:src="@drawable/search_icon"></ImageView>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/save"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginRight="15dp"
+                            android:layout_weight="5"
+                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardCornerRadius="15dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="9dp"
+                                android:src="@drawable/done_icon"></ImageView>
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="Title"
+                android:textColor="@color/ultra_white"
+                android:textColorHint="@color/light_gray"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"></EditText>
+
+            <LinearLayout
+                android:id="@+id/reminderLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="100"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title">
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="23dp"
+                    android:layout_weight="50"
+                    android:gravity="left"
+                    android:text="Date"
+                    android:textColor="@color/light_gray"
+                    android:textSize="15sp"
+                    android:visibility="gone"></TextView>
+
+                <LinearLayout
+                    android:id="@+id/reminder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="50"
+                    android:gravity="right"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/cancel"></ImageView>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/reminder_icon"></ImageView>
+
+                    <TextView
+                        android:id="@+id/reminderDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="23dp"
+                        android:gravity="right"
+                        android:text="Notification"
+                        android:textColor="@color/light_gray"
+                        android:textSize="10sp"></TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/category_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="23dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/note_photos">
+
+                <TextView
+                    android:id="@+id/folderWord"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="left"
+                    android:text="Folder:"
+                    android:textColor="@color/light_gray"
+                    android:textSize="15sp"
+                    android:visibility="gone"></TextView>
+
+                <TextView
+                    android:id="@+id/category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|bottom"
+                    android:text="category"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="15sp"
+                    android:visibility="gone"></TextView>
+
+            </LinearLayout>
+
+            <jp.wasabeef.richeditor.RichEditor
+                android:id="@+id/note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:textColorHint="@color/light_gray"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.45"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/category_layout"
+                app:layout_constraintVertical_bias="0.0"/>
+
+            <EditText
+                android:id="@+id/searchEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:backgroundTint="@android:color/transparent"
+                android:gravity="top|start"
+                android:hint="Type something..."
+                android:textColor="@color/ultra_white"
+                android:textColorHint="@color/light_gray"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/category_layout"
+                app:layout_constraintVertical_bias="0.0"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/note_photos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reminderLayout" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/checklist"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:clipToPadding="false"
+                android:paddingBottom="55dp"
+                android:visibility="gone"
+                android:layout_marginHorizontal="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/category_layout" />
+
+            <ScrollView
+                android:id="@+id/empty_Layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/checklist"
+                app:layout_constraintEnd_toEndOf="@+id/checklist"
+                app:layout_constraintStart_toStartOf="@+id/checklist"
+                app:layout_constraintTop_toTopOf="@+id/checklist">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/empty_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center"
+                        android:text="Don't get lost in the universe trying to remember."
+                        android:textColor="@color/blue"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:src="@drawable/astronaut_icon" />
+
+                    <TextView
+                        android:id="@+id/empty_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="Let me do it for you"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/empty_sub_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="Tap the bottom right button to create a note"
+                        android:textColor="@color/light_gray"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/text_size_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/close_Layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/red"
+            app:srcCompat="@drawable/close_icon" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/increase_textsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:srcCompat="@drawable/arrow_up" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/decrease_textsize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:srcCompat="@drawable/arrow_down" />
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_checklist_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginBottom="15dp"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/add_icon" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/styleFormat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/action_undo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/undoi_icon" />
+
+            <ImageButton
+                android:id="@+id/action_redo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/redo_icon" />
+
+            <ImageButton
+                android:id="@+id/action_bold"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/bold_icon" />
+
+            <ImageButton
+                android:id="@+id/action_italic"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/italic_icon" />
+
+            <ImageButton
+                android:id="@+id/action_strikethrough"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/strikethrough_icon" />
+
+            <ImageButton
+                android:id="@+id/action_underline"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/underline_icon" />
+
+            <ImageButton
+                android:id="@+id/action_insert_bullets"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/bullets_icon" />
+
+            <ImageButton
+                android:id="@+id/action_insert_numbers"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/numbers_icon" />
+
+            <ImageButton
+                android:id="@+id/action_text_size"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/format_size_icon" />
+
+            <ImageButton
+                android:id="@+id/action_txt_color"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/color_text_icon" />
+
+            <ImageButton
+                android:id="@+id/action_format_clear"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/format_clear_icon" />
+
+            <ImageButton
+                android:id="@+id/action_indent"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/indent_icon" />
+
+            <ImageButton
+                android:id="@+id/action_outdent"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/outdent_icon" />
+
+            <ImageButton
+                android:id="@+id/action_align_left"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/justify_left" />
+
+            <ImageButton
+                android:id="@+id/action_align_center"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/justify_center" />
+
+            <ImageButton
+                android:id="@+id/action_align_right"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:src="@drawable/justify_right" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

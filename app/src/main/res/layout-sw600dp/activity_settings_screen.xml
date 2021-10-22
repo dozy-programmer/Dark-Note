@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentInsetStart="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/close_activity"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/close_icon">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="Settings"
+                android:gravity="center"
+                android:fontFamily="@font/baloo_bhai"
+                android:textColor="@color/ultra_white"
+                android:textSize="36sp"
+                android:layout_gravity="center">
+            </TextView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buy_pro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PRO"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/orange"
+                android:textSize="18sp"
+                android:layout_gravity="right"
+                android:backgroundTint="@color/gray"
+                app:cornerRadius="10dp"
+                app:strokeColor="@color/orange"
+                app:strokeWidth="2sp">
+            </com.google.android.material.button.MaterialButton>
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/backup"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="99"
+                        android:gravity="center_vertical"
+                        android:text="Backup"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="24sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_right_icon">
+                    </ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/restore_backup"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="99"
+                        android:gravity="center_vertical"
+                        android:text="Restore Backup"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"></TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_right_icon"></ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="75dp"
+                        android:orientation="horizontal"
+                        android:weightSum="100">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="98"
+                            android:gravity="center_vertical"
+                            android:text="Backup Reminder"
+                            android:textColor="@color/orange"
+                            android:textSize="24sp"
+                            android:textStyle="bold">
+                        </TextView>
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/backup_reminder_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:scaleY="1.3"
+                            android:scaleX="1.3"
+                            android:theme="@style/ThemeOverlay.MySwitchCompat"
+                            android:layout_marginRight="5dp">
+                        </androidx.appcompat.widget.SwitchCompat>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/reminder_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textSize="12sp"
+                        android:textColor="@color/ultra_white">
+                    </TextView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/backup_automatically"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="98"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:text="Backup on Launch"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="5dp"
+                            android:textColor="@color/orange"
+                            android:textSize="24sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/backup_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Location : null"
+                            android:layout_marginBottom="15dp"
+                            android:textColor="@color/ultra_white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/backup_on_launch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="2"
+                        android:scaleY="1.3"
+                        android:scaleX="1.3"
+                        android:layout_marginTop="5dp"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="10dp"
+                        android:checked="false">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/note_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Note Preview Settings"
+            android:textColor="@color/orange"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView"></TextView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="5dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/note_settings">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100">
+
+                <LinearLayout
+                    android:id="@+id/title_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Title Lines"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="24sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/title_lines"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:gravity="center|right"
+                        android:text="Default"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="18sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_down">
+                    </ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/preview_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Content Lines"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"></TextView>
+
+                    <TextView
+                        android:id="@+id/preview_lines"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:gravity="center|right"
+                        android:text="Default"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"></TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/arrow_down"></ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/show_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="98"
+                        android:gravity="center_vertical"
+                        android:text="Show Preview"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/show_preview_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:scaleY="1.3"
+                        android:scaleX="1.3"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="10dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/layout_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Layout"
+            android:textSize="28sp"
+            android:fontFamily="@font/baloo_bhai"
+            android:textColor="@color/orange"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView5">
+        </TextView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_setting">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="20dp"
+                android:weightSum="99"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/grid"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_weight="33"
+                    app:cardBackgroundColor="@color/gray"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_gravity="center"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/grid_icon"></ImageView>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/row"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="33"
+                    android:layout_margin="10dp"
+                    app:cardBackgroundColor="@color/gray"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_gravity="center"
+                        android:rotation="90"
+                        android:src="@drawable/row_icon"></ImageView>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/staggered"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="33"
+                    android:layout_margin="10dp"
+                    app:cardBackgroundColor="@color/gray"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/staggered_icon"></ImageView>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/other_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Other Settings"
+            android:textColor="@color/ultra_white"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_layout"></TextView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView2"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/other_settings">
+
+            <LinearLayout
+                android:id="@+id/app_settings"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="9"
+                    android:gravity="center|left"
+                    android:text="App Settings"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="24sp"
+                    android:textStyle="bold">
+                </TextView>
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:src="@drawable/settings_icon">
+                </ImageView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_margin="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/review"
+            app:layout_constraintVertical_bias="1.0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/about"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="About"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center|right"
+                    android:text="@string/app_version"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/contact"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="9"
+                    android:gravity="center|left"
+                    android:text="Contact Developer"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"></TextView>
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/contact_icon">
+                </ImageView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/review"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contact">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="9"
+                    android:gravity="center|left"
+                    android:text="Leave a review"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"></TextView>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/playstore_icon"></ImageView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
