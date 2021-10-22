@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,7 +30,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
     private int resetCounter;
 
     private boolean note, checklist;
-    private boolean isArchived, isPinned;
+    private boolean isPinned;
     private boolean createdDate, editedDate;
     private boolean oldestToLatest, latestToOldest;
     private boolean isDateCorrectlySelected = false;
@@ -59,9 +60,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
         MaterialCardView checklistButton = view.findViewById(R.id.checklist);
         ImageView noteIcon = view.findViewById(R.id.note_icon);
         ImageView checklistIcon = view.findViewById(R.id.checklist_icon);
-        MaterialCardView archivedButton = view.findViewById(R.id.archived);
         MaterialCardView pinnedButton = view.findViewById(R.id.pinned);
-        MaterialCardView noneButton = view.findViewById(R.id.none);
         MaterialCardView createdDateButton = view.findViewById(R.id.created_date);
         MaterialCardView editedDateButton = view.findViewById(R.id.edited_date);
         MaterialCardView oldToNewButton = view.findViewById(R.id.old_new);
@@ -97,36 +96,19 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
             }
         });
 
-        archivedButton.setOnClickListener(v -> {
-            isArchived = !isArchived;
-            noneButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            if(isArchived){
-                archivedButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
-                isPinned = false;
-                pinnedButton.setCardBackgroundColor(getContext().getColor( R.color.gray));
-            }
-            else
-                archivedButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+        saveSort.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(!note)
+                noteButton.performClick();
+            if(!checklist)
+                checklistButton.performClick();
         });
 
         pinnedButton.setOnClickListener(v -> {
             isPinned = !isPinned;
-            noneButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            if(isPinned){
+            if(isPinned)
                 pinnedButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
-                isArchived = false;
-                archivedButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            }
             else
                 pinnedButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        });
-
-        noneButton.setOnClickListener(v -> {
-            isPinned = false;
-            isArchived = false;
-            noneButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
-            archivedButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            pinnedButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         });
 
         createdDateButton.setOnClickListener(v -> {
@@ -228,9 +210,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
         });
 
         confirmFilter.setOnClickListener(v -> {
-            if(isArchived)
-                kindSelected = "archived";
-            else if(isPinned)
+            if(isPinned)
                 kindSelected = "pin";
             else
                 kindSelected = "null";

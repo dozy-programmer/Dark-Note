@@ -84,13 +84,18 @@ public class CategoryScreen extends AppCompatActivity {
         allCategories = realm.where(Folder.class).sort("positionInList").findAll();
 
         allNotes = realm.where(Note.class).findAll();
-        archivedAllNotes = realm.where(Note.class).equalTo("archived", true).findAll();
+        archivedAllNotes = realm.where(Note.class)
+                .equalTo("trash", false)
+                .equalTo("archived", true)
+                .findAll();
         allSelectedNotes = allNotes.where().equalTo("isSelected", true).findAll();
         isNotesSelected = allSelectedNotes.size()>0 ? true : false;
-        uncategorizedNotes = allNotes.where().equalTo("archived", false)
+        uncategorizedNotes = allNotes.where()
+                .equalTo("archived", false)
                 .equalTo("trash", false)
                 .equalTo("category", "none").findAll();
-        trashAllNotes = allNotes.where().equalTo("trash", true).findAll();
+        trashAllNotes = allNotes.where()
+                .equalTo("trash", true).findAll();
 
         initializeLayout();
     }

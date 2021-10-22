@@ -80,7 +80,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="[Add multiple using a comma &quot;,&quot; ]"
+            android:text="[Add multiple using two commas &quot;,,&quot; ]"
             android:layout_marginTop="5dp"
             android:textColor="@color/ultra_white"
             android:textSize="12sp"

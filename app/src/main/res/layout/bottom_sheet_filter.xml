@@ -171,29 +171,6 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/archived"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        app:cardBackgroundColor="@color/gray"
-                        app:cardCornerRadius="15dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center"
-                            android:layout_marginBottom="2dp"
-                            android:paddingVertical="10dp"
-                            android:paddingHorizontal="25dp"
-                            android:text="Archived"
-                            android:textColor="@color/ultra_white"
-                            android:textSize="14sp"
-                            android:textStyle="bold"></TextView>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/pinned"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -210,29 +187,6 @@
                             android:paddingVertical="10dp"
                             android:paddingHorizontal="25dp"
                             android:text="Pinned"
-                            android:textColor="@color/ultra_white"
-                            android:textSize="14sp"
-                            android:textStyle="bold"></TextView>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/none"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        app:cardBackgroundColor="@color/gray"
-                        app:cardCornerRadius="15dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center"
-                            android:layout_marginBottom="2dp"
-                            android:paddingVertical="10dp"
-                            android:paddingHorizontal="25dp"
-                            android:text="All"
                             android:textColor="@color/ultra_white"
                             android:textSize="14sp"
                             android:textStyle="bold"></TextView>

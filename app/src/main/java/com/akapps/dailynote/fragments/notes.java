@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import io.realm.Case;
 import io.realm.Realm;
@@ -60,7 +62,7 @@ public class notes extends Fragment{
     private CardView settings;
     private CardView restoreNotes;
     private CardView categoryNotes;
-    private EditText searchEditText;
+    private SearchView searchEditText;
     private ImageView searchClose;
     private ImageView search;
     private ImageView filterIcon;
@@ -113,7 +115,8 @@ public class notes extends Fragment{
             realm = Realm.getDefaultInstance();
         }
 
-        allNotes = realm.where(Note.class).equalTo("archived", false)
+        allNotes = realm.where(Note.class)
+                .equalTo("archived", false)
                 .equalTo("trash", false)
                 .sort("dateEdited", Sort.DESCENDING).findAll();
 
@@ -196,7 +199,6 @@ public class notes extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Helper.hideKeyboard(getActivity());
 
         if(realm!=null)
             realm.close();
@@ -261,7 +263,6 @@ public class notes extends Fragment{
                 closeMultipleNotesLayout();
                 showData();
             }
-            Helper.hideKeyboard(getActivity());
         });
 
         settings.setOnClickListener(v -> openSettings());
@@ -317,10 +318,8 @@ public class notes extends Fragment{
                 isAllSelected = false;
                 deleteMultipleNotes();
             }
-            else if(realm.where(Note.class).findAll().size()!=0) {
+            else if(realm.where(Note.class).findAll().size()!=0)
                 showSearchBar();
-                Helper.showKeyboard(getActivity());
-            }
             else
                 showMessage("Not Searching...", "Can't looking for something that does not exist", true);
         });
@@ -338,20 +337,20 @@ public class notes extends Fragment{
             startActivity(checklist);
         });
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
+        searchEditText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(isSearchingNotes) {
-                    searchNotesAndUpdate(s.toString());
-                    searchingString = s.toString();
-                }
+            public boolean onQueryTextSubmit(String query) {
+                return false;
             }
 
             @Override
-            public void afterTextChanged(Editable s) { }
+            public boolean onQueryTextChange(String s) {
+                if(isSearchingNotes) {
+                    searchNotesAndUpdate(s);
+                    searchingString = s;
+                }
+                return false;
+            }
         });
     }
 
@@ -439,11 +438,20 @@ public class notes extends Fragment{
         RealmResults<Note> result = null;
         if(note || checklist){
             if(note && checklist)
-                result = realm.where(Note.class).findAll();
+                result = realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .findAll();
             else if(checklist)
-                result = realm.where(Note.class).equalTo("isCheckList", true).findAll();
+                result = realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .equalTo("isCheckList", true).findAll();
             else if(note)
-                result = realm.where(Note.class).equalTo("isCheckList", false).findAll();
+                result = realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .equalTo("isCheckList", false).findAll();
 
 
             if(kind!=null && !kind.equals("null")) {
@@ -528,14 +536,20 @@ public class notes extends Fragment{
             sortedBy.setVisibility(View.VISIBLE);
             if (notes.equals("notes") && dateType!=null) {
                 if (oldestToNewest) {
-                    allNotes =  realm.where(Note.class).sort(dateType).findAll();
+                    allNotes =  realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("trash", false)
+                            .sort(dateType).findAll();
                     if(dateType.equals("dateEdited"))
                         sortedBy.setText("Sorted by: Date Edited");
                     else
                         sortedBy.setText("Sorted by: Date Created");
                 }
                 else if (newestToOldest) {
-                    allNotes =  realm.where(Note.class).sort(dateType, Sort.DESCENDING).findAll();
+                    allNotes =  realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("trash", false)
+                            .sort(dateType, Sort.DESCENDING).findAll();
                     if(dateType.equals("dateEdited"))
                         sortedBy.setText("Sorted by: Date Edited");
                     else
@@ -544,11 +558,17 @@ public class notes extends Fragment{
             }
             else if (notes.equals("notes")) {
                 if (aToZ) {
-                    allNotes =  realm.where(Note.class).sort("title").findAll();
+                    allNotes =  realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("trash", false)
+                            .sort("title").findAll();
                     sortedBy.setText("Sorted by: Alphabetical");
                 }
                 else if (zToA) {
-                    allNotes =  realm.where(Note.class).sort("title", Sort.DESCENDING).findAll();
+                    allNotes =  realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("trash", false)
+                            .sort("title", Sort.DESCENDING).findAll();
                     sortedBy.setText("Sorted by: Alphabetical");
                 }
             }
@@ -606,12 +626,14 @@ public class notes extends Fragment{
         search.setVisibility(View.GONE);
         categoryNotes.setVisibility(View.GONE);
         restoreNotes.setVisibility(View.GONE);
-        searchEditText.requestFocusFromTouch();
+        searchEditText.setQueryHint("Searching...");
+        searchEditText.setQuery("", false);
+        searchEditText.setIconified(true);
+        searchEditText.setIconified(false);
     }
 
     private void hideSearchBar(){
-        searchEditText.setText("");
-        Helper.hideKeyboard(getActivity());
+        searchEditText.setQuery("", false);
         search.setVisibility(View.VISIBLE);
 
         fragmentTitle.setVisibility(View.VISIBLE);
@@ -789,7 +811,7 @@ public class notes extends Fragment{
 
     private void clearVariables(){
         isSearchingNotes = false;
-        searchEditText.setText("");
+        searchEditText.setQuery("", false);
         isNotesFiltered = false;
         deletingMultipleNotes = false;
         isTrashSelected = false;

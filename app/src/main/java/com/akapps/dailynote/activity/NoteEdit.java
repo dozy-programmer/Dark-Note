@@ -218,7 +218,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onStop() {
         super.onStop();
-        Helper.hideKeyboard(this);
     }
 
     @Override
@@ -227,8 +226,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if(realm!=null)
             realm.close();
-
-        Helper.hideKeyboard(this);
 
         if(handler!=null)
             handler.removeCallbacksAndMessages(null);
@@ -468,7 +465,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         search.setOnClickListener(v -> {
             if(note.getHtml().length()>0) {
                 showSearchBar();
-                Helper.showKeyboard(this);
                 textSizeLayout.setVisibility(View.VISIBLE);
             }
             else
@@ -746,7 +742,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void hideSearchBar(){
         noteSearching.setText("");
         searchEditText.setText("");
-        Helper.hideKeyboard(this);
         isSearchingNotes = false;
         closeNote.setVisibility(View.VISIBLE);
         expandMenu.setVisibility(View.VISIBLE);
@@ -926,7 +921,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Helper.showMessage(this, "Added", "Note is added", MotionToast.TOAST_SUCCESS);
             else
                 Helper.showMessage(this, "Added", "Checklist is added", MotionToast.TOAST_SUCCESS);
-            Helper.hideKeyboard(this);
             allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
             // updates note to be editable
             initializeLayout(null);
@@ -970,7 +964,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         updateDateEdited();
         // show user a message and hide the keyboard
         Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
-        Helper.hideKeyboard(this);
         // save inputted data to ensure when saving again, there is changes
         oldTitle = title.getText().toString();
         oldNote = note.getHtml().toString();
@@ -1420,9 +1413,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if(currentNote.isTrash()){
             realm.beginTransaction();
             currentNote.deleteFromRealm();
-            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
             realm.commitTransaction();
-            updateDateEdited();
             Helper.showMessage(NoteEdit.this, "Deleted", currentNote.getTitle(), MotionToast.TOAST_SUCCESS);
         }
         else {

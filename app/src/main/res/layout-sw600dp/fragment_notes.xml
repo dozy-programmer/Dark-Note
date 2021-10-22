@@ -120,19 +120,18 @@
                     app:cardCornerRadius="20dp"
                     app:cardElevation="0dp">
 
-                    <EditText
+                    <androidx.appcompat.widget.SearchView
                         android:id="@+id/search_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
-                        android:textSize="24sp"
-                        android:backgroundTint="@android:color/transparent"
-                        android:hint="Search Notes"
                         android:maxLines="1"
+                        android:theme="@style/AppSearchView"
                         android:textColor="@color/ultra_white"
-                        android:textColorHint="@color/light_gray"
+                        android:padding="5dp"
+                        android:queryBackground="@android:color/transparent"
                         android:visibility="gone">
-                    </EditText>
+                    </androidx.appcompat.widget.SearchView>
 
                     <ImageView
                         android:id="@+id/search"

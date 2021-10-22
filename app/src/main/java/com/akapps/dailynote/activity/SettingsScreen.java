@@ -137,9 +137,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         populateUserSettings();
         initializeBilling();
 
-        if(backingUp) {
-            new Handler().postDelayed(this::openBackUpRestoreDialog, 500);
-        }
+        if(backingUp)
+            new Handler().postDelayed(this::openBackUpRestoreDialog, 1000);
     }
 
     @Override

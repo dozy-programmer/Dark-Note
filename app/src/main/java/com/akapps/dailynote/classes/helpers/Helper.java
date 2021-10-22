@@ -205,22 +205,6 @@ public class Helper {
             empty_Layout.setVisibility(View.GONE);
     }
 
-    // hides keyboard
-    public static void hideKeyboard(Activity activity) {
-        if (activity.getCurrentFocus() != null) {
-            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-        }
-    }
-
-    // hides keyboard
-    public static void showKeyboard(Activity activity) {
-        if (activity.getCurrentFocus() != null) {
-            InputMethodManager imm = (InputMethodManager)  activity.getSystemService(activity.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        }
-    }
-
     public static ArrayList<String> getCurrentList(Context context){
         String stringHistory = PreferenceManager.getDefaultSharedPreferences(context).getString("categories", null);
         if(stringHistory!=null)

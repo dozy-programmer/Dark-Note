@@ -157,7 +157,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         if(!itemName.getText().toString().isEmpty()){
             if(isAdding) {
                 String text = itemName.getText().toString();
-                String[] items = text.replaceAll(" +, +", ",").split(",");
+                String[] items = text.replaceAll(" +, +", ",,").split(",,");
                 for (String item : items)
                     ((NoteEdit) getActivity()).addCheckList(item.trim().replaceAll(" +", " "));
                 adapter.notifyItemInserted(adapter.getItemCount()+1);
