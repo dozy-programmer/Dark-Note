@@ -120,7 +120,7 @@
                     app:cardCornerRadius="20dp"
                     app:cardElevation="0dp">
 
-                    <androidx.appcompat.widget.SearchView
+                    <SearchView
                         android:id="@+id/search_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -129,9 +129,10 @@
                         android:theme="@style/AppSearchView"
                         android:textColor="@color/ultra_white"
                         android:padding="5dp"
+                        app:queryBackground="@android:color/transparent"
                         android:queryBackground="@android:color/transparent"
                         android:visibility="gone">
-                    </androidx.appcompat.widget.SearchView>
+                    </SearchView>
 
                     <ImageView
                         android:id="@+id/search"

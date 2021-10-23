@@ -27,15 +27,6 @@
             android:layout_marginStart="10dp"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/search_close"
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:src="@drawable/back_icon"
-                android:visibility="gone">
-            </ImageView>
-
             <TextView
                 android:id="@+id/fragment_title"
                 android:layout_width="wrap_content"
@@ -114,23 +105,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginEnd="15dp"
                     app:cardBackgroundColor="@color/light_gray"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
 
-                    <androidx.appcompat.widget.SearchView
+                    <SearchView
                         android:id="@+id/search_text"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:maxLines="1"
                         android:theme="@style/AppSearchView"
-                        android:textColor="@color/ultra_white"
-                        android:padding="5dp"
-                        android:queryBackground="@android:color/transparent"
+                        app:queryBackground="@null"
+                        android:background="@color/gray"
+                        android:padding="8dp"
                         android:visibility="gone">
-                    </androidx.appcompat.widget.SearchView>
+                    </SearchView>
 
                     <ImageView
                         android:id="@+id/search"

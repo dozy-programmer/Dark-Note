@@ -8,14 +8,11 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,7 +40,6 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import io.realm.Case;
 import io.realm.Realm;
@@ -63,7 +60,6 @@ public class notes extends Fragment{
     private CardView restoreNotes;
     private CardView categoryNotes;
     private SearchView searchEditText;
-    private ImageView searchClose;
     private ImageView search;
     private ImageView filterIcon;
     private RecyclerView recyclerViewNotes;
@@ -118,7 +114,7 @@ public class notes extends Fragment{
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
-                .sort("dateEdited", Sort.DESCENDING).findAll();
+                .sort("dateEdited", Sort.ASCENDING).findAll();
 
         if (realm.where(User.class).findAll().size() == 0)
             addUser();
@@ -131,7 +127,7 @@ public class notes extends Fragment{
             @Override
             public void handleOnBackPressed() {
                 if(isSearchingNotes)
-                    refreshFragment(false);
+                    hideSearchBar();
                 else
                     getActivity().finish();
             }
@@ -233,7 +229,6 @@ public class notes extends Fragment{
         settings = view.findViewById(R.id.settings_toolbar);
         categoryNotes = view.findViewById(R.id.category);
         searchEditText = view.findViewById(R.id.search_text);
-        searchClose = view.findViewById(R.id.search_close);
         search = view.findViewById(R.id.search);
         recyclerViewNotes = view.findViewById(R.id.notes_recyclerview);
         empty_Layout = view.findViewById(R.id.empty_Layout);
@@ -257,18 +252,22 @@ public class notes extends Fragment{
     private void initializeLayout(){
         setRecyclerviewLayout();
 
-        searchClose.setOnClickListener(v -> {
+        searchEditText.setIconifiedByDefault(false);
+        int searchPlateId = searchEditText.getContext().getResources()
+                .getIdentifier("android:id/search_plate", null, null);
+        View searchPlateView = searchEditText.findViewById(searchPlateId);
+        if (searchPlateView != null)
+            searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray)); //depand you can set
+
+        settings.setOnClickListener(v -> openSettings());
+
+        addRegularMenu.setOnClickListener(v -> {
             if(isSearchingNotes){
                 hideSearchBar();
                 closeMultipleNotesLayout();
                 showData();
             }
-        });
-
-        settings.setOnClickListener(v -> openSettings());
-
-        addRegularMenu.setOnClickListener(v -> {
-            if(isNotesFiltered || isTrashSelected || enableSelectMultiple) {
+            else if(isNotesFiltered || isTrashSelected || enableSelectMultiple) {
                 unSelectAllNotes();
                 enableSelectMultiple = false;
                 settings.setVisibility(View.VISIBLE);
@@ -459,12 +458,10 @@ public class notes extends Fragment{
             }
 
             if(dateType!=null && !dateType.equals("null")) {
-                if(oldestToNewest) {
-                    result = result.where().sort(dateType).findAll();
-                }
-                else if(newestToOldest){
+                if(oldestToNewest)
                     result = result.where().sort(dateType , Sort.DESCENDING).findAll();
-                }
+                else if(newestToOldest)
+                    result = result.where().sort(dateType , Sort.ASCENDING).findAll();
             }
 
             if(aToZ)
@@ -539,21 +536,21 @@ public class notes extends Fragment{
                     allNotes =  realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false)
-                            .sort(dateType).findAll();
+                            .sort(dateType, Sort.DESCENDING).findAll();
                     if(dateType.equals("dateEdited"))
-                        sortedBy.setText("Sorted by: Date Edited");
+                        sortedBy.setText("Sorted by: Date Edited - Old -> New");
                     else
-                        sortedBy.setText("Sorted by: Date Created");
+                        sortedBy.setText("Sorted by: Date Created - Old -> New");
                 }
                 else if (newestToOldest) {
                     allNotes =  realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false)
-                            .sort(dateType, Sort.DESCENDING).findAll();
+                            .sort(dateType, Sort.ASCENDING).findAll();
                     if(dateType.equals("dateEdited"))
-                        sortedBy.setText("Sorted by: Date Edited");
+                        sortedBy.setText("Sorted by: Date Edited - New -> Old");
                     else
-                        sortedBy.setText("Sorted by: Date Created");
+                        sortedBy.setText("Sorted by: Date Created - New Old -> New");
                 }
             }
             else if (notes.equals("notes")) {
@@ -562,14 +559,14 @@ public class notes extends Fragment{
                             .equalTo("archived", false)
                             .equalTo("trash", false)
                             .sort("title").findAll();
-                    sortedBy.setText("Sorted by: Alphabetical");
+                    sortedBy.setText("Sorted by: Alphabetical - A -> Z");
                 }
                 else if (zToA) {
                     allNotes =  realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false)
                             .sort("title", Sort.DESCENDING).findAll();
-                    sortedBy.setText("Sorted by: Alphabetical");
+                    sortedBy.setText("Sorted by: Alphabetical - Z -> A");
                 }
             }
             populateAdapter(allNotes);
@@ -615,21 +612,22 @@ public class notes extends Fragment{
         isSearchingNotes = true;
         fragmentTitle.setVisibility(View.GONE);
         filterNotes.setVisibility(View.GONE);
-        searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
-        searchEditText.setVisibility(View.VISIBLE);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(50, 0, 50, 0);
-        searchEditText.setLayoutParams(params);
-        searchLayout.setPadding(100, 100, 100, 100);
-        searchClose.setVisibility(View.VISIBLE);
         search.setVisibility(View.GONE);
         categoryNotes.setVisibility(View.GONE);
         restoreNotes.setVisibility(View.GONE);
+        searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(0, 0, 0, 0);
+        searchEditText.setLayoutParams(params);
+        searchLayout.setPadding(0, 100, 0, 100);
+        searchEditText.setVisibility(View.VISIBLE);
         searchEditText.setQueryHint("Searching...");
         searchEditText.setQuery("", false);
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
+        addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.back_icon));
+        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red)));
     }
 
     private void hideSearchBar(){
@@ -641,7 +639,6 @@ public class notes extends Fragment{
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
         searchEditText.setVisibility(View.GONE);
-        searchClose.setVisibility(View.GONE);
         if(isTrashSelected)
             restoreNotes.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
@@ -651,14 +648,15 @@ public class notes extends Fragment{
         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) filterNotes.getLayoutParams();
 
         LinearLayout.LayoutParams params = (new LinearLayout.LayoutParams(filterNotes.getWidth(), filterNotes.getHeight()));
-        params.setMargins(0, 0, vlp.rightMargin, 0);
+        params.setMargins(0, 0, 50, 0);
         searchLayout.setLayoutParams(params);
         searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
         searchLayout.setPadding(filterNotes.getPaddingLeft(), filterNotes.getPaddingTop(), filterNotes.getPaddingRight(), filterNotes.getPaddingBottom());
         searchEditText.setVisibility(View.GONE);
         searchEditText.setVisibility(View.GONE);
-        searchClose.setVisibility(View.GONE);
         searchEditText.clearFocus();
+        addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.add_icon));
+        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.darker_blue)));
     }
 
     public void deleteMultipleNotesLayout(){
@@ -676,6 +674,8 @@ public class notes extends Fragment{
     }
 
     public void closeMultipleNotesLayout(){
+        enableSelectMultiple  = false;
+        deletingMultipleNotes = false;
         unSelectAllNotes();
         clearVariables();
 
@@ -723,6 +723,7 @@ public class notes extends Fragment{
                     Helper.showMessage(getActivity(), "Sent to trash", number + " selected " +
                             "have been sent to trash", MotionToast.TOAST_SUCCESS);
                     numberSelected(0, 0, 0);
+                    addRegularMenu.performClick();
                 }
             }
             else
@@ -744,7 +745,7 @@ public class notes extends Fragment{
             adapterNotes.notifyDataSetChanged();
             Helper.showMessage(getActivity(), "Restored", number + " selected " +
                     "have been restored", MotionToast.TOAST_SUCCESS);
-            refreshFragment(false);
+            addRegularMenu.performClick();
         }
         else
             Helper.showMessage(getActivity(), "Not Restored", "Nothing was selected " +

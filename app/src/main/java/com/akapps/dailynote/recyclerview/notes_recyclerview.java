@@ -322,6 +322,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // changes outline color, and updates number of selected notes
         // if not, it opens note
         holder.view.setOnClickListener(v -> {
+            enableSelectMultiple = ((notes) noteFragment).enableSelectMultiple;
             if(!enableSelectMultiple)
                 openNoteActivity(currentNote);
             else{

@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_category_screen.xml" value="0.1" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/fragment_notes.xml" value="0.1" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_category_screen.xml" value="0.3" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/fragment_notes.xml" value="0.2546875" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

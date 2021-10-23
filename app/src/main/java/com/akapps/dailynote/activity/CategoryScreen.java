@@ -161,7 +161,7 @@ public class CategoryScreen extends AppCompatActivity {
             noCategoryNotesSize += uncategorizedNotes.size();
             allSelected += allSelectedNotes.size();
 
-            showAllNotes.setText("All Regular Notes (" + allNotesSize+ ")");
+            showAllNotes.setText("All Notes (" + allNotesSize+ ")");
 
             noCategory.setText("Uncategorized notes (" + noCategoryNotesSize + ")");
 

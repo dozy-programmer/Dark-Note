@@ -48,12 +48,13 @@
         <item name="colorControlActivated">@color/orange</item>
     </style>
 
-    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+    <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar" >
         <item name="android:textSize">@dimen/dimen_16</item>
         <item name="searchHintIcon">@null</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorHint">@color/gray</item>
+        <item name="android:textColorHint">@color/greyish</item>
         <item name="android:tint">@color/orange_red</item>
+        <item name="android:queryBackground">@android:color/transparent</item>
     </style>
 
 </resources>
