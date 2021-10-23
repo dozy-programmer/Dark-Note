@@ -1,3 +1,0 @@
-Current Update:
-- Fixed error when deleting notes
-- Fixed issue where items in trash and archived where being shown when filtering/sorting

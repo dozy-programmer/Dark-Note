@@ -16,7 +16,6 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,7 +37,8 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import io.realm.Case;
@@ -64,10 +64,9 @@ public class notes extends Fragment{
     private ImageView filterIcon;
     private RecyclerView recyclerViewNotes;
     private RecyclerView.Adapter adapterNotes;
-    private FloatingActionButton addRegularNotes;
-    private FloatingActionButton addChecklistNotes;
-    private FloatingActionButton addRegularMenu;
-    private LinearLayout menu;
+    private FloatingActionButton addNote;
+    private FloatingActionButton addCheckList;
+    private FloatingActionMenu addMenu;
 
     // on-device database
     private Realm realm;
@@ -182,12 +181,6 @@ public class notes extends Fragment{
             adapterNotes.notifyDataSetChanged();
             // if list is empty, then it shows an empty layout
             isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
-            if(menu.getVisibility() == View.VISIBLE)
-                menu.animate().alpha(0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        menu.setVisibility(View.GONE);
-                    }});
         }
         Helper.deleteCache(context);
     }
@@ -236,11 +229,9 @@ public class notes extends Fragment{
         subtitle = view.findViewById(R.id.empty_subtitle);
         subSubTitle = view.findViewById(R.id.empty_sub_subtitle);
         filterIcon = view.findViewById(R.id.filter_icon);
-        addRegularNotes = view.findViewById(R.id.add_note_button);
-        addChecklistNotes = view.findViewById(R.id.add_checklist_button);
-        addRegularMenu = view.findViewById(R.id.regular_notes_layout);
-        menu = view.findViewById(R.id.menu);
-        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.darker_blue)));
+        addMenu = view.findViewById(R.id.menu);
+        addNote = view.findViewById(R.id.add_note);
+        addCheckList = view.findViewById(R.id.add_checklist);
     }
 
     private void showData(){
@@ -261,31 +252,19 @@ public class notes extends Fragment{
 
         settings.setOnClickListener(v -> openSettings());
 
-        addRegularMenu.setOnClickListener(v -> {
+        addMenu.setOnMenuButtonClickListener(v -> {
             if(isSearchingNotes){
                 hideSearchBar();
                 closeMultipleNotesLayout();
                 showData();
             }
-            else if(isNotesFiltered || isTrashSelected || enableSelectMultiple) {
-                unSelectAllNotes();
-                enableSelectMultiple = false;
-                settings.setVisibility(View.VISIBLE);
-                closeMultipleNotesLayout();
-                showData();
-            }
+            else if(isNotesFiltered || isTrashSelected || enableSelectMultiple)
+                clearMultipleSelect();
             else{
-                if(menu.getVisibility() == View.VISIBLE){
-                    menu.animate().alpha(0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    menu.setVisibility(View.GONE);
-                                }});
-                }
-                else {
-                    menu.animate().alpha(1f).setDuration(500).setListener(null);
-                    menu.setVisibility(View.VISIBLE);
-                }
+                if (addMenu.isOpened())
+                    addMenu.close(true);
+                else
+                    addMenu.open(true);
             }
         });
 
@@ -325,15 +304,17 @@ public class notes extends Fragment{
 
         restoreNotes.setOnClickListener(v -> restoreMultipleNotes());
 
-        addRegularNotes.setOnClickListener(v -> {
+        addNote.setOnClickListener(v -> {
             Intent note = new Intent(getActivity(), NoteEdit.class);
             startActivity(note);
+            addMenu.close(true);
         });
 
-        addChecklistNotes.setOnClickListener(v -> {
+        addCheckList.setOnClickListener(v -> {
             Intent checklist = new Intent(getActivity(), NoteEdit.class);
             checklist.putExtra("isChecklist", true);
             startActivity(checklist);
+            addMenu.close(true);
         });
 
         searchEditText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -351,6 +332,14 @@ public class notes extends Fragment{
                 return false;
             }
         });
+    }
+
+    private void clearMultipleSelect(){
+        unSelectAllNotes();
+        enableSelectMultiple = false;
+        settings.setVisibility(View.VISIBLE);
+        closeMultipleNotesLayout();
+        showData();
     }
 
     private void openSettings(){
@@ -485,9 +474,8 @@ public class notes extends Fragment{
             isListEmpty(query.size(), true);
         if(!isCategory) {
             filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            closeMenu();
-            addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.close_icon));
-            addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red)));
+            addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+            addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         }
         else
             closeFilter();
@@ -509,9 +497,8 @@ public class notes extends Fragment{
             isListEmpty(query.size(), true);
         if(!isCategory) {
             filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red)));
-            closeMenu();
-            addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.close_icon));
+            addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+            addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         }
         else
             closeFilter();
@@ -583,19 +570,10 @@ public class notes extends Fragment{
     private void closeFilter(){
         isNotesFiltered = true;
         categoryNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red)));
-        closeMenu();
-        addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.close_icon));
+        addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
     }
 
-    private void closeMenu(){
-        if (menu.getVisibility() == View.VISIBLE)
-            menu.animate().alpha(0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    menu.setVisibility(View.GONE);
-                }});
-    }
 
     private void searchNotesAndUpdate(String target){
         RealmResults<Note> queryNotes = realm.where(Note.class)
@@ -626,8 +604,8 @@ public class notes extends Fragment{
         searchEditText.setQuery("", false);
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
-        addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.back_icon));
-        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red)));
+        addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
     }
 
     private void hideSearchBar(){
@@ -655,22 +633,17 @@ public class notes extends Fragment{
         searchEditText.setVisibility(View.GONE);
         searchEditText.setVisibility(View.GONE);
         searchEditText.clearFocus();
-        addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.add_icon));
-        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.darker_blue)));
+        addMenu.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
+        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
     }
 
     public void deleteMultipleNotesLayout(){
         enableSelectMultiple = true;
-        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.red)));
-        addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.close_icon));
+        addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         search.setImageDrawable(context.getDrawable(R.drawable.delete_icon));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.select_all_icon));
         deletingMultipleNotes = true;
-        menu.animate().alpha(0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                menu.setVisibility(View.GONE);
-            }});
     }
 
     public void closeMultipleNotesLayout(){
@@ -682,8 +655,8 @@ public class notes extends Fragment{
         restoreNotes.setVisibility(View.GONE);
         fragmentTitle.setText("Dark Note");
         fragmentTitle.setTextSize(30);
-        addRegularMenu.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.darker_blue)));
-        addRegularMenu.setImageDrawable(context.getDrawable(R.drawable.add_icon));
+        addMenu.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
+        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
         search.setImageDrawable(context.getDrawable(R.drawable.search_icon));
         filterNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));
@@ -723,7 +696,7 @@ public class notes extends Fragment{
                     Helper.showMessage(getActivity(), "Sent to trash", number + " selected " +
                             "have been sent to trash", MotionToast.TOAST_SUCCESS);
                     numberSelected(0, 0, 0);
-                    addRegularMenu.performClick();
+                    clearMultipleSelect();
                 }
             }
             else
@@ -745,7 +718,7 @@ public class notes extends Fragment{
             adapterNotes.notifyDataSetChanged();
             Helper.showMessage(getActivity(), "Restored", number + " selected " +
                     "have been restored", MotionToast.TOAST_SUCCESS);
-            addRegularMenu.performClick();
+            clearMultipleSelect();
         }
         else
             Helper.showMessage(getActivity(), "Not Restored", "Nothing was selected " +

@@ -10,8 +10,8 @@ android {
         applicationId "com.akapps.dailynote"
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 7
-        versionName "1.6"
+        versionCode 8
+        versionName "1.7"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -58,6 +58,7 @@ dependencies {
     implementation "androidx.biometric:biometric:1.1.0"                        // fingerprint authentication
     implementation 'com.github.Deishelon:RoundedBottomSheet:1.0.1'             // bottom sheet
     implementation 'jp.wasabeef:richeditor-android:2.0.0'                      // notes styling
+    implementation 'com.github.clans:fab:1.6.4'                                // floating action button
 
     // image loader
     implementation 'com.github.bumptech.glide:glide:4.12.0'
