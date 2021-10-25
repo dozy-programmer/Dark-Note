@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -113,7 +114,7 @@ public class notes extends Fragment{
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
-                .sort("dateEdited", Sort.ASCENDING).findAll();
+                .sort("dateEdited", Sort.DESCENDING).findAll();
 
         if (realm.where(User.class).findAll().size() == 0)
             addUser();
@@ -168,8 +169,18 @@ public class notes extends Fragment{
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        // close keyboard if open
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+
+        // close keyboard if open
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         if(user!=null)
             savePreferences();
@@ -447,9 +458,9 @@ public class notes extends Fragment{
             }
 
             if(dateType!=null && !dateType.equals("null")) {
-                if(oldestToNewest)
+                if(newestToOldest)
                     result = result.where().sort(dateType , Sort.DESCENDING).findAll();
-                else if(newestToOldest)
+                else if(oldestToNewest)
                     result = result.where().sort(dateType , Sort.ASCENDING).findAll();
             }
 
@@ -523,7 +534,7 @@ public class notes extends Fragment{
                     allNotes =  realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false)
-                            .sort(dateType, Sort.DESCENDING).findAll();
+                            .sort(dateType, Sort.ASCENDING).findAll();
                     if(dateType.equals("dateEdited"))
                         sortedBy.setText("Sorted by: Date Edited - Old -> New");
                     else
@@ -533,7 +544,7 @@ public class notes extends Fragment{
                     allNotes =  realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false)
-                            .sort(dateType, Sort.ASCENDING).findAll();
+                            .sort(dateType, Sort.DESCENDING).findAll();
                     if(dateType.equals("dateEdited"))
                         sortedBy.setText("Sorted by: Date Edited - New -> Old");
                     else

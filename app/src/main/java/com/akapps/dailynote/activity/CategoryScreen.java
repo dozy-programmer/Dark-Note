@@ -211,7 +211,9 @@ public class CategoryScreen extends AppCompatActivity {
             @Override
             public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                categoriesAdapter.notifyDataSetChanged();
+                if(!recyclerView.isComputingLayout()) {
+                    categoriesAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

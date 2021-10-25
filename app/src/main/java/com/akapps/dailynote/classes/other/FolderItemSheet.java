@@ -95,9 +95,6 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         if(isAdding){
             title.setText("Adding");
             delete.setVisibility(View.GONE);
-            itemName.requestFocus();
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
         else{
             title.setText("Editing");

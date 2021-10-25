@@ -3,9 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-land/activity_note_edit.xml" value="0.3640625" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_category_screen.xml" value="0.1" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_note_edit.xml" value="0.1" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/bottom_sheet_checklist_item.xml" value="0.190625" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/fragment_notes.xml" value="0.2" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_category_screen.xml" value="0.3" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_note_edit.xml" value="0.35311143270622286" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_settings_screen.xml" value="0.268" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/bottom_sheet_checklist_item.xml" value="0.3" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/fragment_notes.xml" value="0.2546875" />
       </map>
     </option>

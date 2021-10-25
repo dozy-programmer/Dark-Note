@@ -8,8 +8,6 @@
         <item name="colorSecondaryVariant">@color/blue</item>
         <item name="colorOnSecondary">@color/ultra_white</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-        <item name="android:dialogCornerRadius">20dp</item>
     </style>
 
     <style name="ColorPickerDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">

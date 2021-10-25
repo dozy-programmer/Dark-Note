@@ -69,16 +69,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         ImageView closeFilter = view.findViewById(R.id.close_filter);
         TextView resetFilter = view.findViewById(R.id.reset_filter);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
-        MaterialButton next = view.findViewById(R.id.next_confirm);
+        TextView next = view.findViewById(R.id.next_confirm);
         ImageView delete = view.findViewById(R.id.delete);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
         TextView title = view.findViewById(R.id.title);
-
-        itemName.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         if(isAdding){
             title.setText("Adding");

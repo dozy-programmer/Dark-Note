@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -26,6 +28,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -197,6 +201,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         savedInstanceState.putBoolean("search", isSearchingNotes);
     }
 
+    public void onPause() {
+        super.onPause();
+        // close keyboard if open
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
     @Override
     public void onBackPressed() {
         if(isSearchingNotes) {
@@ -240,6 +250,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onResume() {
         super.onResume();
+        // close keyboard if open
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         if(currentNote!=null)
             category.setText(currentNote.getCategory());
     }
@@ -259,7 +271,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         noteColor = findViewById(R.id.noteColor);
         expandMenu = findViewById(R.id.menu);
         photosScrollView = findViewById(R.id.note_photos);
-        remindNote = findViewById(R.id.reminder);
+        remindNote = findViewById(R.id.reminderLayout);
         remindNoteDate = findViewById(R.id.reminderDate);
         textSizeLayout = findViewById(R.id.text_size_layout);
         increaseTextSize = findViewById(R.id.increase_textsize);
@@ -331,7 +343,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             @Override
             public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                checklistAdapter.notifyDataSetChanged();
+                if(!recyclerView.isComputingLayout()) {
+                    checklistAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -365,7 +379,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 title.setTextColor(currentNote.getTitleColor());
                 category.setText(currentNote.getCategory());
                 category.setVisibility(View.VISIBLE);
-                category.setTextColor(currentNote.getBackgroundColor());
                 folderText.setVisibility(View.VISIBLE);
                 searchLayout.setVisibility(View.VISIBLE);
                 saveNote.setVisibility(View.GONE);
@@ -725,6 +738,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         searchClose.setVisibility(View.VISIBLE);
         searchEditText.requestFocusFromTouch();
 
+        if (searchEditText.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+        }
+
         if(isShowingPhotos){
            addCheckListItem.setVisibility(View.GONE);
            photosScrollView.setVisibility(View.GONE);
@@ -761,6 +779,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         searchEditText.setVisibility(View.GONE);
         searchClose.setVisibility(View.GONE);
         searchEditText.clearFocus();
+
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
 
         note.setHtml(currentNote.getNote());
 
@@ -1443,7 +1464,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 if (!realm.isClosed()) {
                     if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
                         date.setText(currentNote.getDateEdited().replace("\n", " ") +
-                                "\n(" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago)");
+                                "\nLast Edit: " + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago");
                     } else {
                         date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
                     }

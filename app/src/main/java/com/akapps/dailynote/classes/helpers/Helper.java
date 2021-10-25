@@ -152,14 +152,14 @@ public class Helper {
                     timeDifference += " ";
             }
             if (mins % 60 > 0) {
-                timeDifference += mins % 60 + " minute";
+                timeDifference += mins % 60 + " min";
                 if ((mins % 60) > 1)
                     timeDifference += "s ";
                 else
                     timeDifference += " ";
             }
             if (secs % 60 > 0) {
-                timeDifference += secs % 60 + " second";
+                timeDifference += secs % 60 + " sec";
                 if ((secs % 60) > 1)
                     timeDifference += "s";
             }

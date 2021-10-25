@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -46,7 +45,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="90"
                         android:orientation="vertical">
 
@@ -68,9 +67,11 @@
 
                     </LinearLayout>
 
+
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="10"
                         android:gravity="right"
                         android:orientation="horizontal"
@@ -212,12 +213,49 @@
 
             </androidx.appcompat.widget.Toolbar>
 
+            <LinearLayout
+                android:id="@+id/reminderLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:weightSum="100"
+                android:gravity="center"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/cancel"></ImageView>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/reminder_icon"></ImageView>
+
+                    <TextView
+                        android:id="@+id/reminderDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:gravity="right"
+                        android:layout_gravity="center_vertical"
+                        android:text="Notification"
+                        android:textColor="@color/horizon"
+                        android:textSize="16sp"></TextView>
+
+            </LinearLayout>
+
             <EditText
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp"
                 android:backgroundTint="@android:color/transparent"
                 android:hint="Title"
                 android:textColor="@color/ultra_white"
@@ -225,64 +263,22 @@
                 android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"></EditText>
+                app:layout_constraintTop_toBottomOf="@+id/reminderLayout"></EditText>
 
-            <LinearLayout
-                android:id="@+id/reminderLayout"
+            <TextView
+                android:id="@+id/date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="100"
+                android:layout_marginHorizontal="23dp"
+                android:layout_weight="50"
+                android:gravity="left"
+                android:text="Date"
+                android:textColor="@color/greyish"
+                android:textSize="15sp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title">
-
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="23dp"
-                    android:layout_weight="50"
-                    android:gravity="left"
-                    android:text="Date"
-                    android:textColor="@color/light_gray"
-                    android:textSize="15sp"
-                    android:visibility="gone"></TextView>
-
-                <LinearLayout
-                    android:id="@+id/reminder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:gravity="right"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/cancel"></ImageView>
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/reminder_icon"></ImageView>
-
-                    <TextView
-                        android:id="@+id/reminderDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="23dp"
-                        android:gravity="right"
-                        android:text="Notification"
-                        android:textColor="@color/light_gray"
-                        android:textSize="10sp"></TextView>
-
-                </LinearLayout>
-
-            </LinearLayout>
+                app:layout_constraintTop_toBottomOf="@+id/title"></TextView>
 
             <LinearLayout
                 android:id="@+id/category_layout"
@@ -302,7 +298,7 @@
                     android:layout_marginBottom="5dp"
                     android:gravity="left"
                     android:text="Folder:"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/orange"
                     android:textSize="15sp"
                     android:visibility="gone"></TextView>
 
@@ -313,7 +309,7 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="left|bottom"
                     android:text="category"
-                    android:textColor="@color/ultra_white"
+                    android:textColor="@color/greyish"
                     android:textSize="15sp"
                     android:visibility="gone"></TextView>
 
@@ -361,7 +357,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/date" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/checklist"
