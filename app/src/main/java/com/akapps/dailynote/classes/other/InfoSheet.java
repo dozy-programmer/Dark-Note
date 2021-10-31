@@ -24,6 +24,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -119,15 +122,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                     " to ensure security and minimize app & backup sizes.");
             info.setGravity(Gravity.CENTER);
         }
-         else if(message == 2){
-            title.setText("Reminder Info");
-            securityWord.setVisibility(View.GONE);
-            backup.setVisibility(View.VISIBLE);
-            backup.setText("PROCEED");
-            info.setText("You need to select the date the reminder will start at. Example: " +
-                    "if you set it for today and the occurence is daily, it will start tomorrow!");
-            info.setGravity(Gravity.CENTER);
-        }
         else if(message == 3){
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
@@ -139,11 +133,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             }
             else
                 info.setText("Send to trash?");
+            info.setGravity(Gravity.CENTER);
         }
         else if(message == 4){
             // initialize data
             realm = ((NoteEdit) getActivity()).realm;
             allNotePhotos =  ((NoteEdit) getActivity()).allNotePhotos;
+            currentPhoto = allNotePhotos.get(position);
             adapter =  ((NoteEdit) getActivity()).scrollAdapter;
             // initialize layout
             title.setText("Deleting...");
@@ -151,9 +147,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             backup.setBackgroundColor(getContext().getColor(R.color.red));
             backup.setText("DELETE");
             info.setText("Are you sure?");
+            info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
-
-            currentPhoto = allNotePhotos.get(position);
         }
         else if(message == 5){
             securityWordLayout.setVisibility(View.VISIBLE);
@@ -162,6 +157,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Unlock");
             backup.setVisibility(View.GONE);
             info.setText("Enter Security word used to lock note");
+            info.setGravity(Gravity.CENTER);
         }
 
         unlock.setOnClickListener(v -> {
@@ -177,8 +173,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         backup.setOnClickListener(v -> {
             if(message == 1)
                 ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
-            else if(message == 2)
-                ((SettingsScreen) getActivity()).showDatePickerDialog();
             else if(message == 3){
                 if(deleteAllChecklists){
                     ((NoteEdit) getActivity()).deleteChecklist();
@@ -187,11 +181,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                     ((NoteEdit) getActivity()).deleteNote();
             }
             else if(message == 4){
+                // delete file
+                File fdelete = new File(currentPhoto.getPhotoLocation());
+                if (fdelete.exists())
+                    fdelete.delete();
                 // delete from database
                 realm.beginTransaction();
                 currentPhoto.deleteFromRealm();
                 realm.commitTransaction();
-                adapter.notifyItemRemoved(position);
+                adapter.notifyDataSetChanged();
                 Helper.showMessage(getActivity(), "Delete Status", "Photo has been deleted",
                         MotionToast.TOAST_SUCCESS);
             }

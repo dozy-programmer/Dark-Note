@@ -17,12 +17,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyDay">
 
-        <receiver android:name="com.akapps.dailynote.classes.helpers.AlertReceiver" />
+        <receiver android:name=".classes.helpers.AlertReceiver" />
 
-        <activity android:name="com.akapps.dailynote.activity.CategoryScreen" android:exported="true" />
-        <activity android:name="com.akapps.dailynote.activity.NoteLockScreen" android:exported="true" />
-        <activity android:name="com.akapps.dailynote.activity.NoteEdit"  android:exported="true" />
-        <activity android:name="com.akapps.dailynote.activity.SettingsScreen"  android:exported="true" />
+        <activity
+            android:name=".activity.CategoryScreen"
+            android:exported="true" />
+        <activity
+            android:name=".activity.NoteLockScreen"
+            android:exported="true" />
+        <activity
+            android:name=".activity.NoteEdit"
+            android:exported="true" />
+        <activity
+            android:name=".activity.SettingsScreen"
+            android:exported="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -35,7 +43,7 @@
         </provider>
 
         <activity
-            android:name="com.akapps.dailynote.activity.Homepage"
+            android:name=".activity.Homepage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,9 +55,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-        <meta-data android:name="android.app.searchable"
-            android:resource="@xml/searchable"/>
+        <meta-data
+            android:name="android.app.searchable"
+            android:resource="@xml/searchable" />
     </application>
 
 </manifest>

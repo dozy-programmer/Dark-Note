@@ -29,10 +29,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
+import com.akapps.dailynote.activity.Homepage;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
+import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -44,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
@@ -72,7 +75,7 @@ public class notes extends Fragment{
     // on-device database
     private Realm realm;
     private RealmResults<Note> allNotes;
-    private User user;
+    public User user;
 
     // activity data
     private boolean isSearchingNotes;
@@ -107,8 +110,7 @@ public class notes extends Fragment{
             realm = Realm.getDefaultInstance();
         }
         catch (Exception e){
-            Realm.init(context);
-            realm = Realm.getDefaultInstance();
+            realm = RealmDatabase.setUpDatabase(context);
         }
 
         allNotes = realm.where(Note.class)
@@ -118,8 +120,15 @@ public class notes extends Fragment{
 
         if (realm.where(User.class).findAll().size() == 0)
             addUser();
-        else
+        else {
             user = realm.where(User.class).findFirst();
+            if(user.getTitleLines() == 0){
+                realm.beginTransaction();
+                user.setTitleLines(3);
+                user.setContentLines(3);
+                realm.commitTransaction();
+            }
+        }
         unSelectAllNotes();
 
         // This callback will only be called when MyFragment is at least Started.
@@ -149,6 +158,15 @@ public class notes extends Fragment{
         initializeUi();
         initializeLayout();
         showData();
+
+        if(user.isOpenFoldersOnStart()){
+            if(null != Helper.getPreference(context, "check") &&
+                    Helper.getPreference(context, "check").equals("no")) {
+                Intent category = new Intent(getActivity(), CategoryScreen.class);
+                startActivityForResult(category, 5);
+            }
+            Helper.savePreference(context, "no", "check");
+        }
 
         if(isSearchingNotes) {
             showSearchBar();
@@ -295,6 +313,8 @@ public class notes extends Fragment{
                     showMessage("Failed", "Close filter to open categories", true);
                 else {
                     Intent category = new Intent(getActivity(), CategoryScreen.class);
+                    if(enableSelectMultiple)
+                        category.putExtra("multi_select", true);
                     startActivityForResult(category, 5);
                 }
             }
@@ -303,6 +323,7 @@ public class notes extends Fragment{
         });
 
         search.setOnClickListener(v -> {
+            addMenu.close(true);
             if(deletingMultipleNotes){
                 isAllSelected = false;
                 deleteMultipleNotes();
@@ -374,12 +395,13 @@ public class notes extends Fragment{
                 String currentCategory = realm.where(Folder.class).equalTo("id", id)
                         .findFirst().getName();
                 RealmResults<Note> category = realm.where(Note.class)
+                        .equalTo("trash", false)
                         .equalTo("category", currentCategory).findAll();
                 filteringByCategory(category, true);
                 if (!viewCategoryNotes) {
                     Helper.showMessage(getActivity(), "Added", "Note(s) have been added to " +
                             "category", MotionToast.TOAST_SUCCESS);
-                    refreshFragment(false);
+                    clearMultipleSelect();
                 }
             }
         }
@@ -392,6 +414,7 @@ public class notes extends Fragment{
                 closeMultipleNotesLayout();
                 Helper.showMessage(getActivity(), "UnSelected", "All Selected note(s) have " +
                         "been unselected from category", MotionToast.TOAST_SUCCESS);
+                clearMultipleSelect();
             }
         }
         else if (resultCode == -3) {
@@ -417,8 +440,19 @@ public class notes extends Fragment{
         }
         else if(resultCode == -10){
             RealmResults<Note> queryArchivedNotes =
-                    realm.where(Note.class).equalTo("archived", true)
-                    .equalTo("trash", false).findAll();
+                    realm.where(Note.class)
+                            .equalTo("pin", false)
+                            .equalTo("archived", true)
+                            .equalTo("trash", false).findAll();
+
+            filteringAllNotesRealm(queryArchivedNotes, true);
+        }
+        else if(resultCode == -11){
+            RealmResults<Note> queryArchivedNotes =
+                    realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("pin", true)
+                            .equalTo("trash", false).findAll();
 
             filteringAllNotesRealm(queryArchivedNotes, true);
         }
@@ -429,50 +463,30 @@ public class notes extends Fragment{
         customSheet.show(getParentFragmentManager(), customSheet.getTag());
     }
 
-    public void filterAndSortNotes(boolean note, boolean checklist,
-                                   String kind, String dateType, boolean oldestToNewest,
+    public void filterAndSortNotes(String kind, String dateType, boolean oldestToNewest,
                                    boolean newestToOldest, boolean aToZ, boolean zToA){
         isNotesFiltered = true;
 
-        RealmResults<Note> result = null;
-        if(note || checklist){
-            if(note && checklist)
-                result = realm.where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false)
-                        .findAll();
-            else if(checklist)
-                result = realm.where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false)
-                        .equalTo("isCheckList", true).findAll();
-            else if(note)
-                result = realm.where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false)
-                        .equalTo("isCheckList", false).findAll();
+        RealmResults<Note> result = realm.where(Note.class)
+                .equalTo("archived", false)
+                .equalTo("trash", false)
+                .findAll();
 
+        if(dateType!=null && !dateType.equals("null")) {
+            if(newestToOldest)
+                result = result.where().sort(dateType , Sort.DESCENDING).findAll();
+            else if(oldestToNewest)
+                result = result.where().sort(dateType , Sort.ASCENDING).findAll();
+        }
 
-            if(kind!=null && !kind.equals("null")) {
-                result = result.where().equalTo(kind, true).findAll();
-            }
+        if(aToZ)
+            result = result.where().sort("title").findAll();
+        if(zToA)
+            result = result.where().sort("title", Sort.DESCENDING).findAll();
 
-            if(dateType!=null && !dateType.equals("null")) {
-                if(newestToOldest)
-                    result = result.where().sort(dateType , Sort.DESCENDING).findAll();
-                else if(oldestToNewest)
-                    result = result.where().sort(dateType , Sort.ASCENDING).findAll();
-            }
-
-            if(aToZ)
-                result = result.where().sort("title").findAll();
-            if(zToA)
-                result = result.where().sort("title", Sort.DESCENDING).findAll();
-
-            if(result!=null) {
-                getSortDataAndSort();
-                filteringAllNotesRealm(result, false);
-            }
+        if(result!=null) {
+            getSortDataAndSort();
+            filteringAllNotesRealm(result, false);
         }
     }
 
@@ -515,61 +529,67 @@ public class notes extends Fragment{
             closeFilter();
     }
 
+    public void showDefaultSort(){
+        sortedBy.setVisibility(View.GONE);
+        allNotes = realm.where(Note.class)
+                .equalTo("archived", false)
+                .equalTo("trash", false)
+                .sort("dateEdited", Sort.DESCENDING).findAll();
+        populateAdapter(allNotes);
+        isListEmpty(allNotes.size(), false);
+    }
+
     public void getSortDataAndSort(){
-        String notes = Helper.getPreference(getContext(), "notes_sort");
+        String dateType = Helper.getPreference(getContext(), "_dateType");
+        boolean oldestToNewest = Helper.getBooleanPreference(getContext(),"_oldestToNewest");
+        boolean newestToOldest = Helper.getBooleanPreference(getContext(),"_newestToOldest");
 
-        String dateType = Helper.getPreference(getContext(), notes + "_dateType");
-        boolean oldestToNewest = Helper.getBooleanPreference(getContext(), notes + "_oldestToNewest");
-        boolean newestToOldest = Helper.getBooleanPreference(getContext(), notes + "_newestToOldest");
-
-        boolean aToZ = Helper.getBooleanPreference(getContext(), notes + "_aToZ");
-        boolean zToA = Helper.getBooleanPreference(getContext(), notes + "_zToA");
+        boolean aToZ = Helper.getBooleanPreference(getContext(),"_aToZ");
+        boolean zToA = Helper.getBooleanPreference(getContext(),"_zToA");
 
         sortedBy.setVisibility(View.GONE);
 
-        if(notes!=null && !notes.isEmpty()) {
+        if (dateType!=null) {
             sortedBy.setVisibility(View.VISIBLE);
-            if (notes.equals("notes") && dateType!=null) {
-                if (oldestToNewest) {
-                    allNotes =  realm.where(Note.class)
-                            .equalTo("archived", false)
-                            .equalTo("trash", false)
-                            .sort(dateType, Sort.ASCENDING).findAll();
-                    if(dateType.equals("dateEdited"))
-                        sortedBy.setText("Sorted by: Date Edited - Old -> New");
-                    else
-                        sortedBy.setText("Sorted by: Date Created - Old -> New");
-                }
-                else if (newestToOldest) {
-                    allNotes =  realm.where(Note.class)
-                            .equalTo("archived", false)
-                            .equalTo("trash", false)
-                            .sort(dateType, Sort.DESCENDING).findAll();
-                    if(dateType.equals("dateEdited"))
-                        sortedBy.setText("Sorted by: Date Edited - New -> Old");
-                    else
-                        sortedBy.setText("Sorted by: Date Created - New Old -> New");
-                }
+            if (oldestToNewest) {
+                allNotes =  realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort(dateType, Sort.ASCENDING).findAll();
+                if(dateType.equals("dateEdited"))
+                    sortedBy.setText("Sorted by: Date Edited - Old -> New");
+                else
+                    sortedBy.setText("Sorted by: Date Created - Old -> New");
             }
-            else if (notes.equals("notes")) {
-                if (aToZ) {
-                    allNotes =  realm.where(Note.class)
-                            .equalTo("archived", false)
-                            .equalTo("trash", false)
-                            .sort("title").findAll();
-                    sortedBy.setText("Sorted by: Alphabetical - A -> Z");
-                }
-                else if (zToA) {
-                    allNotes =  realm.where(Note.class)
-                            .equalTo("archived", false)
-                            .equalTo("trash", false)
-                            .sort("title", Sort.DESCENDING).findAll();
-                    sortedBy.setText("Sorted by: Alphabetical - Z -> A");
-                }
+            else if (newestToOldest) {
+                allNotes =  realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort(dateType, Sort.DESCENDING).findAll();
+                if(dateType.equals("dateEdited"))
+                    sortedBy.setText("Sorted by: Date Edited - New -> Old");
+                else
+                    sortedBy.setText("Sorted by: Date Created - New Old -> New");
             }
-            populateAdapter(allNotes);
-            isListEmpty(allNotes.size(), false);
         }
+        else if(aToZ || zToA){
+            if (aToZ) {
+                allNotes =  realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort("title").findAll();
+                sortedBy.setText("Sorted by: Alphabetical - A -> Z");
+            }
+            else if (zToA) {
+                allNotes =  realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort("title", Sort.DESCENDING).findAll();
+                sortedBy.setText("Sorted by: Alphabetical - Z -> A");
+            }
+        }
+        populateAdapter(allNotes);
+        isListEmpty(allNotes.size(), false);
     }
 
     // populates the recyclerview
@@ -819,38 +839,10 @@ public class notes extends Fragment{
         if(savedSize>0 && currentSize == 0) {
             Helper.savePreference(context, String.valueOf(savedSize), "size");
         }
-        // if text size save b
+        // if text size save
         else if(savedSize != currentSize){
             realm.beginTransaction();
             user.setTextSize(currentSize);
-            realm.commitTransaction();
-        }
-
-        String savedCategories = PreferenceManager.getDefaultSharedPreferences(context).getString("categories", null);
-        String savedAutocomplete = PreferenceManager.getDefaultSharedPreferences(context).getString("autocomplete", null);
-
-        if(savedCategories!=null && savedCategories.length()>0 && !savedCategories.equals(user.getCategories())){
-            realm.beginTransaction();
-            user.setCategories(savedCategories);
-            realm.commitTransaction();
-        }
-        else if(user.getCategories()!=null && user.getCategories().length()>0)
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("categories", user.getCategories()).apply();
-
-        if(savedAutocomplete!=null && savedAutocomplete.length()>0 && !savedAutocomplete.equals(user.getLiveNoteAutoComplete())){
-            realm.beginTransaction();
-            user.setLiveNoteAutoComplete(savedAutocomplete);
-            realm.commitTransaction();
-        }
-        else if(user.getLiveNoteAutoComplete()!=null && user.getLiveNoteAutoComplete().length()>0)
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("autocomplete", user.getLiveNoteAutoComplete()).apply();
-
-        if(user.isBackUpOnLaunch() && user.isProUser()){
-            RealmBackupRestore backup = new RealmBackupRestore(getActivity());
-            backup.update(getActivity(), context);
-            realm.beginTransaction();
-            user.setBackUpLocation(backup.saveBackUp());
-            user.setLastUpdated(new SimpleDateFormat("E, MMM dd, yyyy hh:mm:ss aa").format(Calendar.getInstance().getTime()));
             realm.commitTransaction();
         }
     }

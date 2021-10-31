@@ -108,6 +108,17 @@
         </TextView>
 
         <TextView
+            android:id="@+id/pinned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:fontFamily="sans-serif"
+            android:paddingVertical="5dp"
+            android:text="Pinned"
+            android:textColor="@color/golden_rod"
+            android:textSize="28sp"/>
+
+        <TextView
             android:id="@+id/unselect_categories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

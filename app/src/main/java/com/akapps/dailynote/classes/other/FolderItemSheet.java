@@ -92,6 +92,8 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         TextInputEditText itemName = view.findViewById(R.id.item_name);
         TextView title = view.findViewById(R.id.title);
 
+        itemName.requestFocusFromTouch();
+
         if(isAdding){
             title.setText("Adding");
             delete.setVisibility(View.GONE);

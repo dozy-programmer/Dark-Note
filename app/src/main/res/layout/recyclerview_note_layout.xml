@@ -211,7 +211,8 @@
                 app:cardCornerRadius="8dp"
                 android:layout_gravity="right"
                 app:strokeColor="@color/light_gray"
-                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@color/light_gray"
+                app:strokeWidth="2dp"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginVertical="8dp">
 
@@ -222,10 +223,11 @@
                     android:text="insert category"
                     android:visibility="visible"
                     android:layout_gravity="center"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/ultra_white"
                     android:textSize="10sp"
-                    android:paddingVertical="2dp"
-                    android:paddingHorizontal="10dp">
+                    android:textStyle="bold"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp">
                 </TextView>
 
             </com.google.android.material.card.MaterialCardView>

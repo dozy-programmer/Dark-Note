@@ -19,13 +19,15 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyclerview.MyViewHolder>{
 
     // project data
-    private final RealmResults<CheckListItem> checkList;
+    private final OrderedRealmCollection<CheckListItem> checkList;
     private final Note currentNote;
     private Context context;
     private FragmentActivity activity;
@@ -46,7 +48,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
     }
 
-    public checklist_recyclerview(RealmResults<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
+    public checklist_recyclerview(OrderedRealmCollection<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;

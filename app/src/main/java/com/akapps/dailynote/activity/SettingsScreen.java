@@ -8,9 +8,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,21 +16,23 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
+import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.SecurityForPurchases;
+import com.akapps.dailynote.classes.helpers.Zip;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.android.billingclient.api.BillingClient;
@@ -50,34 +49,28 @@ import com.google.android.material.card.MaterialCardView;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
-
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
 
-public class SettingsScreen extends AppCompatActivity implements PurchasesUpdatedListener,
-        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+public class SettingsScreen extends AppCompatActivity implements PurchasesUpdatedListener{
 
     // activity
     private Context context;
     private int all_Notes;
     private boolean tryAgain;
-    private String TITLE_KEY = "title_lines";
-    private String PREVIEW_KEY = "preview_lines";
     private boolean initializing;
-    private Handler handler;
-    private boolean isReminderSelected;
-    private Calendar dateSelected;
-    private String currentDateTimeSelected;
-    private int selectionPosition;
     private int upgradeToProCounter;
 
     private User currentUser;
@@ -100,10 +93,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private CustomPowerMenu linesMenu;
     private boolean isTitleSelected;
     private SwitchCompat showPreview;
-    private SwitchCompat backUpReminder;
-    private TextView reminderDate;
-    private SwitchCompat backUpOnLaunch;
-    private TextView backUpLocation;
+    private SwitchCompat openFoldersOnStart;
     private MaterialButton buyPro;
     private MaterialCardView grid;
     private MaterialCardView row;
@@ -129,8 +119,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         try {
             realm = Realm.getDefaultInstance();
         } catch (Exception e) {
-            Realm.init(context);
-            realm = Realm.getDefaultInstance();
+            realm = RealmDatabase.setUpDatabase(context);
         }
         currentUser = realm.where(User.class).findFirst();
 
@@ -155,9 +144,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         if(realm!=null)
             realm.close();
-
-        if(handler!=null)
-            handler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -178,23 +164,20 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         previewLines = findViewById(R.id.preview_lines);
         titleLayout = findViewById(R.id.title_layout);
         previewLayout = findViewById(R.id.preview_layout);
-        backUpReminder = findViewById(R.id.backup_reminder_switch);
-        reminderDate = findViewById(R.id.reminder_date);
         showPreview = findViewById(R.id.show_preview_switch);
-        backUpOnLaunch = findViewById(R.id.backup_on_launch);
-        backUpLocation = findViewById(R.id.backup_location);
+        openFoldersOnStart = findViewById(R.id.open_folder_switch);
         buyPro = findViewById(R.id.buy_pro);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
 
-        String titleLinesNumber = Helper.getPreference(context, TITLE_KEY);
-        String previewLinesNumber = Helper.getPreference(context, PREVIEW_KEY);
+        String titleLinesNumber = String.valueOf(currentUser.getTitleLines());
+        String previewLinesNumber = String.valueOf(currentUser.getContentLines());
 
         // sets the current select title lines and preview lines
         // by default it is 3
-        titleLines.setText(titleLinesNumber==null ? "3": titleLinesNumber);
-        previewLines.setText(previewLinesNumber==null ? "3": previewLinesNumber);
+        titleLines.setText(titleLinesNumber);
+        previewLines.setText(previewLinesNumber);
 
         // toolbar
         toolbar.setTitle("");
@@ -202,10 +185,18 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         backup.setOnClickListener(v -> showBackupRestoreInfo());
 
+        if(!currentUser.isProUser()){
+            showPreview.setChecked(false);
+            openFoldersOnStart.setChecked(false);
+            realm.beginTransaction();
+            currentUser.setShowPreview(true);
+            currentUser.setOpenFoldersOnStart(false);
+            realm.commitTransaction();
+        }
+
         restoreBackup.setOnClickListener(v -> openFile());
 
         titleLayout.setOnClickListener(v -> {
-            isReminderSelected = false;
             if(currentUser.isProUser()) {
                 isTitleSelected = true;
                 showLineNumberMenu(titleLines, null);
@@ -215,7 +206,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         previewLayout.setOnClickListener(v -> {
-            isReminderSelected = false;
             if(currentUser.isProUser()) {
                 isTitleSelected = false;
                 showLineNumberMenu(previewLines, null);
@@ -269,24 +259,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         close.setOnClickListener(v -> close());
 
-        backUpReminder.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(buttonView.isPressed()) {
-                if (currentUser.isProUser()) {
-                    if (isChecked && initializing) {
-                        backUpReminder.setChecked(false);
-                        isReminderSelected = true;
-                        showLineNumberMenu(null, backUpReminder);
-                    } else {
-                        cancelAlarm();
-                        reminderDate.setVisibility(View.GONE);
-                    }
-                } else if (initializing) {
-                    backUpReminder.setChecked(false);
-                    Helper.showMessage(this, "Settings", "Upgrade to pro to enable reminders", MotionToast.TOAST_ERROR);
-                }
-            }
-        });
-
         showPreview.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(currentUser.isProUser()) {
                 realm.beginTransaction();
@@ -299,29 +271,16 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
         });
 
-        backUpOnLaunch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(currentUser.isProUser()) {
-                if(isChecked != currentUser.isBackUpOnLaunch()) {
-                    realm.beginTransaction();
-                    currentUser.setBackUpOnLaunch(isChecked);
-                    realm.commitTransaction();
-                    if(isChecked)
-                        Helper.showMessage(this, "Settings", "" +
-                                "Go to home page to backup", MotionToast.TOAST_SUCCESS);
-                }
-                if(handler!=null)
-                    handler.removeCallbacksAndMessages(null);
+                realm.beginTransaction();
+                currentUser.setOpenFoldersOnStart(isChecked);
+                realm.commitTransaction();
             }
-            else if(isChecked && !currentUser.isProUser()) {
-                backUpOnLaunch.setChecked(false);
-                if(initializing) {
-                    Helper.showMessage(this, "Settings", "" +
-                            "Upgrade to pro to always save your data on launch", MotionToast.TOAST_ERROR);
-                }
+            else if(initializing) {
+                openFoldersOnStart.setChecked(false);
+                Helper.showMessage(this, "Settings", "Upgrade to pro to change preview settings", MotionToast.TOAST_ERROR);
             }
-
-            if(!isChecked)
-                backUpLocation.setText("Location: ---");
         });
 
         buyPro.setOnClickListener(v -> {
@@ -362,105 +321,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
-
-    private void timeDialog() {
-        Calendar now = Calendar.getInstance();
-        TimePickerDialog timer = TimePickerDialog.newInstance(
-                this,
-                now.get(Calendar.HOUR_OF_DAY),
-                now.get(Calendar.MINUTE),
-                false
-        );
-        timer.setThemeDark(true);
-        timer.setAccentColor(getColor(R.color.light_gray_2));
-        timer.setOkColor(getColor(R.color.blue));
-        timer.setCancelColor(getColor(R.color.light_gray_2));
-        timer.show(getSupportFragmentManager(), "Datepickerdialog");
-    }
-
-    @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        // Get Current Time
-        dateSelected.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        dateSelected.set(Calendar.MINUTE, minute);
-        dateSelected.set(Calendar.SECOND, 0);
-        dateSelected.set(Calendar.MILLISECOND, 0);
-        currentDateTimeSelected += hourOfDay+ ":" + ((minute<10)? ("0" + minute): minute) + ":00";
-
-        realm.beginTransaction();
-        currentUser.setBackReminderOccurrence(selectionPosition);
-        currentUser.setBackupReminder(true);
-        currentUser.setStartingDate(currentDateTimeSelected);
-        realm.commitTransaction();
-        backUpReminder.setChecked(true);
-
-        reminderDate.setText("Starting: " + Helper.twentyFourToTwelve(currentUser.getStartingDate()) +
-                "\nOccurrence: " + Helper.getOccurrenceInString(currentUser.getBackReminderOccurrence()));
-        reminderDate.setVisibility(View.VISIBLE);
-        setRepeatingReminder(dateSelected);
-    }
-
-    public void showDatePickerDialog() {
-        Calendar now = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                this,
-                now.get(Calendar.YEAR), // Initial year selection
-                now.get(Calendar.MONTH), // Initial month selection
-                now.get(Calendar.DAY_OF_MONTH) // Inital day selection
-        );
-        datePickerDialog.setThemeDark(true);
-        datePickerDialog.setAccentColor(getColor(R.color.light_gray_2));
-        datePickerDialog.setOkColor(getColor(R.color.blue));
-        datePickerDialog.setCancelColor(getColor(R.color.light_gray_2));
-        datePickerDialog.show(getSupportFragmentManager(), "Datepickerdialog");
-    }
-
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int month, int day) {
-        dateSelected = Calendar.getInstance();
-        dateSelected.set(Calendar.YEAR, year);
-        dateSelected.set(Calendar.DAY_OF_MONTH, day);
-        dateSelected.set(Calendar.HOUR, dateSelected.get(Calendar.HOUR) + 1);
-
-        if (dateSelected.after(Calendar.getInstance())) {
-            dateSelected.set(Calendar.MONTH, ++month);
-            dateSelected.set(Calendar.HOUR, dateSelected.get(Calendar.HOUR) - 1);
-            currentDateTimeSelected = month + "-" + day + "-" + year + " ";
-            timeDialog();
-        }
-        else {
-            showDatePickerDialog();
-            Helper.showMessage(this, "Reminder not set", "Reminder cannot be in the past", MotionToast.TOAST_ERROR);
-        }
-    }
-
-    private void setRepeatingReminder(Calendar dateSelected){
-        int month = dateSelected.get(Calendar.MONTH)-1;
-        dateSelected.set(Calendar.MONTH, month);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        intent.putExtra("id", 1234);
-        intent.putExtra("size", all_Notes);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1234, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, dateSelected.getTimeInMillis() + currentUser.getBackReminderOccurrence() * AlarmManager.INTERVAL_DAY,
-                currentUser.getBackReminderOccurrence() * AlarmManager.INTERVAL_DAY, pendingIntent);
-        dateSelected.add(Calendar.HOUR, 24 * currentUser.getBackReminderOccurrence());
-        Helper.showMessage(this, "Reminder set", "Will Remind you " +
-                "in " + Helper.getTimeDifference(dateSelected, true), MotionToast.TOAST_SUCCESS);
-    }
-
-    private void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        realm.beginTransaction();
-        currentUser.setStartingDate("");
-        currentUser.setBackupReminder(false);
-        currentUser.setBackReminderOccurrence(1);
-        realm.commitTransaction();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1234, intent, 0);
-        alarmManager.cancel(pendingIntent);
-    }
-
 
     private void initializeBilling(){
         purchaseItemIDs = new ArrayList() {{
@@ -643,25 +503,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void initializeSettings(){
         showPreview.setChecked(currentUser.isShowPreview());
-        backUpOnLaunch.setChecked(currentUser.isBackUpOnLaunch());
-
-        if(currentUser.isProUser() && currentUser.isBackUpOnLaunch()) {
-            handler = new Handler();
-            Calendar calendar = Helper.dateToCalender(currentUser.getLastUpdated());
-
-            String location = currentUser.getBackUpLocation();
-            String lastTimeUpdated = currentUser.getLastUpdated();
-            Calendar finalCalendar = calendar;
-            handler.postDelayed(new Runnable() {
-                @SuppressLint("SetTextI18n")
-                public void run() {
-                    backUpLocation.setText("Location: " + location
-                            + "\n\nLast Updated: " + lastTimeUpdated +
-                            "\n(" + Helper.getTimeDifference(finalCalendar, false) + " ago)");
-                    handler.postDelayed(this, 1000);
-                }
-            }, 0);
-        }
+        openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
 
         if(currentUser.isProUser()){
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));
@@ -669,26 +511,12 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             buyPro.setElevation(0);
         }
 
-        if(!currentUser.isBackUpOnLaunch())
-            backUpLocation.setText("Location: ---");
-
         if(currentUser.getLayoutSelected().equals("row"))
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         else if(currentUser.getLayoutSelected().equals("grid"))
             grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         else
             staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-
-        if(currentUser.isBackupReminder()) {
-            backUpReminder.setChecked(true);
-            if(currentUser.isBackupReminder() && currentUser.getStartingDate().length()>0) {
-                reminderDate.setText("Starting: " + Helper.twentyFourToTwelve(currentUser.getStartingDate()) +
-                        "\nOccurrence: " + Helper.getOccurrenceInString(currentUser.getBackReminderOccurrence()));
-                reminderDate.setVisibility(View.VISIBLE);
-            }
-        }
-        else
-            reminderDate.setVisibility(View.GONE);
     }
 
     public void openBackUpRestoreDialog(){
@@ -713,7 +541,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         }
     }
 
-    private void backUpData(){
+   private void backUpData(){
         if(all_Notes!=0) {
             realm.close();
             RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
@@ -724,6 +552,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
+    }
+
+    private ArrayList<String> getAllFilePaths(RealmResults<Photo> allPhotos){
+        ArrayList<String> filePaths = new ArrayList<>();
+        for(int i = 0; i < allPhotos.size(); i++){
+            filePaths.add(allPhotos.get(i).getPhotoLocation());
+        }
+        return filePaths;
     }
 
     private void showBackupRestoreInfo(){
@@ -779,7 +615,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     realmBackupRestore.restore(uri);
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
-                   close();
+                    close();
                 } catch (Exception e) {
                     if(tryAgain){
                         Helper.showMessage(this, "Error", "Clear storage via App Settings", MotionToast.TOAST_ERROR);
@@ -799,73 +635,45 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void showLineNumberMenu(TextView lines, SwitchCompat reminderDropDown){
-        if(isReminderSelected){
-            linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
-                    .addItem(new IconPowerMenuItem(null, "Daily"))
-                    .addItem(new IconPowerMenuItem(null, "2 Days"))
-                    .addItem(new IconPowerMenuItem(null, "3 Days"))
-                    .addItem(new IconPowerMenuItem(null, "4 Days"))
-                    .addItem(new IconPowerMenuItem(null, "5 Days"))
-                    .addItem(new IconPowerMenuItem(null, "6 Days"))
-                    .addItem(new IconPowerMenuItem(null, "Weekly"))
-                    .addItem(new IconPowerMenuItem(null, "Monthly"))
-                    .setBackgroundColor(getColor(R.color.light_gray))
-                    .setOnMenuItemClickListener(onIconMenuItemClickListener)
-                    .setAnimation(MenuAnimation.SHOW_UP_CENTER)
-                    .setWidth(300)
-                    .setMenuRadius(15f)
-                    .setMenuShadow(10f)
-                    .build();
-        }
-        else {
-            linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
-                    .addItem(new IconPowerMenuItem(null, "1"))
-                    .addItem(new IconPowerMenuItem(null, "2"))
-                    .addItem(new IconPowerMenuItem(null, "3"))
-                    .addItem(new IconPowerMenuItem(null, "4"))
-                    .addItem(new IconPowerMenuItem(null, "5"))
-                    .addItem(new IconPowerMenuItem(null, "6"))
-                    .addItem(new IconPowerMenuItem(null, "7"))
-                    .addItem(new IconPowerMenuItem(null, "8"))
-                    .setBackgroundColor(getColor(R.color.light_gray))
-                    .setOnMenuItemClickListener(onIconMenuItemClickListener)
-                    .setAnimation(MenuAnimation.SHOW_UP_CENTER)
-                    .setWidth(300)
-                    .setMenuRadius(15f)
-                    .setMenuShadow(10f)
-                    .build();
-        }
+        linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
+            .addItem(new IconPowerMenuItem(null, "1"))
+            .addItem(new IconPowerMenuItem(null, "2"))
+            .addItem(new IconPowerMenuItem(null, "3"))
+            .addItem(new IconPowerMenuItem(null, "4"))
+            .addItem(new IconPowerMenuItem(null, "5"))
+            .addItem(new IconPowerMenuItem(null, "6"))
+            .addItem(new IconPowerMenuItem(null, "7"))
+            .addItem(new IconPowerMenuItem(null, "8"))
+            .setBackgroundColor(getColor(R.color.light_gray))
+            .setOnMenuItemClickListener(onIconMenuItemClickListener)
+            .setAnimation(MenuAnimation.SHOW_UP_CENTER)
+            .setWidth(300)
+            .setMenuRadius(15f)
+            .setMenuShadow(10f)
+            .build();
 
-        if(isReminderSelected)
-            linesMenu.showAsDropDown(reminderDropDown);
-        else
-            linesMenu.showAsDropDown(lines);
+        linesMenu.showAsDropDown(lines);
     }
 
     private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
         @Override
         public void onItemClick(int position, IconPowerMenuItem item) {
-            if(isReminderSelected){
-                if(position<=6)
-                    selectionPosition = position+1;
-                else
-                    selectionPosition = 30;
-                InfoSheet info = new InfoSheet(2);
-                info.show(getSupportFragmentManager(), info.getTag());
-            }
-            else
-                updateSelectedLines(position+1);
+            updateSelectedLines(position+1);
             linesMenu.dismiss();
         }
     };
 
     private void updateSelectedLines(int position){
         if(isTitleSelected) {
-            Helper.savePreference(context, String.valueOf(position), TITLE_KEY);
+            realm.beginTransaction();
+            currentUser.setTitleLines(position);
+            realm.commitTransaction();
             titleLines.setText(String.valueOf(position));
         }
         else {
-            Helper.savePreference(context, String.valueOf(position), PREVIEW_KEY);
+            realm.beginTransaction();
+            currentUser.setContentLines(position);
+            realm.commitTransaction();
             previewLines.setText(String.valueOf(position));
         }
     }
@@ -889,6 +697,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void close(){
+        Helper.savePreference(context, "yes", "check");
         Intent intent = new Intent(this, Homepage.class);
         startActivity(intent);
         finish();

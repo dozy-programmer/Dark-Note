@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <external-path name="photos" path="." />
-    <external-cache-path name="daily_note_cache" path="." />
+    <external-path name="Documents" path="." />
+    <external-cache-path name="cache" path="." />
 </paths>

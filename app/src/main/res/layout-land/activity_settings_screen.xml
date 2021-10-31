@@ -135,116 +135,6 @@
 
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/gray"></ImageView>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:orientation="horizontal"
-                        android:weightSum="100">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="98"
-                            android:gravity="center_vertical"
-                            android:text="Backup Reminder"
-                            android:textColor="@color/orange"
-                            android:textSize="12sp"
-                            android:textStyle="bold">
-                        </TextView>
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/backup_reminder_switch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="30dp"
-                            android:layout_weight="1"
-                            android:theme="@style/ThemeOverlay.MySwitchCompat"
-                            android:layout_marginRight="5dp">
-                        </androidx.appcompat.widget.SwitchCompat>
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/reminder_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textStyle="bold"
-                        android:visibility="gone"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/ultra_white">
-                    </TextView>
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/gray">
-                </ImageView>
-
-                <LinearLayout
-                    android:id="@+id/backup_automatically"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="90"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp"
-                            android:text="Backup on Launch"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="5dp"
-                            android:textColor="@color/orange"
-                            android:textSize="16sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:id="@+id/backup_location"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Location : null"
-                            android:layout_marginBottom="10dp"
-                            android:textColor="@color/ultra_white"
-                            android:textSize="12sp"
-                            android:textStyle="bold"/>
-
-                    </LinearLayout>
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/backup_on_launch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_weight="10"
-                        android:layout_marginTop="5dp"
-                        android:theme="@style/ThemeOverlay.MySwitchCompat"
-                        android:layout_marginRight="5dp"
-                        android:checked="false">
-                    </androidx.appcompat.widget.SwitchCompat>
-
-                </LinearLayout>
-
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -270,7 +160,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -433,6 +323,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -524,6 +415,50 @@
         </TextView>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView3"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/other_settings">
+
+            <LinearLayout
+                android:id="@+id/folder_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="90"
+                    android:gravity="center_vertical"
+                    android:text="Open Folders on App Start"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"></TextView>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/open_folder_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="10"
+                    android:theme="@style/ThemeOverlay.MySwitchCompat"
+                    android:layout_marginRight="5dp"
+                    android:checked="true">
+                </androidx.appcompat.widget.SwitchCompat>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -533,7 +468,7 @@
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/other_settings">
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
 
             <LinearLayout
                 android:id="@+id/app_settings"

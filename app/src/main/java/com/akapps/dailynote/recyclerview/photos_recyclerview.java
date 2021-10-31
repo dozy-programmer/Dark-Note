@@ -13,6 +13,10 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
+import com.stfalcon.imageviewer.StfalconImageViewer;
+
+import java.util.ArrayList;
+
 import io.realm.RealmResults;
 
 public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclerview.MyViewHolder>{
@@ -55,15 +59,29 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
 
         // populates photo into the recyclerview
         Glide.with(context).load(currentPhoto.getPhotoLocation())
+                .centerCrop()
                 .placeholder(activity.getDrawable(R.drawable.error_icon))
                 .into(holder.image);
 
         // if photo is clicked, it opens it in the default device gallery
         holder.view.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse(currentPhoto.getPhotoLocation()), "image/*");
-            activity.startActivity(intent);
+            ArrayList<String> images = new ArrayList<>();
+            for(int i = 0; i < allPhotos.size(); i++){
+                if(!allPhotos.get(i).getPhotoLocation().isEmpty())
+                    images.add(allPhotos.get(i).getPhotoLocation());
+            }
+
+            new StfalconImageViewer.Builder<>(context, images, (imageView, image) ->
+                    Glide.with(context)
+                            .load(image)
+                            .into(imageView))
+                    .withBackgroundColor(context.getColor(R.color.gray))
+                    .allowZooming(true)
+                    .allowSwipeToDismiss(true)
+                    .withHiddenStatusBar(false)
+                    .withStartPosition(position)
+                    .withTransitionFrom(holder.image)
+                    .show();
         });
 
         // if photo is long clicked, it is deleted

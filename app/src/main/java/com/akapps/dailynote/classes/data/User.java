@@ -7,32 +7,27 @@ public class User extends RealmObject {
     private int userId;
     private boolean proUser;
 
+    private String layoutSelected;
+
     // backup data
     private int textSize;
-    private String liveNoteAutoComplete;
-    private String categories;
 
-    private String layoutSelected;
+    // adding
+    private int titleLines;
+    private int contentLines;
+    private boolean openFoldersOnStart;
+
     private boolean showPreview;
-    private String lastUpdated;
-    private boolean backUpOnLaunch;
-    private String backUpLocation;
-
-    private boolean backupReminder;
-    private int backReminderOccurrence;
-    private String startingDate;
 
     public User() {}
 
     public User(int userId) {
         this.userId = userId;
-        proUser = backUpOnLaunch =  backupReminder = false;
+        proUser = openFoldersOnStart = false;
         textSize = 0;
-        liveNoteAutoComplete = categories = startingDate = "";
         layoutSelected = "stag";
         showPreview = true;
-        lastUpdated = backUpLocation = "";
-        backReminderOccurrence = 1;
+        titleLines = contentLines = 3;
     }
 
     public int getUserId() {
@@ -59,22 +54,6 @@ public class User extends RealmObject {
         this.textSize = textSize;
     }
 
-    public String getLiveNoteAutoComplete() {
-        return liveNoteAutoComplete;
-    }
-
-    public void setLiveNoteAutoComplete(String liveNoteAutoComplete) {
-        this.liveNoteAutoComplete = liveNoteAutoComplete;
-    }
-
-    public String getCategories() {
-        return categories;
-    }
-
-    public void setCategories(String categories) {
-        this.categories = categories;
-    }
-
     public String getLayoutSelected() {
         return layoutSelected;
     }
@@ -91,51 +70,27 @@ public class User extends RealmObject {
         this.showPreview = showPreview;
     }
 
-    public String getLastUpdated() {
-        return lastUpdated;
+    public int getTitleLines() {
+        return titleLines;
     }
 
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    public void setTitleLines(int titleLines) {
+        this.titleLines = titleLines;
     }
 
-    public boolean isBackUpOnLaunch() {
-        return backUpOnLaunch;
+    public int getContentLines() {
+        return contentLines;
     }
 
-    public void setBackUpOnLaunch(boolean backUpOnLaunch) {
-        this.backUpOnLaunch = backUpOnLaunch;
+    public void setContentLines(int contentLines) {
+        this.contentLines = contentLines;
     }
 
-    public String getBackUpLocation() {
-        return backUpLocation;
+    public boolean isOpenFoldersOnStart() {
+        return openFoldersOnStart;
     }
 
-    public void setBackUpLocation(String backUpLocation) {
-        this.backUpLocation = backUpLocation;
-    }
-
-    public boolean isBackupReminder() {
-        return backupReminder;
-    }
-
-    public void setBackupReminder(boolean backupReminder) {
-        this.backupReminder = backupReminder;
-    }
-
-    public int getBackReminderOccurrence() {
-        return backReminderOccurrence;
-    }
-
-    public void setBackReminderOccurrence(int backReminderOccurrence) {
-        this.backReminderOccurrence = backReminderOccurrence;
-    }
-
-    public String getStartingDate() {
-        return startingDate;
-    }
-
-    public void setStartingDate(String startingDate) {
-        this.startingDate = startingDate;
+    public void setOpenFoldersOnStart(boolean openFoldersOnStart) {
+        this.openFoldersOnStart = openFoldersOnStart;
     }
 }

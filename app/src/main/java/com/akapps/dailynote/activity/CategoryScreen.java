@@ -42,6 +42,7 @@ public class CategoryScreen extends AppCompatActivity {
     private TextView unselectCategories;
     private TextView trash;
     private TextView archived;
+    private TextView pinned;
     private RecyclerView customCategories;
     public RecyclerView.Adapter categoriesAdapter;
     private FloatingActionButton addCategory;
@@ -58,11 +59,12 @@ public class CategoryScreen extends AppCompatActivity {
     private RealmResults<Note> allSelectedNotes;
     private RealmResults<Note> uncategorizedNotes;
     private RealmResults<Note> archivedAllNotes;
+    private RealmResults<Note> pinnedAllNotes;
     private RealmResults<Note> trashAllNotes;
 
     // activity data
-    private boolean editingLiveNote;
     private boolean editingRegularNote;
+    private boolean multiSelect;
     private boolean isNotesSelected;
     public boolean isEditing;
     private String titleBefore;
@@ -79,19 +81,27 @@ public class CategoryScreen extends AppCompatActivity {
         context = this;
 
         editingRegularNote = getIntent().getBooleanExtra("editing_reg_note", false);
+        multiSelect = getIntent().getBooleanExtra("multi_select", false);
 
         realm = Realm.getDefaultInstance();
         allCategories = realm.where(Folder.class).sort("positionInList").findAll();
 
         allNotes = realm.where(Note.class).findAll();
         archivedAllNotes = realm.where(Note.class)
+                .equalTo("pin", false)
                 .equalTo("trash", false)
                 .equalTo("archived", true)
+                .findAll();
+        pinnedAllNotes = realm.where(Note.class)
+                .equalTo("trash", false)
+                .equalTo("archived", false)
+                .equalTo("pin", true)
                 .findAll();
         allSelectedNotes = allNotes.where().equalTo("isSelected", true).findAll();
         isNotesSelected = allSelectedNotes.size()>0 ? true : false;
         uncategorizedNotes = allNotes.where()
                 .equalTo("archived", false)
+                .equalTo("pin", false)
                 .equalTo("trash", false)
                 .equalTo("category", "none").findAll();
         trashAllNotes = allNotes.where()
@@ -129,6 +139,7 @@ public class CategoryScreen extends AppCompatActivity {
         unselectCategories = findViewById(R.id.unselect_categories);
         trash = findViewById(R.id.trash);
         archived = findViewById(R.id.archived);
+        pinned = findViewById(R.id.pinned);
         info = findViewById(R.id.info);
         edit = findViewById(R.id.edit);
         showEmptyMessage = findViewById(R.id.empty_category);
@@ -139,6 +150,7 @@ public class CategoryScreen extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         archived.setText(archived.getText() + " (" + archivedAllNotes.size() + ")");
+        pinned.setText(pinned.getText() + " (" + pinnedAllNotes.size() + ")");
         trash.setText(trash.getText() + " (" + trashAllNotes.size() + ")");
 
         if(editingRegularNote){
@@ -151,6 +163,7 @@ public class CategoryScreen extends AppCompatActivity {
             noCategory.setVisibility(View.GONE);
             trash.setVisibility(View.GONE);
             archived.setVisibility(View.GONE);
+            pinned.setVisibility(View.GONE);
         }
         else{
             int allNotesSize = 0;
@@ -169,6 +182,14 @@ public class CategoryScreen extends AppCompatActivity {
                 unselectCategories.setVisibility(View.GONE);
             else
                 title.setText(allSelected + " Selected");
+
+            if(multiSelect){
+                showAllNotes.setVisibility(View.GONE);
+                noCategory.setVisibility(View.GONE);
+                trash.setVisibility(View.GONE);
+                archived.setVisibility(View.GONE);
+                pinned.setVisibility(View.GONE);
+            }
         }
 
         // recyclerview
@@ -286,15 +307,28 @@ public class CategoryScreen extends AppCompatActivity {
         });
 
         trash.setOnClickListener(v -> {
-            if(!isNotesSelected)
+            if(!isNotesSelected && trashAllNotes.size() > 0)
                 closeActivity(-5);
+            else if(trashAllNotes.size() == 0)
+                showEmptyMessage();
             else
                 showErrorMessage();
         });
 
         archived.setOnClickListener(v -> {
-            if(!isNotesSelected)
+            if(!isNotesSelected && archivedAllNotes.size() > 0)
                 closeActivity(-10);
+            else if(archivedAllNotes.size() == 0)
+                showEmptyMessage();
+            else
+                showErrorMessage();
+        });
+
+        pinned.setOnClickListener(v -> {
+            if(!isNotesSelected && pinnedAllNotes.size() > 0)
+                closeActivity(-11);
+            else if(pinnedAllNotes.size() == 0)
+                showEmptyMessage();
             else
                 showErrorMessage();
         });
@@ -323,6 +357,10 @@ public class CategoryScreen extends AppCompatActivity {
     private void showErrorMessage(){
         Helper.showMessage(this, "Select Folder", "You need to select a folder" +
                         " to put all the notes you selected", MotionToast.TOAST_ERROR);
+    }
+
+    private void showEmptyMessage(){
+        Helper.showMessage(this, "Empty", "Cannot open empty folder", MotionToast.TOAST_ERROR);
     }
 
     private void checkEmpty() {

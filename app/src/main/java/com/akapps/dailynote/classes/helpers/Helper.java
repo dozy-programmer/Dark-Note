@@ -101,6 +101,17 @@ public class Helper {
         return calendar;
     }
 
+    // pin is based on the current year and the hour
+    public static String createBackupFileName(){
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int minute = calendar.get(Calendar.MINUTE);
+        String amOrPm = calendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
+        return "Backup_" + month + "_" + calendar.get(Calendar.DAY_OF_MONTH)
+                + "_" + calendar.get(Calendar.YEAR)
+                + "_at_" + calendar.get(Calendar.HOUR) + "_" +amOrPm + ".realm";
+    }
+
     public static String getTimeDifference(Calendar calendar, boolean before){
         try {
             String timeDifference = "";

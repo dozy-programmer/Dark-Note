@@ -17,12 +17,16 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+
+import java.util.Locale;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -120,10 +124,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
         // changes the number of lines title and preview occupy depending on user setting
-        String title_lines = Helper.getPreference(noteFragment.getContext(), "title_lines");
-        holder.note_title.setMaxLines(title_lines == null || title_lines.equals("") ? 3 : Integer.parseInt(title_lines));
-        String preview_lines = Helper.getPreference(noteFragment.getContext(), "preview_lines");
-        holder.note_preview.setMaxLines(preview_lines == null  || preview_lines.equals("") ? 3 : Integer.parseInt(preview_lines));
+        int titleLines = ((notes) noteFragment).user.getTitleLines();
+        int contentLines = ((notes) noteFragment).user.getContentLines();
+        holder.note_title.setMaxLines(titleLines);
+        holder.note_preview.setMaxLines(contentLines);
 
         // format note to remove all new line characters and any spaces more than a length of 1
         String preview = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
@@ -134,9 +138,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if(currentNote.getCategory().equals("none"))
             holder.category.setVisibility(View.GONE);
         else {
+            Folder folderColor = realm.where(Folder.class)
+                    .equalTo("name", currentNote.getCategory())
+                    .findFirst();
+
             holder.category.setVisibility(View.VISIBLE);
             holder.category.setText(currentNote.getCategory());
-            holder.category_background.setCardBackgroundColor(currentNote.getBackgroundColor());
+            holder.category.setTextColor(folderColor.getColor());
+            holder.category_background.setStrokeColor(folderColor.getColor());
         }
 
         // if selecting multiple notes, it changes the color of the note outline
@@ -158,17 +167,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                     .equalTo("id", currentNote.getNoteId())
                     .sort("positionInList", Sort.ASCENDING)
                     .findAll();
+            if (!isNoteLocked) {
+                holder.preview_photo_message.setVisibility(View.VISIBLE);
+                holder.preview_photo_message.setText(checklist.size()+ " items");
+            }
             for (int i = 0; i < currentNote.getChecklist().size(); i++) {
                 checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
-                if (i == 3) {
-                    if (!isNoteLocked) {
-                        holder.preview_photo_message.setVisibility(View.VISIBLE);
-                        holder.preview_photo_message.setText("..." + (checklist.size() - 3) + " more");
-                    }
-                }
             }
-            if(checklist.size()<=3)
-                holder.preview_photo_message.setVisibility(View.GONE);
 
             realm.beginTransaction();
             currentNote.setChecklistConvertedToString(checkListString.toString());
@@ -241,20 +246,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.note_preview.setTextSize(15);
         }
 
-        // changes the number of lines title and preview occupy depending on user setting
-        int previewLines = null == Helper.getPreference(activity, PREVIEW_KEY)? 3
-                : Integer.parseInt(Helper.getPreference(activity, PREVIEW_KEY));
-        holder.note_title.setMaxLines(null == Helper.getPreference(activity, TITLE_KEY) ? 3
-                : Integer.parseInt(Helper.getPreference(activity, TITLE_KEY)));
-        holder.note_preview.setMaxLines(previewLines);
-
         if(showPreview && !isNoteLocked){
             holder.preview_photo_message.setVisibility(View.VISIBLE);
             holder.note_preview.setVisibility(View.VISIBLE);
-            if((currentNote.getChecklist().size()-previewLines)>0)
-                holder.preview_photo_message.setText("..." + (currentNote.getChecklist().size()-previewLines) + " more");
-            else
-                holder.preview_photo_message.setText("");
+            holder.preview_photo_message.setText(currentNote.getChecklist().size()+ " items");
         }
         else {
             holder.note_preview.setVisibility(View.GONE);
@@ -270,6 +265,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 holder.preview_3.setVisibility(View.GONE);
                 holder.preview_2.setVisibility(View.VISIBLE);
                 Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                        .centerCrop()
                         .placeholder(activity.getDrawable(R.drawable.error_icon))
                         .into(holder.preview_2);
             }
@@ -278,10 +274,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 holder.preview_2.setVisibility(View.GONE);
                 holder.preview_3.setVisibility(View.VISIBLE);
                 Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                        .centerCrop()
                         .placeholder(activity.getDrawable(R.drawable.error_icon))
                         .into(holder.preview_1);
 
                 Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
+                        .centerCrop()
                         .placeholder(activity.getDrawable(R.drawable.error_icon))
                         .into(holder.preview_3);
             }
@@ -291,14 +289,17 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 holder.preview_3.setVisibility(View.VISIBLE);
 
                 Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                        .centerCrop()
                         .placeholder(activity.getDrawable(R.drawable.error_icon))
                         .into(holder.preview_1);
 
                 Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
+                        .centerCrop()
                         .placeholder(activity.getDrawable(R.drawable.error_icon))
                         .into(holder.preview_2);
 
                 Glide.with(activity).load(allPhotos.get(2).getPhotoLocation())
+                        .centerCrop()
                         .placeholder(activity.getDrawable(R.drawable.error_icon))
                         .into(holder.preview_3);
             }

@@ -214,18 +214,34 @@
 
             <EditText
                 android:id="@+id/title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="12dp"
                 android:backgroundTint="@android:color/transparent"
                 android:hint="Title"
                 android:textColor="@color/ultra_white"
                 android:textColorHint="@color/light_gray"
                 android:textSize="34sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/sort"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toolbar"></EditText>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/filter_icon"
+                android:visibility="visible"
+                app:fab_colorNormal="@color/light_gray"
+                app:fab_colorPressed="@color/gray"
+                app:fab_colorRipple="@color/light_gray"
+                app:fab_size="mini"
+                app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+                app:layout_constraintBottom_toBottomOf="@+id/title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/title" />
 
             <LinearLayout
                 android:id="@+id/reminderLayout"

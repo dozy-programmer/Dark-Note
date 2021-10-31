@@ -31,7 +31,7 @@
             android:gravity="center"
             android:layout_marginTop="2dp"
             android:fontFamily="@font/baloo_bhai"
-            android:text="Filter &amp; Sort: "
+            android:text="Sort: "
             android:textColor="@color/orange"
             android:textSize="22sp"
             app:layout_constraintEnd_toStartOf="@+id/reset_filter"
@@ -60,152 +60,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/baloo_bhai"
-                android:gravity="center"
-                android:layout_marginBottom="5dp"
-                android:text="Select Note Type(s)"
-                android:textColor="@color/havelock_blue"
-                android:textSize="20sp"></TextView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                app:cardBackgroundColor="@color/light_gray"
-                app:cardCornerRadius="15dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/note"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        app:cardBackgroundColor="@color/gray"
-                        app:cardCornerRadius="15dp">
-
-                        <ImageView
-                            android:id="@+id/note_icon"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:background="@android:color/transparent"
-                            android:src="@drawable/note_icon"
-                            app:tint="@color/darker_blue">
-                        </ImageView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center"
-                            android:layout_marginBottom="2dp"
-                            android:text="Note"
-                            android:textColor="@color/ultra_white"
-                            android:textSize="12sp"></TextView>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/checklist"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        app:cardBackgroundColor="@color/gray"
-                        app:cardCornerRadius="15dp">
-
-                        <ImageView
-                            android:id="@+id/checklist_icon"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/checklist_icon"
-                            app:tint="@color/darker_blue"></ImageView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center"
-                            android:layout_marginBottom="2dp"
-                            android:text="Checklist"
-                            android:textColor="@color/ultra_white"
-                            android:textSize="12sp"></TextView>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Type"
-                android:layout_marginVertical="10dp"
-                android:gravity="center"
-                android:textColor="@color/havelock_blue"
-                android:textSize="20sp"></TextView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:cardBackgroundColor="@color/light_gray"
-                app:cardCornerRadius="15dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/pinned"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        app:cardBackgroundColor="@color/gray"
-                        app:cardCornerRadius="15dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center"
-                            android:layout_marginBottom="2dp"
-                            android:paddingVertical="10dp"
-                            android:paddingHorizontal="25dp"
-                            android:text="Pinned"
-                            android:textColor="@color/ultra_white"
-                            android:textSize="14sp"
-                            android:textStyle="bold"></TextView>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/baloo_bhai"
-                android:text="Sort"
-                android:gravity="center"
-                android:layout_marginVertical="10dp"
-                android:textColor="@color/havelock_blue"
-                android:textSize="20sp"></TextView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
@@ -414,6 +268,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:visibility="gone"
                     android:layout_marginLeft="10dp"
                     app:cardBackgroundColor="@color/light_gray"
                     app:cardCornerRadius="15dp">
@@ -472,7 +327,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Save Sort"
+                android:text="Save"
                 android:layout_marginHorizontal="10dp"
                 android:textColor="@color/havelock_blue"
                 android:textSize="22sp"
