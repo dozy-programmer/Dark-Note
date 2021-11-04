@@ -117,9 +117,16 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             info.setText("Backup to Google Drive, OneDrive, and " +
                     "more.\nGoogle Drive is recommended\n\n" +
                     "**Photos will NOT backup**\n" +
-                    "Unless backed up device has all your photos.\n\n" +
-                    "Dark Note does not store any of your photos " +
-                    " to ensure security and minimize app & backup sizes.");
+                    "Backup file name ends in .realm");
+            info.setGravity(Gravity.CENTER);
+        }
+         else if(message == 2){
+            title.setText("Backup");
+            securityWord.setVisibility(View.GONE);
+            backup.setVisibility(View.VISIBLE);
+            info.setText("Backup to Google Drive, OneDrive, and " +
+                    "more.\nGoogle Drive is recommended\n\n" +
+                    "Backup file name ends in .zip");
             info.setGravity(Gravity.CENTER);
         }
         else if(message == 3){
@@ -171,7 +178,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         });
 
         backup.setOnClickListener(v -> {
-            if(message == 1)
+            if(message == 1 || message == 2)
                 ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
             else if(message == 3){
                 if(deleteAllChecklists){

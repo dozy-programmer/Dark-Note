@@ -22,6 +22,10 @@ public class Photo extends RealmObject {
         this.noteId = noteId;
     }
 
+    public void setPhotoLocation(String photoLocation){
+        this.photoLocation = photoLocation;
+    }
+
     public String getPhotoLocation() {
         return photoLocation;
     }

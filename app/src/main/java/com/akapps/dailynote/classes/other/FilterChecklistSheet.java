@@ -55,30 +55,35 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
 
         aZ.setOnClickListener(v -> {
             Helper.savePreference(getContext(), "1", "order");
+            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         zA.setOnClickListener(v -> {
             Helper.savePreference(getContext(), "2", "order");
+            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         checkedBottom.setOnClickListener(v -> {
             Helper.savePreference(getContext(), "3", "order");
+            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         checkedTop.setOnClickListener(v -> {
             Helper.savePreference(getContext(), "4", "order");
+            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         clearFilter.setOnClickListener(v -> {
             Helper.savePreference(getContext(), "", "order");
+            ((NoteEdit) getActivity()).sortEnable = true;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });

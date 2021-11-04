@@ -441,7 +441,6 @@ public class notes extends Fragment{
         else if(resultCode == -10){
             RealmResults<Note> queryArchivedNotes =
                     realm.where(Note.class)
-                            .equalTo("pin", false)
                             .equalTo("archived", true)
                             .equalTo("trash", false).findAll();
 

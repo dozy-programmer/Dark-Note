@@ -56,6 +56,21 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <TextView
+            android:id="@+id/backup_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Backup &amp; Restore"
+            android:textColor="@color/orange"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"></TextView>
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"
             android:layout_width="match_parent"
@@ -66,7 +81,7 @@
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/backup_settings">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -108,6 +123,38 @@
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
+                    android:id="@+id/backup_beta"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="99"
+                        android:gravity="center_vertical"
+                        android:text="Backup + Images (Pro)"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_right_icon"></ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
                     android:id="@+id/restore_backup"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -138,6 +185,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/restore_beta_backup"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="99"
+                        android:gravity="center_vertical"
+                        android:text="Restore Backup + Images (Pro)"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_right_icon"></ImageView>
+
+                </LinearLayout>
 
             </LinearLayout>
 

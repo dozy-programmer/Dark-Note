@@ -97,6 +97,7 @@
                     android:weightSum="99">
 
                     <LinearLayout
+                        android:id="@+id/preview_1_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="33"
@@ -131,6 +132,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="3dp"
                         android:layout_weight="33"
+                        android:id="@+id/preview_2_layout"
                         android:gravity="center">
 
                         <com.google.android.material.card.MaterialCardView
@@ -161,6 +163,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="33"
+                        android:id="@+id/preview_3_layout"
                         android:gravity="center">
 
                         <com.google.android.material.card.MaterialCardView

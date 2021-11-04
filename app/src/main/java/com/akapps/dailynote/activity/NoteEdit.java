@@ -1,8 +1,6 @@
 package com.akapps.dailynote.activity;
 
-import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -23,12 +21,10 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +57,6 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.github.dhaval2404.imagepicker.util.FileUtil;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -69,20 +64,14 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import jp.wasabeef.richeditor.RichEditor;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.internal.Intrinsics;
 import www.sanju.motiontoast.MotionToast;
 
 public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDateSetListener,
@@ -133,7 +122,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isShowingPhotos;
     private String currentDateTimeSelected;
     private Calendar dateSelected;
-    public boolean refresh;
     private int countPicsNotFound;
     private boolean noteEdited;
     private boolean isSearchingNotes;
@@ -144,6 +132,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isChanged;
     private Handler handler;
     private ActivityResultLauncher<Intent> launcher;
+    public boolean sortEnable;
 
     // dialog
     private AlertDialog colorPickerView;
@@ -692,9 +681,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
     }
 
-    private void enableDragDrop(boolean enable){
-        if(null == Helper.getPreference(context, "order") ||
-                Helper.getPreference(context, "order").equals("")) {
+    private void enableDragDrop(){
+        if(sortEnable) {
             ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_DRAG | ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
                 int start = -1, end = -1;
 
@@ -702,29 +690,31 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
                     int started = dragged.getAbsoluteAdapterPosition();
                     int ended = target.getAbsoluteAdapterPosition();
-                    CheckListItem item = checkListItems.get(started);
-                    CheckListItem item2 = checkListItems.get(ended);
-                    realm.beginTransaction();
-                    if (Math.abs(ended - started) > 1) {
-                        if (started < ended) {
-                            CheckListItem item3 = checkListItems.get(started + 1);
-                            int middlePosition = item3.getPositionInList();
-                            item.setPositionInList(ended);
-                            item3.setPositionInList(started);
-                            item2.setPositionInList(middlePosition);
+                    if(sortEnable) {
+                        CheckListItem item = checkListItems.get(started);
+                        CheckListItem item2 = checkListItems.get(ended);
+                        realm.beginTransaction();
+                        if (Math.abs(ended - started) > 1) {
+                            if (started < ended) {
+                                CheckListItem item3 = checkListItems.get(started + 1);
+                                int middlePosition = item3.getPositionInList();
+                                item.setPositionInList(ended);
+                                item3.setPositionInList(started);
+                                item2.setPositionInList(middlePosition);
+                            } else {
+                                CheckListItem item3 = checkListItems.get(started - 1);
+                                int middlePosition = item3.getPositionInList();
+                                item.setPositionInList(ended);
+                                item3.setPositionInList(started);
+                                item2.setPositionInList(middlePosition);
+                            }
                         } else {
-                            CheckListItem item3 = checkListItems.get(started - 1);
-                            int middlePosition = item3.getPositionInList();
                             item.setPositionInList(ended);
-                            item3.setPositionInList(started);
-                            item2.setPositionInList(middlePosition);
+                            item2.setPositionInList(started);
                         }
-                    } else {
-                        item.setPositionInList(ended);
-                        item2.setPositionInList(started);
+                        realm.commitTransaction();
+                        checklistAdapter.notifyItemMoved(started, ended);
                     }
-                    realm.commitTransaction();
-                    checklistAdapter.notifyItemMoved(started, ended);
                     return false;
                 }
 
@@ -741,10 +731,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 }
 
             });
-            if(enable)
+
+            if(sortEnable)
                 helper.attachToRecyclerView(checkListRecyclerview);
             else
                 helper.attachToRecyclerView(null);
+            checklistAdapter.notifyDataSetChanged();
         }
     }
 
@@ -825,46 +817,43 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public void sortChecklist(){
         String currentSelection = Helper.getPreference(context, "order");
 
-        OrderedRealmCollection<CheckListItem> results;
+        RealmResults<CheckListItem> results;
 
         if(currentSelection != null) {
             if (currentSelection.equals("1")) {
-                enableDragDrop(false);
                 results = realm.where(CheckListItem.class)
                         .equalTo("id", noteId)
                         .sort("text", Sort.ASCENDING).findAll();
             }
             else if (currentSelection.equals("2")) {
-                enableDragDrop(false);
                 results = realm.where(CheckListItem.class)
                         .equalTo("id", noteId)
                         .sort("text", Sort.DESCENDING).findAll();
             }
             else if (currentSelection.equals("3")) {
-                enableDragDrop(false);
                 results = realm.where(CheckListItem.class)
                         .equalTo("id", noteId).findAll()
                         .sort("checked", Sort.ASCENDING);
             }
             else if (currentSelection.equals("4")) {
-                enableDragDrop(false);
                 results = realm.where(CheckListItem.class)
                         .equalTo("id", noteId).findAll().sort("checked", Sort.DESCENDING);
             }
             else {
-                enableDragDrop(true);
+                sortEnable = true;
                 results = realm.where(CheckListItem.class)
                         .equalTo("id", noteId)
                         .sort("positionInList").findAll();
             }
         }
         else{
-            enableDragDrop(true);
+            sortEnable = true;
             results = realm.where(CheckListItem.class)
                     .equalTo("id", noteId)
                     .sort("positionInList").findAll();
         }
         populateChecklist(results);
+        enableDragDrop();
     }
 
     public void updateColors(){
@@ -1268,7 +1257,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         photosScrollView.setAdapter(scrollAdapter);
     }
 
-    private void populateChecklist(OrderedRealmCollection<CheckListItem> currentList) {
+    private void populateChecklist(RealmResults<CheckListItem> currentList) {
         int span = 1;
         if(Helper.isTablet(context))
             span = 2;
@@ -1344,7 +1333,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             updateReminderLayout(View.VISIBLE);
             Helper.showMessage(this, "Reminder set", "Will Remind you " +
                     "in " + Helper.getTimeDifference(c, true), MotionToast.TOAST_SUCCESS);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, noteId, intent, 0);
+            PendingIntent pendingIntent;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+                pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
+                        PendingIntent.FLAG_MUTABLE);
+            else
+                pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
+                        PendingIntent.FLAG_ONE_SHOT);
+
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
         }
         else
@@ -1363,7 +1359,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         updateReminderDate("");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, noteId, intent, 0);
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
+                    PendingIntent.FLAG_MUTABLE);
+        else
+            pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
         alarmManager.cancel(pendingIntent);
     }
 
@@ -1449,7 +1451,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 + checklist;
 
         // adds email subject and email body to intent
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Sending Note");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Sending Note: " + currentNote.getTitle());
         emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
 
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
@@ -1459,7 +1461,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     private void showCameraDialog(){
         ImagePicker.with(this)
-                .maxResultSize(384, 384)
+                .maxResultSize(412, 412)
                 .compress(1024)
                 .saveDir(getExternalFilesDir(null))
                 .start();

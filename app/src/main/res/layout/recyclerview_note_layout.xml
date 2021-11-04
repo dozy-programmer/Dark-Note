@@ -46,7 +46,7 @@
                     android:src="@drawable/pin_filled_icon"
                     android:layout_marginTop="15dp"
                     android:visibility="gone"
-                    android:layout_marginHorizontal="5dp">
+                    android:layout_marginRight="10dp">
                 </ImageView>
 
                 <ImageView
@@ -57,7 +57,7 @@
                     android:src="@drawable/reminder_icon"
                     android:layout_marginTop="15dp"
                     android:visibility="gone"
-                    android:layout_marginHorizontal="5dp">
+                    android:layout_marginRight="10dp">
                 </ImageView>
 
                 <ImageView
@@ -97,6 +97,7 @@
                     android:weightSum="99">
 
                     <LinearLayout
+                        android:id="@+id/preview_1_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="33"
@@ -106,7 +107,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:cardCornerRadius="15dp"
-                            app:cardBackgroundColor="@android:color/transparent"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +119,7 @@
                                 android:visibility="gone"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center"
-                                android:background="@color/gray"
+                                android:background="@color/light_gray"
                                 android:src="@drawable/error_icon">
                             </ImageView>
 
@@ -127,6 +128,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/preview_2_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="3dp"
@@ -137,7 +139,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:cardCornerRadius="15dp"
-                            app:cardBackgroundColor="@android:color/transparent"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -149,7 +151,7 @@
                                 android:visibility="gone"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center"
-                                android:background="@color/gray"
+                                android:background="@color/light_gray"
                                 android:src="@drawable/error_icon">
                             </ImageView>
 
@@ -160,6 +162,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/preview_3_layout"
                         android:layout_weight="33"
                         android:gravity="center">
 
@@ -167,7 +170,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:cardCornerRadius="15dp"
-                            app:cardBackgroundColor="@android:color/transparent"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -179,7 +182,7 @@
                                 android:layout_height="50dp"
                                 android:visibility="gone"
                                 android:layout_gravity="center"
-                                android:background="@color/gray"
+                                android:background="@color/light_gray"
                                 android:src="@drawable/error_icon">
                             </ImageView>
 

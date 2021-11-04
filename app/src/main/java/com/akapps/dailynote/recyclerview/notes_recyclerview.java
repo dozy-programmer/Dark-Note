@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +25,10 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.stfalcon.imageviewer.StfalconImageViewer;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import io.realm.Realm;
@@ -36,7 +40,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     // project data
     private final RealmResults<Note> allNotes;
-    private RealmResults<Photo> allPhotos;
     private String noteText;
     private final Activity activity;
     private final Fragment noteFragment;
@@ -67,6 +70,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         private final ImageView pin_icon;
         private final ImageView checklist_icon;
         private final ImageView archived_icon;
+        private final LinearLayout preview_1_layout;
+        private final LinearLayout preview_2_layout;
+        private final LinearLayout preview_3_layout;
+
 
         public MyViewHolder(View v) {
             super(v);
@@ -85,6 +92,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             archived_icon = v.findViewById(R.id.archived_icon);
             category = v.findViewById(R.id.category);
             category_background = v.findViewById(R.id.category_background);
+            preview_1_layout = v.findViewById(R.id.preview_1_layout);
+            preview_2_layout = v.findViewById(R.id.preview_2_layout);
+            preview_3_layout = v.findViewById(R.id.preview_3_layout);
             view = v;
         }
     }
@@ -111,7 +121,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         Note currentNote = allNotes.get(position);
 
         // retrieves all photos that belong to note
-        allPhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
+        RealmResults<Photo> allPhotos = realm.where(Photo.class)
+                .equalTo("noteId", currentNote.getNoteId()).findAll();
 
         // retrieves note text, the lock status of note and reminder status
         noteText = currentNote.getNote() == null ? "": currentNote.getNote();
@@ -144,8 +155,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
             holder.category.setVisibility(View.VISIBLE);
             holder.category.setText(currentNote.getCategory());
-            holder.category.setTextColor(folderColor.getColor());
-            holder.category_background.setStrokeColor(folderColor.getColor());
+            holder.category.setTextColor(folderColor.getColor() == 0 ?
+                    activity.getColor(R.color.orange) : folderColor.getColor());
+            holder.category_background.setStrokeColor(folderColor.getColor() == 0 ?
+                    activity.getColor(R.color.orange) : folderColor.getColor());
         }
 
         // if selecting multiple notes, it changes the color of the note outline
@@ -256,6 +269,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setVisibility(View.GONE);
         }
 
+        int preview_1_position = 0;
+        int preview_2_position = 0;
+        int preview_3_position = 0;
+
         // if note has photos, it displays them under note preview (up to 3)
         // if there are more, it shows a text underneath them with
         // the number of photos that are left
@@ -264,44 +281,64 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 holder.preview_1.setVisibility(View.GONE);
                 holder.preview_3.setVisibility(View.GONE);
                 holder.preview_2.setVisibility(View.VISIBLE);
-                Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
-                        .centerCrop()
-                        .placeholder(activity.getDrawable(R.drawable.error_icon))
-                        .into(holder.preview_2);
+                preview_2_position = 0;
+                if(new File(allPhotos.get(0).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                            .centerCrop()
+                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .into(holder.preview_2);
+                }
             }
             else if(allPhotos.size()==2) {
                 holder.preview_1.setVisibility(View.VISIBLE);
                 holder.preview_2.setVisibility(View.GONE);
                 holder.preview_3.setVisibility(View.VISIBLE);
-                Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
-                        .centerCrop()
-                        .placeholder(activity.getDrawable(R.drawable.error_icon))
-                        .into(holder.preview_1);
+                preview_1_position = 0;
+                preview_3_position = 1;
 
-                Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
-                        .centerCrop()
-                        .placeholder(activity.getDrawable(R.drawable.error_icon))
-                        .into(holder.preview_3);
+                if(new File(allPhotos.get(0).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                            .centerCrop()
+                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .into(holder.preview_1);
+                }
+
+                if(new File(allPhotos.get(1).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
+                            .centerCrop()
+                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .into(holder.preview_3);
+                }
             }
             else{
                 holder.preview_1.setVisibility(View.VISIBLE);
                 holder.preview_2.setVisibility(View.VISIBLE);
                 holder.preview_3.setVisibility(View.VISIBLE);
 
-                Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
-                        .centerCrop()
-                        .placeholder(activity.getDrawable(R.drawable.error_icon))
-                        .into(holder.preview_1);
+                preview_1_position = 0;
+                preview_2_position = 1;
+                preview_3_position = 2;
 
-                Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
-                        .centerCrop()
-                        .placeholder(activity.getDrawable(R.drawable.error_icon))
-                        .into(holder.preview_2);
+                if(new File(allPhotos.get(0).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                            .centerCrop()
+                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .into(holder.preview_1);
+                }
 
-                Glide.with(activity).load(allPhotos.get(2).getPhotoLocation())
-                        .centerCrop()
-                        .placeholder(activity.getDrawable(R.drawable.error_icon))
-                        .into(holder.preview_3);
+                if(new File(allPhotos.get(1).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
+                            .centerCrop()
+                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .into(holder.preview_2);
+                }
+
+                if(new File(allPhotos.get(2).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(allPhotos.get(2).getPhotoLocation())
+                            .centerCrop()
+                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .into(holder.preview_3);
+                }
             }
 
             if(allPhotos.size()>3) {
@@ -318,6 +355,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if(!currentNote.isCheckList() || isNoteLocked)
                 holder.preview_photo_message.setVisibility(View.GONE);
         }
+
+        int finalPreview_1_position = preview_1_position;
+        holder.preview_1_layout.setOnClickListener(view -> showPhotos(finalPreview_1_position, allPhotos, holder.preview_1));
+        int finalPreview_2_position = preview_2_position;
+        holder.preview_2_layout.setOnClickListener(view -> showPhotos(finalPreview_2_position, allPhotos, holder.preview_2));
+        int finalPreview_3_position = preview_3_position;
+        holder.preview_3_layout.setOnClickListener(view -> showPhotos(finalPreview_3_position, allPhotos, holder.preview_3));
 
         // if user is selecting multiple notes, it updates status of select in note,
         // changes outline color, and updates number of selected notes
@@ -344,6 +388,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         // if note is long clicked, then the ability to select multiple notes is enabled
         holder.view.setOnLongClickListener(v -> {
+            // prevent opening of images when multi-selecting
             if(!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
@@ -358,6 +403,28 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                         "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
             return true;
         });
+    }
+
+    private void showPhotos(int position, RealmResults<Photo> allPhotos, ImageView currentImage){
+        if(!enableSelectMultiple) {
+            ArrayList<String> images = new ArrayList<>();
+            for (int i = 0; i < allPhotos.size(); i++) {
+                if (!allPhotos.get(i).getPhotoLocation().isEmpty())
+                    images.add(allPhotos.get(i).getPhotoLocation());
+            }
+
+            new StfalconImageViewer.Builder<>(noteFragment.getContext(), images, (imageView, image) ->
+                    Glide.with(noteFragment.getContext())
+                            .load(image)
+                            .into(imageView))
+                    .withBackgroundColor(noteFragment.getContext().getColor(R.color.gray))
+                    .allowZooming(true)
+                    .allowSwipeToDismiss(true)
+                    .withHiddenStatusBar(false)
+                    .withStartPosition(position)
+                    .withTransitionFrom(currentImage)
+                    .show();
+        }
     }
 
     @Override

@@ -21,9 +21,12 @@ import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.akapps.dailynote.BuildConfig;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Photo;
@@ -49,7 +52,11 @@ import com.google.android.material.card.MaterialCardView;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,9 +65,15 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmResults;
+import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
 
@@ -83,6 +96,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     // layout
     private LinearLayout backup;
     private LinearLayout restoreBackup;
+    private LinearLayout backupBeta;
+    private LinearLayout restoreBackupBeta;
     private LinearLayout appSettings;
     private MaterialCardView contact;
     private MaterialCardView review;
@@ -103,6 +118,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     // Billing client
     private BillingClient billingClient;
     private ArrayList<String> purchaseItemIDs;
+
+    // variables
+    private boolean betaBackup  = false;
+    private boolean betaRestore = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +189,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
+        backupBeta = findViewById(R.id.backup_beta);
+        restoreBackupBeta = findViewById(R.id.restore_beta_backup);
 
         String titleLinesNumber = String.valueOf(currentUser.getTitleLines());
         String previewLinesNumber = String.valueOf(currentUser.getContentLines());
@@ -183,7 +204,34 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        backup.setOnClickListener(v -> showBackupRestoreInfo());
+        backup.setOnClickListener(v -> {
+            betaBackup = false;
+            showBackupRestoreInfo(1);
+        });
+
+        backupBeta.setOnClickListener(view -> {
+            if(currentUser.isProUser()) {
+                betaBackup = true;
+                showBackupRestoreInfo(2);
+            }
+            else
+                Helper.showMessage(this, "Settings", "Upgrade to pro to enable", MotionToast.TOAST_ERROR);
+        });
+
+        restoreBackup.setOnClickListener(v -> {
+            betaRestore = false;
+            openFile();
+        });
+
+        restoreBackupBeta.setOnClickListener(view -> {
+            if(currentUser.isProUser()) {
+                betaRestore = true;
+                openFile();
+            }
+            else
+                Helper.showMessage(this, "Settings", "Upgrade to pro to enable", MotionToast.TOAST_ERROR);
+
+        });
 
         if(!currentUser.isProUser()){
             showPreview.setChecked(false);
@@ -193,8 +241,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             currentUser.setOpenFoldersOnStart(false);
             realm.commitTransaction();
         }
-
-        restoreBackup.setOnClickListener(v -> openFile());
 
         titleLayout.setOnClickListener(v -> {
             if(currentUser.isProUser()) {
@@ -266,7 +312,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 realm.commitTransaction();
             }
             else if(initializing) {
-                showPreview.setChecked(false);
+                showPreview.setChecked(true);
                 Helper.showMessage(this, "Settings", "Upgrade to pro to change preview settings", MotionToast.TOAST_ERROR);
             }
         });
@@ -279,7 +325,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
             else if(initializing) {
                 openFoldersOnStart.setChecked(false);
-                Helper.showMessage(this, "Settings", "Upgrade to pro to change preview settings", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade to pro to change folder settings", MotionToast.TOAST_ERROR);
             }
         });
 
@@ -525,8 +571,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         }
-        else
-            backUpData();
+        else {
+            openBackup();
+        }
     }
 
     @Override
@@ -534,11 +581,18 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 2) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                backUpData();
+                openBackup();
             else
                 Helper.showMessage(this, "Accept Permission", "You need " +
                         "to accept permissions to backup", MotionToast.TOAST_ERROR);
         }
+    }
+
+    private void openBackup(){
+        if(betaBackup)
+            backUpDataAndImages();
+        else
+            backUpData();
     }
 
    private void backUpData(){
@@ -554,16 +608,80 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
     }
 
+    private void backUpDataAndImages(){
+        if(all_Notes!=0) {
+            ArrayList<String> allPaths = getAllFilePaths(realm.where(Photo.class).findAll());
+            realm.close();
+            RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
+            realmBackupRestore.update(this, context);
+            File exportedFilePath = realmBackupRestore.backup_Share();
+            allPaths.add(exportedFilePath.getAbsolutePath());
+            String backUpFolderPath = zipPhotos(allPaths);
+            shareFile(new File(backUpFolderPath));
+        }
+        else
+            Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
+                    "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
+    }
+
     private ArrayList<String> getAllFilePaths(RealmResults<Photo> allPhotos){
         ArrayList<String> filePaths = new ArrayList<>();
-        for(int i = 0; i < allPhotos.size(); i++){
+        for(int i = 0; i < allPhotos.size(); i++)
             filePaths.add(allPhotos.get(i).getPhotoLocation());
-        }
         return filePaths;
     }
 
-    private void showBackupRestoreInfo(){
-        InfoSheet info = new InfoSheet(1);
+    // creates a zip folder
+    public String createZipFolder(){
+        File storageDir = new File(
+                context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+                        + getString(R.string.app_name));
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+        return storageDir.getAbsolutePath();
+    }
+
+    // places all the photos in a zip file and returns a string of the file path
+    public String zipPhotos(ArrayList<String> files) {
+
+        String zipPath = createZipFolder() + ".zip";
+        File zipFile = new File(zipPath);
+
+        int BUFFER = 1024;
+
+        try {
+            BufferedInputStream origin;
+            FileOutputStream dest = new FileOutputStream(zipFile);
+
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+
+            byte[] data = new byte[BUFFER];
+
+            for (int i = 0; i < files.size(); i++) {
+                if(new File(files.get(i)).exists()) {
+                    FileInputStream fi = new FileInputStream(files.get(i));
+                    origin = new BufferedInputStream(fi, BUFFER);
+                    ZipEntry entry = new ZipEntry(files.get(i).substring(files.get(i).lastIndexOf("/") + 1));
+                    out.putNextEntry(entry);
+                    int count;
+                    while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                        out.write(data, 0, count);
+                    }
+                    origin.close();
+                }
+            }
+
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return zipFile.getAbsolutePath();
+    }
+
+    private void showBackupRestoreInfo(int selection){
+        InfoSheet info = new InfoSheet(selection);
         info.show(getSupportFragmentManager(), info.getTag());
     }
 
@@ -592,7 +710,70 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1) {
-            restoreBackup(data);
+            if(betaRestore)
+                restoreBackupBeta(data);
+            else
+                restoreBackup(data);
+        }
+    }
+
+    private void restoreBackupBeta(Intent data){
+        if (data != null) {
+            Uri uri = data.getData();
+            Cursor returnCursor = context.getContentResolver()
+                    .query(uri, null, null, null, null);
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            returnCursor.moveToFirst();
+            String fileName = returnCursor.getString(nameIndex);
+
+            if(fileName.contains(".zip")) {
+                RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
+                try {
+                    // close realm before restoring
+                    RealmConfiguration configuration = realm.getConfiguration();
+                    realm.close();
+                    Realm.deleteRealm(configuration);
+
+                    // delete all files first
+                    FilesKt.deleteRecursively(new File(getApplicationContext()
+                            .getExternalFilesDir(null) + ""));
+
+                    // initialize backup object
+                    realmBackupRestore = new RealmBackupRestore(this);
+                    // make a copy of the backup zip file selected by user and unzip it
+                    realmBackupRestore.restore(uri, "backup.zip", true);
+
+                    ArrayList<String> images = realmBackupRestore.getImagesPath();
+                    realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
+
+                    // update image paths from restored database so it knows where the images are
+                    try {
+                        realm = Realm.getDefaultInstance();
+                    }
+                    catch (Exception e){
+                        realm = RealmDatabase.setUpDatabase(context);
+                    }
+                    updateImages(images);
+
+                    Helper.showMessage(this, "Restored", "" +
+                            "Notes have been restored", MotionToast.TOAST_SUCCESS);
+
+                    close();
+                } catch (Exception e) {
+                    if(tryAgain){
+                        Helper.showMessage(this, "Error", "Clear storage via App Settings", MotionToast.TOAST_ERROR);
+                        appSettings.setBackgroundColor(getColor(R.color.flamingo));
+                        tryAgain = false;
+                    }
+                    else {
+                        Helper.showMessage(this, "Error","attempting to fix error...try again", MotionToast.TOAST_ERROR);
+                        tryAgain = true;
+                    }
+                }
+            }
+            else
+                Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
+                        "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
         }
     }
 
@@ -612,7 +793,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     Realm.deleteRealm(configuration);
 
                     RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
-                    realmBackupRestore.restore(uri);
+                    realmBackupRestore.restore(uri, "default.realm", false);
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
                     close();
@@ -631,6 +812,16 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             else
                 Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
                         "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
+        }
+    }
+
+    private void updateImages(ArrayList<String> imagePaths){
+        for(int i = 0; i < imagePaths.size(); i++){
+            String imagePath = imagePaths.get(i).substring(imagePaths.get(i).lastIndexOf("/") + 1);
+            Photo currentPhoto = realm.where(Photo.class).contains("photoLocation", imagePath).findFirst();
+            realm.beginTransaction();
+            currentPhoto.setPhotoLocation(imagePaths.get(i));
+            realm.commitTransaction();
         }
     }
 

@@ -88,7 +88,6 @@ public class CategoryScreen extends AppCompatActivity {
 
         allNotes = realm.where(Note.class).findAll();
         archivedAllNotes = realm.where(Note.class)
-                .equalTo("pin", false)
                 .equalTo("trash", false)
                 .equalTo("archived", true)
                 .findAll();
@@ -187,8 +186,10 @@ public class CategoryScreen extends AppCompatActivity {
                 showAllNotes.setVisibility(View.GONE);
                 noCategory.setVisibility(View.GONE);
                 trash.setVisibility(View.GONE);
-                archived.setVisibility(View.GONE);
-                pinned.setVisibility(View.GONE);
+                archived.setVisibility(View.VISIBLE);
+                pinned.setVisibility(View.VISIBLE);
+                archived.setText("Archive");
+                pinned.setText("Pin");
             }
         }
 
@@ -316,6 +317,12 @@ public class CategoryScreen extends AppCompatActivity {
         });
 
         archived.setOnClickListener(v -> {
+            if(multiSelect) {
+                realm.beginTransaction();
+                allSelectedNotes.setBoolean("archived", true);
+                realm.commitTransaction();
+                closeActivity(-10);
+            }
             if(!isNotesSelected && archivedAllNotes.size() > 0)
                 closeActivity(-10);
             else if(archivedAllNotes.size() == 0)
@@ -325,6 +332,12 @@ public class CategoryScreen extends AppCompatActivity {
         });
 
         pinned.setOnClickListener(v -> {
+            if(multiSelect) {
+                realm.beginTransaction();
+                allSelectedNotes.setBoolean("pin", true);
+                realm.commitTransaction();
+                closeActivity(-11);
+            }
             if(!isNotesSelected && pinnedAllNotes.size() > 0)
                 closeActivity(-11);
             else if(pinnedAllNotes.size() == 0)
