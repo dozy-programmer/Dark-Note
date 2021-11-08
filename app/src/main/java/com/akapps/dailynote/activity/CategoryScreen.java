@@ -183,13 +183,19 @@ public class CategoryScreen extends AppCompatActivity {
                 title.setText(allSelected + " Selected");
 
             if(multiSelect){
-                showAllNotes.setVisibility(View.GONE);
-                noCategory.setVisibility(View.GONE);
+                showAllNotes.setVisibility(View.VISIBLE);
+                noCategory.setVisibility(View.VISIBLE);
                 trash.setVisibility(View.GONE);
                 archived.setVisibility(View.VISIBLE);
                 pinned.setVisibility(View.VISIBLE);
-                archived.setText("Archive");
-                pinned.setText("Pin");
+                showAllNotes.setText("Archive");
+                noCategory.setText("Un-Archive");
+                showAllNotes.setTextColor(getColor(R.color.darker_blue));
+                noCategory.setTextColor(getColor(R.color.chetwode_blue));
+                pinned.setTextColor(getColor(R.color.chardonnay));
+                archived.setTextColor(getColor(R.color.orange));
+                archived.setText("Pin");
+                pinned.setText("Un-Pin");
             }
         }
 
@@ -294,14 +300,26 @@ public class CategoryScreen extends AppCompatActivity {
         addCategory.setOnClickListener(v -> openNewItemDialog());
 
         showAllNotes.setOnClickListener(v -> {
-            if(!isNotesSelected)
+            if(multiSelect) {
+                realm.beginTransaction();
+                allSelectedNotes.setBoolean("archived", true);
+                realm.commitTransaction();
+                closeActivity(-8);
+            }
+            else if(!isNotesSelected)
                 closeActivity(-2);
             else
                 showErrorMessage();
         });
 
         noCategory.setOnClickListener(v -> {
-            if(!isNotesSelected)
+            if(multiSelect) {
+                realm.beginTransaction();
+                allSelectedNotes.setBoolean("archived", false);
+                realm.commitTransaction();
+                closeActivity(-9);
+            }
+            else if(!isNotesSelected)
                 closeActivity(-3);
             else
                 showErrorMessage();
@@ -319,9 +337,9 @@ public class CategoryScreen extends AppCompatActivity {
         archived.setOnClickListener(v -> {
             if(multiSelect) {
                 realm.beginTransaction();
-                allSelectedNotes.setBoolean("archived", true);
+                allSelectedNotes.setBoolean("pin", true);
                 realm.commitTransaction();
-                closeActivity(-10);
+                closeActivity(-13);
             }
             if(!isNotesSelected && archivedAllNotes.size() > 0)
                 closeActivity(-10);
@@ -334,9 +352,9 @@ public class CategoryScreen extends AppCompatActivity {
         pinned.setOnClickListener(v -> {
             if(multiSelect) {
                 realm.beginTransaction();
-                allSelectedNotes.setBoolean("pin", true);
+                allSelectedNotes.setBoolean("pin", false);
                 realm.commitTransaction();
-                closeActivity(-11);
+                closeActivity(-12);
             }
             if(!isNotesSelected && pinnedAllNotes.size() > 0)
                 closeActivity(-11);

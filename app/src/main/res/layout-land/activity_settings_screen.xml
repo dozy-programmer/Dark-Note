@@ -57,6 +57,133 @@
         </androidx.appcompat.widget.Toolbar>
 
         <TextView
+            android:id="@+id/free_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Hi there, thanks for using my app!\nYou are currently a regular user and do not have access to change settings, but you can backup and restore backups. Consider upgrading to Pro, it would help this college student out. If not, leaving a review would be appreciated. Anyways, Enjoy!"
+            android:textColor="@color/blue"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+
+        <TextView
+            android:id="@+id/account_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Account (BETA)"
+            android:textColor="@color/orange"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/free_user"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/account_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/account_settings">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/sign_up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:layout_marginHorizontal="10dp"
+                        android:gravity="center"
+                        android:backgroundTint="@color/gray"
+                        android:text="Sign Up"
+                        app:cornerRadius="15dp"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/log_in"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:backgroundTint="@color/gray"
+                        android:layout_marginHorizontal="10dp"
+                        android:gravity="center"
+                        android:text="Login"
+                        app:cornerRadius="15dp"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/logged_in_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/sync"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:layout_marginHorizontal="30dp"
+                        android:gravity="center"
+                        android:backgroundTint="@color/gray"
+                        android:text="Sync"
+                        app:cornerRadius="15dp"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/upload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="50"
+                        android:backgroundTint="@color/gray"
+                        android:layout_marginHorizontal="30dp"
+                        android:gravity="center"
+                        android:text="Upload"
+                        app:cornerRadius="15dp"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
             android:id="@+id/backup_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +196,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"></TextView>
+            app:layout_constraintTop_toBottomOf="@+id/account_layout"></TextView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"

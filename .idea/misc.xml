@@ -4,7 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-land/activity_note_edit.xml" value="0.18333333333333332" />
-        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-land/activity_settings_screen.xml" value="0.132" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-land/activity_settings_screen.xml" value="0.1" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_category_screen.xml" value="0.268" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_note_edit.xml" value="0.268" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_settings_screen.xml" value="0.2" />
@@ -19,6 +19,7 @@
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_category_screen.xml" value="0.3" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_note_edit.xml" value="0.268" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_settings_screen.xml" value="0.2" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/bottom_sheet_account_login.xml" value="0.268" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/bottom_sheet_checklist_category.xml" value="0.12708333333333333" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/bottom_sheet_checklist_filter.xml" value="0.191015625" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/bottom_sheet_checklist_item.xml" value="0.3" />

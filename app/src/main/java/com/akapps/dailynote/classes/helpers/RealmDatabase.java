@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.akapps.dailynote.R;
 
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -15,10 +18,13 @@ public class RealmDatabase {
     public static Realm setUpDatabase(Context context){
         int currentVersion = Integer.parseInt(context.getString(R.string.schema));
 
+        byte[] key = Helper.getKey(context).getBytes();
+
         Realm.init(context);
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .schemaVersion(currentVersion) // Must be bumped when the schema changes
                 .migration(new MyMigration()) // Migration to run instead of throwing an exception
+                .compactOnLaunch()
                 .build();
         Realm.setDefaultConfiguration(config);
         return Realm.getDefaultInstance();
@@ -56,6 +62,11 @@ public class RealmDatabase {
                         .removeField("startingDate")
                         .removeField("categories")
                         .removeField("liveNoteAutoComplete");
+            }
+            else if(oldVersion == 1){
+                schema.get("User")
+                        .addField("email", String.class)
+                        .addField("password", String.class);
             }
         }
     }

@@ -47,7 +47,7 @@ public class RealmBackupRestore {
     public File backup_Share() {
         Context context = activity.getApplicationContext();
         File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-                        + "/" + context.getString(R.string.app_name));
+                        + "");
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
@@ -68,15 +68,11 @@ public class RealmBackupRestore {
     public void restore(Uri uri, String exportFileName, boolean unZip) {
         File storageDir;
         if(unZip){
-            storageDir = new File(
-                    activity.getApplicationContext()
-                            .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-                            + "/" + activity.getApplicationContext()
-                            .getString(R.string.app_name));
+            storageDir = new File(activity.getApplicationContext()
+                            .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "");
         }
         else{
-            storageDir = new File(
-                    activity.getApplicationContext()
+            storageDir = new File(activity.getApplicationContext()
                             .getExternalFilesDir(null) + "");
         }
         if (!storageDir.exists()) {
@@ -192,7 +188,7 @@ public class RealmBackupRestore {
     private ArrayList<String> findPaths(){
         ArrayList<String> images = new ArrayList<>();
         String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-                + "/" + activity.getApplicationContext().getString(R.string.app_name);
+                + "";
         File directory = new File(path);
         File[] files = directory.listFiles();
         for (int i = 0; i < files.length; i++) {

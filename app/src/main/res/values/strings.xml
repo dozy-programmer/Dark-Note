@@ -1,5 +1,20 @@
 <resources>
     <string name="app_name">Dark Note</string>
-    <string name="app_version">Version 2.5</string>
-    <string name="schema">1</string>
+    <string name="app_version">Version 2.6</string>
+    <string name="schema">2</string>
+
+    <!-- Account Login Sheet !-->
+    <string name="login_title">Login</string>
+    <string name="login_error_title">Wrong Login/Password</string>
+    <string name="login_error_message">Please try again.</string>
+    <string name="login_success_title">Logged In</string>
+    <string name="signed_up_success_title">Signed Up</string>
+    <string name="signed_up_success_message">Thanks for signing up!</string>
+    <string name="login_success_message">Please enter pin</string>
+    <string name="login_max_title">Too many attempts</string>
+    <string name="login_max_message">Please contact admin</string>
+    <string name="email_input_hint">Email</string>
+    <string name="password_input_hint">Password</string>
+    <string name="email_end_format">\@oasis.com</string>
+    <string name="input_error">Incorrect Input</string>
 </resources>

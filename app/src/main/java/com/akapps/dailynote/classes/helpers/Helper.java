@@ -1,19 +1,26 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import com.akapps.dailynote.R;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -247,6 +254,16 @@ public class Helper {
         return data;
     }
 
+    // retrieved data saved
+    public static String getKey(Context context) {
+        if(null == getPreference(context, "key_encryption")){
+            byte[] key = new byte[32];
+            new SecureRandom().nextBytes(key);
+            savePreference(context, new String(key), "key_encryption");
+        }
+        return getPreference(context, "key_encryption");
+    }
+
     // saves a small piece of data
     public static void saveBooleanPreference(Context context, boolean data, String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("app", MODE_PRIVATE);
@@ -276,6 +293,28 @@ public class Helper {
         catch (Exception e){
             Toast.makeText(activity.getBaseContext(), title + "\n" + message, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static Dialog showLoading(Dialog progressDialog, Context context, boolean show){
+        try {
+            if (show) {
+                progressDialog = new Dialog(context);
+                progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                progressDialog.setContentView(R.layout.custom_dialog_progress);
+
+                TextView progressTv = progressDialog.findViewById(R.id.progress_tv);
+                progressTv.setText(context.getResources().getString(R.string.loading));
+                progressTv.setTextColor(ContextCompat.getColor(context, R.color.darker_blue));
+                progressTv.setTextSize(19F);
+                if (progressDialog.getWindow() != null)
+                    progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            } else
+                progressDialog.cancel();
+        }catch (Exception e){ }
+        return progressDialog;
     }
 
     // deletes cache directory to ensure app size does not get too big

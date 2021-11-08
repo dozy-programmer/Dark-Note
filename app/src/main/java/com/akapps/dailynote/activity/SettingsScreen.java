@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,6 +37,7 @@ import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.SecurityForPurchases;
 import com.akapps.dailynote.classes.helpers.Zip;
+import com.akapps.dailynote.classes.other.AccountSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.android.billingclient.api.BillingClient;
@@ -47,8 +49,15 @@ import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetailsParams;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -89,6 +98,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private User currentUser;
     private Realm realm;
 
+    // account authentication
+    private FirebaseAuth mAuth;
+
     // Toolbar
     private Toolbar toolbar;
     private ImageView close;
@@ -99,6 +111,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private LinearLayout backupBeta;
     private LinearLayout restoreBackupBeta;
     private LinearLayout appSettings;
+    private LinearLayout syncLayout;
     private MaterialCardView contact;
     private MaterialCardView review;
     private TextView titleLines;
@@ -114,6 +127,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private MaterialCardView row;
     private MaterialCardView staggered;
     private TextView about;
+    private TextView freeUserMessage;
+    private MaterialButton signUp;
+    private MaterialButton logIn;
+    private MaterialButton sync;
+    private MaterialButton upload;
+    private TextView accountInfo;
+    private Dialog progressDialog;
 
     // Billing client
     private BillingClient billingClient;
@@ -130,6 +150,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         context = this;
         Helper.deleteCache(context);
+
+        mAuth = FirebaseAuth.getInstance();
 
         all_Notes = getIntent().getIntExtra("size", 0);
 
@@ -153,8 +175,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     protected void onResume() {
         super.onResume();
 
-        if(realm.isClosed())
-           realm = Realm.getDefaultInstance();
+        realmStatus();
     }
 
     @Override
@@ -168,6 +189,17 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     @Override
     public void onBackPressed() {
        close();
+    }
+
+    private void realmStatus(){
+        if(realm.isClosed()) {
+            try {
+                realm = Realm.getDefaultInstance();
+            } catch (Exception e) {
+                realm = RealmDatabase.setUpDatabase(context);
+            }
+            currentUser = realm.where(User.class).findFirst();
+        }
     }
 
     private void initializeLayout(){
@@ -191,6 +223,32 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         staggered = findViewById(R.id.staggered);
         backupBeta = findViewById(R.id.backup_beta);
         restoreBackupBeta = findViewById(R.id.restore_beta_backup);
+        freeUserMessage = findViewById(R.id.free_user);
+        syncLayout = findViewById(R.id.logged_in_layout);
+        signUp = findViewById(R.id.sign_up);
+        logIn = findViewById(R.id.log_in);
+        sync = findViewById(R.id.sync);
+        upload = findViewById(R.id.upload);
+        accountInfo = findViewById(R.id.account_name);
+
+        if(null == currentUser.getEmail()){
+            realm.beginTransaction();
+            currentUser.setEmail("");
+            currentUser.setPassword("");
+            realm.commitTransaction();
+        }
+
+        if(currentUser.isProUser()) {
+            freeUserMessage.setVisibility(View.GONE);
+
+            if(mAuth.getCurrentUser() != null){
+                syncLayout.setVisibility(View.VISIBLE);
+                signUp.setVisibility(View.GONE);
+                logIn.setText("Log Out");
+                accountInfo.setVisibility(View.VISIBLE);
+                accountInfo.setText(mAuth.getCurrentUser().getEmail());
+            }
+        }
 
         String titleLinesNumber = String.valueOf(currentUser.getTitleLines());
         String previewLinesNumber = String.valueOf(currentUser.getContentLines());
@@ -204,6 +262,49 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
+        signUp.setOnClickListener(view -> {
+            if(currentUser.isProUser()) {
+                if (mAuth.getCurrentUser() == null) {
+                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, true);
+                    accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
+                }
+            }
+            else
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+        });
+
+        logIn.setOnClickListener(view -> {
+            if(currentUser.isProUser()) {
+                if (mAuth.getCurrentUser() != null) {
+                    // sign out user
+                    FirebaseAuth.getInstance().signOut();
+                    restart();
+                } else {
+                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, false);
+                    accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
+                }
+            }
+            else
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+        });
+
+        sync.setOnClickListener(view -> {
+            if(currentUser.isProUser()) {
+                if (mAuth.getCurrentUser() != null) {
+                    progressDialog = Helper.showLoading(progressDialog, context, true);
+                    new Thread(() -> restoreFromDatabase()).start();
+                }
+            }
+        });
+
+        upload.setOnClickListener(view -> {
+            if(currentUser.isProUser()) {
+                if (mAuth.getCurrentUser() != null)
+                    progressDialog = Helper.showLoading(progressDialog, context, true);
+                    upLoadData();
+            }
+        });
+
         backup.setOnClickListener(v -> {
             betaBackup = false;
             showBackupRestoreInfo(1);
@@ -215,7 +316,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 showBackupRestoreInfo(2);
             }
             else
-                Helper.showMessage(this, "Settings", "Upgrade to pro to enable", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         restoreBackup.setOnClickListener(v -> {
@@ -229,8 +330,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 openFile();
             }
             else
-                Helper.showMessage(this, "Settings", "Upgrade to pro to enable", MotionToast.TOAST_ERROR);
-
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         if(!currentUser.isProUser()){
@@ -248,7 +348,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 showLineNumberMenu(titleLines, null);
             }
             else
-                Helper.showMessage(this, "Settings", "Upgrade to pro to change preview settings", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         previewLayout.setOnClickListener(v -> {
@@ -257,7 +357,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 showLineNumberMenu(previewLines, null);
             }
             else
-                Helper.showMessage(this, "Settings", "Upgrade to pro to change preview settings", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         appSettings.setOnClickListener(v -> openAppInSettings());
@@ -272,7 +372,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 staggered.setCardBackgroundColor(context.getColor(R.color.gray));
             }
             else
-                Helper.showMessage(this, "Settings", "Upgrade to pro to change layout", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         grid.setOnClickListener(v -> {
@@ -285,7 +385,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 staggered.setCardBackgroundColor(context.getColor(R.color.gray));
             }
             else
-                Helper.showMessage(this, "Settings", "Upgrade to pro to change layout", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         staggered.setOnClickListener(v -> {
@@ -313,7 +413,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
             else if(initializing) {
                 showPreview.setChecked(true);
-                Helper.showMessage(this, "Settings", "Upgrade to pro to change preview settings", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
             }
         });
 
@@ -325,7 +425,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
             else if(initializing) {
                 openFoldersOnStart.setChecked(false);
-                Helper.showMessage(this, "Settings", "Upgrade to pro to change folder settings", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
             }
         });
 
@@ -362,10 +462,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             Helper.showMessage(SettingsScreen.this, "Downgrade Successful", "" +
                     "Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
         }
-        Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
-        startActivity(intent);
-        finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+      restart();
     }
 
     private void initializeBilling(){
@@ -588,6 +685,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         }
     }
 
+    public void restart(){
+        Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
     private void openBackup(){
         if(betaBackup)
             backUpDataAndImages();
@@ -609,19 +713,22 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void backUpDataAndImages(){
-        if(all_Notes!=0) {
-            ArrayList<String> allPaths = getAllFilePaths(realm.where(Photo.class).findAll());
-            realm.close();
-            RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
-            realmBackupRestore.update(this, context);
-            File exportedFilePath = realmBackupRestore.backup_Share();
-            allPaths.add(exportedFilePath.getAbsolutePath());
-            String backUpFolderPath = zipPhotos(allPaths);
-            shareFile(new File(backUpFolderPath));
-        }
+        if(all_Notes!=0)
+            shareFile(new File(backUpZip()));
         else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
+    }
+
+    private String backUpZip(){
+        ArrayList<String> allPaths = getAllFilePaths(realm.where(Photo.class).findAll());
+        realm.close();
+        RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
+        realmBackupRestore.update(this, context);
+        File exportedFilePath = realmBackupRestore.backup_Share();
+        allPaths.add(exportedFilePath.getAbsolutePath());
+        realmStatus();
+        return zipPhotos(allPaths);
     }
 
     private ArrayList<String> getAllFilePaths(RealmResults<Photo> allPhotos){
@@ -680,6 +787,31 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         return zipFile.getAbsolutePath();
     }
 
+    private void upLoadData(){
+        Uri file = Uri.fromFile(new File(backUpZip()));
+        String userEmail = mAuth.getCurrentUser().getEmail();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("users")
+                .child(userEmail)
+                .child("backup.zip");
+        UploadTask uploadTask = storageRef.putFile(file);
+
+        Log.d("Heeee", "Email is " + userEmail);
+        Log.d("Heeee", "Path is " + storageRef.getPath());
+
+        uploadTask.addOnFailureListener(exception -> {
+            Helper.showLoading(progressDialog, context, false);
+            Helper.showMessage(this, "Upload error",
+                    "Error Uploading data",
+                    MotionToast.TOAST_ERROR);
+        }).addOnSuccessListener(taskSnapshot -> {
+            Helper.showLoading(progressDialog, context, false);
+            Helper.showMessage(this, "Upload Success",
+                    "Data Uploaded",
+                    MotionToast.TOAST_SUCCESS);
+        });
+    }
+
     private void showBackupRestoreInfo(int selection){
         InfoSheet info = new InfoSheet(selection);
         info.show(getSupportFragmentManager(), info.getTag());
@@ -693,6 +825,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void shareFile(File backup){
+        realmStatus();
+
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("text/plain");
 
@@ -714,6 +848,65 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 restoreBackupBeta(data);
             else
                 restoreBackup(data);
+        }
+    }
+
+    private void restoreFromDatabase(){
+        String userEmail = mAuth.getCurrentUser().getEmail();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference()
+                .child("users/" + userEmail + "/backup.zip");
+
+        FilesKt.deleteRecursively(new File(getApplicationContext().getExternalFilesDir(null) + ""));
+
+        File storageDir = new File(context
+                .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
+
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+
+        File localFile = new File(storageDir,"backup.zip");
+
+        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+            restoreFromDatabase(Uri.fromFile(localFile));
+        }).addOnFailureListener(exception -> Helper.showMessage(SettingsScreen.this, "Error", "" +
+                        "Restoring Error from database, try again", MotionToast.TOAST_ERROR));
+    }
+
+    private void restoreFromDatabase(Uri uri){
+        Log.d("Heeee", "Uri path is " + uri.getPath());
+        RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
+        try {
+            // close realm before restoring
+            RealmConfiguration configuration = realm.getConfiguration();
+            realm.close();
+            Realm.deleteRealm(configuration);
+
+            // initialize backup object
+            realmBackupRestore = new RealmBackupRestore(this);
+            // make a copy of the backup zip file selected by user and unzip it
+            realmBackupRestore.restore(uri, "backup.zip", true);
+
+            ArrayList<String> images = realmBackupRestore.getImagesPath();
+            realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
+
+            Helper.showMessage(this, "Synced", "" +
+                    "Data was synced", MotionToast.TOAST_SUCCESS);
+
+            // update image paths from restored database so it knows where the images are
+            realm = RealmDatabase.setUpDatabase(context);
+            updateImages(images);
+
+            Helper.showMessage(this, "Restored", "" +
+                    "Notes have been restored", MotionToast.TOAST_SUCCESS);
+
+            Helper.showLoading(progressDialog, context, false);
+
+            close();
+        } catch (Exception e) {
+            Helper.showMessage(this, "Error", "" +
+                    "Restoring Error to device, try again", MotionToast.TOAST_ERROR);
         }
     }
 
@@ -816,12 +1009,16 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void updateImages(ArrayList<String> imagePaths){
-        for(int i = 0; i < imagePaths.size(); i++){
-            String imagePath = imagePaths.get(i).substring(imagePaths.get(i).lastIndexOf("/") + 1);
-            Photo currentPhoto = realm.where(Photo.class).contains("photoLocation", imagePath).findFirst();
-            realm.beginTransaction();
-            currentPhoto.setPhotoLocation(imagePaths.get(i));
-            realm.commitTransaction();
+        if(imagePaths.size() != 0) {
+            for (int i = 0; i < imagePaths.size(); i++) {
+                String imagePath = imagePaths.get(i).substring(imagePaths.get(i).lastIndexOf("/") + 1);
+                Photo currentPhoto = realm.where(Photo.class).contains("photoLocation", imagePath).findFirst();
+                if(currentPhoto != null) {
+                    realm.beginTransaction();
+                    currentPhoto.setPhotoLocation(imagePaths.get(i));
+                    realm.commitTransaction();
+                }
+            }
         }
     }
 

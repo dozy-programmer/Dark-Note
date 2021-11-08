@@ -363,6 +363,57 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         int finalPreview_3_position = preview_3_position;
         holder.preview_3_layout.setOnClickListener(view -> showPhotos(finalPreview_3_position, allPhotos, holder.preview_3));
 
+        holder.preview_1_layout.setOnLongClickListener(view -> {
+            // prevent opening of images when multi-selecting
+            if(!enableSelectMultiple) {
+                ((notes) noteFragment).unSelectAllNotes();
+                enableSelectMultiple = true;
+                saveSelected(currentNote, true);
+                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeWidth(10);
+                ((notes) noteFragment).deleteMultipleNotesLayout();
+                ((notes) noteFragment).numberSelected(1, 0, -1);
+            }
+            else
+                Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
+                        "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
+            return false;
+        });
+
+        holder.preview_2_layout.setOnLongClickListener(view -> {
+            // prevent opening of images when multi-selecting
+            if(!enableSelectMultiple) {
+                ((notes) noteFragment).unSelectAllNotes();
+                enableSelectMultiple = true;
+                saveSelected(currentNote, true);
+                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeWidth(10);
+                ((notes) noteFragment).deleteMultipleNotesLayout();
+                ((notes) noteFragment).numberSelected(1, 0, -1);
+            }
+            else
+                Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
+                        "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
+            return false;
+        });
+
+        holder.preview_3_layout.setOnLongClickListener(view -> {
+            // prevent opening of images when multi-selecting
+            if(!enableSelectMultiple) {
+                ((notes) noteFragment).unSelectAllNotes();
+                enableSelectMultiple = true;
+                saveSelected(currentNote, true);
+                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeWidth(10);
+                ((notes) noteFragment).deleteMultipleNotesLayout();
+                ((notes) noteFragment).numberSelected(1, 0, -1);
+            }
+            else
+                Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
+                        "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
+            return false;
+        });
+
         // if user is selecting multiple notes, it updates status of select in note,
         // changes outline color, and updates number of selected notes
         // if not, it opens note

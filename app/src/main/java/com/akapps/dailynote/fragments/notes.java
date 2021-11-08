@@ -207,9 +207,11 @@ public class notes extends Fragment{
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
         }
         else{
-            adapterNotes.notifyDataSetChanged();
-            // if list is empty, then it shows an empty layout
-            isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
+            if(!realm.isClosed()) {
+                adapterNotes.notifyDataSetChanged();
+                // if list is empty, then it shows an empty layout
+                isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
+            }
         }
         Helper.deleteCache(context);
     }
@@ -309,14 +311,10 @@ public class notes extends Fragment{
 
         categoryNotes.setOnClickListener(v -> {
            if(realm.where(Note.class).findAll().size()!=0) {
-                if(isNotesFiltered)
-                    showMessage("Failed", "Close filter to open categories", true);
-                else {
-                    Intent category = new Intent(getActivity(), CategoryScreen.class);
-                    if(enableSelectMultiple)
-                        category.putExtra("multi_select", true);
-                    startActivityForResult(category, 5);
-                }
+                Intent category = new Intent(getActivity(), CategoryScreen.class);
+                if(enableSelectMultiple)
+                    category.putExtra("multi_select", true);
+                startActivityForResult(category, 5);
             }
             else
                 showMessage("Empty", "There are no notes \uD83D\uDE10", true);
@@ -438,22 +436,46 @@ public class notes extends Fragment{
             isNotesFiltered = true;
             closeFilter();
         }
-        else if(resultCode == -10){
+        else if(resultCode == -10 || resultCode == -9 || resultCode == -8){
             RealmResults<Note> queryArchivedNotes =
                     realm.where(Note.class)
                             .equalTo("archived", true)
                             .equalTo("trash", false).findAll();
 
-            filteringAllNotesRealm(queryArchivedNotes, true);
+            if(resultCode == -8)
+                Helper.showMessage(getActivity(), "Archived", "All Selected note(s) have " +
+                        "been archived", MotionToast.TOAST_SUCCESS);
+            else if(resultCode == -9)
+                Helper.showMessage(getActivity(), "Un-Archived", "All Selected note(s) have " +
+                        "been un-archived", MotionToast.TOAST_SUCCESS);
+
+            if(enableSelectMultiple) {
+                closeMultipleNotesLayout();
+                showData();
+            }
+            else
+                filteringAllNotesRealm(queryArchivedNotes, true);
         }
-        else if(resultCode == -11){
+        else if(resultCode == -11 || resultCode == -12 || resultCode == -13){
             RealmResults<Note> queryArchivedNotes =
                     realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("pin", true)
                             .equalTo("trash", false).findAll();
 
-            filteringAllNotesRealm(queryArchivedNotes, true);
+            if(resultCode == -13)
+                Helper.showMessage(getActivity(), "Pinned", "All Selected note(s) have " +
+                        "been pinned", MotionToast.TOAST_SUCCESS);
+            else if(resultCode == -12)
+                Helper.showMessage(getActivity(), "Un-Pinned", "All Selected note(s) have " +
+                        "been un-pinned", MotionToast.TOAST_SUCCESS);
+
+            if(enableSelectMultiple) {
+                closeMultipleNotesLayout();
+                showData();
+            }
+            else
+                filteringAllNotesRealm(queryArchivedNotes, true);
         }
     }
 
