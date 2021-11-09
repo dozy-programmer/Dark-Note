@@ -146,7 +146,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();
         ((NoteEdit)getActivity()).updateDateEdited();
-        adapter.notifyItemRemoved(position);
+        adapter.notifyDataSetChanged();
     }
 
 

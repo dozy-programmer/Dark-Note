@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Dark Note</string>
     <string name="app_version">Version 2.8</string>
-    <string name="schema">3</string>
+    <string name="schema">4</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_title">Login</string>

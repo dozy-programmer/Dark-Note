@@ -136,7 +136,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="50"
                         android:textColor="@color/blue"
-                        android:textSize="16sp"/>
+                        android:textSize="24sp"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/log_in"
@@ -194,6 +194,33 @@
                         android:text="Upload"
                         app:cornerRadius="15dp"
                         android:textColor="@color/ultra_white"
+                        android:textSize="20sp"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/last_upload"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:gravity="center"
+                        android:text=""
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginVertical="5dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="50"
+                        android:textColor="@color/blue"
                         android:textSize="20sp"/>
 
                 </LinearLayout>

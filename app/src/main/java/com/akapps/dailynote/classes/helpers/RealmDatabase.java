@@ -72,6 +72,10 @@ public class RealmDatabase {
                 schema.get("User")
                         .removeField("password");
             }
+            else if(oldVersion == 3){
+                schema.get("User")
+                        .addField("lastUpload", String.class);
+            }
         }
     }
 }

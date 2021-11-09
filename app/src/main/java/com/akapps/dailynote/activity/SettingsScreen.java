@@ -133,6 +133,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private MaterialButton sync;
     private MaterialButton upload;
     private TextView accountInfo;
+    private TextView lastUploadDate;
     private Dialog progressDialog;
 
     // Billing client
@@ -230,6 +231,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         sync = findViewById(R.id.sync);
         upload = findViewById(R.id.upload);
         accountInfo = findViewById(R.id.account_name);
+        lastUploadDate = findViewById(R.id.last_upload);
 
         if(null == currentUser.getEmail()){
             realm.beginTransaction();
@@ -246,6 +248,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 logIn.setText("Log Out");
                 accountInfo.setVisibility(View.VISIBLE);
                 accountInfo.setText(mAuth.getCurrentUser().getEmail());
+
+                if(null != currentUser.getLastUpload() && !currentUser.getLastUpload().isEmpty()){
+                    lastUploadDate.setVisibility(View.VISIBLE);
+                    lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
+                }
             }
         }
 
@@ -274,9 +281,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         logIn.setOnClickListener(view -> {
             if (mAuth.getCurrentUser() != null) {
-                // sign out user
-                FirebaseAuth.getInstance().signOut();
-                restart();
+                showBackupRestoreInfo(8);
             } else {
                 AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, false);
                 accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
@@ -284,20 +289,15 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         sync.setOnClickListener(view -> {
-            if(currentUser.isProUser()) {
-                if (mAuth.getCurrentUser() != null) {
-                    progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
-                    new Thread(() -> restoreFromDatabase()).start();
-                }
-            }
+            if(currentUser.isProUser())
+                if (mAuth.getCurrentUser() != null)
+                    showBackupRestoreInfo(7);
         });
 
         upload.setOnClickListener(view -> {
-            if(currentUser.isProUser()) {
+            if(currentUser.isProUser())
                 if (mAuth.getCurrentUser() != null)
-                    progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
-                    upLoadData();
-            }
+                    showBackupRestoreInfo(6);
         });
 
         backup.setOnClickListener(v -> {
@@ -782,7 +782,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         return zipFile.getAbsolutePath();
     }
 
-    private void upLoadData(){
+    public void upLoadData(){
+        progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
         Uri file = Uri.fromFile(new File(backUpZip()));
         String userEmail = mAuth.getCurrentUser().getEmail();
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -794,9 +795,15 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         uploadTask.addOnFailureListener(exception -> {
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload error",
-                    "Error Uploading data",
+                    "Error Uploading data, try again",
                     MotionToast.TOAST_ERROR);
+            restart();
         }).addOnSuccessListener(taskSnapshot -> {
+            realm.beginTransaction();
+            currentUser.setLastUpload(Helper.getCurrentDate());
+            lastUploadDate.setVisibility(View.VISIBLE);
+            lastUploadDate.setText(currentUser.getLastUpload());
+            realm.commitTransaction();
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload Success",
                     "Data Uploaded",
@@ -843,7 +850,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         }
     }
 
-    private void restoreFromDatabase(){
+    public void restoreFromDatabase(){
         String userEmail = mAuth.getCurrentUser().getEmail();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference()
@@ -903,7 +910,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void restoreBackupBeta(Intent data){
-        progressDialog = Helper.showLoading("Restoring", progressDialog, context, true);
         if (data != null) {
             Uri uri = data.getData();
             Cursor returnCursor = context.getContentResolver()

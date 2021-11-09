@@ -62,6 +62,12 @@ public class Helper {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    public static String getCurrentDate(){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM dd, yyyy\nhh:mm:ss a");
+        return sdf.format(c.getTime());
+    }
+
     public static void unSetOrientation(Activity activity, Context context){
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }

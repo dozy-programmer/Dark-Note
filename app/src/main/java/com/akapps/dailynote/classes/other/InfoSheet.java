@@ -23,6 +23,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -166,6 +168,37 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             info.setText("Enter Security word used to lock note");
             info.setGravity(Gravity.CENTER);
         }
+        else if(message == 6){
+              // initialize layout
+              title.setText("Upload");
+              backup.setVisibility(View.VISIBLE);
+              backup.setBackgroundColor(getContext().getColor(R.color.darker_blue));
+              backup.setText("UPLOAD");
+              info.setText("This will override the backup that is used to sync across devices.");
+              info.setGravity(Gravity.CENTER);
+              securityWord.setVisibility(View.GONE);
+        }
+        else if(message == 7) {
+              // initialize layout
+              title.setText("Sync");
+              backup.setVisibility(View.VISIBLE);
+              backup.setBackgroundColor(getContext().getColor(R.color.darker_blue));
+              backup.setText("SYNC");
+              info.setText("All local data will be deleted and replaced by the backup (if you have uploaded).");
+              info.setGravity(Gravity.CENTER);
+              securityWord.setVisibility(View.GONE);
+        }
+        else if(message == 8){
+              // initialize layout
+              title.setText("Logout");
+              backup.setVisibility(View.VISIBLE);
+              backup.setBackgroundColor(getContext().getColor(R.color.red));
+              backup.setText("LOGOUT");
+              info.setText("Are you sure?");
+              info.setGravity(Gravity.CENTER);
+              securityWord.setVisibility(View.GONE);
+        }
+
 
         unlock.setOnClickListener(v -> {
             attempts++;
@@ -200,6 +233,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                 Helper.showMessage(getActivity(), "Delete Status", "Photo has been deleted",
                         MotionToast.TOAST_SUCCESS);
             }
+            else if(message == 6)
+                ((SettingsScreen) getActivity()).upLoadData();
+            else if(message == 7)
+                ((SettingsScreen) getActivity()).restoreFromDatabase();
+            else if(message == 8){
+                FirebaseAuth.getInstance().signOut();
+                ((SettingsScreen) getActivity()).restart();
+            }
+
             this.dismiss();
         });
 

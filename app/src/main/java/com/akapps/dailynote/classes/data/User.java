@@ -21,6 +21,8 @@ public class User extends RealmObject {
 
     private String email;
 
+    private String lastUpload;
+
     public User() {}
 
     public User(int userId) {
@@ -31,6 +33,7 @@ public class User extends RealmObject {
         showPreview = true;
         titleLines = contentLines = 3;
         email = "";
+        lastUpload = "";
     }
 
     public int getUserId() {
@@ -103,5 +106,13 @@ public class User extends RealmObject {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLastUpload() {
+        return lastUpload;
+    }
+
+    public void setLastUpload(String lastUpload) {
+        this.lastUpload = lastUpload;
     }
 }
