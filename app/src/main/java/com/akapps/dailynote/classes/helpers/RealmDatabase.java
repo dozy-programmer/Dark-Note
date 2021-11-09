@@ -68,6 +68,10 @@ public class RealmDatabase {
                         .addField("email", String.class)
                         .addField("password", String.class);
             }
+            else if(oldVersion == 2){
+                schema.get("User")
+                        .removeField("password");
+            }
         }
     }
 }

@@ -80,7 +80,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Account (BETA)"
+            android:text="Account"
             android:textColor="@color/orange"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -124,6 +124,19 @@
                         app:cornerRadius="15dp"
                         android:textColor="@color/ultra_white"
                         android:textSize="20sp"/>
+
+                    <TextView
+                        android:id="@+id/account_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:gravity="center"
+                        android:text=""
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="50"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/log_in"

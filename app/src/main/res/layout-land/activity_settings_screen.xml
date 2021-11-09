@@ -78,7 +78,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Account (BETA)"
+            android:text="Account"
             android:textColor="@color/orange"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +111,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/sign_up"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="50"
                         android:layout_marginHorizontal="10dp"
@@ -122,9 +122,22 @@
                         android:textColor="@color/ultra_white"
                         android:textSize="14sp"/>
 
+                    <TextView
+                        android:id="@+id/account_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:gravity="center"
+                        android:text=""
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="50"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp"/>
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/log_in"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="50"
                         android:backgroundTint="@color/gray"

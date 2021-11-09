@@ -98,7 +98,6 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                         if (task.isSuccessful()) {
                             realm.beginTransaction();
                             currentUser.setEmail(email);
-                            currentUser.setPassword(password);
                             realm.commitTransaction();
                             Helper.showMessage(getActivity(), getContext().getString(R.string.signed_up_success_title),
                                     getContext().getString(R.string.signed_up_success_message),
@@ -107,7 +106,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                             ((SettingsScreen) getActivity()).restart();
                         } else {
                             Helper.showMessage(getActivity(), "Signing Up",
-                                    "Issue signing up, try again",
+                                    "Account exists or no internet connection",
                                     MotionToast.TOAST_ERROR);
                         }
                     });
@@ -122,8 +121,12 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     private void login(String email, String password){
         if(loginAttempts <= maxLoginAttempts) {
             mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(getActivity(), (OnCompleteListener<AuthResult>) task -> {
+                    .addOnCompleteListener(getActivity(), task -> {
                         if (task.isSuccessful()) {
+                            realm.beginTransaction();
+                            currentUser.setEmail(email);
+                            currentUser.setProUser(true);
+                            realm.commitTransaction();
                             dialog.dismiss();
                             ((SettingsScreen) getActivity()).restart();
                         } else {
@@ -144,8 +147,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     private void getInput(){
         String inputEmail = emailInput.getText().toString();
         String inputPassword = passwordInput.getText().toString();
-        if(!inputEmail.isEmpty() && inputEmail.contains("@") &&
-                inputEmail.contains(".com")){
+        if(!inputEmail.isEmpty() && inputEmail.contains("@") && inputEmail.contains(".com")){
             emailLayout.setErrorEnabled(false);
             if(!inputPassword.isEmpty()) {
                 if(signUp)

@@ -7,6 +7,8 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.akapps.dailynote.R;
+
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -119,7 +121,7 @@ public class RealmBackupRestore {
                 unzip(restoreFilePath, storageDir.getPath());
                 // delete imported zip file since it has been backed up
                 FilesKt.deleteRecursively(new File(restoreFilePath));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -147,41 +149,41 @@ public class RealmBackupRestore {
         return null;
     }
 
-    public static void unzip(String zipFile, String location) throws IOException {
+    public void unzip(String zipFile, String location) {
+
         try {
-            File f = new File(location);
-            if (!f.isDirectory()) {
-                f.mkdirs();
-            }
-            ZipInputStream zin = new ZipInputStream(new FileInputStream(zipFile));
-            try {
-                ZipEntry ze = null;
-                while ((ze = zin.getNextEntry()) != null) {
-                    String path = location + File.separator + ze.getName();
-
-                    if (ze.isDirectory()) {
-                        File unzipFile = new File(path);
-                        if (!unzipFile.isDirectory()) {
-                            unzipFile.mkdirs();
-                        }
-                    } else {
-                        FileOutputStream fout = new FileOutputStream(path, false);
-
-                        try {
-                            for (int c = zin.read(); c != -1; c = zin.read()) {
-                                fout.write(c);
-                            }
-                            zin.closeEntry();
-                        } finally {
-                            fout.close();
-                        }
+            FileInputStream inputStream = new FileInputStream(zipFile);
+            ZipInputStream zipStream = new ZipInputStream(inputStream);
+            ZipEntry zEntry = null;
+            while ((zEntry = zipStream.getNextEntry()) != null) {
+                if (zEntry.isDirectory()) {
+                    handleDirectory(zEntry.getName(), location);
+                } else {
+                    FileOutputStream fout = new FileOutputStream(
+                            location + "/" + zEntry.getName());
+                    BufferedOutputStream bufout = new BufferedOutputStream(fout);
+                    byte[] buffer = new byte[1024];
+                    int read = 0;
+                    while ((read = zipStream.read(buffer)) != -1) {
+                        bufout.write(buffer, 0, read);
                     }
+
+                    zipStream.closeEntry();
+                    bufout.close();
+                    fout.close();
                 }
-            } finally {
-                zin.close();
             }
+            zipStream.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+    public void handleDirectory(String dir, String location) {
+        File f = new File(location + dir);
+        if (!f.isDirectory()) {
+            f.mkdirs();
         }
     }
 

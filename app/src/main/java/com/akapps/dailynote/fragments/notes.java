@@ -75,6 +75,7 @@ public class notes extends Fragment{
     // on-device database
     private Realm realm;
     private RealmResults<Note> allNotes;
+    private RealmResults<Note> filteredNotes;
     public User user;
 
     // activity data
@@ -615,6 +616,7 @@ public class notes extends Fragment{
 
     // populates the recyclerview
     private void populateAdapter(RealmResults<Note> allNotes) {
+        filteredNotes = allNotes;
         adapterNotes = new notes_recyclerview(allNotes, realm, getActivity(), notes.this, user.isShowPreview());
         recyclerViewNotes.setAdapter(adapterNotes);
     }
@@ -812,9 +814,9 @@ public class notes extends Fragment{
             }
         }
         else {
-            if (allNotes.size() != 0) {
+            if (filteredNotes.size() != 0) {
                 realm.beginTransaction();
-                allNotes.setBoolean("isSelected", isAllSelected);
+                filteredNotes.setBoolean("isSelected", isAllSelected);
                 realm.commitTransaction();
             }
         }

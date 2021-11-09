@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -295,16 +296,21 @@ public class Helper {
         }
     }
 
-    public static Dialog showLoading(Dialog progressDialog, Context context, boolean show){
+    public static Dialog showLoading(String loadingText, Dialog progressDialog, Context context, boolean show){
         try {
             if (show) {
+                loadingText += "\nDo not close app";
+                if(loadingText.toLowerCase().contains("sync"))
+                    loadingText += "\nData might be Lost\nThis should take not take more than a minute" +
+                            " depending on size of backup";
                 progressDialog = new Dialog(context);
                 progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 progressDialog.setContentView(R.layout.custom_dialog_progress);
 
                 TextView progressTv = progressDialog.findViewById(R.id.progress_tv);
-                progressTv.setText(context.getResources().getString(R.string.loading));
-                progressTv.setTextColor(ContextCompat.getColor(context, R.color.darker_blue));
+                progressTv.setText(loadingText);
+                progressTv.setGravity(Gravity.CENTER);
+                progressTv.setTextColor(ContextCompat.getColor(context, R.color.golden_rod));
                 progressTv.setTextSize(19F);
                 if (progressDialog.getWindow() != null)
                     progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

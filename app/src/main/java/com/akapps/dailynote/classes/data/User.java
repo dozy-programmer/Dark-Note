@@ -20,7 +20,6 @@ public class User extends RealmObject {
     private boolean showPreview;
 
     private String email;
-    private String password;
 
     public User() {}
 
@@ -31,7 +30,7 @@ public class User extends RealmObject {
         layoutSelected = "stag";
         showPreview = true;
         titleLines = contentLines = 3;
-        email = password = "";
+        email = "";
     }
 
     public int getUserId() {
@@ -104,13 +103,5 @@ public class User extends RealmObject {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

@@ -234,7 +234,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         if(null == currentUser.getEmail()){
             realm.beginTransaction();
             currentUser.setEmail("");
-            currentUser.setPassword("");
             realm.commitTransaction();
         }
 
@@ -274,24 +273,20 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         logIn.setOnClickListener(view -> {
-            if(currentUser.isProUser()) {
-                if (mAuth.getCurrentUser() != null) {
-                    // sign out user
-                    FirebaseAuth.getInstance().signOut();
-                    restart();
-                } else {
-                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, false);
-                    accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
-                }
+            if (mAuth.getCurrentUser() != null) {
+                // sign out user
+                FirebaseAuth.getInstance().signOut();
+                restart();
+            } else {
+                AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, false);
+                accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
             }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         sync.setOnClickListener(view -> {
             if(currentUser.isProUser()) {
                 if (mAuth.getCurrentUser() != null) {
-                    progressDialog = Helper.showLoading(progressDialog, context, true);
+                    progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
                     new Thread(() -> restoreFromDatabase()).start();
                 }
             }
@@ -300,7 +295,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         upload.setOnClickListener(view -> {
             if(currentUser.isProUser()) {
                 if (mAuth.getCurrentUser() != null)
-                    progressDialog = Helper.showLoading(progressDialog, context, true);
+                    progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
                     upLoadData();
             }
         });
@@ -796,16 +791,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 .child("backup.zip");
         UploadTask uploadTask = storageRef.putFile(file);
 
-        Log.d("Heeee", "Email is " + userEmail);
-        Log.d("Heeee", "Path is " + storageRef.getPath());
-
         uploadTask.addOnFailureListener(exception -> {
-            Helper.showLoading(progressDialog, context, false);
+            Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload error",
                     "Error Uploading data",
                     MotionToast.TOAST_ERROR);
         }).addOnSuccessListener(taskSnapshot -> {
-            Helper.showLoading(progressDialog, context, false);
+            Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload Success",
                     "Data Uploaded",
                     MotionToast.TOAST_SUCCESS);
@@ -870,12 +862,12 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
             restoreFromDatabase(Uri.fromFile(localFile));
-        }).addOnFailureListener(exception -> Helper.showMessage(SettingsScreen.this, "Error", "" +
-                        "Restoring Error from database, try again", MotionToast.TOAST_ERROR));
+        }).addOnFailureListener(exception ->
+                Helper.showMessage(SettingsScreen.this, "Error", "" +
+                "Restoring Error from database, try again", MotionToast.TOAST_ERROR));
     }
 
     private void restoreFromDatabase(Uri uri){
-        Log.d("Heeee", "Uri path is " + uri.getPath());
         RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
         try {
             // close realm before restoring
@@ -888,22 +880,22 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             // make a copy of the backup zip file selected by user and unzip it
             realmBackupRestore.restore(uri, "backup.zip", true);
 
+            Helper.showMessage(this, "Synced", "" +  "Data was synced",
+                    MotionToast.TOAST_SUCCESS);
+
             ArrayList<String> images = realmBackupRestore.getImagesPath();
             realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
 
-            Helper.showMessage(this, "Synced", "" +
-                    "Data was synced", MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(this, "Restored", "" + "Notes have been restored",
+                    MotionToast.TOAST_SUCCESS);
+
+            Helper.showLoading("", progressDialog, context, false);
+
+            close();
 
             // update image paths from restored database so it knows where the images are
             realm = RealmDatabase.setUpDatabase(context);
             updateImages(images);
-
-            Helper.showMessage(this, "Restored", "" +
-                    "Notes have been restored", MotionToast.TOAST_SUCCESS);
-
-            Helper.showLoading(progressDialog, context, false);
-
-            close();
         } catch (Exception e) {
             Helper.showMessage(this, "Error", "" +
                     "Restoring Error to device, try again", MotionToast.TOAST_ERROR);
@@ -911,6 +903,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void restoreBackupBeta(Intent data){
+        progressDialog = Helper.showLoading("Restoring", progressDialog, context, true);
         if (data != null) {
             Uri uri = data.getData();
             Cursor returnCursor = context.getContentResolver()
@@ -951,22 +944,29 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
+                    Helper.showLoading("", progressDialog, context, false);
+
                     close();
                 } catch (Exception e) {
+                    Helper.showLoading("", progressDialog, context, false);
                     if(tryAgain){
-                        Helper.showMessage(this, "Error", "Clear storage via App Settings", MotionToast.TOAST_ERROR);
+                        Helper.showMessage(this, "Error", "Clear storage via App Settings",
+                                MotionToast.TOAST_ERROR);
                         appSettings.setBackgroundColor(getColor(R.color.flamingo));
                         tryAgain = false;
                     }
                     else {
-                        Helper.showMessage(this, "Error","attempting to fix error...try again", MotionToast.TOAST_ERROR);
+                        Helper.showMessage(this, "Error","attempting to fix error...try again",
+                                MotionToast.TOAST_ERROR);
                         tryAgain = true;
                     }
                 }
             }
-            else
+            else {
+                Helper.showLoading("", progressDialog, context, false);
                 Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
                         "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
+            }
         }
     }
 

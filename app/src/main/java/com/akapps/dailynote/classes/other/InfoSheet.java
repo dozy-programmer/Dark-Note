@@ -189,12 +189,12 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             }
             else if(message == 4){
                 // delete file
-                File fdelete = new File(currentPhoto.getPhotoLocation());
-                if (fdelete.exists())
-                    fdelete.delete();
+                File fileDelete = new File(currentPhoto.getPhotoLocation());
+                if(fileDelete.exists())
+                    fileDelete.delete();
                 // delete from database
                 realm.beginTransaction();
-                currentPhoto.deleteFromRealm();
+                ((NoteEdit) getActivity()).allNotePhotos.get(position).deleteFromRealm();
                 realm.commitTransaction();
                 adapter.notifyDataSetChanged();
                 Helper.showMessage(getActivity(), "Delete Status", "Photo has been deleted",
