@@ -264,9 +264,10 @@
         android:id="@+id/menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="0dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:elevation="2dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/notes_recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
         app:menu_icon="@drawable/add_icon"
         fab:menu_backgroundColor="@android:color/transparent"
@@ -276,7 +277,7 @@
         fab:menu_colorRipple="#99FFFFFF"
         fab:menu_fab_hide_animation="@anim/hide_to_bottom"
         fab:menu_fab_show_animation="@anim/show_from_bottom"
-        fab:menu_fab_size="normal"
+        fab:menu_fab_size="mini"
         fab:menu_labels_colorNormal="#333333"
         fab:menu_labels_colorPressed="#444444"
         fab:menu_labels_colorRipple="#66FFFFFF"
@@ -292,8 +293,8 @@
         fab:menu_labels_position="left"
         fab:menu_labels_showShadow="true"
         fab:menu_labels_singleLine="false"
-        fab:menu_labels_textColor="@color/orange_red"
-        fab:menu_labels_textSize="14sp"
+        fab:menu_labels_textColor="@color/orange"
+        fab:menu_labels_textSize="16sp"
         fab:menu_openDirection="up"
         fab:menu_shadowColor="#66000000"
         fab:menu_shadowRadius="4dp"
@@ -306,8 +307,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/checklist_icon"
-            fab:fab_colorNormal="@color/light_gray"
-            fab:fab_colorPressed="@color/light_gray"
+            fab:fab_colorNormal="@color/golden_rod"
+            fab:fab_colorPressed="@color/gold"
             fab:fab_label="Check List"
             fab:fab_size="mini" />
 
@@ -316,11 +317,108 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/note_icon"
-            fab:fab_colorNormal="@color/light_gray"
-            fab:fab_colorPressed="@color/light_gray"
+            fab:fab_colorNormal="@color/orange"
+            fab:fab_colorPressed="@color/orange_red"
             fab:fab_label="Note"
             fab:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/ad"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_button_size"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/light_gray"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginVertical="4dp"
+                app:cardBackgroundColor="@color/gray"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="2dp"
+                    android:text="Ad"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"></TextView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="6dp"
+                android:text="Dark Note Pro"
+                android:textColor="@color/orange"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/materialCardView7"
+                app:layout_constraintTop_toTopOf="parent"></TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="10dp"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:text="Get rid of this ad, edit settings, sync multiple Android devices, and support a college student. "
+                android:textColor="@color/ultra_white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCardView7"></TextView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/upgrade_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="90dp"
+                android:layout_marginVertical="4dp"
+                app:cardBackgroundColor="@color/gray"
+                app:cardCornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="2dp"
+                    android:text="Upgrade"
+                    android:textColor="@color/darker_blue"
+                    android:textSize="18sp"
+                    android:textStyle="bold"></TextView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

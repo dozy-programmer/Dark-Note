@@ -1,10 +1,7 @@
 package com.akapps.dailynote.fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
@@ -12,7 +9,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +25,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
-import com.akapps.dailynote.activity.Homepage;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
-import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
@@ -42,11 +36,10 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import com.google.android.material.card.MaterialCardView;
+
 import io.realm.Case;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
@@ -71,6 +64,9 @@ public class notes extends Fragment{
     private FloatingActionButton addNote;
     private FloatingActionButton addCheckList;
     private FloatingActionMenu addMenu;
+    // ad
+    private MaterialCardView adLayout;
+    private MaterialCardView upgradeButton;
 
     // on-device database
     private Realm realm;
@@ -117,7 +113,9 @@ public class notes extends Fragment{
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
-                .sort("dateEdited", Sort.DESCENDING).findAll();
+                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+
+        updateDateEditedMilli();
 
         if (realm.where(User.class).findAll().size() == 0)
             addUser();
@@ -264,6 +262,8 @@ public class notes extends Fragment{
         addMenu = view.findViewById(R.id.menu);
         addNote = view.findViewById(R.id.add_note);
         addCheckList = view.findViewById(R.id.add_checklist);
+        adLayout = view.findViewById(R.id.ad);
+        upgradeButton = view.findViewById(R.id.upgrade_button);
     }
 
     private void showData(){
@@ -274,6 +274,10 @@ public class notes extends Fragment{
 
     private void initializeLayout(){
         setRecyclerviewLayout();
+
+        if(user.isProUser()) {
+            adLayout.setVisibility(View.GONE);
+        }
 
         searchEditText.setIconifiedByDefault(false);
         int searchPlateId = searchEditText.getContext().getResources()
@@ -327,8 +331,11 @@ public class notes extends Fragment{
                 isAllSelected = false;
                 deleteMultipleNotes();
             }
-            else if(realm.where(Note.class).findAll().size()!=0)
+            else if(realm.where(Note.class).findAll().size()!=0) {
                 showSearchBar();
+                isListEmpty(0, true);
+                populateAdapter(realm.where(Note.class).equalTo("title", "~~test~~").findAll());
+            }
             else
                 showMessage("Not Searching...", "Can't looking for something that does not exist", true);
         });
@@ -363,6 +370,49 @@ public class notes extends Fragment{
                 return false;
             }
         });
+
+        upgradeButton.setOnClickListener(view -> {
+            int size = realm.where(Note.class).findAll().size();
+            Intent settings = new Intent(context, SettingsScreen.class);
+            settings.putExtra("size", size);
+            settings.putExtra("upgrade", true);
+            settings.putExtra("user", String.valueOf(user.getUserId()));
+            startActivity(settings);
+            getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
+            realm.close();
+        });
+    }
+
+    private void updateDateEditedMilli(){
+        RealmResults<Note> resultsCreated = realm.where(Note.class)
+                .equalTo("dateCreatedMilli", 0)
+                .findAll();
+
+        RealmResults<Note> resultsEdited = realm.where(Note.class)
+                .equalTo("dateEditedMilli", 0)
+                .findAll();
+
+        if(resultsCreated.size() != 0) {
+            for (int i = 0; i < resultsCreated.size(); i++) {
+                realm.beginTransaction();
+                Note currentNote = resultsCreated.get(i);
+                currentNote.setDateCreatedMilli(Helper.dateToCalender(currentNote.getDateCreated()).getTimeInMillis());
+                realm.commitTransaction();
+            }
+        }
+
+        if(resultsEdited.size() != 0) {
+            for (int i = 0; i < resultsEdited.size(); i++) {
+                realm.beginTransaction();
+                Note currentNote = resultsEdited.get(i);
+                currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
+                realm.commitTransaction();
+            }
+        }
+
+        if(resultsCreated.size() > 0 || resultsEdited.size() > 0)
+            updateDateEditedMilli();
     }
 
     private void clearMultipleSelect(){
@@ -374,8 +424,9 @@ public class notes extends Fragment{
     }
 
     private void openSettings(){
+        int size = realm.where(Note.class).findAll().size();
         Intent settings = new Intent(context, SettingsScreen.class);
-        settings.putExtra("size", allNotes.size());
+        settings.putExtra("size", size);
         settings.putExtra("user", String.valueOf(user.getUserId()));
         startActivity(settings);
         getActivity().finish();
@@ -395,6 +446,7 @@ public class notes extends Fragment{
                         .findFirst().getName();
                 RealmResults<Note> category = realm.where(Note.class)
                         .equalTo("trash", false)
+                        .equalTo("archived", false)
                         .equalTo("category", currentCategory).findAll();
                 filteringByCategory(category, true);
                 if (!viewCategoryNotes) {
@@ -485,7 +537,7 @@ public class notes extends Fragment{
         customSheet.show(getParentFragmentManager(), customSheet.getTag());
     }
 
-    public void filterAndSortNotes(String kind, String dateType, boolean oldestToNewest,
+    public void filterAndSortNotes(String dateType, boolean oldestToNewest,
                                    boolean newestToOldest, boolean aToZ, boolean zToA){
         isNotesFiltered = true;
 
@@ -556,7 +608,7 @@ public class notes extends Fragment{
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
-                .sort("dateEdited", Sort.DESCENDING).findAll();
+                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
         populateAdapter(allNotes);
         isListEmpty(allNotes.size(), false);
     }
@@ -591,7 +643,7 @@ public class notes extends Fragment{
                 if(dateType.equals("dateEdited"))
                     sortedBy.setText("Sorted by: Date Edited - New -> Old");
                 else
-                    sortedBy.setText("Sorted by: Date Created - New Old -> New");
+                    sortedBy.setText("Sorted by: Date Created - New -> Old");
             }
         }
         else if(aToZ || zToA){
@@ -680,7 +732,7 @@ public class notes extends Fragment{
         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) filterNotes.getLayoutParams();
 
         LinearLayout.LayoutParams params = (new LinearLayout.LayoutParams(filterNotes.getWidth(), filterNotes.getHeight()));
-        params.setMargins(0, 0, 50, 0);
+        params.setMargins(0, 0, 35, 0);
         searchLayout.setLayoutParams(params);
         searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
         searchLayout.setPadding(filterNotes.getPaddingLeft(), filterNotes.getPaddingTop(), filterNotes.getPaddingRight(), filterNotes.getPaddingBottom());
@@ -708,7 +760,7 @@ public class notes extends Fragment{
 
         restoreNotes.setVisibility(View.GONE);
         fragmentTitle.setText("Dark Note");
-        fragmentTitle.setTextSize(30);
+        fragmentTitle.setTextSize(28);
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
         search.setImageDrawable(context.getDrawable(R.drawable.search_icon));

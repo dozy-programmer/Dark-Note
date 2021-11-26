@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
+import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -336,6 +338,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 category.setText(currentNote.getCategory());
                 category.setVisibility(View.VISIBLE);
                 folderText.setVisibility(View.VISIBLE);
+                category.setTextColor(context.getColor(R.color.orange));
                 searchLayout.setVisibility(View.VISIBLE);
                 saveNote.setVisibility(View.GONE);
 
@@ -453,7 +456,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 currentWordIndex = 0;
                 if(isSearchingNotes) {
                     textSizeLayout.setVisibility(View.VISIBLE);
-                    if(!s.toString().isEmpty())
+                    if(!s.toString().isEmpty() && s.toString().length() > 1)
                         findText(s.toString().toLowerCase());
                     else {
                         wordOccurences = new ArrayList();
@@ -474,8 +477,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         sort.setOnClickListener(v -> {
-            FilterChecklistSheet filter = new FilterChecklistSheet();
-            filter.show(this.getSupportFragmentManager(), filter.getTag());
+            if(currentNote.getChecklist().size() > 0) {
+                FilterChecklistSheet filter = new FilterChecklistSheet(realm, currentNote);
+                filter.show(this.getSupportFragmentManager(), filter.getTag());
+            }
         });
 
         category.setOnClickListener(v -> {
@@ -498,6 +503,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         realm.beginTransaction();
                         currentNote.setTitle(s.toString());
                         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+                        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
                         realm.commitTransaction();
                         updateDateEdited();
                     }
@@ -539,18 +545,19 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         increaseTextSize.setOnTouchListener(new RepeatListener(500, 100, v -> {
             if(isSearchingNotes){
-                int nextIndex;
-                if(currentWordIndex==0 && wordOccurences.size()!=0){
-                    noteSearching.requestFocus();
-                    nextIndex = Integer.parseInt(wordOccurences.get(wordOccurences.size()-1).toString());
-                    noteSearching.setSelection(nextIndex + target.length());
-                    currentWordIndex = wordOccurences.size()-1;
-                }
-                else if(currentWordIndex>0 && wordOccurences.size()!=0){
-                    noteSearching.requestFocus();
-                    nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex-1).toString());
-                    noteSearching.setSelection(nextIndex + target.length());
-                    currentWordIndex -=1;
+                if(currentWordIndex != -1) {
+                    int nextIndex;
+                    if (currentWordIndex == 0 && wordOccurences.size() != 0) {
+                        noteSearching.requestFocus();
+                        nextIndex = Integer.parseInt(wordOccurences.get(wordOccurences.size() - 1).toString());
+                        noteSearching.setSelection(nextIndex + target.length());
+                        currentWordIndex = wordOccurences.size() - 1;
+                    } else if (currentWordIndex > 0 && wordOccurences.size() != 0) {
+                        noteSearching.requestFocus();
+                        nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex - 1).toString());
+                        noteSearching.setSelection(nextIndex + target.length());
+                        currentWordIndex -= 1;
+                    }
                 }
             }
             else if(isChangingTextSize)
@@ -560,23 +567,23 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         decreaseTextSize.setOnTouchListener(new RepeatListener(500, 100, v -> {
             if(isSearchingNotes){
                 int nextIndex;
-                if(currentWordIndex==0 && wordOccurences.size()!=0){
-                    noteSearching.requestFocus();
-                    nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
-                    noteSearching.setSelection(nextIndex + target.length());
-                    currentWordIndex = 1;
-                }
-                else if(currentWordIndex == wordOccurences.size()-1 && wordOccurences.size()!=0){
-                    noteSearching.requestFocus();
-                    nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
-                    noteSearching.setSelection(nextIndex + target.length());
-                    currentWordIndex = 0;
-                }
-                else if(currentWordIndex <= wordOccurences.size()-1){
-                    noteSearching.requestFocus();
-                    nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
-                    noteSearching.setSelection(nextIndex + target.length());
-                    currentWordIndex +=1;
+                if(currentWordIndex != -1) {
+                    if (currentWordIndex == 0 && wordOccurences.size() != 0) {
+                        noteSearching.requestFocus();
+                        nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
+                        noteSearching.setSelection(nextIndex + target.length());
+                        currentWordIndex = 1;
+                    } else if (currentWordIndex == wordOccurences.size() - 1 && wordOccurences.size() != 0) {
+                        noteSearching.requestFocus();
+                        nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
+                        noteSearching.setSelection(nextIndex + target.length());
+                        currentWordIndex = 0;
+                    } else if (currentWordIndex <= wordOccurences.size() - 1) {
+                        noteSearching.requestFocus();
+                        nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
+                        noteSearching.setSelection(nextIndex + target.length());
+                        currentWordIndex += 1;
+                    }
                 }
             }
             else if(isChangingTextSize)
@@ -643,6 +650,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     realm.beginTransaction();
                     currentNote.setPin(false);
                     currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+                    currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
                     realm.commitTransaction();
                     updateDateEdited();
                     pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_icon));
@@ -650,6 +658,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     realm.beginTransaction();
                     currentNote.setPin(true);
                     currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+                    currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
                     realm.commitTransaction();
                     updateDateEdited();
                     pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
@@ -815,43 +824,26 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void sortChecklist(){
-        String currentSelection = Helper.getPreference(context, "order");
+        int currentSort = currentNote.getSort();
 
-        RealmResults<CheckListItem> results;
+        RealmResults<CheckListItem> results = realm.where(CheckListItem.class)
+                .equalTo("id", noteId).findAll();
 
-        if(currentSelection != null) {
-            if (currentSelection.equals("1")) {
-                results = realm.where(CheckListItem.class)
-                        .equalTo("id", noteId)
-                        .sort("text", Sort.ASCENDING).findAll();
-            }
-            else if (currentSelection.equals("2")) {
-                results = realm.where(CheckListItem.class)
-                        .equalTo("id", noteId)
-                        .sort("text", Sort.DESCENDING).findAll();
-            }
-            else if (currentSelection.equals("3")) {
-                results = realm.where(CheckListItem.class)
-                        .equalTo("id", noteId).findAll()
-                        .sort("checked", Sort.ASCENDING);
-            }
-            else if (currentSelection.equals("4")) {
-                results = realm.where(CheckListItem.class)
-                        .equalTo("id", noteId).findAll().sort("checked", Sort.DESCENDING);
-            }
-            else {
-                sortEnable = true;
-                results = realm.where(CheckListItem.class)
-                        .equalTo("id", noteId)
-                        .sort("positionInList").findAll();
-            }
-        }
-        else{
+        if (currentSort == 1)
+            results = results.where().sort("text", Sort.ASCENDING).findAll();
+        else if (currentSort == 2)
+            results = results.where().sort("text", Sort.DESCENDING).findAll();
+        else if (currentSort == 4)
+            results = results.where().sort("lastCheckedDate", Sort.ASCENDING).findAll();
+        else if (currentSort == 3)
+            results = results.where().sort("lastCheckedDate", Sort.DESCENDING).findAll();
+        else if (currentSort == 5 || currentSort == 6)
+            results = results.where().sort("positionInList").findAll();
+        else {
             sortEnable = true;
-            results = realm.where(CheckListItem.class)
-                    .equalTo("id", noteId)
-                    .sort("positionInList").findAll();
+            results = results.where().sort("positionInList").findAll();
         }
+
         populateChecklist(results);
         enableDragDrop();
     }
@@ -869,12 +861,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if(!currentNote.isCheckList()) {
 
             // Get the text from TextView
+//            String originalString = Html.fromHtml(note.getHtml(),
+//                    Html.FROM_HTML_MODE_COMPACT).toString()
+//                    .replaceAll("(\\s{2,})", " ")
+//                    .replaceAll("\n", "<br>");
+
             String originalString = Html.fromHtml(note.getHtml(),
                     Html.FROM_HTML_MODE_COMPACT).toString()
-                    .replaceAll("(\\s{2,})", " ")
+                    .replaceAll("<.*?>", "")
                     .replaceAll("\n", "<br>");
 
-            if (originalString.contains(target)) {
+
+            if (originalString.toLowerCase().contains(target.toLowerCase())) {
                 this.target = target;
                 // Replace the specified text/word with formatted text/word
                 String modifiedString =  originalString.replaceAll("(?i)" + target,
@@ -882,9 +880,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 // Update the edit text
                 noteSearching.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
                 findAllTextIndexes(target);
+                decreaseTextSize.setAlpha(new Float(1.0));
+                increaseTextSize.setAlpha(new Float(1.0));
             }
-            else
+            else {
+                currentWordIndex = -1;
                 noteSearching.setText(Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT));
+                decreaseTextSize.setAlpha(new Float(0.5));
+                increaseTextSize.setAlpha(new Float(0.5));
+            }
         }
     }
 
@@ -914,6 +918,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         realm.beginTransaction();
         currentNote.setNote(text);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateSaveDateEdited();
         updateDateEdited();
@@ -1010,15 +1015,25 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     // adds note
     public void addCheckList(String itemText) {
+        int initialPosition = -1;
+
+        if(currentNote.getSort() == 6)
+            initialPosition  = realm.where(CheckListItem.class)
+                    .equalTo("id", noteId).findAll()
+                    .min("positionInList").intValue() - 1;
+        else
+            initialPosition = currentNote.getChecklist().size();
+
         // insert data to database
         realm.beginTransaction();
-        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), currentNote.getChecklist().size()));
+        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition));
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         currentNote.setChecked(false);
         realm.commitTransaction();
         updateDateEdited();
         isListEmpty(currentNote.getChecklist().size());
-        checklistAdapter.notifyItemInserted(checkListItems.size());
+        checklistAdapter.notifyDataSetChanged();
         if(title.getText().length()==0)
             title.requestFocus();
         else
@@ -1041,6 +1056,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setTitle(title.getText().toString());
         currentNote.setNote(note.getHtml().toString());
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
         // show user a message and hide the keyboard
@@ -1181,6 +1197,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         realm.beginTransaction();
         currentNote.setChecked(status);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         if(currentNote.isChecked())
             title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -1195,6 +1212,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setSecurityWord(securityWord);
         currentNote.setFingerprint(fingerprint);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
         Helper.showMessage(this, "Note Locked", "Note has been " +
@@ -1212,6 +1230,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setSecurityWord("");
         currentNote.setFingerprint(false);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
         Helper.showMessage(this, "Note un-Lock", "Note has been " +
@@ -1351,6 +1370,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         realm.beginTransaction();
         currentNote.setReminderDateTime(date);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
     }
@@ -1376,6 +1396,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             realm.beginTransaction();
             currentNote.setArchived(false);
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
             updateDateEdited();
             Helper.showMessage(this, "Archived Status", "Note has been " +
@@ -1384,6 +1405,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             realm.beginTransaction();
             currentNote.setArchived(true);
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
             updateDateEdited();
             Helper.showMessage(this, "Archived Status", "Note has been " +
@@ -1416,10 +1438,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         // only attaches to email if there are project photos
         for (int i = 0; i < allNotePhotos.size(); i++) {
             File file = new File(allNotePhotos.get(i).getPhotoLocation());
-            uris.add(FileProvider.getUriForFile(
-                    this,
-                    "com.akapps.dailynote.fileprovider",
-                    file));
+            if(file.exists()) {
+                uris.add(FileProvider.getUriForFile(
+                        this,
+                        "com.akapps.dailynote.fileprovider",
+                        file));
+            }
         }
 
         String note = "Note: " + "\n" + Html.fromHtml(currentNote.getNote(),
@@ -1452,16 +1476,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         // adds email subject and email body to intent
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Sending Note: " + currentNote.getTitle());
+
         emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
 
-        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        if(uris.size() > 0)
+            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
 
-        startActivity(emailIntent);
+        startActivity(Intent.createChooser(emailIntent, "Share Note"));
     }
 
     private void showCameraDialog(){
         ImagePicker.with(this)
-                .maxResultSize(412, 412)
+                .maxResultSize(814, 814)
                 .compress(1024)
                 .saveDir(getExternalFilesDir(null))
                 .start();
@@ -1478,6 +1504,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             realm.beginTransaction();
             realm.insert(currentPhoto);
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
             updateDateEdited();
 
@@ -1494,23 +1521,24 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void openDialog() {
-        InfoSheet info = new InfoSheet(3, false);
+        InfoSheet info = new InfoSheet(currentNote.isTrash() ? -3 : 3, false);
         info.show(getSupportFragmentManager(), info.getTag());
     }
 
     public void deleteNote(){
+        if(handler!=null)
+            handler.removeCallbacksAndMessages(null);
         if(currentNote.isTrash()){
+            String noteTitle = currentNote.getTitle();
             realm.beginTransaction();
             currentNote.deleteFromRealm();
             realm.commitTransaction();
-            Helper.showMessage(NoteEdit.this, "Deleted", currentNote.getTitle(), MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(NoteEdit.this, "Deleted", noteTitle, MotionToast.TOAST_SUCCESS);
         }
         else {
             realm.beginTransaction();
             currentNote.setTrash(true);
-            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
             realm.commitTransaction();
-            updateDateEdited();
             Helper.showMessage(NoteEdit.this, "Sent to trash", currentNote.getTitle(), MotionToast.TOAST_SUCCESS);
         }
         finish();
@@ -1547,6 +1575,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void updateSaveDateEdited(){
         realm.beginTransaction();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
     }
@@ -1650,15 +1679,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         findViewById(R.id.action_format_clear).setOnClickListener(v -> {
-            updateSaveDateEdited();
-            String removedFormat = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
-            realm.beginTransaction();
-            currentNote.setNote(removedFormat);
-            realm.commitTransaction();
-            note.setHtml(removedFormat);
-            note.focusEditor();
-            Helper.showMessage(this, "Removed", "Formatting has been removed",
-                    MotionToast.TOAST_SUCCESS);
+            InfoSheet info = new InfoSheet(9, false);
+            info.show(getSupportFragmentManager(), info.getTag());
         });
 
         findViewById(R.id.action_text_size).setOnClickListener(v -> {
@@ -1667,5 +1689,17 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             addCheckListItem.setVisibility(View.GONE);
         });
 
+    }
+
+    public void removeFormatting(){
+        updateSaveDateEdited();
+        String removedFormat = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
+        realm.beginTransaction();
+        currentNote.setNote(removedFormat);
+        realm.commitTransaction();
+        note.setHtml(removedFormat);
+        note.focusEditor();
+        Helper.showMessage(this, "Removed", "Formatting has been removed",
+                MotionToast.TOAST_SUCCESS);
     }
 }

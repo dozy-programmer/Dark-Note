@@ -34,7 +34,6 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
     private boolean isDateCorrectlySelected = false;
     private boolean aToZ, zToA;
     private boolean isAlphabeticalChosen;
-    private String kindSelected = "";
     private String dateTypeSelected = "";
 
     public FilterSheet(){ }
@@ -161,9 +160,9 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
 
         confirmFilter.setOnClickListener(v -> {
             if(createdDate)
-                dateTypeSelected = "dateCreated";
+                dateTypeSelected = "dateCreatedMilli";
             else if(editedDate)
-                dateTypeSelected = "dateEdited";
+                dateTypeSelected = "dateEditedMilli";
             else
                 dateTypeSelected = "null";
 
@@ -193,8 +192,8 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
                         saveSortData(dateTypeSelected,
                                 oldestToLatest, latestToOldest, aToZ, zToA, false);
                         this.dismiss();
-                        ((notes) fragment).filterAndSortNotes(kindSelected,
-                                dateTypeSelected, oldestToLatest, latestToOldest, aToZ, zToA);
+                        ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest,
+                                latestToOldest, aToZ, zToA);
                     }
                     else {
                         Helper.showMessage(getActivity(), "Save Sort Requirement", "Select Note & " +
@@ -203,8 +202,8 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
                 }
                 else{
                     this.dismiss();
-                    ((notes) fragment).filterAndSortNotes(kindSelected,
-                            dateTypeSelected, oldestToLatest, latestToOldest, aToZ, zToA);
+                    ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest,
+                            latestToOldest, aToZ, zToA);
                 }
             }
             else {

@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -182,6 +183,8 @@ public class CategoryScreen extends AppCompatActivity {
             else
                 title.setText(allSelected + " Selected");
 
+            pinned.setGravity(Gravity.CENTER);
+
             if(multiSelect){
                 showAllNotes.setVisibility(View.VISIBLE);
                 noCategory.setVisibility(View.VISIBLE);
@@ -196,6 +199,7 @@ public class CategoryScreen extends AppCompatActivity {
                 archived.setTextColor(getColor(R.color.orange));
                 archived.setText("Pin");
                 pinned.setText("Un-Pin");
+                pinned.setGravity(Gravity.LEFT);
             }
         }
 

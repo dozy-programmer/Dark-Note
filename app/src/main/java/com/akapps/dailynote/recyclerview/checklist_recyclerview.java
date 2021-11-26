@@ -115,9 +115,14 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // save status to database
         realm.beginTransaction();
         checkListItem.setChecked(status);
+        if(status)
+            checkListItem.setLastCheckedDate(Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis());
+        else
+            checkListItem.setLastCheckedDate(0);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();
         ((NoteEdit)context).updateDateEdited();
+        notifyDataSetChanged();
     }
 
     // opens dialog that allows user to edit or delete checklist item

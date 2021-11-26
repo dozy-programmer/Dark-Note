@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -24,8 +26,16 @@ import com.google.android.material.card.MaterialCardView;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.realm.Realm;
+
 public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
-    public FilterChecklistSheet(){
+
+    private Realm realm;
+    private Note currentNote;
+
+    public FilterChecklistSheet(Realm realm, Note currentNote){
+        this.realm = realm;
+        this.currentNote = currentNote;
     }
 
     @Override
@@ -38,51 +48,143 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         MaterialCardView zA = view.findViewById(R.id.z_a);
         MaterialCardView checkedBottom = view.findViewById(R.id.checked_bottom);
         MaterialCardView checkedTop = view.findViewById(R.id.checked_top);
+        MaterialCardView addedBottom = view.findViewById(R.id.add_bottom);
+        MaterialCardView addedTop = view.findViewById(R.id.add_top);
         MaterialButton clearFilter = view.findViewById(R.id.clear_filter);
+        CheckBox applyAll = view.findViewById(R.id.apply_all);
 
-        String currentSelection = Helper.getPreference(getContext(), "order");
+        int sort = currentNote.getSort();
 
-        if(currentSelection != null) {
-            if (currentSelection.equals("1"))
-                aZ.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-            else if (currentSelection.equals("2"))
-                zA.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-            else if (currentSelection.equals("3"))
-                checkedBottom.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-            else if (currentSelection.equals("4"))
-                checkedTop.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-        }
+        if (sort == 1)
+            aZ.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
+        else if (sort == 2)
+            zA.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
+        else if (sort == 4)
+            checkedBottom.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
+        else if (sort == 3)
+            checkedTop.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
+        else if (sort == 5)
+            addedBottom.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
+        else if (sort == 6)
+            addedTop.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
+
+        /** sorting
+         if no sort or cleared, then it is -1
+         if aToZ 1
+         if zToA 2
+         if checked top 3
+         if checked bottom 4
+         if added bottom 5
+         if added top 6
+         **/
 
         aZ.setOnClickListener(v -> {
-            Helper.savePreference(getContext(), "1", "order");
+            if(applyAll.isChecked()){
+                realm.beginTransaction();
+                realm.where(Note.class).findAll().setInt("sort", 1);
+                realm.commitTransaction();
+            }
+            else{
+                realm.beginTransaction();
+                currentNote.setSort(1);
+                realm.commitTransaction();
+            }
             ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         zA.setOnClickListener(v -> {
-            Helper.savePreference(getContext(), "2", "order");
+            if(applyAll.isChecked()){
+                realm.beginTransaction();
+                realm.where(Note.class).findAll().setInt("sort", 2);
+                realm.commitTransaction();
+            }
+            else{
+                realm.beginTransaction();
+                currentNote.setSort(2);
+                realm.commitTransaction();
+            }
             ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         checkedBottom.setOnClickListener(v -> {
-            Helper.savePreference(getContext(), "3", "order");
+            if(applyAll.isChecked()){
+                realm.beginTransaction();
+                realm.where(Note.class).findAll().setInt("sort", 4);
+                realm.commitTransaction();
+            }
+            else{
+                realm.beginTransaction();
+                currentNote.setSort(4);
+                realm.commitTransaction();
+            }
             ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         checkedTop.setOnClickListener(v -> {
-            Helper.savePreference(getContext(), "4", "order");
+            if(applyAll.isChecked()){
+                realm.beginTransaction();
+                realm.where(Note.class).findAll().setInt("sort", 3);
+                realm.commitTransaction();
+            }
+            else{
+                realm.beginTransaction();
+                currentNote.setSort(3);
+                realm.commitTransaction();
+            }
+            ((NoteEdit) getActivity()).sortEnable = false;
+            ((NoteEdit) getActivity()).sortChecklist();
+            this.dismiss();
+        });
+
+        addedBottom.setOnClickListener(v -> {
+            if(applyAll.isChecked()){
+                realm.beginTransaction();
+                realm.where(Note.class).findAll().setInt("sort", 5);
+                realm.commitTransaction();
+            }
+            else{
+                realm.beginTransaction();
+                currentNote.setSort(5);
+                realm.commitTransaction();
+            }
+            ((NoteEdit) getActivity()).sortEnable = false;
+            ((NoteEdit) getActivity()).sortChecklist();
+            this.dismiss();
+        });
+
+        addedTop.setOnClickListener(v -> {
+            if(applyAll.isChecked()){
+                realm.beginTransaction();
+                realm.where(Note.class).findAll().setInt("sort", 6);
+                realm.commitTransaction();
+            }
+            else{
+                realm.beginTransaction();
+                currentNote.setSort(6);
+                realm.commitTransaction();
+            }
             ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
 
         clearFilter.setOnClickListener(v -> {
-            Helper.savePreference(getContext(), "", "order");
+            if(applyAll.isChecked()){
+                realm.beginTransaction();
+                realm.where(Note.class).findAll().setInt("sort", -1);
+                realm.commitTransaction();
+            }
+            else{
+                realm.beginTransaction();
+                currentNote.setSort(-1);
+                realm.commitTransaction();
+            }
             ((NoteEdit) getActivity()).sortEnable = true;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();

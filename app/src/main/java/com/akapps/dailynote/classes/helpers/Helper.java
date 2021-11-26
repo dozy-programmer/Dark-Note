@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -72,6 +73,13 @@ public class Helper {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
+    // returns height of screen
+    public static int getHeightScreen(Activity currentActivity){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        currentActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
+    }
+
     public static String twentyFourToTwelve(String dateString){
         String date = dateString.split(" ")[0];
         dateString = dateString.split(" ")[1];
@@ -102,6 +110,7 @@ public class Helper {
     }
 
     public static Calendar dateToCalender(String dateString){
+        dateString = dateString.replace("\n", " ");
         Calendar calendar = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("E, MMM dd, yyyy hh:mm:ss aa");
@@ -113,17 +122,6 @@ public class Helper {
             e.printStackTrace();
         }
         return calendar;
-    }
-
-    // pin is based on the current year and the hour
-    public static String createBackupFileName(){
-        Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int minute = calendar.get(Calendar.MINUTE);
-        String amOrPm = calendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
-        return "Backup_" + month + "_" + calendar.get(Calendar.DAY_OF_MONTH)
-                + "_" + calendar.get(Calendar.YEAR)
-                + "_at_" + calendar.get(Calendar.HOUR) + "_" +amOrPm + ".realm";
     }
 
     public static String getTimeDifference(Calendar calendar, boolean before){
@@ -230,22 +228,6 @@ public class Helper {
             empty_Layout.setVisibility(View.GONE);
     }
 
-    public static ArrayList<String> getCurrentList(Context context){
-        String stringHistory = PreferenceManager.getDefaultSharedPreferences(context).getString("categories", null);
-        if(stringHistory!=null)
-            return  new ArrayList<>(Arrays.asList(stringHistory.split("~")));
-        else
-            return new ArrayList<>();
-    }
-
-    public static ArrayList<String> getAutoCompleteList(Context context){
-        String stringHistory = PreferenceManager.getDefaultSharedPreferences(context).getString("autocomplete", null);
-        if(stringHistory!=null)
-            return  new ArrayList<>(Arrays.asList(stringHistory.split("~~")));
-        else
-            return new ArrayList<>();
-    }
-
     // saves a small piece of data
     public static void savePreference(Context context, String data, String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("app", MODE_PRIVATE);
@@ -259,16 +241,6 @@ public class Helper {
         SharedPreferences sharedPreferences = context.getSharedPreferences("app", MODE_PRIVATE);
         String data = sharedPreferences.getString(key, null);
         return data;
-    }
-
-    // retrieved data saved
-    public static String getKey(Context context) {
-        if(null == getPreference(context, "key_encryption")){
-            byte[] key = new byte[32];
-            new SecureRandom().nextBytes(key);
-            savePreference(context, new String(key), "key_encryption");
-        }
-        return getPreference(context, "key_encryption");
     }
 
     // saves a small piece of data

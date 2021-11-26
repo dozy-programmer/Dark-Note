@@ -54,7 +54,7 @@
                             android:id="@+id/close_note"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/light_gray_2"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -83,7 +83,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/light_gray_2"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -102,7 +102,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/light_gray_2"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -121,7 +121,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/light_gray_2"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -140,7 +140,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/light_gray_2"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -161,7 +161,7 @@
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
                             android:visibility="gone"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/light_gray_2"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -174,7 +174,7 @@
                                 android:hint="Search inside note"
                                 android:maxLines="1"
                                 android:textColor="@color/ultra_white"
-                                android:textColorHint="@color/light_gray"
+                                android:textColorHint="@color/light_gray_2"
                                 android:visibility="gone"></EditText>
 
                             <ImageView
@@ -194,7 +194,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/light_gray_2"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -221,7 +221,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:hint="Title"
                 android:textColor="@color/ultra_white"
-                android:textColorHint="@color/light_gray"
+                android:textColorHint="@color/light_gray_2"
                 android:textSize="34sp"
                 app:layout_constraintEnd_toStartOf="@+id/sort"
                 app:layout_constraintStart_toStartOf="parent"
@@ -234,9 +234,9 @@
                 android:layout_marginRight="20dp"
                 android:src="@drawable/filter_icon"
                 android:visibility="visible"
-                app:fab_colorNormal="@color/light_gray"
+                app:fab_colorNormal="@color/light_gray_2"
                 app:fab_colorPressed="@color/gray"
-                app:fab_colorRipple="@color/light_gray"
+                app:fab_colorRipple="@color/light_gray_2"
                 app:fab_size="mini"
                 app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
                 app:layout_constraintBottom_toBottomOf="@+id/title"
@@ -262,7 +262,7 @@
                     android:layout_weight="50"
                     android:gravity="left"
                     android:text="Date"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/light_gray_2"
                     android:textSize="20sp"
                     android:visibility="gone"></TextView>
 
@@ -293,7 +293,7 @@
                         android:layout_marginRight="23dp"
                         android:gravity="center_vertical"
                         android:text="Notification"
-                        android:textColor="@color/light_gray"
+                        android:textColor="@color/light_gray_2"
                         android:textSize="20sp"></TextView>
 
                 </LinearLayout>
@@ -318,7 +318,7 @@
                     android:layout_marginBottom="5dp"
                     android:gravity="left"
                     android:text="Folder:"
-                    android:textColor="@color/light_gray"
+                    android:textColor="@color/orange_red"
                     android:textSize="22sp"
                     android:visibility="gone"></TextView>
 
@@ -340,7 +340,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top|start"
-                android:textColorHint="@color/light_gray"
+                android:textColorHint="@color/light_gray_2"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -359,7 +359,7 @@
                 android:gravity="top|start"
                 android:hint="Type something..."
                 android:textColor="@color/ultra_white"
-                android:textColorHint="@color/light_gray"
+                android:textColorHint="@color/light_gray_2"
                 android:textSize="20sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -446,7 +446,7 @@
                         android:layout_marginTop="20dp"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="Tap the bottom right button to create a note"
-                        android:textColor="@color/light_gray"
+                        android:textColor="@color/light_gray_2"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -509,7 +509,7 @@
         android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_gray"
+        android:background="@color/light_gray_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

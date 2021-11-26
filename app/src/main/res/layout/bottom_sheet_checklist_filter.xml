@@ -13,11 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginVertical="15dp"
         android:layout_marginHorizontal="15dp"
+        android:layout_marginVertical="15dp"
         app:cardBackgroundColor="@color/light_gray"
         app:cardCornerRadius="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title">
@@ -60,11 +59,11 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
                 android:layout_margin="10dp"
+                android:layout_marginBottom="5dp"
                 android:backgroundTint="@color/gray"
                 android:text="CLEAR"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:layout_marginBottom="5dp"
                 app:cornerRadius="10dp"
                 app:layout_constraintBottom_toBottomOf="@+id/a_z"
                 app:layout_constraintEnd_toStartOf="@+id/z_a"
@@ -104,8 +103,6 @@
                 android:layout_margin="10dp"
                 app:cardBackgroundColor="@color/gray"
                 app:cardCornerRadius="15dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/checked_top"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="@+id/a_z"
@@ -132,10 +129,8 @@
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
                 android:layout_marginEnd="1dp"
-                android:visibility="gone"
                 app:cardBackgroundColor="@color/gray"
                 app:cardCornerRadius="15dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/z_a"
                 app:layout_constraintStart_toEndOf="@+id/checked_bottom"
                 app:layout_constraintTop_toBottomOf="@+id/z_a">
@@ -148,6 +143,62 @@
                     android:paddingHorizontal="25dp"
                     android:paddingVertical="10dp"
                     android:text="Checked Top"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"></TextView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/add_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                app:cardBackgroundColor="@color/gray"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/add_top"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="@+id/a_z"
+                app:layout_constraintTop_toBottomOf="@+id/checked_bottom">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:layout_marginBottom="2dp"
+                    android:paddingHorizontal="25dp"
+                    android:paddingVertical="10dp"
+                    android:text="Add to Bottom"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"></TextView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/add_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginEnd="1dp"
+                app:cardBackgroundColor="@color/gray"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/z_a"
+                app:layout_constraintStart_toEndOf="@+id/add_bottom"
+                app:layout_constraintTop_toBottomOf="@+id/checked_top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:layout_marginBottom="2dp"
+                    android:paddingHorizontal="25dp"
+                    android:paddingVertical="10dp"
+                    android:text="Add to Top"
                     android:textColor="@color/ultra_white"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -170,6 +221,27 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginVertical="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView4">
+
+        <CheckBox
+            android:id="@+id/apply_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:buttonTint="@color/orange"
+            android:text="Apply to All Checklists (Select first)"
+            android:textColor="@color/darker_blue" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

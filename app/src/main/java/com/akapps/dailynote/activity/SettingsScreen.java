@@ -21,13 +21,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.akapps.dailynote.BuildConfig;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Photo;
@@ -36,10 +33,11 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.SecurityForPurchases;
-import com.akapps.dailynote.classes.helpers.Zip;
 import com.akapps.dailynote.classes.other.AccountSheet;
+import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
+import com.akapps.dailynote.classes.other.UpgradeSheet;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -49,38 +47,27 @@ import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetailsParams;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
@@ -135,6 +122,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private TextView accountInfo;
     private TextView lastUploadDate;
     private Dialog progressDialog;
+    private ImageView spaceOne;
+    private ImageView spaceTwo;
 
     // Billing client
     private BillingClient billingClient;
@@ -170,6 +159,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         if(backingUp)
             new Handler().postDelayed(this::openBackUpRestoreDialog, 1000);
+
+        boolean upgrade = getIntent().getBooleanExtra("upgrade", false);
+
+        if(upgrade){
+            UpgradeSheet upgradeSheet = new UpgradeSheet();
+            upgradeSheet.show(getSupportFragmentManager(), upgradeSheet.getTag());
+        }
     }
 
     @Override
@@ -232,6 +228,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         upload = findViewById(R.id.upload);
         accountInfo = findViewById(R.id.account_name);
         lastUploadDate = findViewById(R.id.last_upload);
+        spaceOne = findViewById(R.id.space_one);
+        spaceTwo = findViewById(R.id.space_two);
+
+        logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
         if(null == currentUser.getEmail()){
             realm.beginTransaction();
@@ -246,8 +246,15 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 syncLayout.setVisibility(View.VISIBLE);
                 signUp.setVisibility(View.GONE);
                 logIn.setText("Log Out");
+                logIn.setBackgroundColor(context.getColor(R.color.red));
+                sync.setBackgroundColor(context.getColor(R.color.darker_blue));
+                upload.setBackgroundColor(context.getColor(R.color.gold));
+                upload.setTextColor(context.getColor(R.color.gray));
                 accountInfo.setVisibility(View.VISIBLE);
                 accountInfo.setText(mAuth.getCurrentUser().getEmail());
+
+                spaceOne.setVisibility(View.VISIBLE);
+                spaceTwo.setVisibility(View.VISIBLE);
 
                 if(null != currentUser.getLastUpload() && !currentUser.getLastUpload().isEmpty()){
                     lastUploadDate.setVisibility(View.VISIBLE);
@@ -269,6 +276,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         setSupportActionBar(toolbar);
 
         signUp.setOnClickListener(view -> {
+            realmStatus();
             if(currentUser.isProUser()) {
                 if (mAuth.getCurrentUser() == null) {
                     AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, true);
@@ -280,6 +288,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         logIn.setOnClickListener(view -> {
+            realmStatus();
             if (mAuth.getCurrentUser() != null) {
                 showBackupRestoreInfo(8);
             } else {
@@ -289,23 +298,27 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         sync.setOnClickListener(view -> {
+            realmStatus();
             if(currentUser.isProUser())
                 if (mAuth.getCurrentUser() != null)
                     showBackupRestoreInfo(7);
         });
 
         upload.setOnClickListener(view -> {
+            realmStatus();
             if(currentUser.isProUser())
                 if (mAuth.getCurrentUser() != null)
                     showBackupRestoreInfo(6);
         });
 
         backup.setOnClickListener(v -> {
+            realmStatus();
             betaBackup = false;
             showBackupRestoreInfo(1);
         });
 
         backupBeta.setOnClickListener(view -> {
+            realmStatus();
             if(currentUser.isProUser()) {
                 betaBackup = true;
                 showBackupRestoreInfo(2);
@@ -315,11 +328,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         restoreBackup.setOnClickListener(v -> {
+            realmStatus();
             betaRestore = false;
             openFile();
         });
 
         restoreBackupBeta.setOnClickListener(view -> {
+            realmStatus();
             if(currentUser.isProUser()) {
                 betaRestore = true;
                 openFile();
@@ -338,6 +353,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         }
 
         titleLayout.setOnClickListener(v -> {
+            realmStatus();
             if(currentUser.isProUser()) {
                 isTitleSelected = true;
                 showLineNumberMenu(titleLines, null);
@@ -347,6 +363,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         previewLayout.setOnClickListener(v -> {
+            realmStatus();
             if(currentUser.isProUser()) {
                 isTitleSelected = false;
                 showLineNumberMenu(previewLines, null);
@@ -358,6 +375,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         appSettings.setOnClickListener(v -> openAppInSettings());
 
         row.setOnClickListener(v -> {
+            realmStatus();
             if(currentUser.isProUser()){
                 realm.beginTransaction();
                 currentUser.setLayoutSelected("row");
@@ -371,6 +389,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         grid.setOnClickListener(v -> {
+            realmStatus();
             if(currentUser.isProUser()){
                 realm.beginTransaction();
                 currentUser.setLayoutSelected("grid");
@@ -384,6 +403,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         staggered.setOnClickListener(v -> {
+            realmStatus();
             if(!currentUser.getLayoutSelected().equals("stag")) {
                 realm.beginTransaction();
                 currentUser.setLayoutSelected("stag");
@@ -401,6 +421,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         close.setOnClickListener(v -> close());
 
         showPreview.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
             if(currentUser.isProUser()) {
                 realm.beginTransaction();
                 currentUser.setShowPreview(isChecked);
@@ -413,6 +434,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
             if(currentUser.isProUser()) {
                 realm.beginTransaction();
                 currentUser.setOpenFoldersOnStart(isChecked);
@@ -425,11 +447,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         buyPro.setOnClickListener(v -> {
+            realmStatus();
             if(!currentUser.isProUser()) {
-                if (billingClient.isReady())
-                    initiatePurchase(purchaseItemIDs.get(0));
-                else
-                    reconnectBillingService();
+                UpgradeSheet upgradeSheet = new UpgradeSheet();
+                upgradeSheet.show(getSupportFragmentManager(), upgradeSheet.getTag());
             }
             else
                 Helper.showMessage(this, "Pro Status", "You are already a " +
@@ -458,6 +479,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     "Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
         }
       restart();
+    }
+
+    public void buyApp(){
+        if (billingClient.isReady())
+            initiatePurchase(purchaseItemIDs.get(0));
+        else
+            reconnectBillingService();
     }
 
     private void initializeBilling(){
@@ -851,6 +879,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     public void restoreFromDatabase(){
+        progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
         String userEmail = mAuth.getCurrentUser().getEmail();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference()
@@ -869,9 +898,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
             restoreFromDatabase(Uri.fromFile(localFile));
-        }).addOnFailureListener(exception ->
+        }).addOnFailureListener(exception ->{
+                Helper.showLoading("", progressDialog, context, false);
                 Helper.showMessage(SettingsScreen.this, "Error", "" +
-                "Restoring Error from database, try again", MotionToast.TOAST_ERROR));
+                "Restoring Error from database, try again", MotionToast.TOAST_ERROR);
+        });
     }
 
     private void restoreFromDatabase(Uri uri){
@@ -902,8 +933,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
             // update image paths from restored database so it knows where the images are
             realm = RealmDatabase.setUpDatabase(context);
+
             updateImages(images);
         } catch (Exception e) {
+            Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Error", "" +
                     "Restoring Error to device, try again", MotionToast.TOAST_ERROR);
         }
@@ -1093,6 +1126,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private void close(){
         Helper.savePreference(context, "yes", "check");
         Intent intent = new Intent(this, Homepage.class);
+        intent.putExtra("animation", false);
         startActivity(intent);
         finish();
         overridePendingTransition(0, R.anim.hide_to_bottom);

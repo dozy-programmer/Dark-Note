@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="darker_blue">#0099ff</color>
     <color name="blue">#33bbff</color>
-    <color name="colorPrimary">#33bbff</color>
     <color name="colorPrimaryDark">#0099ff</color>
     <color name="red">#cc0000</color>
     <color name="main">#435c6c</color>
@@ -14,11 +13,9 @@
     <color name="pressed_blue">#0099ff</color>
     <color name="orange_red">#ff6600</color>
     <color name="orange">#ff8533</color>
-    <color name="dark_orange">#e67300</color>
-    <color name="ultra_light_gray">#303036</color>
-    <color name="dark_green">#009933</color>
+    <color name="light_light_gray">#adadad</color>
 
-    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/havelock_blue</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/darker_blue</color>
 
     <array name="randomColor">
         <item>@color/cornflower_blue</item>
@@ -55,6 +52,7 @@
 
 
     <color name="havelock_blue">#4792D8</color>
+    <color name="gold">#FFDF00</color>
     <color name="cornflower_blue">#619eea</color>
     <color name="golden_rod">#fcd176</color>
     <color name="mint_tulip">#bdf2e6</color>

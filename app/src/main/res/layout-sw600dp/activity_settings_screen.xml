@@ -127,7 +127,7 @@
 
                     <TextView
                         android:id="@+id/account_name"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:fontFamily="@font/baloo_bhai"
                         android:gravity="center"
@@ -155,8 +155,10 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/space_one"
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:visibility="gone"
+                    android:layout_height="4dp"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
@@ -199,8 +201,10 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/space_two"
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:visibility="gone"
+                    android:layout_height="4dp"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
@@ -215,7 +219,7 @@
                         android:fontFamily="@font/baloo_bhai"
                         android:gravity="center"
                         android:text=""
-                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginHorizontal="10dp"
                         android:layout_marginVertical="5dp"
                         android:visibility="gone"
                         android:layout_gravity="center"
@@ -237,7 +241,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Backup &amp; Restore"
+            android:text="Backup &amp; Restore (Local)"
             android:textColor="@color/orange"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -292,7 +296,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
@@ -324,7 +328,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
@@ -356,7 +360,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="4dp"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
@@ -468,7 +472,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="4dp"
                     android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
@@ -513,7 +517,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="4dp"
                     android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 

@@ -94,15 +94,18 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
 
         itemName.requestFocusFromTouch();
 
+
         if(isAdding){
             title.setText("Adding");
             delete.setVisibility(View.GONE);
+            folderColor.setCardBackgroundColor(getContext().getColor(R.color.orange));
+
         }
         else{
             title.setText("Editing");
             try{
                 itemName.setText(currentItem.getName());
-                folderColor.setCardBackgroundColor(currentItem.getColor()==0 ? getContext().getColor(R.color.gray) : currentItem.getColor());
+                folderColor.setCardBackgroundColor(currentItem.getColor() == 0 ? getContext().getColor(R.color.orange) : currentItem.getColor());
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
                 next.setVisibility(View.GONE);

@@ -102,6 +102,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/account_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/baloo_bhai"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16sp"
+                    android:maxLines="3"
+                    android:text=""
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:layout_weight="50"
+                    android:textColor="@color/blue"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -122,19 +137,6 @@
                         android:textColor="@color/ultra_white"
                         android:textSize="14sp"/>
 
-                    <TextView
-                        android:id="@+id/account_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fontFamily="@font/baloo_bhai"
-                        android:gravity="center"
-                        android:text=""
-                        android:visibility="gone"
-                        android:layout_gravity="center"
-                        android:layout_weight="50"
-                        android:textColor="@color/blue"
-                        android:textSize="16sp"/>
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/log_in"
                         android:layout_width="match_parent"
@@ -152,7 +154,9 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/space_one"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
 
@@ -196,6 +200,8 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/space_two"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
@@ -234,7 +240,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Backup &amp; Restore"
+            android:text="Backup &amp; Restore (Local)"
             android:textColor="@color/orange"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -290,7 +296,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/gray"></ImageView>
+                    android:background="@color/gray"/>
 
                 <LinearLayout
                     android:id="@+id/backup_beta"
@@ -322,7 +328,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/gray"></ImageView>
+                    android:background="@color/gray"/>
 
                 <LinearLayout
                     android:id="@+id/restore_backup"

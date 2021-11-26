@@ -131,7 +131,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                     "Backup file name ends in .zip");
             info.setGravity(Gravity.CENTER);
         }
-        else if(message == 3){
+        else if(message == 3 || message == -3){
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
             backup.setBackgroundColor(getContext().getColor(R.color.red));
@@ -140,8 +140,12 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             if(deleteAllChecklists){
                 info.setText("Are you sure?");
             }
-            else
-                info.setText("Send to trash?");
+            else {
+                if(message == 3)
+                    info.setText("Send to trash?");
+                else if(message == -3)
+                    info.setText("Delete from Trash?");
+            }
             info.setGravity(Gravity.CENTER);
         }
         else if(message == 4){
@@ -198,6 +202,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               info.setGravity(Gravity.CENTER);
               securityWord.setVisibility(View.GONE);
         }
+        else if(message == 9){
+              title.setText("Remove Formatting");
+              backup.setVisibility(View.VISIBLE);
+              backup.setBackgroundColor(getContext().getColor(R.color.red));
+              securityWord.setVisibility(View.GONE);
+              backup.setText("REMOVE");
+              info.setText("Are you sure?");
+              info.setGravity(Gravity.CENTER);
+       }
 
 
         unlock.setOnClickListener(v -> {
@@ -213,7 +226,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         backup.setOnClickListener(v -> {
             if(message == 1 || message == 2)
                 ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
-            else if(message == 3){
+            else if(message == 3 || message == -3){
                 if(deleteAllChecklists){
                     ((NoteEdit) getActivity()).deleteChecklist();
                 }
@@ -241,6 +254,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                 FirebaseAuth.getInstance().signOut();
                 ((SettingsScreen) getActivity()).restart();
             }
+            else if(message == 9)
+                ((NoteEdit) getActivity()).removeFormatting();
 
             this.dismiss();
         });

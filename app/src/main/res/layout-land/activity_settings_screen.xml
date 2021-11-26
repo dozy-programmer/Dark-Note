@@ -151,7 +151,9 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/space_one"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
 
@@ -193,7 +195,9 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/space_two"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
 
@@ -209,7 +213,7 @@
                         android:fontFamily="@font/baloo_bhai"
                         android:gravity="center"
                         android:text=""
-                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginHorizontal="10dp"
                         android:layout_marginVertical="5dp"
                         android:visibility="gone"
                         android:layout_gravity="center"
@@ -231,7 +235,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Backup &amp; Restore"
+            android:text="Backup &amp; Restore (Local)"
             android:textColor="@color/orange"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -302,7 +306,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="99"
                         android:gravity="center_vertical"
-                        android:text="Backup + Images (Pro)"
+                        android:text="Backup + Images"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>
@@ -368,7 +372,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="99"
                         android:gravity="center_vertical"
-                        android:text="Restore Backup + Images (Pro)"
+                        android:text="Restore Backup + Images"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>

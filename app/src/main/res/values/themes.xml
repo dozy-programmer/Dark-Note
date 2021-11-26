@@ -35,15 +35,6 @@
 
     <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorPrimary">@color/orange</item>
-    </style>>
-
-    <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
-    </style>
-
-    <style name="ColoredHandleTheme">
-        <item name="colorControlActivated">@color/orange</item>
     </style>
 
     <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar" >

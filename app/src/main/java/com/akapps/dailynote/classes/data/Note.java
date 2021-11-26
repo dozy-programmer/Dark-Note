@@ -1,5 +1,7 @@
 package com.akapps.dailynote.classes.data;
 
+import com.akapps.dailynote.classes.helpers.Helper;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import io.realm.RealmList;
@@ -10,8 +12,6 @@ public class Note extends RealmObject {
     // note information
     private int noteId;
     private String title;
-    private String dateCreated;
-    private String dateEdited;
     private String note;
     private int titleColor;
     private int textColor;
@@ -20,6 +20,12 @@ public class Note extends RealmObject {
     private boolean archived;
     private boolean trash;
     private boolean isChecked;
+
+    // date
+    private String dateCreated;
+    private String dateEdited;
+    private long dateCreatedMilli;
+    private long dateEditedMilli;
 
     // multi-select
     private boolean isSelected;
@@ -43,6 +49,9 @@ public class Note extends RealmObject {
     // category
     private String category;
 
+    // sorting
+    private int sort;
+
     public Note(){}
 
     public Note(String title, String note){
@@ -52,7 +61,9 @@ public class Note extends RealmObject {
         this.note = note;
         noteId = (int)(Math.random() * 10000000 + 1);
         reminderDateTime = securityWord = "";
+        dateCreatedMilli = dateEditedMilli = Helper.dateToCalender(this.dateCreated).getTimeInMillis();
         category = "none";
+        sort = -1;
     }
 
     public int getNoteId(){
@@ -221,5 +232,29 @@ public class Note extends RealmObject {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public long getDateCreatedMilli() {
+        return dateCreatedMilli;
+    }
+
+    public void setDateCreatedMilli(long dateCreatedMilli) {
+        this.dateCreatedMilli = dateCreatedMilli;
+    }
+
+    public long getDateEditedMilli() {
+        return dateEditedMilli;
+    }
+
+    public void setDateEditedMilli(long dateEditedMilli) {
+        this.dateEditedMilli = dateEditedMilli;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 }
