@@ -15,6 +15,17 @@
         android:background="@color/gray">
 
         <com.google.android.material.card.MaterialCardView
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardCornerRadius="50dp"
+            app:cardBackgroundColor="@color/light_gray_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/app_icon"
             android:layout_width="80dp"
             android:layout_height="80dp"

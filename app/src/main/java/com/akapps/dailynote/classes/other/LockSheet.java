@@ -31,8 +31,6 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
         View view = inflater.inflate(R.layout.bottom_sheet_lock_unlock, container, false);
 
         view.setBackgroundColor(getContext().getColor(R.color.gray));
-
-        ImageView closeFilter = view.findViewById(R.id.close_filter);
         ImageView lock = view.findViewById(R.id.lock);
 
         TextInputLayout pinLayout = view.findViewById(R.id.pin_layout);
@@ -82,10 +80,6 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
             else{
                 isFingerprintSelected[0] = false;
             }
-        });
-
-        closeFilter.setOnClickListener(v -> {
-            this.dismiss();
         });
 
         return view;

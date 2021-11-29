@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -38,23 +37,22 @@
 
                     <ImageView
                         android:id="@+id/search_close"
-                        android:layout_width="30dp"
+                        android:layout_width="25dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:src="@drawable/back_icon"
                         android:visibility="gone"></ImageView>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="90"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/close_note"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:cardBackgroundColor="@color/light_gray_2"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -62,17 +60,17 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="13dp"
+                                android:padding="9dp"
                                 android:src="@drawable/back_icon"></ImageView>
                         </androidx.cardview.widget.CardView>
 
                     </LinearLayout>
 
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="10"
-                        android:gravity="right"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
                         android:orientation="horizontal"
                         android:weightSum="100">
 
@@ -83,7 +81,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray_2"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -91,7 +89,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="13dp"
+                                android:padding="9dp"
                                 android:src="@drawable/expand_menu_icon"></ImageView>
                         </androidx.cardview.widget.CardView>
 
@@ -102,7 +100,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray_2"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -110,7 +108,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="13dp"
+                                android:padding="9dp"
                                 android:src="@drawable/color_icon"></ImageView>
                         </androidx.cardview.widget.CardView>
 
@@ -121,7 +119,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray_2"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -129,7 +127,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="13dp"
+                                android:padding="9dp"
                                 android:src="@drawable/camera_icon2"></ImageView>
                         </androidx.cardview.widget.CardView>
 
@@ -140,7 +138,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray_2"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -149,7 +147,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="13dp"
+                                android:padding="9dp"
                                 android:src="@drawable/pin_icon"></ImageView>
                         </androidx.cardview.widget.CardView>
 
@@ -161,7 +159,7 @@
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
                             android:visibility="gone"
-                            app:cardBackgroundColor="@color/light_gray_2"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -174,7 +172,7 @@
                                 android:hint="Search inside note"
                                 android:maxLines="1"
                                 android:textColor="@color/ultra_white"
-                                android:textColorHint="@color/light_gray_2"
+                                android:textColorHint="@color/light_gray"
                                 android:visibility="gone"></EditText>
 
                             <ImageView
@@ -182,7 +180,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="13dp"
+                                android:padding="9dp"
                                 android:src="@drawable/search_icon"></ImageView>
 
                         </androidx.cardview.widget.CardView>
@@ -194,7 +192,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="15dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray_2"
+                            app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -202,7 +200,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:padding="13dp"
+                                android:padding="9dp"
                                 android:src="@drawable/done_icon"></ImageView>
                         </androidx.cardview.widget.CardView>
 
@@ -212,93 +210,88 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-            <EditText
-                android:id="@+id/title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="Title"
-                android:textColor="@color/ultra_white"
-                android:textColorHint="@color/light_gray_2"
-                android:textSize="34sp"
-                app:layout_constraintEnd_toStartOf="@+id/sort"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"></EditText>
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/sort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/filter_icon"
-                android:visibility="visible"
-                app:fab_colorNormal="@color/light_gray_2"
-                app:fab_colorPressed="@color/gray"
-                app:fab_colorRipple="@color/light_gray_2"
-                app:fab_size="mini"
-                app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-                app:layout_constraintBottom_toBottomOf="@+id/title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/title" />
-
             <LinearLayout
                 android:id="@+id/reminderLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
                 android:weightSum="100"
+                android:gravity="center"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title">
-
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="23dp"
-                    android:layout_weight="50"
-                    android:gravity="left"
-                    android:text="Date"
-                    android:textColor="@color/light_gray_2"
-                    android:textSize="20sp"
-                    android:visibility="gone"></TextView>
-
-                <LinearLayout
-                    android:id="@+id/reminder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:gravity="right"
-                    android:visibility="gone">
+                app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginRight="5dp"
                         android:src="@drawable/cancel"></ImageView>
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_marginRight="5dp"
                         android:src="@drawable/reminder_icon"></ImageView>
 
                     <TextView
                         android:id="@+id/reminderDate"
                         android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:layout_marginRight="23dp"
-                        android:gravity="center_vertical"
+                        android:layout_height="20dp"
+                        android:gravity="right"
+                        android:layout_gravity="center_vertical"
                         android:text="Notification"
-                        android:textColor="@color/light_gray_2"
-                        android:textSize="20sp"></TextView>
-
-                </LinearLayout>
+                        android:textColor="@color/horizon"
+                        android:textSize="16sp"></TextView>
 
             </LinearLayout>
+
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="Title"
+                android:textColor="@color/ultra_white"
+                android:textColorHint="@color/light_gray"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toStartOf="@+id/sort"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reminderLayout"></EditText>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/filter_icon"
+                android:visibility="visible"
+                app:fab_colorNormal="@color/light_gray"
+                app:fab_colorPressed="@color/gray"
+                app:fab_colorRipple="@color/light_gray"
+                app:fab_size="mini"
+                app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+                app:layout_constraintBottom_toBottomOf="@+id/title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/title" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="23dp"
+                android:layout_weight="50"
+                android:gravity="left"
+                android:text="Date"
+                android:textColor="@color/greyish"
+                android:textSize="15sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title"></TextView>
 
             <LinearLayout
                 android:id="@+id/category_layout"
@@ -318,8 +311,8 @@
                     android:layout_marginBottom="5dp"
                     android:gravity="left"
                     android:text="Folder:"
-                    android:textColor="@color/orange_red"
-                    android:textSize="22sp"
+                    android:textColor="@color/orange"
+                    android:textSize="15sp"
                     android:visibility="gone"></TextView>
 
                 <TextView
@@ -329,8 +322,9 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="left|bottom"
                     android:text="category"
-                    android:textColor="@color/ultra_white"
-                    android:textSize="22sp"
+                    android:textColor="@color/greyish"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
                     android:visibility="gone"></TextView>
 
             </LinearLayout>
@@ -340,7 +334,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top|start"
-                android:textColorHint="@color/light_gray_2"
+                android:textColorHint="@color/light_gray"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -359,7 +353,7 @@
                 android:gravity="top|start"
                 android:hint="Type something..."
                 android:textColor="@color/ultra_white"
-                android:textColorHint="@color/light_gray_2"
+                android:textColorHint="@color/light_gray"
                 android:textSize="20sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -377,7 +371,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/date" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/checklist"
@@ -446,7 +440,7 @@
                         android:layout_marginTop="20dp"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="Tap the bottom right button to create a note"
-                        android:textColor="@color/light_gray_2"
+                        android:textColor="@color/light_gray"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -509,7 +503,7 @@
         android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_gray_2"
+        android:background="@color/light_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -523,128 +517,128 @@
 
             <ImageButton
                 android:id="@+id/action_undo"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/undoi_icon" />
 
             <ImageButton
                 android:id="@+id/action_redo"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/redo_icon" />
 
             <ImageButton
                 android:id="@+id/action_bold"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/bold_icon" />
 
             <ImageButton
                 android:id="@+id/action_italic"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/italic_icon" />
 
             <ImageButton
                 android:id="@+id/action_strikethrough"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/strikethrough_icon" />
 
             <ImageButton
                 android:id="@+id/action_underline"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/underline_icon" />
 
             <ImageButton
                 android:id="@+id/action_insert_bullets"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/bullets_icon" />
 
             <ImageButton
                 android:id="@+id/action_insert_numbers"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/numbers_icon" />
 
             <ImageButton
                 android:id="@+id/action_text_size"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/format_size_icon" />
 
             <ImageButton
                 android:id="@+id/action_txt_color"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/color_text_icon" />
 
             <ImageButton
                 android:id="@+id/action_format_clear"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/format_clear_icon" />
 
             <ImageButton
                 android:id="@+id/action_indent"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/indent_icon" />
 
             <ImageButton
                 android:id="@+id/action_outdent"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/outdent_icon" />
 
             <ImageButton
                 android:id="@+id/action_align_left"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/justify_left" />
 
             <ImageButton
                 android:id="@+id/action_align_center"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/justify_center" />
 
             <ImageButton
                 android:id="@+id/action_align_right"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
                 android:src="@drawable/justify_right" />

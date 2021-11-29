@@ -3,6 +3,7 @@ package com.akapps.dailynote.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +45,7 @@ public class CategoryScreen extends AppCompatActivity {
     private TextView trash;
     private TextView archived;
     private TextView pinned;
+    private TextView locked;
     private RecyclerView customCategories;
     public RecyclerView.Adapter categoriesAdapter;
     private FloatingActionButton addCategory;
@@ -62,6 +64,7 @@ public class CategoryScreen extends AppCompatActivity {
     private RealmResults<Note> archivedAllNotes;
     private RealmResults<Note> pinnedAllNotes;
     private RealmResults<Note> trashAllNotes;
+    private RealmResults<Note> lockedAllNotes;
 
     // activity data
     private boolean editingRegularNote;
@@ -106,6 +109,8 @@ public class CategoryScreen extends AppCompatActivity {
                 .equalTo("category", "none").findAll();
         trashAllNotes = allNotes.where()
                 .equalTo("trash", true).findAll();
+        lockedAllNotes = allNotes.where()
+                .greaterThan("pinNumber", 0).findAll();
 
         initializeLayout();
     }
@@ -140,6 +145,7 @@ public class CategoryScreen extends AppCompatActivity {
         trash = findViewById(R.id.trash);
         archived = findViewById(R.id.archived);
         pinned = findViewById(R.id.pinned);
+        locked = findViewById(R.id.locked);
         info = findViewById(R.id.info);
         edit = findViewById(R.id.edit);
         showEmptyMessage = findViewById(R.id.empty_category);
@@ -152,6 +158,7 @@ public class CategoryScreen extends AppCompatActivity {
         archived.setText(archived.getText() + " (" + archivedAllNotes.size() + ")");
         pinned.setText(pinned.getText() + " (" + pinnedAllNotes.size() + ")");
         trash.setText(trash.getText() + " (" + trashAllNotes.size() + ")");
+        locked.setText(locked.getText() + " (" + lockedAllNotes.size() + ")");
 
         if(editingRegularNote){
             allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
@@ -164,6 +171,7 @@ public class CategoryScreen extends AppCompatActivity {
             trash.setVisibility(View.GONE);
             archived.setVisibility(View.GONE);
             pinned.setVisibility(View.GONE);
+            locked.setVisibility(View.GONE);
         }
         else{
             int allNotesSize = 0;
@@ -200,6 +208,7 @@ public class CategoryScreen extends AppCompatActivity {
                 archived.setText("Pin");
                 pinned.setText("Un-Pin");
                 pinned.setGravity(Gravity.LEFT);
+                locked.setVisibility(View.GONE);
             }
         }
 
@@ -363,6 +372,15 @@ public class CategoryScreen extends AppCompatActivity {
             if(!isNotesSelected && pinnedAllNotes.size() > 0)
                 closeActivity(-11);
             else if(pinnedAllNotes.size() == 0)
+                showEmptyMessage();
+            else
+                showErrorMessage();
+        });
+
+        locked.setOnClickListener(v -> {
+            if(!isNotesSelected && lockedAllNotes.size() > 0)
+                closeActivity(-14);
+            else if(lockedAllNotes.size() == 0)
                 showEmptyMessage();
             else
                 showErrorMessage();

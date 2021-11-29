@@ -129,6 +129,18 @@
             android:paddingVertical="5dp">
         </TextView>
 
+        <TextView
+            android:id="@+id/locked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Locked"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textColor="@color/darker_blue"
+            android:layout_marginHorizontal="12dp"
+            android:paddingVertical="5dp">
+        </TextView>
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -48,8 +48,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
 
         view.setBackgroundColor(getContext().getColor(R.color.gray));
 
-        ImageView closeFilter = view.findViewById(R.id.close_filter);
-        TextView resetFilter = view.findViewById(R.id.reset_filter);
+        ImageView resetFilter = view.findViewById(R.id.reset_filter);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         SwitchCompat saveSort = view.findViewById(R.id.save_sort);
 
@@ -137,10 +136,6 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
             unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton, noSortButton);
             unSelectAlphabetical(aToZButton, zToAButton, noSortButton);
             noSortButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
-        });
-
-        closeFilter.setOnClickListener(v -> {
-            this.dismiss();
         });
 
         resetFilter.setOnClickListener(v -> {

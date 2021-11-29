@@ -16,28 +16,31 @@
         android:layout_height="match_parent"
         android:background="@color/gray">
 
-        <ImageView
-            android:id="@+id/close_filter"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
             android:padding="13dp"
-            android:src="@drawable/close_icon"
+            app:cardBackgroundColor="@color/light_gray_2"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:paddingVertical="10dp"
+            android:layout_marginTop="10dp"
             android:text="Info"
             android:textColor="@color/orange"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
         <ImageView
             android:id="@+id/unlock"
@@ -62,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginVertical="20dp"
+                android:layout_marginVertical="10dp"
                 android:text="Info"
                 android:textColor="@color/darker_blue"
                 android:textSize="16sp" />

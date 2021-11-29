@@ -40,7 +40,6 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
 
         view.setBackgroundColor(getContext().getColor(R.color.gray));
 
-        ImageView closeFilter = view.findViewById(R.id.close_filter);
         titleColor = view.findViewById(R.id.title_color);
         textColor = view.findViewById(R.id.text_color);
         ImageView backgroundIcon = view.findViewById(R.id.background_color_icon);
@@ -61,10 +60,6 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
         backgroundColor.setCardBackgroundColor(currentNote.getBackgroundColor());
         titleColor.setTextColor(currentNote.getTitleColor());
         textColor.setTextColor(currentNote.getTextColor());
-
-        closeFilter.setOnClickListener(v -> {
-            this.dismiss();
-        });
 
         return view;
     }

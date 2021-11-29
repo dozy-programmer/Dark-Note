@@ -315,7 +315,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/ad"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/default_button_size"
+        android:layout_height="70dp"
         android:layout_margin="10dp"
         android:backgroundTint="@color/light_gray"
         app:cardCornerRadius="15dp"
@@ -337,7 +337,7 @@
                 android:paddingVertical="7dp"
                 android:text="Dark Note Pro"
                 android:textColor="@color/orange"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/materialCardView6"
                 app:layout_constraintTop_toTopOf="parent"></TextView>
@@ -347,14 +347,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_marginHorizontal="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="Get rid of this message, edit settings, sync multiple Android devices, and support a college student. "
                 android:textColor="@color/ultra_white"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/materialCardView6"
-                app:layout_constraintTop_toBottomOf="@+id/text"></TextView>
+                app:layout_constraintTop_toBottomOf="@+id/text"
+                app:layout_constraintBottom_toBottomOf="parent"></TextView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/upgrade_button"
@@ -375,7 +378,7 @@
                     android:paddingVertical="2dp"
                     android:text="Upgrade"
                     android:textColor="@color/darker_blue"
-                    android:textSize="10sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
             </com.google.android.material.card.MaterialCardView>

@@ -22,6 +22,8 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.other.NoteInfoSheet;
+import com.akapps.dailynote.classes.other.UpgradeSheet;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
@@ -54,6 +56,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private boolean enableSelectMultiple;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView note_info;
         private final TextView note_title;
         private final TextView note_edited;
         private final TextView note_preview;
@@ -74,10 +77,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         private final LinearLayout preview_2_layout;
         private final LinearLayout preview_3_layout;
 
-
         public MyViewHolder(View v) {
             super(v);
             note_title = v.findViewById(R.id.note_title);
+            note_info = v.findViewById(R.id.note_info);
             note_edited = v.findViewById(R.id.note_edited);
             note_background = v.findViewById(R.id.note_background);
             note_preview = v.findViewById(R.id.note_preview);
@@ -453,6 +456,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
                         "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
             return true;
+        });
+
+        holder.note_info.setOnClickListener(view -> {
+            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, noteFragment, allPhotos.size());
+            noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
         });
     }
 

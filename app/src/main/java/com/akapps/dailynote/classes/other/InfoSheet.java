@@ -84,7 +84,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
 
         TextView title  =view.findViewById(R.id.title);
         MaterialButton backup = view.findViewById(R.id.backup);
-        ImageView closeFilter = view.findViewById(R.id.close_filter);
         TextView info  = view.findViewById(R.id.info);
 
         TextInputLayout securityWordLayout = view.findViewById(R.id.security_word_layout);
@@ -138,7 +137,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             securityWord.setVisibility(View.GONE);
             backup.setText("DELETE");
             if(deleteAllChecklists){
-                info.setText("Are you sure?");
+                title.setText("Deleting Checklist...");
+                info.setText("Are you sure you want to delete checklist?");
             }
             else {
                 if(message == 3)
@@ -257,10 +257,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             else if(message == 9)
                 ((NoteEdit) getActivity()).removeFormatting();
 
-            this.dismiss();
-        });
-
-        closeFilter.setOnClickListener(v -> {
             this.dismiss();
         });
 

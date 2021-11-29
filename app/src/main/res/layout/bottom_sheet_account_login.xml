@@ -15,19 +15,31 @@
         android:layout_height="match_parent"
         android:background="@color/gray">
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardBackgroundColor="@color/light_gray_2"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="60dp"
+            android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:paddingVertical="10dp"
             android:text="Sign up"
             android:textColor="@color/orange_red"
-            android:fontFamily="@font/baloo_bhai"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/login"
@@ -56,6 +68,8 @@
             app:boxStrokeErrorColor="@color/red"
             app:errorIconTint="@color/red"
             app:hintTextColor="@color/white"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title">
@@ -85,6 +99,8 @@
             app:boxStrokeWidth="1dp"
             app:errorIconTint="@color/red"
             app:hintTextColor="@color/white"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/red"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -46,4 +46,9 @@
         <item name="android:queryBackground">@android:color/transparent</item>
     </style>
 
+    <style name="circular">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

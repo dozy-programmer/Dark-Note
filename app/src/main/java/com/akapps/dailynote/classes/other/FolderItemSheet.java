@@ -81,9 +81,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
             allCategories = realm.where(Folder.class).sort("positionInList").findAll();
         }
 
-        ImageView closeFilter = view.findViewById(R.id.close_filter);
         folderColor = view.findViewById(R.id.folder_color);
-        TextView resetFilter = view.findViewById(R.id.reset_filter);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
         ImageView delete = view.findViewById(R.id.delete);
@@ -93,7 +91,6 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         TextView title = view.findViewById(R.id.title);
 
         itemName.requestFocusFromTouch();
-
 
         if(isAdding){
             title.setText("Adding");
@@ -116,15 +113,6 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
 
         folderColor.setOnClickListener(v -> editColorDialog(currentItem));
 
-        closeFilter.setOnClickListener(v -> {
-            this.dismiss();
-        });
-
-        resetFilter.setOnClickListener(v -> {
-            if(itemName.getText().length()>0)
-                itemName.getText().clear();
-        });
-
         delete.setOnClickListener(v-> {
             if(!isAdding) {
                 deleteCategory(currentItem);
@@ -133,13 +121,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         });
 
         confirmFilter.setOnClickListener(v -> {
-            if(confirmEntry(itemName, itemNameLayout))
-                this.dismiss();
+            confirmEntry(itemName, itemNameLayout);
         });
 
         next.setOnClickListener(v -> {
             if(confirmEntry(itemName, itemNameLayout)){
-                this.dismiss();
                 FolderItemSheet checklistItemSheet = new FolderItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
             }
@@ -189,6 +175,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         current.setName(newName);
         realm.commitTransaction();
         adapter.notifyItemChanged(position);
+        this.dismiss();
     }
 
     private void deleteCategory(Folder current){
@@ -207,7 +194,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
     private void addCategory(String itemText, int color) {
         // insert data to database
         RealmResults<Folder> results = realm.where(Folder.class)
-                .contains("name", itemText, Case.INSENSITIVE).findAll();
+                .equalTo("name", itemText, Case.INSENSITIVE).findAll();
         Folder newItem = new Folder(itemText, allCategories.size());
         newItem.setColor(color);
         if(results.size() == 0) {
@@ -215,6 +202,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
             realm.insert(newItem);
             realm.commitTransaction();
             adapter.notifyItemInserted(allCategories.size()-1);
+            this.dismiss();
         }
         else
             Helper.showMessage(getActivity(), "Duplicate", "A category with that name exists",

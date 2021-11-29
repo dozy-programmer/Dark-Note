@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbarSize="2dp"
+    android:scrollbars="vertical"
+    android:background="@color/gray">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray">
+
+        <ImageView
+            android:id="@+id/lock_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/lock_icon"
+            app:layout_constraintEnd_toStartOf="@+id/pin_icon"
+            app:layout_constraintTop_toTopOf="@+id/note_name" />
+
+        <ImageView
+            android:id="@+id/pin_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/pin_filled_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/trash_icon"
+            app:layout_constraintTop_toTopOf="@+id/note_name" />
+
+        <ImageView
+            android:id="@+id/trash_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/delete_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/archive_icon"
+            app:layout_constraintTop_toTopOf="@+id/note_name" />
+
+        <ImageView
+            android:id="@+id/archive_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/archive_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/note_name" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/pull_down"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardBackgroundColor="@color/light_gray_2"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/note_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Note : "
+            android:textColor="@color/ultra_white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/lock_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pull_down" />
+
+        <TextView
+            android:id="@+id/date_created"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Date Created : "
+            android:textColor="@color/ultra_white"
+            android:textSize="18sp"
+            android:fontFamily="@font/baloo_bhai"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/note_name" />
+
+        <TextView
+            android:id="@+id/date_edited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Date Edited : "
+            android:textColor="@color/ultra_white"
+            android:textSize="18sp"
+            android:fontFamily="@font/baloo_bhai"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/date_created" />
+
+        <TextView
+            android:id="@+id/folder_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Folder : "
+            android:textColor="@color/ultra_white"
+            android:textSize="18sp"
+            android:fontFamily="@font/baloo_bhai"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/date_edited" />
+
+        <TextView
+            android:id="@+id/num_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Number of Photos : "
+            android:textColor="@color/ultra_white"
+            android:textSize="18sp"
+            android:fontFamily="@font/baloo_bhai"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/folder_name" />
+
+        <TextView
+            android:id="@+id/num_words"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Number of Words : "
+            android:textColor="@color/ultra_white"
+            android:textSize="18sp"
+            android:fontFamily="@font/baloo_bhai"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/num_photos" />
+
+        <TextView
+            android:id="@+id/num_chars"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Number of Characters : "
+            android:textColor="@color/ultra_white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/num_words" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/red"
+            android:text="DELETE"
+            android:textColor="@color/black"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/num_chars" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/golden_rod"
+            android:text="Copy Note"
+            android:textColor="@color/black"
+            app:cornerRadius="10dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/open"
+            app:layout_constraintStart_toEndOf="@+id/delete"
+            app:layout_constraintTop_toBottomOf="@+id/num_chars" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/darker_blue"
+            android:text="OPEN"
+            android:textColor="@color/black"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/num_chars" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

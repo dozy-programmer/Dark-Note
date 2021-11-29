@@ -305,13 +305,17 @@ public class notes extends Fragment{
         });
 
         filterNotes.setOnClickListener(v -> {
-            if(deletingMultipleNotes)
-                selectAllNotes();
-            else if((realm.where(Note.class).findAll().size()!=0)) {
-                showFilterMenu();
+            if(categoryNotes.getCardBackgroundColor().getDefaultColor() == context.getColor(R.color.darker_blue)){
+                showMessage("Filter", "Close Folder to open filter", true);
             }
-            else
-                showMessage("Empty", "There are no notes \uD83D\uDE10", true);
+            else {
+                if (deletingMultipleNotes)
+                    selectAllNotes();
+                else if ((realm.where(Note.class).findAll().size() != 0)) {
+                    showFilterMenu();
+                } else
+                    showMessage("Empty", "There are no notes \uD83D\uDE10", true);
+            }
         });
 
         categoryNotes.setOnClickListener(v -> {
@@ -529,6 +533,13 @@ public class notes extends Fragment{
             }
             else
                 filteringAllNotesRealm(queryArchivedNotes, true);
+        }
+        else if(resultCode == -14){
+            RealmResults<Note> queryArchivedNotes =
+                    realm.where(Note.class)
+                            .greaterThan("pinNumber", 0).findAll();
+
+            filteringAllNotesRealm(queryArchivedNotes, true);
         }
     }
 
@@ -810,6 +821,27 @@ public class notes extends Fragment{
                         "and thus not deleted", MotionToast.TOAST_ERROR);
             adapterNotes.notifyDataSetChanged();
         }
+    }
+
+    public void deleteNote(Note currentNote){
+        if(currentNote.isTrash()){
+            realm.beginTransaction();
+            currentNote.deleteFromRealm();
+            realm.commitTransaction();
+            isListEmpty(allNotes.size(), false);
+            Helper.showMessage(getActivity(), "Deleted", "Note " +
+                    "have been deleted", MotionToast.TOAST_SUCCESS);
+            showData();
+        }
+        else{
+            realm.beginTransaction();
+            currentNote.setTrash(true);
+            realm.commitTransaction();
+            isListEmpty(allNotes.size(), false);
+            Helper.showMessage(getActivity(), "Sent to trash", "Note " +
+                    "has been sent to trash", MotionToast.TOAST_SUCCESS);
+        }
+        adapterNotes.notifyDataSetChanged();
     }
 
     public void restoreMultipleNotes(){

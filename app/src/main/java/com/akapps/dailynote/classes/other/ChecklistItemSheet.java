@@ -66,10 +66,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         view.setBackgroundColor(getContext().getColor(R.color.gray));
 
-        ImageView closeFilter = view.findViewById(R.id.close_filter);
-        TextView resetFilter = view.findViewById(R.id.reset_filter);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
-        TextView next = view.findViewById(R.id.next_confirm);
+        MaterialButton next = view.findViewById(R.id.next_confirm);
         ImageView delete = view.findViewById(R.id.delete);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
@@ -94,15 +92,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 this.dismiss();
             }
         }
-
-        closeFilter.setOnClickListener(v -> {
-            this.dismiss();
-        });
-
-        resetFilter.setOnClickListener(v -> {
-            if(itemName.getText().length()>0)
-                itemName.getText().clear();
-        });
 
         delete.setOnClickListener(v-> {
             if(!isAdding) {

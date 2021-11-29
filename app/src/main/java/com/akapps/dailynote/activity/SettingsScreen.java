@@ -830,7 +830,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             realm.beginTransaction();
             currentUser.setLastUpload(Helper.getCurrentDate());
             lastUploadDate.setVisibility(View.VISIBLE);
-            lastUploadDate.setText(currentUser.getLastUpload());
+            lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
             realm.commitTransaction();
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload Success",
