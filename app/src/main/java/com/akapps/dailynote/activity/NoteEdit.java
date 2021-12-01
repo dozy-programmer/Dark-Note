@@ -42,6 +42,7 @@ import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Folder;
+import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -57,6 +58,7 @@ import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
 import com.akapps.dailynote.recyclerview.checklist_recyclerview;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
+import com.akapps.dailynote.recyclerview.sub_checklist_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
@@ -68,11 +70,13 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import jp.wasabeef.richeditor.RichEditor;
@@ -98,6 +102,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public RecyclerView.Adapter scrollAdapter;
     private LinearLayout remindNote;
     private TextView remindNoteDate;
+    private ImageView palleteIconColor;
     private TextView category;
     private TextView folderText;
     private ConstraintLayout scrollView;
@@ -192,6 +197,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteId = savedInstanceState.getInt("id");
 
         initializeLayout(savedInstanceState);
+        updateColors();
     }
 
     // when orientation changes, then note data is saved
@@ -276,6 +282,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         photosNote = findViewById(R.id.camera);
         pinNoteButton = findViewById(R.id.pinButton);
         pinNoteIcon = findViewById(R.id.pinIcon);
+        palleteIconColor = findViewById(R.id.pallete_icon);
         saveNote = findViewById(R.id.save);
         noteColor = findViewById(R.id.noteColor);
         expandMenu = findViewById(R.id.menu);
@@ -317,7 +324,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         // if it's not a new note and note position is not -1 (which means it is a new note)
         // then data and layout info is updated
         if ((noteId != -1 && !isNewNote)) {
-            try {
+            //try {
                 photosNote.setVisibility(View.VISIBLE);
                 pinNoteIcon.setVisibility(View.VISIBLE);
                 pinNoteButton.setVisibility(View.VISIBLE);
@@ -351,7 +358,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     showCheckListLayout(true);
                     searchLayout.setVisibility(View.GONE);
                     formatMenu.setVisibility(View.GONE);
-
                 }
                 else {
                     formatMenu.setVisibility(View.VISIBLE);
@@ -381,7 +387,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 updateDateEdited();
                 if (!currentNote.getReminderDateTime().isEmpty()) {
                     updateReminderLayout(View.VISIBLE);
-                    Date reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+                    Date reminderDate = null;
+                    try {
+                        reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     Date now = new Date();
                     if (now.after(reminderDate)) {
                         updateReminderDate("");
@@ -390,10 +401,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 }
                 if (currentNote.isPin())
                     pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
-            }catch (Exception e){
-                Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
-                        "so it was deleted", MotionToast.TOAST_SUCCESS);
-            }
+//            }catch (Exception e){
+//                Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
+//                        "so it was deleted", MotionToast.TOAST_SUCCESS);
+//            }
         }
         else {
             isNewNote = true;
@@ -857,6 +868,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         note.setTextColor(currentNote.getTextColor());
         if(checklistAdapter!=null && currentNote.isCheckList())
             checklistAdapter.notifyDataSetChanged();
+
+        if(!Helper.isColorDark(currentNote.getBackgroundColor()))
+            palleteIconColor.setColorFilter(context.getColor(R.color.black));
+        else
+            palleteIconColor.setColorFilter(context.getColor(R.color.white));
     }
 
     private void findText(String target){
@@ -1028,7 +1044,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         // insert data to database
         realm.beginTransaction();
-        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition));
+        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, currentNote.getNoteId() * 2));
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         currentNote.setChecked(false);
@@ -1048,6 +1064,24 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             ((NoteEdit)context).title.setPaintFlags(((NoteEdit) context).title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         else
             ((NoteEdit)context).title.setPaintFlags(0);
+    }
+
+    public void addSubCheckList(String itemText, int position, RecyclerView.Adapter adapter) {
+        int initialPosition = currentNote.getChecklist().size();
+
+        // insert data to database
+        realm.beginTransaction();
+        currentNote.getChecklist().get(position).getSubChecklist().add(new SubCheckListItem(itemText, false,currentNote.getNoteId() * 2, initialPosition));
+        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
+        realm.commitTransaction();
+        updateDateEdited();
+        adapter.notifyDataSetChanged();
+
+        if(title.getText().length()==0)
+            title.requestFocus();
+        else
+            title.clearFocus();
     }
 
     // saves note if has been edited
@@ -1274,7 +1308,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     private void populatePhotos() {
         photosScrollView.setVisibility(View.GONE);
-        scrollAdapter = new photos_recyclerview(allNotePhotos, NoteEdit.this, context);
+        scrollAdapter = new photos_recyclerview(allNotePhotos, NoteEdit.this, context, true);
         photosScrollView.setAdapter(scrollAdapter);
     }
 

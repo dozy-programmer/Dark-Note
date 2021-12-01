@@ -9,11 +9,14 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -21,10 +24,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+
 import org.jetbrains.annotations.NotNull;
+
+import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
 
-public class FilterSheet extends RoundedBottomSheetDialogFragment{
+public class FilterSheet extends RoundedBottomSheetDialogFragment {
 
     private Fragment fragment;
     private int resetCounter;
@@ -36,9 +42,10 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
     private boolean isAlphabeticalChosen;
     private String dateTypeSelected = "";
 
-    public FilterSheet(){ }
+    public FilterSheet() {
+    }
 
-    public FilterSheet(Fragment fragment){
+    public FilterSheet(Fragment fragment) {
         this.fragment = fragment;
     }
 
@@ -58,117 +65,130 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
         MaterialCardView newToOldButton = view.findViewById(R.id.new_old);
         MaterialCardView aToZButton = view.findViewById(R.id.a_z);
         MaterialCardView zToAButton = view.findViewById(R.id.z_a);
-        MaterialCardView noSortButton = view.findViewById(R.id.no_sort);
+
+        // set current filter
+        String dateType = Helper.getPreference(getContext(), "_dateType");
+        boolean oldestToNewest = Helper.getBooleanPreference(getContext(),"_oldestToNewest");
+        boolean newestToOldest = Helper.getBooleanPreference(getContext(),"_newestToOldest");
+
+        boolean aToZSaved = Helper.getBooleanPreference(getContext(),"_aToZ");
+        boolean zToASaved = Helper.getBooleanPreference(getContext(),"_zToA");
+
+
+        if(null != dateType) {
+            if (dateType.equals("dateCreatedMilli"))
+                createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+            else if (dateType.equals("dateEditedMilli"))
+                editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+
+
+            if (oldestToNewest)
+                oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
+            else if (newestToOldest)
+                newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
+        }
+        else if(aToZSaved || zToASaved){
+            if (aToZSaved)
+                aToZButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+            else if (zToASaved)
+                zToAButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+        }
 
         createdDateButton.setOnClickListener(v -> {
             createdDate = !createdDate;
-            unSelectAlphabetical(aToZButton, zToAButton, noSortButton);
-            if(createdDate){
+            unSelectAlphabetical(aToZButton, zToAButton);
+            if (createdDate) {
                 createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
                 editedDate = false;
                 editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            }
-            else
+            } else
                 createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         });
 
         editedDateButton.setOnClickListener(v -> {
             editedDate = !editedDate;
-            unSelectAlphabetical(aToZButton, zToAButton, noSortButton);
-            if(editedDate){
+            unSelectAlphabetical(aToZButton, zToAButton);
+            if (editedDate) {
                 editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
                 createdDate = false;
                 createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            }
-            else
+            } else
                 editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         });
 
         oldToNewButton.setOnClickListener(v -> {
             oldestToLatest = !oldestToLatest;
-            unSelectAlphabetical(aToZButton, zToAButton, noSortButton);
-            if(oldestToLatest){
+            unSelectAlphabetical(aToZButton, zToAButton);
+            if (oldestToLatest) {
                 oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
                 latestToOldest = false;
                 newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            }
-            else
+            } else
                 oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         });
 
         newToOldButton.setOnClickListener(v -> {
             latestToOldest = !latestToOldest;
-            unSelectAlphabetical(aToZButton, zToAButton, noSortButton);
-            if(latestToOldest){
+            unSelectAlphabetical(aToZButton, zToAButton);
+            if (latestToOldest) {
                 newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
                 oldestToLatest = false;
                 oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            }
-            else
+            } else
                 newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         });
 
         aToZButton.setOnClickListener(v -> {
             aToZ = !aToZ;
-            unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton, noSortButton);
-            if(aToZ){
+            unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton);
+            if (aToZ) {
                 aToZButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
                 zToA = false;
                 zToAButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            }
-            else
+            } else
                 aToZButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         });
 
         zToAButton.setOnClickListener(v -> {
             zToA = !zToA;
-            unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton, noSortButton);
-            if(zToA){
+            unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton);
+            if (zToA) {
                 zToAButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
                 aToZ = false;
                 aToZButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-            }
-            else
+            } else
                 zToAButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        });
-
-        noSortButton.setOnClickListener(v -> {
-            unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton, noSortButton);
-            unSelectAlphabetical(aToZButton, zToAButton, noSortButton);
-            noSortButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
         });
 
         resetFilter.setOnClickListener(v -> {
             resetCounter++;
-            if(resetCounter==2) {
+            if (resetCounter == 2) {
                 resetCounter = 0;
                 saveSortData(null, false, false, false, false, true);
                 ((notes) fragment).showDefaultSort();
                 this.dismiss();
                 Helper.showMessage(getActivity(), "Cleared", "Sorting has been reset " +
                         "to default", MotionToast.TOAST_SUCCESS);
-            }
-            else
+            } else
                 Helper.showMessage(getActivity(), "Resetting...", "Press reset again to clear " +
                         "all saved sorting", MotionToast.TOAST_WARNING);
         });
 
         confirmFilter.setOnClickListener(v -> {
-            if(createdDate)
+            if (createdDate)
                 dateTypeSelected = "dateCreatedMilli";
-            else if(editedDate)
+            else if (editedDate)
                 dateTypeSelected = "dateEditedMilli";
             else
                 dateTypeSelected = "null";
 
-            if(!dateTypeSelected.equals("null")){
-                if(!oldestToLatest && !latestToOldest)
+            if (!dateTypeSelected.equals("null")) {
+                if (!oldestToLatest && !latestToOldest)
                     isDateCorrectlySelected = false;
                 else
                     isDateCorrectlySelected = true;
-            }
-            else{
-                if(oldestToLatest || latestToOldest)
+            } else {
+                if (oldestToLatest || latestToOldest)
                     isDateCorrectlySelected = false;
                 else
                     isDateCorrectlySelected = true;
@@ -176,38 +196,34 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
 
             isAlphabeticalChosen = aToZ || zToA;
 
-            if(isAlphabeticalChosen && (createdDate || editedDate || oldestToLatest || latestToOldest)){
+            if (isAlphabeticalChosen && (createdDate || editedDate || oldestToLatest || latestToOldest)) {
                 Helper.showMessage(getActivity(), "Error", "Choose to sort either by " +
                         "date or by alphabetical", MotionToast.TOAST_ERROR);
-            }
-            else if(isDateCorrectlySelected) {
+            } else if (isDateCorrectlySelected) {
 
-                if(saveSort.isChecked()){
-                    if(isAlphabeticalChosen || (!dateTypeSelected.equals("null") && isDateCorrectlySelected)) {
+                if (saveSort.isChecked()) {
+                    if (isAlphabeticalChosen || (!dateTypeSelected.equals("null") && isDateCorrectlySelected)) {
                         saveSortData(dateTypeSelected,
                                 oldestToLatest, latestToOldest, aToZ, zToA, false);
                         this.dismiss();
                         ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest,
                                 latestToOldest, aToZ, zToA);
-                    }
-                    else {
+                    } else {
                         Helper.showMessage(getActivity(), "Save Sort Requirement", "Select Note & " +
                                 "Checklist & sorting method", MotionToast.TOAST_ERROR);
                     }
-                }
-                else{
+                } else {
                     this.dismiss();
                     ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest,
                             latestToOldest, aToZ, zToA);
                 }
-            }
-            else {
-                if(!isDateCorrectlySelected)
+            } else {
+                if (!isDateCorrectlySelected)
                     Helper.showMessage(getActivity(), "Date Type", "Select the order of " +
                             "date type", MotionToast.TOAST_ERROR);
                 else
                     Helper.showMessage(getActivity(), "**Required**", "Please select all " +
-                        "note type(s) desired", MotionToast.TOAST_ERROR);
+                            "note type(s) desired", MotionToast.TOAST_ERROR);
             }
         });
 
@@ -215,13 +231,12 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
     }
 
     private void saveSortData(String dateType, boolean oldestToNewest,
-                              boolean newestToOldest, boolean aToZ, boolean zToA, boolean clearSortData){
+                              boolean newestToOldest, boolean aToZ, boolean zToA, boolean clearSortData) {
 
-        if(!clearSortData) {
-
+        if (!clearSortData) {
             if (!dateType.equals("null")) {
                 Helper.savePreference(getContext(), dateType, "_dateType");
-                Helper.saveBooleanPreference(getContext(), oldestToNewest,  "_oldestToNewest");
+                Helper.saveBooleanPreference(getContext(), oldestToNewest, "_oldestToNewest");
                 Helper.saveBooleanPreference(getContext(), newestToOldest, "_newestToOldest");
                 Helper.saveBooleanPreference(getContext(), false, "_aToZ");
                 Helper.saveBooleanPreference(getContext(), false, "_zToA");
@@ -232,8 +247,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
                 Helper.saveBooleanPreference(getContext(), aToZ, "_aToZ");
                 Helper.saveBooleanPreference(getContext(), zToA, "_zToA");
             }
-        }
-        else{
+        } else {
             // clear notes
             Helper.savePreference(getContext(), null, "_dateType");
             Helper.saveBooleanPreference(getContext(), false, "_oldestToNewest");
@@ -244,22 +258,19 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
     }
 
     private void unSelectDate(MaterialCardView newToOldButton, MaterialCardView oldToNewButton,
-                              MaterialCardView createdDateButton, MaterialCardView editedDateButton,
-                              MaterialCardView noSortButton){
-        oldestToLatest =  latestToOldest  = false;
+                              MaterialCardView createdDateButton, MaterialCardView editedDateButton) {
+        oldestToLatest = latestToOldest = false;
         createdDate = editedDate = false;
         newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
         editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        noSortButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
     }
 
-    private void unSelectAlphabetical(MaterialCardView aZ, MaterialCardView zA, MaterialCardView noSortButton){
-        zToA =  aToZ  = false;
+    private void unSelectAlphabetical(MaterialCardView aZ, MaterialCardView zA) {
+        zToA = aToZ = false;
         aZ.setCardBackgroundColor(getContext().getColor(R.color.gray));
         zA.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        noSortButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
     }
 
     @Override
@@ -278,11 +289,11 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog =(BottomSheetDialog) getDialog ();
+                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
                     if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
+                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);
+                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     }

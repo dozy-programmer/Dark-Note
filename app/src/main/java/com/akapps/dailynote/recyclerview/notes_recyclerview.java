@@ -137,6 +137,19 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_edited.setText(currentNote.getDateEdited());
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
+        if(Helper.isColorDark(currentNote.getBackgroundColor())) {
+            holder.note_title.setTextColor(activity.getColor(R.color.white));
+            holder.note_edited.setTextColor(activity.getColor(R.color.white));
+            holder.note_preview.setTextColor(activity.getColor(R.color.white));
+            holder.preview_photo_message.setTextColor(activity.getColor(R.color.white));
+        }
+        else{
+            holder.note_title.setTextColor(activity.getColor(R.color.black));
+            holder.note_edited.setTextColor(activity.getColor(R.color.gray));
+            holder.note_preview.setTextColor(activity.getColor(R.color.gray));
+            holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
+        }
+
         // changes the number of lines title and preview occupy depending on user setting
         int titleLines = ((notes) noteFragment).user.getTitleLines();
         int contentLines = ((notes) noteFragment).user.getContentLines();
@@ -459,7 +472,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         });
 
         holder.note_info.setOnClickListener(view -> {
-            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, noteFragment, allPhotos.size());
+            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, noteFragment, allPhotos);
             noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
         });
     }

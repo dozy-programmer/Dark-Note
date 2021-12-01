@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -31,6 +32,8 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
     private TextView titleColor;
     private TextView textColor;
     private MaterialCardView backgroundColor;
+    private TextView backgroundText;
+    private ImageView backgroundIcon;
 
     public ColorSheet(){ }
 
@@ -42,10 +45,11 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
 
         titleColor = view.findViewById(R.id.title_color);
         textColor = view.findViewById(R.id.text_color);
-        ImageView backgroundIcon = view.findViewById(R.id.background_color_icon);
+        backgroundIcon = view.findViewById(R.id.background_color_icon);
         backgroundColor = view.findViewById(R.id.background);
         ImageView titleColorIcon = view.findViewById(R.id.title_color_icon);
         ImageView textColorIcon = view.findViewById(R.id.text_color_icon);
+        backgroundText = view.findViewById(R.id.background_text);
 
         currentNote = ((NoteEdit) getActivity()).currentNote;
 
@@ -60,6 +64,8 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
         backgroundColor.setCardBackgroundColor(currentNote.getBackgroundColor());
         titleColor.setTextColor(currentNote.getTitleColor());
         textColor.setTextColor(currentNote.getTextColor());
+
+        checkColor();
 
         return view;
     }
@@ -102,10 +108,22 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
         colorPickerView.show();
     }
 
+    private void checkColor(){
+        if(!Helper.isColorDark(currentNote.getBackgroundColor())) {
+            backgroundText.setTextColor(getContext().getColor(R.color.black));
+            backgroundIcon.setColorFilter(getContext().getColor(R.color.black));
+        }
+        else{
+            backgroundText.setTextColor(getContext().getColor(R.color.white));
+            backgroundIcon.setColorFilter(getContext().getColor(R.color.white));
+        }
+    }
+
     private void updateColors(){
         backgroundColor.setCardBackgroundColor(currentNote.getBackgroundColor());
         titleColor.setTextColor(currentNote.getTitleColor());
         textColor.setTextColor(currentNote.getTextColor());
+        checkColor();
     }
 
     @Override

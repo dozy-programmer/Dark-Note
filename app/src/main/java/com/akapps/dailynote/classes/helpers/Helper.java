@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
@@ -42,7 +43,6 @@ public class Helper {
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-
     // returns true if device is in landscape
     public static boolean isLandscape(Context context){
         int orientation = context.getResources().getConfiguration().orientation;
@@ -78,6 +78,12 @@ public class Helper {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         currentActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
+    }
+
+    public static boolean isColorDark(int color){
+        final double darkness = 1-(0.299 * Color.red(color) + 0.587 * Color.green(color) +
+                0.114 * Color.blue(color))/255;
+        return !(darkness < 0.5);
     }
 
     public static String twentyFourToTwelve(String dateString){

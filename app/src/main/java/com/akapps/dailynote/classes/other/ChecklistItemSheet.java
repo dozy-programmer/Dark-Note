@@ -1,6 +1,7 @@
 package com.akapps.dailynote.classes.other;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -39,29 +41,49 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     private TextInputEditText itemName;
 
+    private SubCheckListItem currentSubItem;
+    private boolean isSubChecklist;
+
     // adding
     public ChecklistItemSheet(){
         isAdding = true;
+        isSubChecklist = false;
     }
 
-    // editing
-    public ChecklistItemSheet(CheckListItem checkListItem, int position){
+    public ChecklistItemSheet(boolean isSubChecklist, RecyclerView.Adapter adapter){
+        isAdding = true;
+        this.isSubChecklist = isSubChecklist;
+        this.adapter = adapter;
+    }
+
+    // editing note
+    public ChecklistItemSheet(CheckListItem checkListItem, int position, RecyclerView.Adapter adapter){
         isAdding = false;
+        isSubChecklist = false;
         this.currentItem = checkListItem;
         this.position = position;
+        this.adapter = adapter;
+    }
+
+    // editing subnote
+    public ChecklistItemSheet(SubCheckListItem checkListItem, int position, RecyclerView.Adapter adapter){
+        isAdding = false;
+        isSubChecklist = true;
+        this.currentSubItem = checkListItem;
+        this.position = position;
+        this.adapter = adapter;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_checklist_item, container, false);
 
-        if(savedInstanceState!=null) {
+        if(savedInstanceState != null) {
             isAdding = savedInstanceState.getBoolean("add");
             position = savedInstanceState.getInt("position");
         }
 
-        realm = ((NoteEdit)getActivity()).realm;
-        adapter = ((NoteEdit)getActivity()).checklistAdapter;
+        realm = ((NoteEdit) getActivity()).realm;
         currentNote = ((NoteEdit)getActivity()).currentNote;
 
         view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -77,13 +99,22 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         itemName.requestFocusFromTouch();
 
         if(isAdding){
-            title.setText("Adding");
+            if(isSubChecklist)
+                title.setText("Adding Sub-Item");
+            else
+                title.setText("Adding");
             delete.setVisibility(View.GONE);
         }
         else{
             try {
-                title.setText("Editing");
-                itemName.setText(currentItem.getText());
+                if(isSubChecklist){
+                    title.setText("Editing Sub-Item");
+                    itemName.setText(currentSubItem.getText());
+                }
+                else {
+                    title.setText("Editing");
+                    itemName.setText(currentItem.getText());
+                }
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
                 next.setVisibility(View.GONE);
@@ -95,7 +126,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         delete.setOnClickListener(v-> {
             if(!isAdding) {
-                deleteItem(currentItem);
+                if(isSubChecklist)
+                    deleteItem(currentSubItem);
+                else
+                    deleteItem(currentItem);
                 this.dismiss();
             }
         });
@@ -108,7 +142,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         next.setOnClickListener(v -> {
             if(confirmEntry(itemName, itemNameLayout)){
                 this.dismiss();
-                ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet();
+                ChecklistItemSheet checklistItemSheet;
+                if(isSubChecklist)
+                    checklistItemSheet = new ChecklistItemSheet(true, adapter);
+                else
+                    checklistItemSheet = new ChecklistItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
             }
         });
@@ -118,6 +156,17 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     // updates select status of note in database
     private void updateItem(CheckListItem checkListItem, String text){
+        // save status to database
+        realm.beginTransaction();
+        checkListItem.setText(text);
+        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        realm.commitTransaction();
+        ((NoteEdit)getActivity()).updateDateEdited();
+        adapter.notifyItemChanged(position);
+    }
+
+    // updates select status of note in database
+    private void updateItem(SubCheckListItem checkListItem, String text){
         // save status to database
         realm.beginTransaction();
         checkListItem.setText(text);
@@ -138,19 +187,37 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         adapter.notifyDataSetChanged();
     }
 
+    // updates select status of subnote in database
+    private void deleteItem(SubCheckListItem checkListItem){
+        // save status to database
+        realm.beginTransaction();
+        checkListItem.deleteFromRealm();
+        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        realm.commitTransaction();
+        ((NoteEdit)getActivity()).updateDateEdited();
+        adapter.notifyDataSetChanged();
+    }
+
 
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout){
-
         if(!itemName.getText().toString().isEmpty()){
             if(isAdding) {
                 String text = itemName.getText().toString();
                 String[] items = text.replaceAll(" +, +", ",,").split(",,");
-                for (String item : items)
-                    ((NoteEdit) getActivity()).addCheckList(item.trim().replaceAll(" +", " "));
-                adapter.notifyItemInserted(adapter.getItemCount()+1);
+                if(isSubChecklist){
+                    for (String item : items)
+                        ((NoteEdit) getActivity()).addSubCheckList(item.trim().replaceAll(" +", " "), position, adapter);
+                }
+                else {
+                    for (String item : items)
+                        ((NoteEdit) getActivity()).addCheckList(item.trim().replaceAll(" +", " "));
+                }
             }
             else {
-                updateItem(currentItem, itemName.getText().toString());
+                if(isSubChecklist)
+                    updateItem(currentSubItem, itemName.getText().toString());
+                else
+                    updateItem(currentItem, itemName.getText().toString());
             }
             return true;
         }

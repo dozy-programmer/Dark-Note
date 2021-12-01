@@ -54,8 +54,10 @@
             android:id="@+id/price_q_w_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal"
             android:weightSum="100"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title">
@@ -66,8 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:hint="Pin"
                 android:layout_weight="50"
+                android:hint="Pin"
                 android:textColorHint="@color/white"
                 android:theme="@style/TextInputLayout"
                 app:boxBackgroundColor="@color/gray"
@@ -91,8 +93,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:hint="Security Word"
                 android:layout_weight="50"
+                android:hint="Security Word"
                 android:textColorHint="@color/white"
                 android:theme="@style/TextInputLayout"
                 app:boxBackgroundColor="@color/gray"
@@ -111,42 +113,24 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/fingerprint_layout"
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/fingerprint"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20sp"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:weightSum="100"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="2sp"
+            android:layout_weight="10"
+            android:checked="false"
+            android:gravity="center"
+            android:text="Fingerprint\t\t"
+            android:scaleX="0.85"
+            android:scaleY="0.85"
+            android:textColor="@color/darker_blue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:theme="@style/ThemeOverlay.MySwitchCompat"
+            app:layout_constraintBottom_toBottomOf="@+id/title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/price_q_w_layout"
-            app:layout_constraintVertical_bias="0.0">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center_vertical"
-                android:layout_weight="90"
-                android:text="Fingerprint"
-                android:textColor="@color/havelock_blue"
-                android:textSize="20sp">
-            </TextView>
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/fingerprint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_weight="10"
-                android:checked="false"
-                android:theme="@style/ThemeOverlay.MySwitchCompat">
-            </androidx.appcompat.widget.SwitchCompat>
-
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="@+id/title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

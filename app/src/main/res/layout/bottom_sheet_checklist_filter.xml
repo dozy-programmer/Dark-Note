@@ -215,7 +215,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/baloo_bhai"
         android:gravity="center"
-        android:text="Sort:"
+        android:text="Sort"
         android:layout_marginTop="10dp"
         android:textColor="@color/orange"
         android:textSize="24sp"

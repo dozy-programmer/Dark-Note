@@ -17,14 +17,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
+import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -32,22 +36,23 @@ import com.google.android.material.button.MaterialButton;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
 public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     private Note currentNote;
-    private int photosSize;
     private Fragment fragment;
+    private RealmResults<Photo> allPhotos;
 
     int deleteCounter;
 
     public NoteInfoSheet(){}
 
-    public NoteInfoSheet(Note currentNote, Fragment fragment, int photosSize){
+    public NoteInfoSheet(Note currentNote, Fragment fragment, RealmResults<Photo> allPhotos){
         this.currentNote = currentNote;
         this.fragment = fragment;
-        this.photosSize = photosSize;
+        this.allPhotos = allPhotos;
     }
 
     @SuppressLint("SetTextI18n")
@@ -71,6 +76,14 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton delete = view.findViewById(R.id.delete);
         MaterialButton copy = view.findViewById(R.id.copy);
         MaterialButton open = view.findViewById(R.id.open);
+        RecyclerView photosScrollView = view.findViewById(R.id.note_photos);
+
+        photosScrollView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        RecyclerView.Adapter scrollAdapter = new photos_recyclerview(allPhotos, getActivity(), getContext(), false);
+        photosScrollView.setAdapter(scrollAdapter);
+
+        if(allPhotos.size() == 0 || currentNote.getPinNumber() > 0)
+            photosScrollView.setVisibility(View.GONE);
 
         open.setOnClickListener(view1 -> openNoteActivity(currentNote));
 
@@ -116,7 +129,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                     Html.FROM_HTML_MODE_COMPACT));
 
             numPhotos.setText(Html.fromHtml(numPhotos.getText() + "<br>" +
-                            "<font color='#ff8533'>" + photosSize + "</font>",
+                            "<font color='#ff8533'>" + allPhotos.size() + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             String getNoteString = sanitizeWord(currentNote.getNote());
@@ -138,7 +151,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
             numWords.setText(Html.fromHtml(numWords.getText() + "<br>" +
                             "<font color='#ff8533'>" +
-                            (currentNote.isCheckList() ? checklistSize + " list item(s)<br>" +
+                            (currentNote.isCheckList() ? checklistSize + " list items<br>" +
                                     getChecklistString.split(" ").length :
                                     noteSize) + " words" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));

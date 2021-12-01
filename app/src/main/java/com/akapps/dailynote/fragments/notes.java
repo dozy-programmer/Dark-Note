@@ -81,6 +81,7 @@ public class notes extends Fragment{
     private boolean isAllSelected;
     private boolean isTrashSelected;
     public boolean enableSelectMultiple;
+    private int numMultiSelect = -1;
 
     // dialog
     private boolean isNotesFiltered;
@@ -320,10 +321,15 @@ public class notes extends Fragment{
 
         categoryNotes.setOnClickListener(v -> {
            if(realm.where(Note.class).findAll().size()!=0) {
-                Intent category = new Intent(getActivity(), CategoryScreen.class);
-                if(enableSelectMultiple)
-                    category.putExtra("multi_select", true);
-                startActivityForResult(category, 5);
+               if(numMultiSelect == 0){
+                   showMessage("Error", "Close multi-select to open folders", true);
+               }
+               else {
+                   Intent category = new Intent(getActivity(), CategoryScreen.class);
+                   if (enableSelectMultiple)
+                       category.putExtra("multi_select", true);
+                   startActivityForResult(category, 5);
+               }
             }
             else
                 showMessage("Empty", "There are no notes \uD83D\uDE10", true);
@@ -420,6 +426,7 @@ public class notes extends Fragment{
     }
 
     private void clearMultipleSelect(){
+        numMultiSelect = -1;
         unSelectAllNotes();
         enableSelectMultiple = false;
         settings.setVisibility(View.VISIBLE);
@@ -634,43 +641,30 @@ public class notes extends Fragment{
 
         sortedBy.setVisibility(View.GONE);
 
-        if (dateType!=null) {
-            sortedBy.setVisibility(View.VISIBLE);
+        if (dateType!=null || aToZ || zToA) {
             if (oldestToNewest) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.ASCENDING).findAll();
-                if(dateType.equals("dateEdited"))
-                    sortedBy.setText("Sorted by: Date Edited - Old -> New");
-                else
-                    sortedBy.setText("Sorted by: Date Created - Old -> New");
             }
             else if (newestToOldest) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.DESCENDING).findAll();
-                if(dateType.equals("dateEdited"))
-                    sortedBy.setText("Sorted by: Date Edited - New -> Old");
-                else
-                    sortedBy.setText("Sorted by: Date Created - New -> Old");
             }
-        }
-        else if(aToZ || zToA){
-            if (aToZ) {
+            else if (aToZ) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title").findAll();
-                sortedBy.setText("Sorted by: Alphabetical - A -> Z");
             }
             else if (zToA) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title", Sort.DESCENDING).findAll();
-                sortedBy.setText("Sorted by: Alphabetical - Z -> A");
             }
         }
         populateAdapter(allNotes);
@@ -869,11 +863,12 @@ public class notes extends Fragment{
             try {
                 currentlySelected = Integer.parseInt(fragmentTitle.getText().toString()
                         .replaceAll("[^0-9]", "")) + add - subtract;
-            } catch (Exception e) { }
+            } catch (Exception e) {}
         }
         else
             currentlySelected = number;
 
+        numMultiSelect = currentlySelected;
         fragmentTitle.setText(currentlySelected + " Selected");
         fragmentTitle.setTextSize(24);
     }

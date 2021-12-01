@@ -2,6 +2,7 @@ package com.akapps.dailynote.classes.data;
 
 import com.akapps.dailynote.classes.helpers.Helper;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class CheckListItem extends RealmObject {
@@ -13,14 +14,20 @@ public class CheckListItem extends RealmObject {
 
     private long lastCheckedDate;
 
+    private int subListId;
+
+    private RealmList<SubCheckListItem> subChecklist;
+
     public CheckListItem(){}
 
-    public CheckListItem(String text, boolean checked, int id, int positionInList) {
+    public CheckListItem(String text, boolean checked, int id, int positionInList, int subListId) {
         this.text = text;
         this.checked = checked;
         this.id = id;
         this.positionInList = positionInList;
         lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
+        subChecklist = new RealmList<>();
+        this.subListId = subListId;
     }
 
     public String getText() {
@@ -61,5 +68,21 @@ public class CheckListItem extends RealmObject {
 
     public void setLastCheckedDate(long lastCheckedDate) {
         this.lastCheckedDate = lastCheckedDate;
+    }
+
+    public RealmList<SubCheckListItem> getSubChecklist() {
+        return subChecklist;
+    }
+
+    public void setSubChecklist(RealmList<SubCheckListItem> subChecklist) {
+        this.subChecklist = subChecklist;
+    }
+
+    public int getSubListId() {
+        return subListId;
+    }
+
+    public void setSubListId(int subListId) {
+        this.subListId = subListId;
     }
 }

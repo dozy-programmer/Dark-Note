@@ -156,9 +156,9 @@ public class CategoryScreen extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         archived.setText(archived.getText() + " (" + archivedAllNotes.size() + ")");
-        pinned.setText(pinned.getText() + " (" + pinnedAllNotes.size() + ")");
+        pinned.setText(pinned.getText() + " [" + pinnedAllNotes.size() + "]");
         trash.setText(trash.getText() + " (" + trashAllNotes.size() + ")");
-        locked.setText(locked.getText() + " (" + lockedAllNotes.size() + ")");
+        locked.setText(locked.getText() + " [" + lockedAllNotes.size() + "]");
 
         if(editingRegularNote){
             allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
@@ -191,8 +191,6 @@ public class CategoryScreen extends AppCompatActivity {
             else
                 title.setText(allSelected + " Selected");
 
-            pinned.setGravity(Gravity.CENTER);
-
             if(multiSelect){
                 showAllNotes.setVisibility(View.VISIBLE);
                 noCategory.setVisibility(View.VISIBLE);
@@ -206,8 +204,17 @@ public class CategoryScreen extends AppCompatActivity {
                 pinned.setTextColor(getColor(R.color.chardonnay));
                 archived.setTextColor(getColor(R.color.orange));
                 archived.setText("Pin");
+                archived.setCompoundDrawables(null, null, null, null);
                 pinned.setText("Un-Pin");
-                pinned.setGravity(Gravity.LEFT);
+                pinned.setCompoundDrawables(null, null, null, null);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                params.gravity = Gravity.LEFT;
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) archived.getLayoutParams();
+                params.leftMargin = lp.leftMargin;
+                params.topMargin = lp.topMargin;
+                pinned.setLayoutParams(params);
+
                 locked.setVisibility(View.GONE);
             }
         }

@@ -25,6 +25,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
     private final RealmResults<Photo> allPhotos;
     private final FragmentActivity activity;
     private final Context context;
+    private final boolean showDelete;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final ImageView image;
@@ -39,10 +40,11 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         }
     }
 
-    public photos_recyclerview(RealmResults<Photo> allPhotos, FragmentActivity activity, Context context) {
+    public photos_recyclerview(RealmResults<Photo> allPhotos, FragmentActivity activity, Context context, boolean showDelete) {
         this.allPhotos = allPhotos;
         this.activity = activity;
         this.context = context;
+        this.showDelete = showDelete;
     }
 
     @Override
@@ -56,6 +58,9 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current photo object
         Photo currentPhoto = allPhotos.get(position);
+
+        if(!showDelete)
+            holder.delete.setVisibility(View.GONE);
 
         // populates photo into the recyclerview
         Glide.with(context).load(currentPhoto.getPhotoLocation())

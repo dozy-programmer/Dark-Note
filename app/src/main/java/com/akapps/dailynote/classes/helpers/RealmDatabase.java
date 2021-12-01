@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.CheckListItem;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +15,7 @@ import java.util.Random;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
 
@@ -90,9 +92,21 @@ public class RealmDatabase {
 
                 if(!schema.get("CheckListItem").hasField("lastCheckedDate"))
                     schema.get("CheckListItem").addField("lastCheckedDate", long.class);
+
+                schema.create("SubCheckListItem")
+                        .addField("id", int.class)
+                        .addField("text", String.class)
+                        .addField("checked", boolean.class)
+                        .addField("positionInList", int.class);
+
+                if(!schema.get("CheckListItem").hasField("subChecklist"))
+                    schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
+
+                if(!schema.get("CheckListItem").hasField("subListId"))
+                    schema.get("CheckListItem").addField("subListId", int.class);
             }
             else if(oldVersion == 1 || oldVersion == 2 || oldVersion == 3 || oldVersion == 4 ||
-                    oldVersion == 5){
+                    oldVersion == 5 || oldVersion == 6){
                 if(!schema.get("User").hasField("email"))
                     schema.get("User").addField("email", String.class);
 
@@ -110,6 +124,18 @@ public class RealmDatabase {
 
                 if(!schema.get("CheckListItem").hasField("lastCheckedDate"))
                     schema.get("CheckListItem").addField("lastCheckedDate", long.class);
+
+                schema.create("SubCheckListItem")
+                        .addField("id", int.class)
+                        .addField("text", String.class)
+                        .addField("checked", boolean.class)
+                        .addField("positionInList", int.class);
+
+                if(!schema.get("CheckListItem").hasField("subChecklist"))
+                    schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
+
+                if(!schema.get("CheckListItem").hasField("subListId"))
+                    schema.get("CheckListItem").addField("subListId", int.class);
             }
 
         }

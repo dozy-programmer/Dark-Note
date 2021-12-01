@@ -105,6 +105,7 @@
                             app:cardElevation="0dp">
 
                             <ImageView
+                                android:id="@+id/pallete_icon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"

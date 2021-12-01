@@ -147,19 +147,38 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     private void getInput(){
         String inputEmail = emailInput.getText().toString();
         String inputPassword = passwordInput.getText().toString();
-        if(!inputEmail.isEmpty() && inputEmail.contains("@") && inputEmail.contains(".com")){
-            emailLayout.setErrorEnabled(false);
-            if(!inputPassword.isEmpty()) {
-                if(signUp)
-                    signUp(inputEmail, inputPassword);
-                else
-                    login(inputEmail, inputPassword);
+
+        String freeUpgradeEmail = "upgrade";
+        String passwordUpgradePassword = "free";
+
+        if(inputEmail.toLowerCase().equals(freeUpgradeEmail) &&
+                inputPassword.toLowerCase().equals(passwordUpgradePassword)){
+            if(currentUser.isProUser()){
+                Helper.showMessage(getActivity(), "Whatcha Doing?",
+                        "Buddy, you are already a pro user, thanks!",
+                        MotionToast.TOAST_WARNING);
             }
-            else
-                passwordLayout.setError(getContext().getString(R.string.input_error));
+            else {
+                realm.beginTransaction();
+                currentUser.setProUser(true);
+                realm.commitTransaction();
+                dialog.dismiss();
+                ((SettingsScreen) getActivity()).restart();
+            }
         }
-        else
-            emailLayout.setError(getContext().getString(R.string.input_error));
+        else {
+            if (!inputEmail.isEmpty() && inputEmail.contains("@") && inputEmail.contains(".com")) {
+                emailLayout.setErrorEnabled(false);
+                if (!inputPassword.isEmpty()) {
+                    if (signUp)
+                        signUp(inputEmail, inputPassword);
+                    else
+                        login(inputEmail, inputPassword);
+                } else
+                    passwordLayout.setError(getContext().getString(R.string.input_error));
+            } else
+                emailLayout.setError(getContext().getString(R.string.input_error));
+        }
     }
 
     @Override

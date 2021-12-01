@@ -123,7 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Number of Photos : "
+            android:text="Photos : "
             android:textColor="@color/ultra_white"
             android:textSize="18sp"
             android:fontFamily="@font/baloo_bhai"
@@ -131,18 +131,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/folder_name" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/note_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/num_photos" />
+
         <TextView
             android:id="@+id/num_words"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Number of Words : "
+            android:text="Words : "
             android:textColor="@color/ultra_white"
             android:textSize="18sp"
             android:fontFamily="@font/baloo_bhai"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/num_photos" />
+            app:layout_constraintTop_toBottomOf="@id/note_photos" />
 
         <TextView
             android:id="@+id/num_chars"
@@ -150,7 +160,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:fontFamily="@font/baloo_bhai"
-            android:text="Number of Characters : "
+            android:text="Characters : "
             android:textColor="@color/ultra_white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
