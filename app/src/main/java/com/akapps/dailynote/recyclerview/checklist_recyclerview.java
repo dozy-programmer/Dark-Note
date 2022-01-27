@@ -80,16 +80,20 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         isAllItemsSelected();
 
-
+        // delete line 84+85 and uncomment to restore sub checklists
+        holder.subChecklist.setVisibility(View.GONE);
+        holder.addSubChecklist.setVisibility(View.GONE);
+        /* comment start
         if(null == checkListItem.getSubChecklist() || checkListItem.getSubChecklist().size() == 0)
             holder.subChecklist.setVisibility(View.GONE);
         else {
             holder.subChecklist.setVisibility(View.VISIBLE);
             subChecklistAdapter = new sub_checklist_recyclerview(realm.where(SubCheckListItem.class)
-                            .equalTo("id", currentNote.getNoteId() * 2)
+                            .equalTo("id", currentNote.getChecklist().get(position).getSubListId())
                             .sort("positionInList").findAll(), currentNote, realm, activity);
             holder.subChecklist.setAdapter(subChecklistAdapter);
         }
+         comment end */
 
         // retrieves checkList text and select status of checkListItem
         String checkListText = checkListItem.getText();
@@ -116,7 +120,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
 
         holder.addSubChecklist.setOnClickListener(view -> {
-            ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(true, subChecklistAdapter);
+            ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(true, subChecklistAdapter, position);
             checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
         });
 
@@ -124,7 +128,10 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         holder.checkItem.setOnClickListener(v -> {
             saveSelected(checkListItem, !isSelected);
             isAllItemsSelected();
-            notifyItemChanged(position);
+            if(currentNote.getSort() == 3 || currentNote.getSort() == 4)
+                notifyDataSetChanged();
+            else
+                notifyItemChanged(position);
         });
 
         holder.edit.setOnClickListener(v -> {

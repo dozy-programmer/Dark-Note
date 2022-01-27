@@ -192,15 +192,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setVisibility(View.VISIBLE);
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
-            RealmResults<CheckListItem> checklist = realm.where(CheckListItem.class)
-                    .equalTo("id", currentNote.getNoteId())
-                    .sort("positionInList", Sort.ASCENDING)
-                    .findAll();
+            RealmResults<CheckListItem> checklist = currentNote.getChecklist()
+                    .sort("positionInList", Sort.ASCENDING);
             if (!isNoteLocked) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText(checklist.size()+ " items");
             }
-            for (int i = 0; i < currentNote.getChecklist().size(); i++) {
+            for (int i = 0; i < checklist.size(); i++) {
                 checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
             }
 

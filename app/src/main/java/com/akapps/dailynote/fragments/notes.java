@@ -306,17 +306,12 @@ public class notes extends Fragment{
         });
 
         filterNotes.setOnClickListener(v -> {
-            if(categoryNotes.getCardBackgroundColor().getDefaultColor() == context.getColor(R.color.darker_blue)){
-                showMessage("Filter", "Close Folder to open filter", true);
-            }
-            else {
-                if (deletingMultipleNotes)
-                    selectAllNotes();
-                else if ((realm.where(Note.class).findAll().size() != 0)) {
-                    showFilterMenu();
-                } else
-                    showMessage("Empty", "There are no notes \uD83D\uDE10", true);
-            }
+            if (deletingMultipleNotes)
+                selectAllNotes();
+            else if ((realm.where(Note.class).findAll().size() != 0)) {
+                showFilterMenu();
+            } else
+                showMessage("Empty", "There are no notes \uD83D\uDE10", true);
         });
 
         categoryNotes.setOnClickListener(v -> {

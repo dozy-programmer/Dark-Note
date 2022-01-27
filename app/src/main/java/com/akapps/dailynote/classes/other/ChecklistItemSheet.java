@@ -3,6 +3,7 @@ package com.akapps.dailynote.classes.other;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,10 +51,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         isSubChecklist = false;
     }
 
-    public ChecklistItemSheet(boolean isSubChecklist, RecyclerView.Adapter adapter){
+    public ChecklistItemSheet(boolean isSubChecklist, RecyclerView.Adapter adapter, int position){
         isAdding = true;
         this.isSubChecklist = isSubChecklist;
         this.adapter = adapter;
+        this.position = position;
     }
 
     // editing note
@@ -65,7 +67,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         this.adapter = adapter;
     }
 
-    // editing subnote
+    // editing sub-note
     public ChecklistItemSheet(SubCheckListItem checkListItem, int position, RecyclerView.Adapter adapter){
         isAdding = false;
         isSubChecklist = true;
@@ -91,6 +93,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
         ImageView delete = view.findViewById(R.id.delete);
+        TextView info = view.findViewById(R.id.checklist_info);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
@@ -106,6 +109,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             delete.setVisibility(View.GONE);
         }
         else{
+            info.setVisibility(View.GONE);
             try {
                 if(isSubChecklist){
                     title.setText("Editing Sub-Item");
@@ -144,7 +148,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 this.dismiss();
                 ChecklistItemSheet checklistItemSheet;
                 if(isSubChecklist)
-                    checklistItemSheet = new ChecklistItemSheet(true, adapter);
+                    checklistItemSheet = new ChecklistItemSheet(true, adapter, position);
                 else
                     checklistItemSheet = new ChecklistItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
@@ -187,7 +191,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         adapter.notifyDataSetChanged();
     }
 
-    // updates select status of subnote in database
+    // updates select status of sub-note in database
     private void deleteItem(SubCheckListItem checkListItem){
         // save status to database
         realm.beginTransaction();
@@ -205,8 +209,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 String text = itemName.getText().toString();
                 String[] items = text.replaceAll(" +, +", ",,").split(",,");
                 if(isSubChecklist){
-                    for (String item : items)
-                        ((NoteEdit) getActivity()).addSubCheckList(item.trim().replaceAll(" +", " "), position, adapter);
+                    for (String item : items) {
+                        Log.d("Here", "adding " + item);
+                        ((NoteEdit) getActivity()).addSubCheckList(item.trim().replaceAll(" +", " "), position);
+                    }
                 }
                 else {
                     for (String item : items)

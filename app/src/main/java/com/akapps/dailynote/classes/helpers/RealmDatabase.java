@@ -24,12 +24,6 @@ public class RealmDatabase {
     public static Realm setUpDatabase(Context context){
         int currentVersion = Integer.parseInt(context.getString(R.string.schema));
 
-        byte[] bytes = new byte[64];
-        Arrays.fill( bytes, (byte) 24 );
-        Arrays.fill( bytes, 0, 10, (byte) 36 );
-        Arrays.fill( bytes, 20, 30, (byte) (99*99) );
-        Arrays.fill( bytes, 30, 40, (byte) 125 );
-
         Realm.init(context);
 
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -93,11 +87,13 @@ public class RealmDatabase {
                 if(!schema.get("CheckListItem").hasField("lastCheckedDate"))
                     schema.get("CheckListItem").addField("lastCheckedDate", long.class);
 
-                schema.create("SubCheckListItem")
-                        .addField("id", int.class)
-                        .addField("text", String.class)
-                        .addField("checked", boolean.class)
-                        .addField("positionInList", int.class);
+                if(!schema.contains("SubCheckListItem")) {
+                    schema.create("SubCheckListItem")
+                            .addField("id", int.class)
+                            .addField("text", String.class)
+                            .addField("checked", boolean.class)
+                            .addField("positionInList", int.class);
+                }
 
                 if(!schema.get("CheckListItem").hasField("subChecklist"))
                     schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
@@ -105,8 +101,7 @@ public class RealmDatabase {
                 if(!schema.get("CheckListItem").hasField("subListId"))
                     schema.get("CheckListItem").addField("subListId", int.class);
             }
-            else if(oldVersion == 1 || oldVersion == 2 || oldVersion == 3 || oldVersion == 4 ||
-                    oldVersion == 5 || oldVersion == 6){
+            else {
                 if(!schema.get("User").hasField("email"))
                     schema.get("User").addField("email", String.class);
 
@@ -125,11 +120,13 @@ public class RealmDatabase {
                 if(!schema.get("CheckListItem").hasField("lastCheckedDate"))
                     schema.get("CheckListItem").addField("lastCheckedDate", long.class);
 
-                schema.create("SubCheckListItem")
-                        .addField("id", int.class)
-                        .addField("text", String.class)
-                        .addField("checked", boolean.class)
-                        .addField("positionInList", int.class);
+                if(!schema.contains("SubCheckListItem")) {
+                    schema.create("SubCheckListItem")
+                            .addField("id", int.class)
+                            .addField("text", String.class)
+                            .addField("checked", boolean.class)
+                            .addField("positionInList", int.class);
+                }
 
                 if(!schema.get("CheckListItem").hasField("subChecklist"))
                     schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
