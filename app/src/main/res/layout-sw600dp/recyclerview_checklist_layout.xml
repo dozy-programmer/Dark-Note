@@ -6,6 +6,7 @@
     android:layout_marginVertical="5dp"
     android:clickable="true"
     android:focusable="true"
+    android:layout_marginHorizontal="5dp"
     app:cardBackgroundColor="@color/light_gray"
     app:cardCornerRadius="10dp">
 
@@ -13,8 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        `
 
         <LinearLayout
             android:layout_width="match_parent"
