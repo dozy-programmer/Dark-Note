@@ -8,6 +8,7 @@ Dark note is a simple and intuitive note app for your notes and checklists.
 * [Features](#features)
 * [Purpose](#purpose)
 * [Tools](#tools)
+* [Download](#download)
 
 ## Preview
 
@@ -51,3 +52,7 @@ used ColorNote for a couple years, I felt it was time to do it. Using ColorNote 
 * Java
 * Firebase (Storage and Authentication)
 * Realm DB
+
+## Download
+
+Download [app!](https://play.google.com/store/apps/details?id=com.akapps.dailynote) (using an Android device)
