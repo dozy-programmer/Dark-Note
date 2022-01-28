@@ -11,7 +11,7 @@ Dark note is a simple and intuitive note app for your notes and checklists.
 
 ## Preview
 
-<img src="Screenshots/Dark_Note_Gif.mp4" width="200" height="420"/>
+<img src="Screenshots/Dark_Note_Gif.gif" width="200" height="420"/>
 
 ## App Layout
 
