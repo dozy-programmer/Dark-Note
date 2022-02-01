@@ -34,6 +34,8 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
     private Realm realm;
     private Note currentNote;
 
+    public FilterChecklistSheet(){}
+
     public FilterChecklistSheet(Realm realm, Note currentNote){
         this.realm = realm;
         this.currentNote = currentNote;
@@ -54,7 +56,12 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton clearFilter = view.findViewById(R.id.clear_filter);
         CheckBox applyAll = view.findViewById(R.id.apply_all);
 
-        int sort = currentNote.getSort();
+        int sort = 0;
+        try {
+            sort = currentNote.getSort();
+        }catch (Exception e) {
+            this.dismiss();
+        }
 
         if (sort == 1)
             aZ.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
@@ -192,6 +199,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
