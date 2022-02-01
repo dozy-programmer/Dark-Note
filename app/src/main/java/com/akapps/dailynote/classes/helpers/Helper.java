@@ -1,8 +1,11 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -10,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +25,8 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.Note;
+
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -197,6 +203,46 @@ public class Helper {
         catch (Exception e){
             return "";
         }
+    }
+
+    public static void startAlarm(Activity activity, Note currentNote) {
+        Log.d("Here", "Attempting to set alarm");
+        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(activity, AlertReceiver.class);
+        intent.putExtra("id", currentNote.getNoteId());
+        intent.putExtra("title", currentNote.getTitle().replace("\n", " "));
+        intent.putExtra("pin", currentNote.getPinNumber());
+        intent.putExtra("securityWord", currentNote.getSecurityWord());
+        intent.putExtra("fingerprint", currentNote.isFingerprint());
+        intent.putExtra("checklist", currentNote.isCheckList());
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
+                    PendingIntent.FLAG_MUTABLE);
+        else
+            pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                dateToCal(currentNote.getReminderDateTime()).getTimeInMillis(),
+                pendingIntent);
+        Log.d("Here", "Setting alarm for " +  dateToCal(currentNote.getReminderDateTime()).getTimeInMillis());
+    }
+
+    private static Calendar dateToCal(String dateString){
+        dateString = dateString.replace("\n", " ");
+        Calendar calendar = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+            String dateInString = dateString;
+            Date date = sdf.parse(dateInString);
+            calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            Log.d("Here", "Date successfully converted to Calender");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendar;
     }
 
     /**

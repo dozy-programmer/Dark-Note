@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
+import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -69,6 +70,7 @@ import java.util.zip.ZipOutputStream;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
@@ -933,7 +935,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
             // update image paths from restored database so it knows where the images are
             realm = RealmDatabase.setUpDatabase(context);
-
+            updateAlarms(realm.where(Note.class)
+                    .equalTo("archived", false)
+                    .equalTo("trash", false).findAll());
             updateImages(images);
         } catch (Exception e) {
             Helper.showLoading("", progressDialog, context, false);
@@ -1044,6 +1048,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             else
                 Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
                         "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
+        }
+    }
+
+    private void updateAlarms(RealmResults<Note> allNotes){
+        for (int i=0; i < allNotes.size(); i++){
+            Note currentNote = allNotes.get(i);
+            if(!currentNote.getReminderDateTime().isEmpty())
+                Helper.startAlarm(this, currentNote);
         }
     }
 

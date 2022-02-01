@@ -1289,12 +1289,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void updateReminderLayout(int visibility){
         remindNote.setVisibility(visibility);
         remindNoteDate.setVisibility(visibility);
-        int formatDate24Hours = Integer.parseInt(currentNote.getReminderDateTime().split(" ")[1].split(":")[0]);
-        int formatDate12Hours = formatDate24Hours  % 12;
-        String formatted = currentNote.getReminderDateTime().split(" ")[0] + " " + formatDate12Hours +
-                ":" + currentNote.getReminderDateTime().split(" ")[1].split(":")[1] +
-                ":" + currentNote.getReminderDateTime().split(" ")[1].split(":")[2] + " " + ((formatDate24Hours>12)? "PM": "AM");
-        remindNoteDate.setText(formatted);
+        if(!currentNote.getReminderDateTime().isEmpty()) {
+            int formatDate24Hours = Integer.parseInt(currentNote.getReminderDateTime().split(" ")[1].split(":")[0]);
+            int formatDate12Hours = formatDate24Hours % 12;
+            String formatted = currentNote.getReminderDateTime().split(" ")[0] + " " + formatDate12Hours +
+                    ":" + currentNote.getReminderDateTime().split(" ")[1].split(":")[1] +
+                    ":" + currentNote.getReminderDateTime().split(" ")[1].split(":")[2] + " " + ((formatDate24Hours > 12) ? "PM" : "AM");
+            remindNoteDate.setText(formatted);
+        }
+        else
+            remindNoteDate.setVisibility(View.GONE);
     }
 
     private void showPhotos(int visibility) {
