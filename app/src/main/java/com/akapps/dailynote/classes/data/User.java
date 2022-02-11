@@ -12,10 +12,10 @@ public class User extends RealmObject {
     // backup data
     private int textSize;
 
-    // adding
     private int titleLines;
     private int contentLines;
     private boolean openFoldersOnStart;
+    private boolean showFolderNotes;
 
     private boolean showPreview;
 
@@ -114,5 +114,13 @@ public class User extends RealmObject {
 
     public void setLastUpload(String lastUpload) {
         this.lastUpload = lastUpload;
+    }
+
+    public boolean isShowFolderNotes() {
+        return showFolderNotes;
+    }
+
+    public void setShowFolderNotes(boolean showFolderNotes) {
+        this.showFolderNotes = showFolderNotes;
     }
 }

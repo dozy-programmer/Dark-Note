@@ -651,6 +651,109 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:id="@+id/folder_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Folder Settings"
+            android:textColor="@color/orange"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_layout"></TextView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/folder_settings">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/folder_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Open Folders on App Start"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/open_folder_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="10"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="5dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/show_folder_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:paddingVertical="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Put Notes In Folders"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/show_folder_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="10"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="5dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
             android:id="@+id/other_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -663,52 +766,8 @@
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_layout">
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
         </TextView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView3"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="20dp"
-            app:cardBackgroundColor="@color/light_gray"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="@+id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/other_settings">
-
-            <LinearLayout
-                android:id="@+id/folder_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="100">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="90"
-                    android:gravity="center_vertical"
-                    android:text="Open Folders on App Start"
-                    android:textColor="@color/ultra_white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"></TextView>
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/open_folder_switch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_weight="10"
-                    android:theme="@style/ThemeOverlay.MySwitchCompat"
-                    android:layout_marginRight="5dp"
-                    android:checked="true">
-                </androidx.appcompat.widget.SwitchCompat>
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView2"
@@ -720,7 +779,7 @@
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
+            app:layout_constraintTop_toBottomOf="@+id/other_settings">
 
             <LinearLayout
                 android:id="@+id/app_settings"

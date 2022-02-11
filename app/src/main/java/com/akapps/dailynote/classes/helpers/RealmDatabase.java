@@ -100,6 +100,9 @@ public class RealmDatabase {
 
                 if(!schema.get("CheckListItem").hasField("subListId"))
                     schema.get("CheckListItem").addField("subListId", int.class);
+
+                if(!schema.get("User").hasField("showFolderNotes"))
+                    schema.get("User").addField("showFolderNotes", boolean.class);
             }
             else {
                 if(!schema.get("User").hasField("email"))
@@ -133,6 +136,9 @@ public class RealmDatabase {
 
                 if(!schema.get("CheckListItem").hasField("subListId"))
                     schema.get("CheckListItem").addField("subListId", int.class);
+
+                if(!schema.get("User").hasField("showFolderNotes"))
+                    schema.get("User").addField("showFolderNotes", boolean.class);
             }
 
         }

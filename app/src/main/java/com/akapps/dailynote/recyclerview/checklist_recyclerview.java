@@ -22,8 +22,11 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -94,6 +97,22 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.subChecklist.setAdapter(subChecklistAdapter);
         }
          comment end */
+
+        // checks to see if there is a reminder and makes sure it has not passed
+        if (!currentNote.getReminderDateTime().isEmpty()) {
+            Date reminderDate = null;
+            try {
+                reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date now = new Date();
+            if (now.after(reminderDate)) {
+                realm.beginTransaction();
+                currentNote.setReminderDateTime("");
+                realm.commitTransaction();
+            }
+        }
 
         // retrieves checkList text and select status of checkListItem
         String checkListText = checkListItem.getText();

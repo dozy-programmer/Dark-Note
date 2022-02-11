@@ -111,6 +111,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private boolean isTitleSelected;
     private SwitchCompat showPreview;
     private SwitchCompat openFoldersOnStart;
+    private SwitchCompat showFolderNotes;
     private MaterialButton buyPro;
     private MaterialCardView grid;
     private MaterialCardView row;
@@ -216,6 +217,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         previewLayout = findViewById(R.id.preview_layout);
         showPreview = findViewById(R.id.show_preview_switch);
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
+        showFolderNotes = findViewById(R.id.show_folder_switch);
         buyPro = findViewById(R.id.buy_pro);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
@@ -348,9 +350,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         if(!currentUser.isProUser()){
             showPreview.setChecked(false);
             openFoldersOnStart.setChecked(false);
+            showFolderNotes.setChecked(false);
             realm.beginTransaction();
             currentUser.setShowPreview(true);
             currentUser.setOpenFoldersOnStart(false);
+            currentUser.setShowFolderNotes(false);
             realm.commitTransaction();
         }
 
@@ -444,6 +448,19 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
             else if(initializing) {
                 openFoldersOnStart.setChecked(false);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            }
+        });
+
+        showFolderNotes.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            if(currentUser.isProUser()) {
+                realm.beginTransaction();
+                currentUser.setShowFolderNotes(isChecked);
+                realm.commitTransaction();
+            }
+            else if(initializing) {
+                showFolderNotes.setChecked(false);
                 Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
             }
         });
@@ -672,6 +689,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private void initializeSettings(){
         showPreview.setChecked(currentUser.isShowPreview());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
+        showFolderNotes.setChecked(currentUser.isShowFolderNotes());
 
         if(currentUser.isProUser()){
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));

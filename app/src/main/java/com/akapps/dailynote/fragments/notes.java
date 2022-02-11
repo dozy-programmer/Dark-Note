@@ -111,13 +111,6 @@ public class notes extends Fragment{
             realm = RealmDatabase.setUpDatabase(context);
         }
 
-        allNotes = realm.where(Note.class)
-                .equalTo("archived", false)
-                .equalTo("trash", false)
-                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
-
-        updateDateEditedMilli();
-
         if (realm.where(User.class).findAll().size() == 0)
             addUser();
         else {
@@ -129,6 +122,18 @@ public class notes extends Fragment{
                 realm.commitTransaction();
             }
         }
+
+        allNotes = realm.where(Note.class)
+                .equalTo("archived", false)
+                .equalTo("trash", false)
+                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+
+        if(user.isShowFolderNotes())
+            allNotes = allNotes.where().equalTo("category", "none").findAll();
+
+        updateDateEditedMilli();
+
+
         unSelectAllNotes();
 
         // This callback will only be called when MyFragment is at least Started.
@@ -622,6 +627,8 @@ public class notes extends Fragment{
                 .equalTo("archived", false)
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+        if(user.isShowFolderNotes())
+            allNotes = allNotes.where().equalTo("category", "none").findAll();
         populateAdapter(allNotes);
         isListEmpty(allNotes.size(), false);
     }
@@ -642,24 +649,36 @@ public class notes extends Fragment{
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.ASCENDING).findAll();
+
+                if(user.isShowFolderNotes())
+                    allNotes = allNotes.where().equalTo("category", "none").findAll();
             }
             else if (newestToOldest) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.DESCENDING).findAll();
+
+                if(user.isShowFolderNotes())
+                    allNotes = allNotes.where().equalTo("category", "none").findAll();
             }
             else if (aToZ) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title").findAll();
+
+                if(user.isShowFolderNotes())
+                    allNotes = allNotes.where().equalTo("category", "none").findAll();
             }
             else if (zToA) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title", Sort.DESCENDING).findAll();
+
+                if(user.isShowFolderNotes())
+                    allNotes = allNotes.where().equalTo("category", "none").findAll();
             }
         }
         populateAdapter(allNotes);
