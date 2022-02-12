@@ -2,17 +2,22 @@ package com.akapps.dailynote.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -82,6 +87,7 @@ public class notes extends Fragment{
     private boolean isTrashSelected;
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
+    private boolean isAppStarted;
 
     // dialog
     private boolean isNotesFiltered;
@@ -133,7 +139,6 @@ public class notes extends Fragment{
 
         updateDateEditedMilli();
 
-
         unSelectAllNotes();
 
         // This callback will only be called when MyFragment is at least Started.
@@ -153,57 +158,24 @@ public class notes extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        // if orientation changes, then isSearchingNotes is set to the value it was beforehand
-        if (savedInstanceState != null) {
-            isSearchingNotes = savedInstanceState.getBoolean("searching");
-            searchingString = savedInstanceState.getString("searchingString");
-        }
-
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
         initializeLayout();
         showData();
 
-        if(user.isOpenFoldersOnStart()){
-            if(null != Helper.getPreference(context, "check") &&
-                    Helper.getPreference(context, "check").equals("no")) {
-                Intent category = new Intent(getActivity(), CategoryScreen.class);
-                startActivityForResult(category, 5);
-            }
-            Helper.savePreference(context, "no", "check");
+        isAppStarted = Helper.getBooleanPreference(context, "app_started");
+        if(user.isOpenFoldersOnStart() && !isAppStarted){
+            Helper.saveBooleanPreference(context, true, "app_started");
+            Intent category = new Intent(getActivity(), CategoryScreen.class);
+            startActivityForResult(category, 5);
         }
-
-        if(isSearchingNotes) {
-            showSearchBar();
-            searchNotesAndUpdate(searchingString);
-        }
-        else
-            isListEmpty(allNotes.size(), false);
 
         return view;
-    }
-
-    // when orientation changes, then search bar status is saved
-    @Override
-    public void onSaveInstanceState (Bundle savedInstanceState){
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putBoolean("searching", isSearchingNotes);
-        savedInstanceState.putString("searchingString", searchingString);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        // close keyboard if open
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        // close keyboard if open
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         if(user!=null)
             savePreferences();
@@ -321,15 +293,10 @@ public class notes extends Fragment{
 
         categoryNotes.setOnClickListener(v -> {
            if(realm.where(Note.class).findAll().size()!=0) {
-               if(numMultiSelect == 0){
-                   showMessage("Error", "Close multi-select to open folders", true);
-               }
-               else {
-                   Intent category = new Intent(getActivity(), CategoryScreen.class);
-                   if (enableSelectMultiple)
-                       category.putExtra("multi_select", true);
-                   startActivityForResult(category, 5);
-               }
+               Intent category = new Intent(getActivity(), CategoryScreen.class);
+               if (enableSelectMultiple)
+                   category.putExtra("multi_select", true);
+               startActivityForResult(category, 5);
             }
             else
                 showMessage("Empty", "There are no notes \uD83D\uDE10", true);

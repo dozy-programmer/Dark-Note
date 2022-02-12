@@ -1154,9 +1154,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void close(){
-        Helper.savePreference(context, "yes", "check");
         Intent intent = new Intent(this, Homepage.class);
-        intent.putExtra("animation", false);
+        intent.putExtra("app_started", 2);
         startActivity(intent);
         finish();
         overridePendingTransition(0, R.anim.hide_to_bottom);
