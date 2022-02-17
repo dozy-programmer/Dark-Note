@@ -546,6 +546,46 @@
                         android:layout_weight="2"
                         android:scaleY="1.3"
                         android:scaleX="1.3"
+                        android:paddingHorizontal="20dp"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="10dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/show_note_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="98"
+                        android:gravity="center_vertical"
+                        android:text="Show Info"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/show_info_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:scaleY="1.3"
+                        android:scaleX="1.3"
+                        android:paddingHorizontal="20dp"
                         android:theme="@style/ThemeOverlay.MySwitchCompat"
                         android:layout_marginRight="10dp"
                         android:checked="true">
@@ -587,7 +627,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="125dp"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="20dp"
                 android:weightSum="99"
@@ -596,7 +636,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/grid"
                     android:layout_width="90dp"
-                    android:layout_height="90dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_weight="33"
@@ -615,7 +655,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/row"
                     android:layout_width="90dp"
-                    android:layout_height="90dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="33"
                     android:layout_margin="10dp"
@@ -634,7 +674,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/staggered"
                     android:layout_width="90dp"
-                    android:layout_height="90dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="33"
                     android:layout_margin="10dp"
@@ -710,6 +750,7 @@
                         android:layout_weight="10"
                         android:scaleY="1.3"
                         android:scaleX="1.3"
+                        android:paddingHorizontal="20dp"
                         android:theme="@style/ThemeOverlay.MySwitchCompat"
                         android:layout_marginRight="15dp"
                         android:checked="true">
@@ -749,6 +790,7 @@
                         android:layout_weight="10"
                         android:scaleY="1.3"
                         android:scaleX="1.3"
+                        android:paddingHorizontal="20dp"
                         android:theme="@style/ThemeOverlay.MySwitchCompat"
                         android:layout_marginRight="15dp"
                         android:checked="true">

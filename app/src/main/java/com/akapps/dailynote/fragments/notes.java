@@ -655,7 +655,8 @@ public class notes extends Fragment{
     // populates the recyclerview
     private void populateAdapter(RealmResults<Note> allNotes) {
         filteredNotes = allNotes;
-        adapterNotes = new notes_recyclerview(allNotes, realm, getActivity(), notes.this, user.isShowPreview());
+        adapterNotes = new notes_recyclerview(allNotes, realm, getActivity(), notes.this,
+                user.isShowPreview(), user.isShowPreviewNoteInfo());
         recyclerViewNotes.setAdapter(adapterNotes);
     }
 

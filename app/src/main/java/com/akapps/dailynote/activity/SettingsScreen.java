@@ -110,6 +110,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private CustomPowerMenu linesMenu;
     private boolean isTitleSelected;
     private SwitchCompat showPreview;
+    private SwitchCompat showPreviewNoteInfo;
     private SwitchCompat openFoldersOnStart;
     private SwitchCompat showFolderNotes;
     private MaterialButton buyPro;
@@ -216,6 +217,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         titleLayout = findViewById(R.id.title_layout);
         previewLayout = findViewById(R.id.preview_layout);
         showPreview = findViewById(R.id.show_preview_switch);
+        showPreviewNoteInfo = findViewById(R.id.show_info_switch);
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
         showFolderNotes = findViewById(R.id.show_folder_switch);
         buyPro = findViewById(R.id.buy_pro);
@@ -349,12 +351,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         if(!currentUser.isProUser()){
             showPreview.setChecked(false);
+            showPreviewNoteInfo.setChecked(true);
             openFoldersOnStart.setChecked(false);
             showFolderNotes.setChecked(false);
             realm.beginTransaction();
             currentUser.setShowPreview(true);
             currentUser.setOpenFoldersOnStart(false);
             currentUser.setShowFolderNotes(false);
+            currentUser.setShowPreviewNoteInfo(true);
             realm.commitTransaction();
         }
 
@@ -435,6 +439,19 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
             else if(initializing) {
                 showPreview.setChecked(true);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            }
+        });
+
+        showPreviewNoteInfo.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            if(currentUser.isProUser()) {
+                realm.beginTransaction();
+                currentUser.setShowPreviewNoteInfo(isChecked);
+                realm.commitTransaction();
+            }
+            else if(initializing) {
+                showPreviewNoteInfo.setChecked(true);
                 Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
             }
         });
@@ -688,6 +705,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void initializeSettings(){
         showPreview.setChecked(currentUser.isShowPreview());
+        showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
 

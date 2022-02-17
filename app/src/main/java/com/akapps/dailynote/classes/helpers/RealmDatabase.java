@@ -103,6 +103,9 @@ public class RealmDatabase {
 
                 if(!schema.get("User").hasField("showFolderNotes"))
                     schema.get("User").addField("showFolderNotes", boolean.class);
+
+                if(!schema.get("User").hasField("showPreviewNoteInfo"))
+                    schema.get("User").addField("showPreviewNoteInfo", boolean.class);
             }
             else {
                 if(!schema.get("User").hasField("email"))
@@ -139,6 +142,9 @@ public class RealmDatabase {
 
                 if(!schema.get("User").hasField("showFolderNotes"))
                     schema.get("User").addField("showFolderNotes", boolean.class);
+
+                if(!schema.get("User").hasField("showPreviewNoteInfo"))
+                    schema.get("User").addField("showPreviewNoteInfo", boolean.class);
             }
 
         }

@@ -46,6 +46,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final Activity activity;
     private final Fragment noteFragment;
     private boolean showPreview;
+    private boolean showPreviewNotesInfo;
     private final String TITLE_KEY = "title_lines";
     private final String PREVIEW_KEY = "preview_lines";
 
@@ -102,12 +103,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
     }
 
-    public notes_recyclerview(RealmResults<Note> allNotes, Realm realm, Activity activity, Fragment fragment, boolean showPreview) {
+    public notes_recyclerview(RealmResults<Note> allNotes, Realm realm, Activity activity, Fragment fragment,
+                              boolean showPreview, boolean showPreviewNotesInfo) {
         this.allNotes = allNotes;
         this.realm = realm;
         this.activity = activity;
         this.noteFragment = fragment;
         this.showPreview = showPreview;
+        this.showPreviewNotesInfo = showPreviewNotesInfo;
     }
 
     @Override
@@ -155,6 +158,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         int contentLines = ((notes) noteFragment).user.getContentLines();
         holder.note_title.setMaxLines(titleLines);
         holder.note_preview.setMaxLines(contentLines);
+
+        if(showPreviewNotesInfo)
+            holder.note_info.setVisibility(View.VISIBLE);
+        else
+            holder.note_info.setVisibility(View.GONE);
 
         // format note to remove all new line characters and any spaces more than a length of 1
         String preview = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();

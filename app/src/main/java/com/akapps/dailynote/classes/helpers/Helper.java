@@ -262,13 +262,15 @@ public class Helper {
         else if(isChecklist) {
             title.setText("");
             subTitle.setText("soooo empty in this checklist");
-            subSubTitle.setText("Tap the bottom right button to create an item");
+            subSubTitle.setText("Tap the bottom right button to create a note");
+            subSubTitle.setTextColor(context.getColor(R.color.light_light_gray));
         }
         else if(!isResults){
             title.setTextSize(20);
             title.setText("Don't get lost in the universe trying to remember.");
             subTitle.setText("Let me do it for you");
-            subSubTitle.setText("Tap the bottom right button to create an item");
+            subSubTitle.setText("Tap the bottom right button to create a note");
+            subSubTitle.setTextColor(context.getColor(R.color.light_light_gray));
         }
 
         if(isChecklistAdded)
