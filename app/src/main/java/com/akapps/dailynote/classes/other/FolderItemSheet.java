@@ -96,7 +96,6 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Adding");
             delete.setVisibility(View.GONE);
             folderColor.setCardBackgroundColor(getContext().getColor(R.color.orange));
-
         }
         else{
             title.setText("Editing");
@@ -187,7 +186,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         allSelectedNotes.setString("category", "none");
         current.deleteFromRealm();
         realm.commitTransaction();
-        adapter.notifyItemRemoved(position);
+        adapter.notifyDataSetChanged();
     }
 
     // adds note
@@ -201,7 +200,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
             realm.beginTransaction();
             realm.insert(newItem);
             realm.commitTransaction();
-            adapter.notifyItemInserted(allCategories.size()-1);
+            adapter.notifyDataSetChanged();
             this.dismiss();
         }
         else

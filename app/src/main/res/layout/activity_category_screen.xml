@@ -104,18 +104,56 @@
             android:textSize="18sp"></TextView>
 
         <TextView
-            android:id="@+id/pinned"
-            android:layout_width="wrap_content"
+            android:id="@+id/un_pinned"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:visibility="gone"
             android:layout_marginHorizontal="12dp"
-            android:drawableLeft="@drawable/pin_filled_icon"
-            android:drawablePadding="10dp"
-            android:layout_marginTop="10dp"
-            android:paddingBottom="5dp"
-            android:text="Pinned"
-            android:textColor="@color/golden_rod"
+            android:paddingVertical="5dp"
+            android:text="Un-Pin"
+            android:textColor="@color/gold"
             android:textSize="18sp"></TextView>
+
+        <LinearLayout
+            android:id="@+id/pinned_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/pinned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/pin_filled_icon"
+                android:drawableTint="@color/light_gray"
+                android:drawablePadding="10dp"
+                android:layout_marginRight="8dp"
+                android:backgroundTint="@color/gold"
+                app:cornerRadius="15dp"
+                android:layout_weight="1"
+                android:text="Pinned"
+                android:textColor="@color/light_gray"
+                android:textSize="14sp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/locked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/lock_icon"
+                app:cornerRadius="15dp"
+                android:layout_marginLeft="8dp"
+                android:backgroundTint="@color/light_gray_2"
+                android:drawablePadding="10dp"
+                android:paddingVertical="5dp"
+                android:text="Locked"
+                android:layout_weight="1"
+                android:textColor="@color/darker_blue"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/unselect_categories"
@@ -125,19 +163,6 @@
             android:paddingVertical="5dp"
             android:text="Unselect Category"
             android:textColor="@color/ultra_white"
-            android:textSize="18sp"></TextView>
-
-        <TextView
-            android:id="@+id/locked"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="12dp"
-            android:drawableLeft="@drawable/lock_icon"
-            android:drawablePadding="10dp"
-            android:paddingVertical="5dp"
-            android:text="Locked"
-            android:textColor="@color/darker_blue"
             android:textSize="18sp"></TextView>
 
     </LinearLayout>

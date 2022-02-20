@@ -89,7 +89,6 @@
             android:id="@+id/account_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginHorizontal="20dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="10dp"
@@ -176,13 +175,14 @@
                         android:layout_weight="50"
                         android:layout_marginHorizontal="10dp"
                         android:gravity="center"
+                        app:icon="@drawable/sync_icon"
+                        app:iconPadding="0dp"
+                        app:iconGravity="textEnd"
                         android:backgroundTint="@color/gray"
                         android:text="Sync"
                         app:cornerRadius="15dp"
                         android:textColor="@color/ultra_white"
                         android:textSize="14sp"/>
-
-
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/upload"
@@ -191,6 +191,10 @@
                         android:layout_weight="50"
                         android:backgroundTint="@color/gray"
                         android:layout_marginHorizontal="10dp"
+                        app:icon="@drawable/upload_icon"
+                        app:iconGravity="textEnd"
+                        app:iconPadding="5dp"
+                        app:iconTint="@color/gray"
                         android:gravity="center"
                         android:text="Upload"
                         app:cornerRadius="15dp"
@@ -852,7 +856,25 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/customer_photo"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@color/gray"
+            android:elevation="2dp"
+            android:padding="5dp"
+            android:src="@drawable/turtle_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/about_info"
+            app:layout_constraintEnd_toEndOf="@+id/about_info"
+            app:layout_constraintStart_toStartOf="@+id/about_info"
+            app:layout_constraintTop_toTopOf="@+id/about_info"
+            app:shapeAppearanceOverlay="@style/circular"
+            app:strokeColor="@color/darker_blue"
+            app:strokeWidth="2dp" />
+
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/about_info"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="20dp"

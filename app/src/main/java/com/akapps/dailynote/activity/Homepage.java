@@ -1,5 +1,6 @@
 package com.akapps.dailynote.activity;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -36,7 +37,8 @@ public class Homepage extends FragmentActivity{
         else
             Helper.saveBooleanPreference(this, false, "app_started");
 
-        openFragment();
+        if(savedInstanceState == null)
+            openFragment();
     }
 
     @Override

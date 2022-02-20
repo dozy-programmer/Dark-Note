@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,10 +21,15 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.categories_recyclerview;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.w3c.dom.Text;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -44,8 +50,9 @@ public class CategoryScreen extends AppCompatActivity {
     private TextView unselectCategories;
     private TextView trash;
     private TextView archived;
-    private TextView pinned;
-    private TextView locked;
+    private TextView unpinned;
+    private MaterialButton pinned;
+    private MaterialButton locked;
     private RecyclerView customCategories;
     public RecyclerView.Adapter categoriesAdapter;
     private FloatingActionButton addCategory;
@@ -84,10 +91,24 @@ public class CategoryScreen extends AppCompatActivity {
 
         context = this;
 
-        editingRegularNote = getIntent().getBooleanExtra("editing_reg_note", false);
-        multiSelect = getIntent().getBooleanExtra("multi_select", false);
+        // if orientation changes, retrieve these values
+        if (savedInstanceState != null) {
+            editingRegularNote = savedInstanceState.getBoolean("editing_reg_note");
+            multiSelect = savedInstanceState.getBoolean("multi_select");
+        }
+        else {
+            editingRegularNote = getIntent().getBooleanExtra("editing_reg_note", false);
+            multiSelect = getIntent().getBooleanExtra("multi_select", false);
+        }
 
-        realm = Realm.getDefaultInstance();
+        // initialize database and get data
+        try {
+            realm = Realm.getDefaultInstance();
+        }
+        catch (Exception e){
+            realm = RealmDatabase.setUpDatabase(context);
+        }
+
         allCategories = realm.where(Folder.class).sort("positionInList").findAll();
 
         allNotes = realm.where(Note.class).findAll();
@@ -125,6 +146,13 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean("editing_reg_note", editingRegularNote);
+        savedInstanceState.putBoolean("multi_select", multiSelect);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
@@ -145,6 +173,7 @@ public class CategoryScreen extends AppCompatActivity {
         trash = findViewById(R.id.trash);
         archived = findViewById(R.id.archived);
         pinned = findViewById(R.id.pinned);
+        unpinned = findViewById(R.id.un_pinned);
         locked = findViewById(R.id.locked);
         info = findViewById(R.id.info);
         edit = findViewById(R.id.edit);
@@ -196,26 +225,19 @@ public class CategoryScreen extends AppCompatActivity {
                 noCategory.setVisibility(View.VISIBLE);
                 trash.setVisibility(View.GONE);
                 archived.setVisibility(View.VISIBLE);
-                pinned.setVisibility(View.VISIBLE);
                 showAllNotes.setText("Archive");
                 noCategory.setText("Un-Archive");
                 showAllNotes.setTextColor(getColor(R.color.darker_blue));
                 noCategory.setTextColor(getColor(R.color.chetwode_blue));
-                pinned.setTextColor(getColor(R.color.chardonnay));
+                unpinned.setTextColor(getColor(R.color.chardonnay));
+                unpinned.setVisibility(View.VISIBLE);
                 archived.setTextColor(getColor(R.color.orange));
                 archived.setText("Pin");
                 archived.setCompoundDrawables(null, null, null, null);
-                pinned.setText("Un-Pin");
-                pinned.setCompoundDrawables(null, null, null, null);
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                params.gravity = Gravity.LEFT;
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) archived.getLayoutParams();
-                params.leftMargin = lp.leftMargin;
-                params.topMargin = lp.topMargin;
-                pinned.setLayoutParams(params);
+                findViewById(R.id.pinned_layout).setVisibility(View.GONE);
 
-                locked.setVisibility(View.GONE);
+                locked.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -382,6 +404,13 @@ public class CategoryScreen extends AppCompatActivity {
                 showEmptyMessage();
             else
                 showErrorMessage();
+        });
+
+        unpinned.setOnClickListener(v -> {
+            realm.beginTransaction();
+            allSelectedNotes.setBoolean("pin", false);
+            realm.commitTransaction();
+            closeActivity(-12);
         });
 
         locked.setOnClickListener(v -> {

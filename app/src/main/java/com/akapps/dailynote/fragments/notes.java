@@ -109,6 +109,8 @@ public class notes extends Fragment{
 
         context = getContext();
 
+        Log.d("Here", "Recreating on create");
+
         // initialize database and get data
         try {
             realm = Realm.getDefaultInstance();
@@ -157,7 +159,7 @@ public class notes extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
-
+        Log.d("Here", "Recreating on on create view");
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
         initializeLayout();
@@ -167,6 +169,7 @@ public class notes extends Fragment{
         if(user.isOpenFoldersOnStart() && !isAppStarted){
             Helper.saveBooleanPreference(context, true, "app_started");
             Intent category = new Intent(getActivity(), CategoryScreen.class);
+            Helper.setOrientation(getActivity(), context);
             startActivityForResult(category, 5);
         }
 
@@ -176,6 +179,8 @@ public class notes extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
+
+        Helper.unSetOrientation(getActivity(), context);
 
         if(user!=null)
             savePreferences();
@@ -294,6 +299,7 @@ public class notes extends Fragment{
         categoryNotes.setOnClickListener(v -> {
            if(realm.where(Note.class).findAll().size()!=0) {
                Intent category = new Intent(getActivity(), CategoryScreen.class);
+               Helper.setOrientation(getActivity(), context);
                if (enableSelectMultiple)
                    category.putExtra("multi_select", true);
                startActivityForResult(category, 5);
@@ -509,11 +515,11 @@ public class notes extends Fragment{
                 filteringAllNotesRealm(queryArchivedNotes, true);
         }
         else if(resultCode == -14){
-            RealmResults<Note> queryArchivedNotes =
+            RealmResults<Note> queryLockedNotes =
                     realm.where(Note.class)
                             .greaterThan("pinNumber", 0).findAll();
 
-            filteringAllNotesRealm(queryArchivedNotes, true);
+            filteringAllNotesRealm(queryLockedNotes, true);
         }
     }
 
