@@ -38,6 +38,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private Context context;
     private FragmentActivity activity;
     private final Realm realm;
+    private boolean isProUser;
 
     private RecyclerView.Adapter subChecklistAdapter;
     private GridLayoutManager layout;
@@ -62,7 +63,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
     }
 
-    public checklist_recyclerview(RealmResults<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
+    public checklist_recyclerview(boolean isProUser, RealmResults<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
+        this.isProUser = isProUser;
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;
@@ -83,20 +85,22 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         isAllItemsSelected();
 
-        // delete line 84+85 and uncomment to restore sub checklists
-        holder.subChecklist.setVisibility(View.GONE);
-        holder.addSubChecklist.setVisibility(View.GONE);
-        /* comment start
-        if(null == checkListItem.getSubChecklist() || checkListItem.getSubChecklist().size() == 0)
-            holder.subChecklist.setVisibility(View.GONE);
-        else {
-            holder.subChecklist.setVisibility(View.VISIBLE);
-            subChecklistAdapter = new sub_checklist_recyclerview(realm.where(SubCheckListItem.class)
-                            .equalTo("id", currentNote.getChecklist().get(position).getSubListId())
-                            .sort("positionInList").findAll(), currentNote, realm, activity);
-            holder.subChecklist.setAdapter(subChecklistAdapter);
+        if(isProUser) {
+            if (null == checkListItem.getSubChecklist() || checkListItem.getSubChecklist().size() == 0)
+                holder.subChecklist.setVisibility(View.GONE);
+            else {
+                holder.subChecklist.setVisibility(View.VISIBLE);
+                subChecklistAdapter = new sub_checklist_recyclerview(checkListItem.getText(), realm.where(SubCheckListItem.class)
+                        .equalTo("id", checkListItem.getSubListId())
+                        .sort("positionInList").findAll(), currentNote, realm, activity);
+                holder.subChecklist.setAdapter(subChecklistAdapter);
+            }
         }
-         comment end */
+        else{
+            holder.subChecklist.setVisibility(View.GONE);
+            holder.addSubChecklist.setVisibility(View.GONE);
+        }
+
 
         // checks to see if there is a reminder and makes sure it has not passed
         if (!currentNote.getReminderDateTime().isEmpty()) {
@@ -139,7 +143,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
 
         holder.addSubChecklist.setOnClickListener(view -> {
-            ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(true, subChecklistAdapter, position);
+            ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListText, true, subChecklistAdapter, position);
             checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
         });
 

@@ -44,6 +44,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     private SubCheckListItem currentSubItem;
     private boolean isSubChecklist;
+    private String parentNode;
 
     // adding
     public ChecklistItemSheet(){
@@ -51,7 +52,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         isSubChecklist = false;
     }
 
-    public ChecklistItemSheet(boolean isSubChecklist, RecyclerView.Adapter adapter, int position){
+    public ChecklistItemSheet(String parentNode, boolean isSubChecklist, RecyclerView.Adapter adapter, int position){
+        this.parentNode = parentNode;
         isAdding = true;
         this.isSubChecklist = isSubChecklist;
         this.adapter = adapter;
@@ -103,7 +105,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         if(isAdding){
             if(isSubChecklist)
-                title.setText("Adding Sub-Item");
+                title.setText("Adding Sub-Item to\n" + parentNode);
             else
                 title.setText("Adding");
             delete.setVisibility(View.GONE);
@@ -148,7 +150,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 this.dismiss();
                 ChecklistItemSheet checklistItemSheet;
                 if(isSubChecklist)
-                    checklistItemSheet = new ChecklistItemSheet(true, adapter, position);
+                    checklistItemSheet = new ChecklistItemSheet(parentNode, true, adapter, position);
                 else
                     checklistItemSheet = new ChecklistItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
@@ -184,6 +186,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private void deleteItem(CheckListItem checkListItem){
         // save status to database
         realm.beginTransaction();
+        checkListItem.getSubChecklist().deleteAllFromRealm();
         checkListItem.deleteFromRealm();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();

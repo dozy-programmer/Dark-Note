@@ -33,6 +33,7 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:text="Adding New Item"
+            android:maxLines="2"
             android:fontFamily="@font/baloo_bhai"
             android:textColor="@color/orange"
             android:textSize="20sp"

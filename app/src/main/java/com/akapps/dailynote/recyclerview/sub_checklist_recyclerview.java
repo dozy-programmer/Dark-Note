@@ -36,6 +36,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     private Context context;
     private FragmentActivity activity;
     private final Realm realm;
+    private String parentNode;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -52,7 +53,8 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         }
     }
 
-    public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
+    public sub_checklist_recyclerview(String parentNode, RealmResults<SubCheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
+        this.parentNode = parentNode;
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;
