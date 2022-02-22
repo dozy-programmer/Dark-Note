@@ -26,8 +26,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyclerview.MyViewHolder>{
@@ -40,7 +42,6 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private final Realm realm;
     private boolean isProUser;
 
-    private RecyclerView.Adapter subChecklistAdapter;
     private GridLayoutManager layout;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -83,17 +84,37 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         CheckListItem checkListItem = checkList.get(position);
 
+        // search for duplicate sublist id
+        int duplicateSize = realm.where(CheckListItem.class)
+                .equalTo("subListId", checkListItem.getSubListId()).findAll().size();
+        if(duplicateSize > 1){
+            Random rand = new Random();
+            realm.beginTransaction();
+            checkListItem.setSubListId(rand.nextInt(100000) + 1);
+            realm.commitTransaction();
+            Log.d("Here", "Changed duplicate at position " + position);
+        }
+
+
+        Log.d("Here", "Printing subid " + checkListItem.getSubListId());
         isAllItemsSelected();
 
+        RecyclerView.Adapter subChecklistAdapter = null;
         if(isProUser) {
-            if (null == checkListItem.getSubChecklist() || checkListItem.getSubChecklist().size() == 0)
+            if (null == checkListItem.getSubChecklist()) {
+                realm.beginTransaction();
+                checkListItem.setSubChecklist(new RealmList<>());
+                realm.commitTransaction();
                 holder.subChecklist.setVisibility(View.GONE);
+            }
             else {
-                holder.subChecklist.setVisibility(View.VISIBLE);
-                subChecklistAdapter = new sub_checklist_recyclerview(checkListItem.getText(), realm.where(SubCheckListItem.class)
-                        .equalTo("id", checkListItem.getSubListId())
-                        .sort("positionInList").findAll(), currentNote, realm, activity);
-                holder.subChecklist.setAdapter(subChecklistAdapter);
+                if(checkListItem.getSubChecklist().size() != 0) {
+                    holder.subChecklist.setVisibility(View.VISIBLE);
+                    subChecklistAdapter = new sub_checklist_recyclerview(checkListItem.getText(), realm.where(SubCheckListItem.class)
+                            .equalTo("id", checkListItem.getSubListId())
+                            .sort("positionInList").findAll(), currentNote, realm, activity);
+                    holder.subChecklist.setAdapter(subChecklistAdapter);
+                }
             }
         }
         else{
@@ -142,8 +163,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.checklistText.setTextColor(currentNote.getTextColor());
         }
 
+        RecyclerView.Adapter finalSubChecklistAdapter = subChecklistAdapter;
         holder.addSubChecklist.setOnClickListener(view -> {
-            ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListText, true, subChecklistAdapter, position);
+            ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, checkListText, true, finalSubChecklistAdapter);
             checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
         });
 
@@ -166,6 +188,16 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     @Override
     public int getItemCount() {
         return checkList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     // updates select status of note in database

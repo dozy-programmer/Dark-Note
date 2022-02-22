@@ -2,6 +2,7 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,6 +102,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         holder.checkItem.setOnClickListener(v -> {
             saveSelected(checkListItem, !isSelected);
             notifyItemChanged(position);
+            Log.d("Here", "Sublist id " + checkListItem.getId());
         });
 
         holder.edit.setOnClickListener(v -> {

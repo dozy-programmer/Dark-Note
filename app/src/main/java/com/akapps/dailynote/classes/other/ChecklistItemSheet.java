@@ -45,6 +45,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private SubCheckListItem currentSubItem;
     private boolean isSubChecklist;
     private String parentNode;
+    private CheckListItem checkListItem;
 
     // adding
     public ChecklistItemSheet(){
@@ -52,12 +53,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         isSubChecklist = false;
     }
 
-    public ChecklistItemSheet(String parentNode, boolean isSubChecklist, RecyclerView.Adapter adapter, int position){
+    public ChecklistItemSheet(CheckListItem checkListItem, String parentNode, boolean isSubChecklist, RecyclerView.Adapter adapter){
+        this.checkListItem = checkListItem;
         this.parentNode = parentNode;
         isAdding = true;
         this.isSubChecklist = isSubChecklist;
         this.adapter = adapter;
-        this.position = position;
     }
 
     // editing note
@@ -82,10 +83,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_checklist_item, container, false);
 
-        if(savedInstanceState != null) {
-            isAdding = savedInstanceState.getBoolean("add");
-            position = savedInstanceState.getInt("position");
-        }
+        if(savedInstanceState != null)
+            this.dismiss();
 
         realm = ((NoteEdit) getActivity()).realm;
         currentNote = ((NoteEdit)getActivity()).currentNote;
@@ -150,7 +149,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 this.dismiss();
                 ChecklistItemSheet checklistItemSheet;
                 if(isSubChecklist)
-                    checklistItemSheet = new ChecklistItemSheet(parentNode, true, adapter, position);
+                    checklistItemSheet = new ChecklistItemSheet(checkListItem, parentNode, true, adapter);
                 else
                     checklistItemSheet = new ChecklistItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
@@ -212,10 +211,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 String text = itemName.getText().toString();
                 String[] items = text.replaceAll(" +, +", ",,").split(",,");
                 if(isSubChecklist){
-                    for (String item : items) {
-                        Log.d("Here", "adding " + item);
-                        ((NoteEdit) getActivity()).addSubCheckList(item.trim().replaceAll(" +", " "), position);
-                    }
+                    for (String item : items)
+                        ((NoteEdit) getActivity()).addSubCheckList(checkListItem, item.trim().replaceAll(" +", " "));
                 }
                 else {
                     for (String item : items)

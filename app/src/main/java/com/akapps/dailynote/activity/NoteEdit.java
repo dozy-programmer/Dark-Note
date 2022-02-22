@@ -76,6 +76,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.realm.Realm;
@@ -1041,9 +1042,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else
             initialPosition = currentNote.getChecklist().size();
 
+        Random rand = new Random();
+
         // insert data to database
         realm.beginTransaction();
-        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, ThreadLocalRandom.current().nextInt(0, 1000 + 1)));
+        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, rand.nextInt(10000) + 1));
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         currentNote.setChecked(false);
@@ -1065,12 +1068,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             ((NoteEdit)context).title.setPaintFlags(0);
     }
 
-    public void addSubCheckList(String itemText, int position) {
-        int initialPosition = currentNote.getChecklist().size();
-
+    public void addSubCheckList(CheckListItem checkListItem, String itemText) {
+        // current Head of sub-list
+        int initialPosition = checkListItem.getSubChecklist().size();
         // insert data to database
         realm.beginTransaction();
-        currentNote.getChecklist().get(position).getSubChecklist().add(new SubCheckListItem(itemText, false, currentNote.getChecklist().get(position).getSubListId(), initialPosition));
+        checkListItem.getSubChecklist().add(new SubCheckListItem(itemText, false, checkListItem.getSubListId(), initialPosition));
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
@@ -1331,6 +1334,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         checkListRecyclerview.setLayoutManager(layout);
         checklistAdapter = new checklist_recyclerview(realm.where(User.class).findFirst().isProUser(),
                 currentList, currentNote, realm, this);
+        checklistAdapter.setHasStableIds(true);
         checkListRecyclerview.setAdapter(checklistAdapter);
     }
 

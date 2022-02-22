@@ -109,8 +109,6 @@ public class notes extends Fragment{
 
         context = getContext();
 
-        Log.d("Here", "Recreating on create");
-
         // initialize database and get data
         try {
             realm = Realm.getDefaultInstance();
@@ -159,7 +157,6 @@ public class notes extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
-        Log.d("Here", "Recreating on on create view");
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
         initializeLayout();
