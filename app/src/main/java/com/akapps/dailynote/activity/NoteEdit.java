@@ -1623,7 +1623,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void updateDateEdited(){
-        isListEmpty(currentNote.getChecklist().size());
+        if(currentNote.isCheckList())
+            isListEmpty(currentNote.getChecklist().size());
         handler = new Handler();
 
         date.setVisibility(View.VISIBLE);

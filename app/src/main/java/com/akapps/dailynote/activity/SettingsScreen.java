@@ -600,6 +600,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         //if item newly purchased
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
             handlePurchases(purchases);
+            upgradeToPro();
         }
         //if item already purchased then check and reflect changes
         else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
@@ -607,6 +608,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             List<Purchase> alreadyPurchases = queryAlreadyPurchasesResult.getPurchasesList();
             if(alreadyPurchases!=null){
                 handlePurchases(alreadyPurchases);
+                upgradeToPro();
             }
         }
         //if purchase cancelled
