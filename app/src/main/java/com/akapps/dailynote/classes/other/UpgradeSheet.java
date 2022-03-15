@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.SettingsScreen;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -24,7 +26,11 @@ public class UpgradeSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_upgrade, container, false);
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
+        if (AppData.getAppData().isLightMode) {
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         MaterialButton upgradeToPro = view.findViewById(R.id.upgrade_to_pro);
 
@@ -35,7 +41,10 @@ public class UpgradeSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

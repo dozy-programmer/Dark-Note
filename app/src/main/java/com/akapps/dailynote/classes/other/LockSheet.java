@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.biometric.BiometricManager;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -30,15 +32,27 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_lock_unlock, container, false);
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
         ImageView lock = view.findViewById(R.id.lock);
-
         TextInputLayout pinLayout = view.findViewById(R.id.pin_layout);
         TextInputEditText pin = view.findViewById(R.id.pin);
         TextInputLayout securityWordLayout = view.findViewById(R.id.security_word_layout);
         TextInputEditText securityWord = view.findViewById(R.id.security_word);
         SwitchCompat fingerprint = view.findViewById(R.id.fingerprint);
         TextView title = view.findViewById(R.id.title);
+
+        if (AppData.getAppData().isLightMode) {
+            pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            pinLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            pin.setTextColor(getContext().getColor(R.color.gray));
+            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            securityWord.setTextColor(getContext().getColor(R.color.gray));
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         boolean fingerprintFeatureExists;
         final boolean[] isFingerprintSelected = new boolean[1];
@@ -87,7 +101,10 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

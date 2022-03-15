@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -113,6 +114,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private SwitchCompat showPreviewNoteInfo;
     private SwitchCompat openFoldersOnStart;
     private SwitchCompat showFolderNotes;
+    private SwitchCompat modeSetting;
     private MaterialButton buyPro;
     private MaterialCardView grid;
     private MaterialCardView row;
@@ -220,6 +222,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         showPreviewNoteInfo = findViewById(R.id.show_info_switch);
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
         showFolderNotes = findViewById(R.id.show_folder_switch);
+        modeSetting = findViewById(R.id.mode_setting);
         buyPro = findViewById(R.id.buy_pro);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
@@ -482,6 +485,21 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
         });
 
+        modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setModeSettings(isChecked);
+            realm.commitTransaction();
+            if(currentUser.isModeSettings()) {
+                modeSetting.setText("Light Mode  ");
+                ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
+            }
+            else {
+                modeSetting.setText("Dark Mode  ");
+                ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
+            }
+        });
+
         buyPro.setOnClickListener(v -> {
             realmStatus();
             if(!currentUser.isProUser()) {
@@ -710,6 +728,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
+        modeSetting.setChecked(currentUser.isModeSettings());
 
         if(currentUser.isProUser()){
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));

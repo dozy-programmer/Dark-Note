@@ -14,12 +14,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
@@ -95,8 +97,7 @@ public class CategoryScreen extends AppCompatActivity {
         if (savedInstanceState != null) {
             editingRegularNote = savedInstanceState.getBoolean("editing_reg_note");
             multiSelect = savedInstanceState.getBoolean("multi_select");
-        }
-        else {
+        } else {
             editingRegularNote = getIntent().getBooleanExtra("editing_reg_note", false);
             multiSelect = getIntent().getBooleanExtra("multi_select", false);
         }
@@ -104,8 +105,7 @@ public class CategoryScreen extends AppCompatActivity {
         // initialize database and get data
         try {
             realm = Realm.getDefaultInstance();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             realm = RealmDatabase.setUpDatabase(context);
         }
 
@@ -122,7 +122,7 @@ public class CategoryScreen extends AppCompatActivity {
                 .equalTo("pin", true)
                 .findAll();
         allSelectedNotes = allNotes.where().equalTo("isSelected", true).findAll();
-        isNotesSelected = allSelectedNotes.size()>0 ? true : false;
+        isNotesSelected = allSelectedNotes.size() > 0 ? true : false;
         uncategorizedNotes = allNotes.where()
                 .equalTo("archived", false)
                 .equalTo("pin", false)
@@ -134,6 +134,13 @@ public class CategoryScreen extends AppCompatActivity {
                 .greaterThan("pinNumber", 0).findAll();
 
         initializeLayout();
+
+        User user = realm.where(User.class).findFirst();
+        assert user != null;
+        if (user.isModeSettings())
+            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
+        else
+            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
     }
 
     @Override
@@ -290,6 +297,7 @@ public class CategoryScreen extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) { }
 
         });
+
         helper.attachToRecyclerView(customCategories);
         if(Helper.isTablet(context))
             customCategories.setLayoutManager(new GridLayoutManager(context, 3));
@@ -438,8 +446,7 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     private void populateCategories() {
-        categoriesAdapter = new categories_recyclerview(allCategories, realm, CategoryScreen.this,
-                context);
+        categoriesAdapter = new categories_recyclerview(allCategories, realm, CategoryScreen.this, context);
         customCategories.setAdapter(categoriesAdapter);
     }
 

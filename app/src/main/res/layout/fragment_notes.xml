@@ -112,13 +112,11 @@
 
                     <SearchView
                         android:id="@+id/search_text"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:maxLines="1"
                         android:theme="@style/AppSearchView"
-                        app:queryBackground="@null"
-                        android:background="@color/gray"
                         android:padding="8dp"
                         android:visibility="gone">
                     </SearchView>

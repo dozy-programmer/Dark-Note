@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -80,8 +82,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             userSecurityWord = savedInstanceState.getString("word");
         }
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
-
         TextView title  =view.findViewById(R.id.title);
         MaterialButton backup = view.findViewById(R.id.backup);
         TextView info  = view.findViewById(R.id.info);
@@ -89,6 +89,16 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         TextInputLayout securityWordLayout = view.findViewById(R.id.security_word_layout);
         TextInputEditText securityWord = view.findViewById(R.id.security_word);
         ImageView unlock = view.findViewById(R.id.unlock);
+
+        if (AppData.getAppData().isLightMode) {
+            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            securityWord.setTextColor(getContext().getColor(R.color.gray));
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
           if(message == -1){
             title.setText("Info");
@@ -274,7 +284,10 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

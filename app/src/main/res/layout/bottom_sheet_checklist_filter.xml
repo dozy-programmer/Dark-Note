@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gray">
+    android:background="@android:color/transparent">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView4"

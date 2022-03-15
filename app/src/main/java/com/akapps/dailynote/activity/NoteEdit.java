@@ -146,6 +146,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private Handler handler;
     private ActivityResultLauncher<Intent> launcher;
     public boolean sortEnable;
+    private boolean isLightMode;
 
     // dialog
     private AlertDialog colorPickerView;
@@ -197,6 +198,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteId = savedInstanceState.getInt("id");
 
         initializeLayout(savedInstanceState);
+
+        User user = realm.where(User.class).findFirst();
+        assert user != null;
+        if (user.isModeSettings()) {
+            isLightMode = true;
+            scrollView.setBackgroundColor(context.getColor(R.color.light_mode));
+            date.setTextColor(context.getColor(R.color.light_gray));
+        }
+        else
+            scrollView.setBackgroundColor(context.getColor(R.color.gray));
     }
 
     // when orientation changes, then note data is saved
@@ -651,7 +662,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 openMenuDialog());
 
         noteColor.setOnClickListener(v -> {
-            ColorSheet colorSheet = new ColorSheet();
+            ColorSheet colorSheet = new ColorSheet(isLightMode);
             colorSheet.show(getSupportFragmentManager(), colorSheet.getTag());
         });
 

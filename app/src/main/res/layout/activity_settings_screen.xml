@@ -75,7 +75,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:text="Account"
@@ -83,6 +82,21 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mode_setting" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/mode_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:checked="false"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Dark Mode  "
+            android:textColor="@color/ultra_white"
+            android:textSize="16sp"
+            android:theme="@style/ThemeOverlay.Mode"
+            app:layout_constraintEnd_toEndOf="@+id/account_settings"
+            app:layout_constraintStart_toStartOf="@+id/account_settings"
             app:layout_constraintTop_toBottomOf="@+id/free_user"/>
 
         <com.google.android.material.card.MaterialCardView
@@ -864,7 +878,7 @@
             android:background="@color/gray"
             android:elevation="2dp"
             android:padding="5dp"
-            android:src="@drawable/turtle_icon"
+            android:src="@drawable/koala"
             app:layout_constraintBottom_toBottomOf="@+id/about_info"
             app:layout_constraintEnd_toEndOf="@+id/about_info"
             app:layout_constraintStart_toStartOf="@+id/about_info"

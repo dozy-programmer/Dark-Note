@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -53,7 +55,10 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_filter, container, false);
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
+        if (AppData.getAppData().isLightMode)
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         ImageView resetFilter = view.findViewById(R.id.reset_filter);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
@@ -281,7 +286,10 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

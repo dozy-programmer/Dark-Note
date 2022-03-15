@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.gms.auth.api.signin.internal.Storage;
@@ -72,7 +74,6 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_account_login, container, false);
-        view.setBackgroundColor(requireContext().getColor(R.color.gray));
 
         // layout
         title = view.findViewById(R.id.title);
@@ -81,6 +82,20 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         passwordLayout = view.findViewById(R.id.insert_password_layout);
         passwordInput = view.findViewById(R.id.insert_password);
         loginButton = view.findViewById(R.id.login);
+
+        if (AppData.getAppData().isLightMode) {
+            emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
+            emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
+            emailInput.setTextColor(getContext().getColor(R.color.gray));
+            passwordLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            passwordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
+            passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
+            passwordInput.setTextColor(getContext().getColor(R.color.gray));
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         if(!signUp){
             title.setText("Log in");
@@ -183,7 +198,10 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

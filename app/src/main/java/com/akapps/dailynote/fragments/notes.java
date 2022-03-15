@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +34,7 @@ import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
@@ -88,6 +90,8 @@ public class notes extends Fragment{
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
     private boolean isAppStarted;
+    private boolean isLightMode;
+    private int lightColor;
 
     // dialog
     private boolean isNotesFiltered;
@@ -157,6 +161,17 @@ public class notes extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
+
+        if(user.isModeSettings()) {
+            isLightMode = true;
+            lightColor = context.getColor(R.color.light_mode);
+            view.setBackgroundColor(lightColor);
+        }
+
+        AppData appData = AppData.getAppData();
+        appData.setUser(user);
+        appData.setLightMode(isLightMode);
+
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
         initializeLayout();
@@ -263,8 +278,19 @@ public class notes extends Fragment{
         int searchPlateId = searchEditText.getContext().getResources()
                 .getIdentifier("android:id/search_plate", null, null);
         View searchPlateView = searchEditText.findViewById(searchPlateId);
-        if (searchPlateView != null)
-            searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray)); //depand you can set
+        if (searchPlateView != null){
+            if(isLightMode){
+                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.light_mode));
+                int id = searchEditText.getContext()
+                        .getResources()
+                        .getIdentifier("android:id/search_src_text", null, null);
+                TextView textView = (TextView) searchEditText.findViewById(id);
+                textView.setTextColor(getActivity().getColor(R.color.black));
+                ((EditText) searchEditText.findViewById(id)).setHintTextColor(context.getColor(R.color.ultra_white));
+            }
+            else
+                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray));
+        }
 
         settings.setOnClickListener(v -> openSettings());
 
@@ -700,6 +726,12 @@ public class notes extends Fragment{
         searchEditText.setQuery("", false);
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
+
+        if(isLightMode){
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_mode));
+            searchEditText.setBackgroundColor(context.getColor(R.color.light_mode));
+        }
+
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
     }
@@ -707,7 +739,7 @@ public class notes extends Fragment{
     private void hideSearchBar(){
         searchEditText.setQuery("", false);
         search.setVisibility(View.VISIBLE);
-
+        searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
         fragmentTitle.setVisibility(View.VISIBLE);
         filterNotes.setVisibility(View.VISIBLE);
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

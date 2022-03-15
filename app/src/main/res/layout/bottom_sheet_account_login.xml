@@ -8,12 +8,12 @@
     android:scrollbarThumbVertical="@color/orange_red"
     android:scrollbarSize="2dp"
     android:scrollbars="vertical"
-    android:background="@color/gray">
+    android:background="@android:color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray">
+        android:background="@android:color/transparent">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView8"

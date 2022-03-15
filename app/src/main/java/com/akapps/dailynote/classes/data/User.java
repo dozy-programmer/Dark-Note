@@ -19,6 +19,7 @@ public class User extends RealmObject {
 
     private boolean showPreview;
     private boolean showPreviewNoteInfo;
+    private boolean modeSettings;
 
     private String email;
 
@@ -36,6 +37,7 @@ public class User extends RealmObject {
         email = "";
         lastUpload = "";
         showPreviewNoteInfo = true;
+        showFolderNotes = false;
     }
 
     public int getUserId() {
@@ -132,5 +134,13 @@ public class User extends RealmObject {
 
     public void setShowPreviewNoteInfo(boolean showPreviewNoteInfo) {
         this.showPreviewNoteInfo = showPreviewNoteInfo;
+    }
+
+    public boolean isModeSettings() {
+        return modeSettings;
+    }
+
+    public void setModeSettings(boolean modeSettings) {
+        this.modeSettings = modeSettings;
     }
 }

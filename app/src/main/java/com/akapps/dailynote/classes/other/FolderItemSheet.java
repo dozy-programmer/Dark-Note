@@ -1,6 +1,7 @@
 package com.akapps.dailynote.classes.other;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.flask.colorpicker.ColorPickerView;
@@ -68,8 +70,6 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_folder_item, container, false);
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
-
         if(savedInstanceState!=null) {
             isAdding = savedInstanceState.getBoolean("add");
             position = savedInstanceState.getInt("pos");
@@ -91,6 +91,15 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         TextView title = view.findViewById(R.id.title);
 
         itemName.requestFocusFromTouch();
+
+        if (AppData.getAppData().isLightMode) {
+            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            itemName.setTextColor(getContext().getColor(R.color.gray));
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         if(isAdding){
             title.setText("Adding");
@@ -238,7 +247,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.akapps.dailynote.classes.other;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -71,7 +74,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     }
 
     // editing sub-note
-    public ChecklistItemSheet(SubCheckListItem checkListItem, int position, RecyclerView.Adapter adapter){
+    public ChecklistItemSheet(SubCheckListItem checkListItem, int position,RecyclerView.Adapter adapter){
         isAdding = false;
         isSubChecklist = true;
         this.currentSubItem = checkListItem;
@@ -86,10 +89,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         if(savedInstanceState != null)
             this.dismiss();
 
-        realm = ((NoteEdit) getActivity()).realm;
         currentNote = ((NoteEdit)getActivity()).currentNote;
-
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
@@ -101,6 +101,15 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         TextView title = view.findViewById(R.id.title);
 
         itemName.requestFocusFromTouch();
+
+        if (AppData.getAppData().isLightMode) {
+            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            itemName.setTextColor(getContext().getColor(R.color.gray));
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         if(isAdding){
             if(isSubChecklist)
@@ -243,7 +252,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

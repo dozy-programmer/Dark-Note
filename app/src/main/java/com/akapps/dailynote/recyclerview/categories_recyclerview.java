@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
 import io.realm.Realm;
@@ -26,6 +28,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     private RealmResults<Note> allSelectedNotes;
     private final FragmentActivity activity;
     private final Context context;
+    private boolean isLightMode;
 
     // database
     private final Realm realm;
@@ -33,13 +36,15 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView item_category;
         private final ImageView folder_icon;
-        private final View view;
+        private View view;
+        private LinearLayout background;
 
         public MyViewHolder(View v) {
             super(v);
             item_category = v.findViewById(R.id.item_category);
             folder_icon = v.findViewById(R.id.folder_icon);
             view = v;
+            background = v.findViewById(R.id.background);
         }
     }
 
@@ -49,6 +54,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         this.realm = realm;
         this.activity = activity;
         this.context = context;
+        isLightMode = realm.where(User.class).findFirst().isModeSettings();
         allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
     }
 
@@ -63,6 +69,8 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current photo object
         Folder currentFolder = allCategories.get(position);
+
+        holder.background.setBackgroundColor(isLightMode ? context.getColor(R.color.light_mode) : context.getColor(R.color.gray));
 
         int numberOfNotesInCategory =
                 realm.where(Note.class).equalTo("archived", false)

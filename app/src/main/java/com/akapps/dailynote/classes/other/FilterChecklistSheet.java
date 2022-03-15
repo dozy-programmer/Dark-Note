@@ -2,6 +2,7 @@ package com.akapps.dailynote.classes.other;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -45,7 +47,10 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_checklist_filter, container, false);
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
+        if (AppData.getAppData().isLightMode)
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         MaterialCardView aZ = view.findViewById(R.id.a_z);
         MaterialCardView zA = view.findViewById(R.id.z_a);
@@ -208,7 +213,10 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

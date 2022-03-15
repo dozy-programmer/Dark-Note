@@ -3,6 +3,7 @@ package com.akapps.dailynote.classes.other;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
@@ -26,6 +27,7 @@ import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
@@ -60,7 +62,11 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_note_info, container, false);
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
+        if (AppData.getAppData().isLightMode) {
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         TextView noteName = view.findViewById(R.id.note_name);
         TextView dateCreated = view.findViewById(R.id.date_created);
@@ -113,23 +119,23 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                 archiveIcon.setVisibility(View.GONE);
 
             noteName.setText(Html.fromHtml(noteName.getText() + "<br>" +
-                            "<font color='#ff8533'>" + currentNote.getTitle() + "</font>",
+                            "<font color='#e65c00'>" + currentNote.getTitle() + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
-                            "<font color='#ff8533'>" + currentNote.getDateCreated().replace("\n", " ") + "</font>",
+                            "<font color='#e65c00'>" + currentNote.getDateCreated().replace("\n", " ") + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateEdited.setText(Html.fromHtml(dateEdited.getText() + "<br>" +
-                            "<font color='#ff8533'>" + currentNote.getDateEdited().replace("\n", " ") + "</font>",
+                            "<font color='#e65c00'>" + currentNote.getDateEdited().replace("\n", " ") + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             folderName.setText(Html.fromHtml(folderName.getText() + "<br>" +
-                            "<font color='#ff8533'>" + currentNote.getCategory() + "</font>",
+                            "<font color='#e65c00'>" + currentNote.getCategory() + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             numPhotos.setText(Html.fromHtml(numPhotos.getText() + "<br>" +
-                            "<font color='#ff8533'>" + allPhotos.size() + "</font>",
+                            "<font color='#e65c00'>" + allPhotos.size() + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             String getNoteString = sanitizeWord(currentNote.getNote());
@@ -150,14 +156,14 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                 noteSize = getNoteString.split(" ").length;
 
             numWords.setText(Html.fromHtml(numWords.getText() + "<br>" +
-                            "<font color='#ff8533'>" +
+                            "<font color='#e65c00'>" +
                             (currentNote.isCheckList() ? checklistSize + " list items<br>" +
                                     getChecklistString.split(" ").length :
                                     noteSize) + " words" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             numChars.setText(Html.fromHtml(numChars.getText() + "<br>" +
-                            "<font color='#ff8533'>" + (currentNote.isCheckList() ?
+                            "<font color='#e65c00'>" + (currentNote.isCheckList() ?
                             getChecklistString.length():
                             getNoteString.length()) + " characters" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
@@ -193,7 +199,10 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(AppData.getAppData().isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override

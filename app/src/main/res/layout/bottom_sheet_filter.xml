@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
+    android:background="@android:color/transparent"
     android:scrollbarSize="2dp"
     android:scrollbarThumbVertical="@color/orange"
     android:scrollbars="vertical">
@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray">
+        android:background="@android:color/transparent">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView8"

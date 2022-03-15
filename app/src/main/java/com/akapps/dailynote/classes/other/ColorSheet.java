@@ -35,13 +35,20 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
     private TextView backgroundText;
     private ImageView backgroundIcon;
 
-    public ColorSheet(){ }
+    private boolean isLightMode;
+
+    public ColorSheet(boolean isLightMode){
+        this.isLightMode = isLightMode;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_color, container, false);
 
-        view.setBackgroundColor(getContext().getColor(R.color.gray));
+        if(isLightMode)
+            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         titleColor = view.findViewById(R.id.title_color);
         textColor = view.findViewById(R.id.text_color);
@@ -128,7 +135,10 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        return R.style.BaseBottomSheetDialog;
+        if(isLightMode)
+            return R.style.BaseBottomSheetDialogLight;
+        else
+            return R.style.BaseBottomSheetDialog;
     }
 
     @Override
