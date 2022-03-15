@@ -490,14 +490,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             realm.beginTransaction();
             currentUser.setModeSettings(isChecked);
             realm.commitTransaction();
-            if(currentUser.isModeSettings()) {
-                modeSetting.setText("Light Mode  ");
-                ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
-            }
-            else {
-                modeSetting.setText("Dark Mode  ");
-                ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
-            }
+            checkModeSettings();
         });
 
         buyPro.setOnClickListener(v -> {
@@ -723,12 +716,26 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         initializing = true;
     }
 
+    private void checkModeSettings(){
+        if(currentUser.isModeSettings()) {
+            modeSetting.setText("Light Mode  ");
+            modeSetting.setTextColor(context.getColor(R.color.ultra_white));
+            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
+        }
+        else {
+            modeSetting.setText("Dark Mode  ");
+            modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
+            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
+        }
+    }
+
     private void initializeSettings(){
         showPreview.setChecked(currentUser.isShowPreview());
         showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
         modeSetting.setChecked(currentUser.isModeSettings());
+        checkModeSettings();
 
         if(currentUser.isProUser()){
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));

@@ -142,10 +142,15 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
             String getChecklistString = "";
             int checklistSize = 0;
+            int subChecklistSize = 0;
             if(currentNote.isCheckList()){
                 checklistSize =  currentNote.getChecklist().size();
                 for(int i=0 ;i < checklistSize; i++){
                     getChecklistString += sanitizeWord(currentNote.getChecklist().get(i).getText()) + " ";
+                    int currentSublistSize = currentNote.getChecklist().get(i).getSubChecklist().size();
+                    subChecklistSize += currentSublistSize;
+                    for(int j=0; j< currentSublistSize; j++)
+                        getChecklistString += sanitizeWord(currentNote.getChecklist().get(i).getSubChecklist().get(j).getText()) + " ";
                 }
             }
 
@@ -158,6 +163,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             numWords.setText(Html.fromHtml(numWords.getText() + "<br>" +
                             "<font color='#e65c00'>" +
                             (currentNote.isCheckList() ? checklistSize + " list items<br>" +
+                                    subChecklistSize + " sub-list items<br>" +
                                     getChecklistString.split(" ").length :
                                     noteSize) + " words" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));

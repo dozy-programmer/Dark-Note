@@ -149,6 +149,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isLightMode;
 
     // dialog
+    // dialog
     private AlertDialog colorPickerView;
     private CustomPowerMenu noteMenu;
 

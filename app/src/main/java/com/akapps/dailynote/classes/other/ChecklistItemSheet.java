@@ -1,6 +1,9 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,21 +20,29 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.skydoves.powermenu.CustomPowerMenu;
+import com.skydoves.powermenu.MenuAnimation;
+import com.skydoves.powermenu.OnMenuItemClickListener;
+
 import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import io.realm.Realm;
+import io.realm.RealmResults;
+import www.sanju.motiontoast.MotionToast;
 
 public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
@@ -49,6 +60,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private boolean isSubChecklist;
     private String parentNode;
     private CheckListItem checkListItem;
+    private CustomPowerMenu noteMenu;
+    private ImageView dropDownMenu;
 
     // adding
     public ChecklistItemSheet(){
@@ -94,6 +107,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
         ImageView delete = view.findViewById(R.id.delete);
+        dropDownMenu = view.findViewById(R.id.dropdown_menu);
         TextView info = view.findViewById(R.id.checklist_info);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
@@ -112,6 +126,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         if(isAdding){
+            dropDownMenu.setVisibility(View.GONE);
             if(isSubChecklist)
                 title.setText("Adding Sub-Item to\n" + parentNode);
             else
@@ -147,6 +162,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 this.dismiss();
             }
         });
+
+        dropDownMenu.setOnClickListener(view1 -> openMenuDialog());
 
         confirmFilter.setOnClickListener(v -> {
             if(confirmEntry(itemName, itemNameLayout))
@@ -241,6 +258,41 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         return false;
     }
+
+    private void openMenuDialog() {
+        noteMenu = new CustomPowerMenu.Builder<>(getContext(), new IconMenuAdapter(false))
+                .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.copy_icon), "Copy"))
+                .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.send_icon), "Send"))
+                .setBackgroundColor(getContext().getColor(R.color.light_gray))
+                .setOnMenuItemClickListener(onIconMenuItemClickListener)
+                .setAnimation(MenuAnimation.SHOW_UP_CENTER)
+                .setMenuRadius(15f)
+                .setMenuShadow(10f)
+                .build();
+        noteMenu.showAsDropDown(dropDownMenu);
+    }
+
+    private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
+        @Override
+        public void onItemClick(int position, IconPowerMenuItem item) {
+            if (position == 0) {
+                // copy text
+                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Code", currentItem.getText());
+                clipboard.setPrimaryClip(clip);
+                Helper.showMessage(getActivity(), "Success!",
+                        "Copied successfully", MotionToast.TOAST_SUCCESS);
+            }
+            else if(position == 1){
+                // send text
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
+                startActivity(intent);
+            }
+            noteMenu.dismiss();
+        }
+    };
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
