@@ -31,6 +31,7 @@ import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
@@ -40,6 +41,8 @@ import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.UpgradeSheet;
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -654,20 +657,21 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     // else purchase is valid
                     //if item is purchased and not consumed
                     if (!purchase.isAcknowledged()) {
-                        ConsumeParams consumeParams = ConsumeParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
-
-                        billingClient.consumeAsync(consumeParams, new ConsumeResponseListener() {
+                        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
                             @Override
-                            public void onConsumeResponse(BillingResult billingResult, String purchaseToken) {
-                                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                                    int consumeCountValue = getPurchaseCountValueFromPref(purchaseItemIDs.get(index))+1;
-                                    savePurchaseCountValueToPref(purchaseItemIDs.get(index),consumeCountValue);
-                                    upgradeToPro();
-                                }
+                            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+                                int consumeCountValue = getPurchaseCountValueFromPref(purchaseItemIDs.get(index))+1;
+                                savePurchaseCountValueToPref(purchaseItemIDs.get(index),consumeCountValue);
+                                upgradeToPro();
                             }
-                        });
+                        };
+
+                        AcknowledgePurchaseParams acknowledgePurchaseParams =
+                                AcknowledgePurchaseParams.newBuilder()
+                                        .setPurchaseToken(purchase.getPurchaseToken())
+                                        .build();
+
+                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
                     }
                 }
                 //if purchase is pending
@@ -720,13 +724,35 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         if(currentUser.isModeSettings()) {
             modeSetting.setText("Light Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
+            AppData.getAppData().isLightMode = true;
+            updateGapLayoutColor();
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
         }
         else {
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
+            AppData.getAppData().isLightMode = false;
+            updateGapLayoutColor();
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
         }
+    }
+
+    private void updateGapLayoutColor(){
+        int gapColor = 0;
+        if(AppData.getAppData().isLightMode)
+            gapColor = context.getColor(R.color.light_mode);
+        else
+            gapColor = context.getColor(R.color.gray);
+
+        findViewById(R.id.space_one).setBackgroundColor(gapColor);
+        findViewById(R.id.space_two).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_one).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_two).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_three).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_four).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_five).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_six).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_seven).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings(){

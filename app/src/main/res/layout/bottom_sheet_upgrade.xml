@@ -77,6 +77,7 @@
                 android:src="@drawable/check_not_filled_icon" />
 
             <TextView
+                android:id="@+id/one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -118,6 +119,7 @@
                 android:src="@drawable/check_not_filled_icon" />
 
             <TextView
+                android:id="@+id/two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -159,6 +161,7 @@
                 android:src="@drawable/check_not_filled_icon" />
 
             <TextView
+                android:id="@+id/three"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -200,6 +203,7 @@
                 android:src="@drawable/check_not_filled_icon" />
 
             <TextView
+                android:id="@+id/four"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -241,6 +245,7 @@
                 android:src="@drawable/check_not_filled_icon" />
 
             <TextView
+                android:id="@+id/five"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"

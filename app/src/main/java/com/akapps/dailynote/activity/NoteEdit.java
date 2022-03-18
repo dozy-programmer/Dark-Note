@@ -205,6 +205,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (user.isModeSettings()) {
             isLightMode = true;
             scrollView.setBackgroundColor(context.getColor(R.color.light_mode));
+            note.setBackgroundColor(context.getColor(R.color.light_mode));
+            if(noteId != -1 && !isNewNote) {
+                if (currentNote.getTextColor() == 0)
+                    note.setEditorFontColor(context.getColor(R.color.gray));
+            }
             date.setTextColor(context.getColor(R.color.light_gray));
         }
         else
@@ -878,7 +883,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
         category.setTextColor(currentNote.getBackgroundColor());
         title.setTextColor(currentNote.getTitleColor());
-        note.setTextColor(currentNote.getTextColor());
+        note.setEditorFontColor(currentNote.getTextColor());
         if(checklistAdapter!=null && currentNote.isCheckList())
             checklistAdapter.notifyDataSetChanged();
 
@@ -1662,6 +1667,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
+    }
+
+    private void refreshNoteEditText(){
+        note = findViewById(R.id.note);
+        note.setHtml(currentNote.getNote());
+        String textSize = Helper.getPreference(context, "size");
+        if(textSize==null)
+            textSize = "20";
+        note.setEditorFontSize(Integer.parseInt(textSize));
+        note.setEditorFontColor(currentNote.getTextColor());
     }
 
     private void showMessage(String title, String message, boolean error){

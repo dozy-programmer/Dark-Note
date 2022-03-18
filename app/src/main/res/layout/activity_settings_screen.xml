@@ -312,6 +312,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/gap_one"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/gray"/>
@@ -344,6 +345,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/gap_two"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/gray"/>
@@ -376,6 +378,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/gap_three"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
@@ -489,6 +492,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/gap_four"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
@@ -535,6 +539,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/gap_five"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
@@ -572,6 +577,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/gap_six"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
@@ -772,6 +778,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:id="@+id/gap_seven"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
