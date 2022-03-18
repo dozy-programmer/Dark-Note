@@ -2,22 +2,16 @@ package com.akapps.dailynote.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -44,7 +38,6 @@ import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.card.MaterialCardView;
-
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -166,6 +159,7 @@ public class notes extends Fragment{
             isLightMode = true;
             lightColor = context.getColor(R.color.light_mode);
             view.setBackgroundColor(lightColor);
+            getActivity().getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
         }
 
         AppData appData = AppData.getAppData();

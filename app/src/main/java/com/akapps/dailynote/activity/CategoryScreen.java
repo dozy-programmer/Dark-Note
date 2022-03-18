@@ -137,8 +137,10 @@ public class CategoryScreen extends AppCompatActivity {
 
         User user = realm.where(User.class).findFirst();
         assert user != null;
-        if (user.isModeSettings())
+        if (user.isModeSettings()) {
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
+            getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
+        }
         else
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
     }

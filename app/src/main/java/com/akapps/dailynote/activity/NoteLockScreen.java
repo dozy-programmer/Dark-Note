@@ -4,12 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.andrognito.pinlockview.IndicatorDots;
@@ -49,7 +53,16 @@ public class NoteLockScreen extends AppCompatActivity {
 
         overridePendingTransition(R.anim.left_in, R.anim.stay);
 
+        Context context = this;
+
         initializeLayout();
+
+        if(AppData.getAppData().isLightMode) {
+            getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
+            findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.light_mode));
+            lockView.setTextColor(context.getColor(R.color.gray));
+            ((TextView) findViewById(R.id.instruction)).setTextColor(context.getColor(R.color.gray));
+        }
     }
 
     @Override

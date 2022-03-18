@@ -203,6 +203,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         User user = realm.where(User.class).findFirst();
         assert user != null;
         if (user.isModeSettings()) {
+            getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
             isLightMode = true;
             scrollView.setBackgroundColor(context.getColor(R.color.light_mode));
             note.setBackgroundColor(context.getColor(R.color.light_mode));

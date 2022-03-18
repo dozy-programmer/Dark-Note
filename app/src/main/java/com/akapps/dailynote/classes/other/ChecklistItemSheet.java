@@ -103,6 +103,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             this.dismiss();
 
         currentNote = ((NoteEdit)getActivity()).currentNote;
+        realm = ((NoteEdit)getActivity()).realm;
 
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);

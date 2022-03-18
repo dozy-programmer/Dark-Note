@@ -99,6 +99,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         Log.d("Here", "Printing subid " + checkListItem.getSubListId());
         isAllItemsSelected();
 
+        holder.subChecklist.setAdapter(null);
+
         RecyclerView.Adapter subChecklistAdapter = null;
         if(isProUser) {
             if (null == checkListItem.getSubChecklist()) {
@@ -114,6 +116,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                             .equalTo("id", checkListItem.getSubListId())
                             .sort("positionInList").findAll(), currentNote, realm, activity);
                     holder.subChecklist.setAdapter(subChecklistAdapter);
+                    subChecklistAdapter.notifyItemChanged(position);
                 }
             }
         }

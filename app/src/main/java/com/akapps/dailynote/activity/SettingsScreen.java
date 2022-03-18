@@ -726,12 +726,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
             AppData.getAppData().isLightMode = true;
             updateGapLayoutColor();
+            getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
         }
         else {
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
             AppData.getAppData().isLightMode = false;
+            getWindow().setStatusBarColor(context.getColor(R.color.gray));
             updateGapLayoutColor();
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
         }
