@@ -16,6 +16,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -44,7 +46,6 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
@@ -76,6 +77,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -182,8 +185,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
-        realm = RealmDatabase.getRealm(context);
-        allNotes = AppData.getAppData().getNotes(context);
+        // initializes database and retrieves all notes
+        try {
+            realm = Realm.getDefaultInstance();
+        }
+        catch (Exception e){
+            realm = RealmDatabase.setUpDatabase(context);
+        }
+        allNotes = realm.where(Note.class).findAll();
 
         // if orientation changes, then position is updated
         if (savedInstanceState != null)
@@ -191,7 +200,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         initializeLayout(savedInstanceState);
 
-        if (AppData.getAppData().isLightTheme) {
+        User user = realm.where(User.class).findFirst();
+        assert user != null;
+        if (user.isModeSettings()) {
             getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
             isLightMode = true;
             scrollView.setBackgroundColor(context.getColor(R.color.light_mode));
@@ -255,7 +266,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     protected void onDestroy() {
         super.onDestroy();
 
-        if(realm != null)
+        if(realm!=null)
             realm.close();
 
         if(handler!=null)

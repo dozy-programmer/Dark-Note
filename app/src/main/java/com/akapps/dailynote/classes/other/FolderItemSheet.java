@@ -92,7 +92,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
 
         itemName.requestFocusFromTouch();
 
-        if (AppData.getAppData().isLightTheme) {
+        if (AppData.getAppData().isLightMode) {
             itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
             itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             itemName.setTextColor(getContext().getColor(R.color.gray));
@@ -247,7 +247,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightTheme)
+        if(AppData.getAppData().isLightMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

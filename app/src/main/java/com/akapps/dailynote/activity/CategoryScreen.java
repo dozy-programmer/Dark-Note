@@ -103,7 +103,11 @@ public class CategoryScreen extends AppCompatActivity {
         }
 
         // initialize database and get data
-        realm = RealmDatabase.getRealm(context);
+        try {
+            realm = Realm.getDefaultInstance();
+        } catch (Exception e) {
+            realm = RealmDatabase.setUpDatabase(context);
+        }
 
         allCategories = realm.where(Folder.class).sort("positionInList").findAll();
 

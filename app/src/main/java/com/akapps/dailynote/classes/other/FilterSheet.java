@@ -55,7 +55,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_filter, container, false);
 
-        if (AppData.getAppData().isLightTheme)
+        if (AppData.getAppData().isLightMode)
             view.setBackgroundColor(getContext().getColor(R.color.light_mode));
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -286,7 +286,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightTheme)
+        if(AppData.getAppData().isLightMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

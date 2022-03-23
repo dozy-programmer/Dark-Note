@@ -40,7 +40,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
         SwitchCompat fingerprint = view.findViewById(R.id.fingerprint);
         TextView title = view.findViewById(R.id.title);
 
-        if (AppData.getAppData().isLightTheme) {
+        if (AppData.getAppData().isLightMode) {
             pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
             pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             pinLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
@@ -101,7 +101,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightTheme)
+        if(AppData.getAppData().isLightMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

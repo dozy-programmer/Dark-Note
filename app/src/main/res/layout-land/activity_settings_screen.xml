@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/gray">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -65,10 +65,25 @@
             android:gravity="center"
             android:text="Hi there, thanks for using my app!\nYou are currently a regular user and do not have access to change settings, but you can backup and restore backups. Consider upgrading to Pro, it would help this college student out. If not, leaving a review would be appreciated. Anyways, Enjoy!"
             android:textColor="@color/blue"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/mode_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:checked="false"
+            android:fontFamily="@font/baloo_bhai"
+            android:text="Dark Mode  "
+            android:textColor="@color/light_mode"
+            android:textSize="16sp"
+            android:theme="@style/ThemeOverlay.Mode"
+            app:layout_constraintEnd_toEndOf="@+id/account_settings"
+            app:layout_constraintStart_toStartOf="@+id/account_settings"
+            app:layout_constraintTop_toBottomOf="@+id/free_user"/>
 
         <TextView
             android:id="@+id/account_settings"
@@ -84,25 +99,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mode_setting" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/mode_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:checked="false"
-            android:fontFamily="@font/baloo_bhai"
-            android:text="Dark Mode  "
-            android:textColor="@color/ultra_white"
-            android:textSize="16sp"
-            android:theme="@style/ThemeOverlay.Mode"
-            app:layout_constraintEnd_toEndOf="@+id/account_settings"
-            app:layout_constraintStart_toStartOf="@+id/account_settings"
-            app:layout_constraintTop_toBottomOf="@+id/free_user"/>
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/account_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_marginHorizontal="20dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="10dp"
@@ -112,23 +113,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/account_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/baloo_bhai"
-                    android:gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:textSize="16sp"
-                    android:maxLines="3"
-                    android:text=""
-                    android:visibility="gone"
-                    android:layout_gravity="center"
-                    android:layout_weight="50"
-                    android:textColor="@color/blue"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -140,7 +126,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/sign_up"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="50"
                         android:layout_marginHorizontal="10dp"
                         android:gravity="center"
@@ -150,15 +136,27 @@
                         android:textColor="@color/ultra_white"
                         android:textSize="14sp"/>
 
+                    <TextView
+                        android:id="@+id/account_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/baloo_bhai"
+                        android:gravity="center"
+                        android:text=""
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="50"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp"/>
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/log_in"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="50"
                         android:backgroundTint="@color/gray"
                         android:layout_marginHorizontal="10dp"
                         android:gravity="center"
-                        android:layout_gravity="center_vertical"
                         android:text="Login"
                         app:cornerRadius="15dp"
                         android:textColor="@color/ultra_white"
@@ -187,11 +185,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="50"
-                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginHorizontal="30dp"
                         android:gravity="center"
-                        app:icon="@drawable/sync_icon"
-                        app:iconPadding="0dp"
-                        app:iconGravity="textEnd"
                         android:backgroundTint="@color/gray"
                         android:text="Sync"
                         app:cornerRadius="15dp"
@@ -204,11 +199,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="50"
                         android:backgroundTint="@color/gray"
-                        android:layout_marginHorizontal="10dp"
-                        app:icon="@drawable/upload_icon"
-                        app:iconGravity="textEnd"
-                        app:iconPadding="5dp"
-                        app:iconTint="@color/gray"
+                        android:layout_marginHorizontal="30dp"
                         android:gravity="center"
                         android:text="Upload"
                         app:cornerRadius="15dp"
@@ -219,8 +210,8 @@
 
                 <ImageView
                     android:id="@+id/space_two"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
 
@@ -236,7 +227,7 @@
                         android:fontFamily="@font/baloo_bhai"
                         android:gravity="center"
                         android:text=""
-                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginHorizontal="10dp"
                         android:layout_marginVertical="5dp"
                         android:visibility="gone"
                         android:layout_gravity="center"
@@ -312,10 +303,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_one"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/gray"/>
+                    android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/backup_beta"
@@ -340,15 +330,15 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:src="@drawable/arrow_right_icon"></ImageView>
+                        android:src="@drawable/arrow_right_icon">
+                    </ImageView>
 
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_two"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/gray"/>
+                    android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/restore_backup"
@@ -373,12 +363,12 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:src="@drawable/arrow_right_icon"></ImageView>
+                        android:src="@drawable/arrow_right_icon">
+                    </ImageView>
 
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_three"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/gray"></ImageView>
@@ -406,7 +396,8 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:src="@drawable/arrow_right_icon"></ImageView>
+                        android:src="@drawable/arrow_right_icon">
+                    </ImageView>
 
                 </LinearLayout>
 
@@ -418,23 +409,23 @@
             android:id="@+id/note_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Note Settings"
+            android:textSize="16sp"
+            android:fontFamily="@font/baloo_bhai"
+            android:textColor="@color/orange"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Note Preview Settings"
-            android:textColor="@color/orange"
-            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView"></TextView>
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+        </TextView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView5"
             android:layout_width="match_parent"
-            android:layout_height="203dp"
+            android:layout_height="206dp"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="10dp"
@@ -484,7 +475,6 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
-                        android:layout_marginRight="5dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down">
                     </ImageView>
@@ -492,11 +482,10 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_four"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
-                    android:background="@color/gray"/>
+                    android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/preview_layout"
@@ -533,13 +522,11 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:layout_marginRight="5dp"
                         android:src="@drawable/arrow_down"></ImageView>
 
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_five"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
@@ -577,7 +564,6 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_six"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
@@ -626,6 +612,7 @@
             android:textSize="16sp"
             android:fontFamily="@font/baloo_bhai"
             android:textColor="@color/orange"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
@@ -633,13 +620,13 @@
             app:layout_constraintTop_toBottomOf="@+id/materialCardView5">
         </TextView>
 
-        <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.card.MaterialCardView
             android:id="@+id/view_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+        android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -659,8 +646,8 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:layout_weight="33"
                     android:layout_margin="10dp"
+                    android:layout_weight="33"
                     app:cardBackgroundColor="@color/gray"
                     app:cardCornerRadius="15dp">
 
@@ -678,8 +665,8 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
                     android:layout_weight="33"
+                    android:layout_margin="10dp"
                     app:cardBackgroundColor="@color/gray"
                     app:cardCornerRadius="15dp">
 
@@ -734,7 +721,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:padding="15dp"
             android:layout_marginHorizontal="20dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="10dp"
@@ -778,7 +764,6 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_seven"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
@@ -823,16 +808,17 @@
             android:id="@+id/other_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Other Settings"
+            android:textSize="16sp"
+            android:fontFamily="@font/baloo_bhai"
+            android:textColor="@color/ultra_white"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Other Settings"
-            android:textColor="@color/ultra_white"
-            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"></TextView>
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
+        </TextView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView2"
@@ -857,7 +843,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="95"
+                    android:layout_weight="99"
                     android:gravity="center|left"
                     android:text="App Settings"
                     android:textColor="@color/ultra_white"
@@ -866,10 +852,11 @@
                 </TextView>
 
                 <ImageView
-                    android:layout_width="25dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="25dp"
-                    android:layout_weight="5"
-                    android:layout_gravity="center_vertical|right"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="center"
                     android:src="@drawable/settings_icon">
                 </ImageView>
 
@@ -877,25 +864,7 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/customer_photo"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="@color/gray"
-            android:elevation="2dp"
-            android:padding="5dp"
-            android:src="@drawable/koala"
-            app:layout_constraintBottom_toBottomOf="@+id/about_info"
-            app:layout_constraintEnd_toEndOf="@+id/about_info"
-            app:layout_constraintStart_toStartOf="@+id/about_info"
-            app:layout_constraintTop_toTopOf="@+id/about_info"
-            app:shapeAppearanceOverlay="@style/circular"
-            app:strokeColor="@color/darker_blue"
-            app:strokeWidth="2dp" />
-
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/about_info"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="20dp"
@@ -962,7 +931,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="95"
+                    android:layout_weight="99"
                     android:gravity="center|left"
                     android:text="Contact Developer"
                     android:textColor="@color/ultra_white"
@@ -973,7 +942,8 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
-                    android:layout_weight="5"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
                     android:src="@drawable/contact_icon">
                 </ImageView>
 
@@ -1003,7 +973,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="95"
+                    android:layout_weight="99"
                     android:gravity="center|left"
                     android:text="Leave a review"
                     android:textColor="@color/ultra_white"
@@ -1014,7 +984,8 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:layout_weight="5"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
                     android:src="@drawable/playstore_icon"></ImageView>
 
             </LinearLayout>
@@ -1022,5 +993,4 @@
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.core.widget.NestedScrollView>

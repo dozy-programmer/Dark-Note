@@ -74,6 +74,7 @@ import java.util.zip.ZipOutputStream;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
@@ -83,11 +84,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     // activity
     private Context context;
     private int all_Notes;
-    private User user;
     private boolean tryAgain;
     private boolean initializing;
     private int upgradeToProCounter;
 
+    private User currentUser;
     private Realm realm;
 
     // account authentication
@@ -151,13 +152,16 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         mAuth = FirebaseAuth.getInstance();
 
-        all_Notes = AppData.getAppData().getNotes(context).size();
+        all_Notes = getIntent().getIntExtra("size", 0);
 
         boolean backingUp = getIntent().getBooleanExtra("backup", false);
 
-        realm = RealmDatabase.getRealm(context);
-
-        user = AppData.getAppData().getUser(realm);;
+        try {
+            realm = Realm.getDefaultInstance();
+        } catch (Exception e) {
+            realm = RealmDatabase.setUpDatabase(context);
+        }
+        currentUser = realm.where(User.class).findFirst();
 
         populateUserSettings();
         initializeBilling();
@@ -177,19 +181,31 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     protected void onResume() {
         super.onResume();
 
+        realmStatus();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        if(realm != null)
+        if(realm!=null)
             realm.close();
     }
 
     @Override
     public void onBackPressed() {
        close();
+    }
+
+    private void realmStatus(){
+        if(realm.isClosed()) {
+            try {
+                realm = Realm.getDefaultInstance();
+            } catch (Exception e) {
+                realm = RealmDatabase.setUpDatabase(context);
+            }
+            currentUser = realm.where(User.class).findFirst();
+        }
     }
 
     private void initializeLayout(){
@@ -229,13 +245,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
-        if(null == user.getEmail()){
+        if(null == currentUser.getEmail()){
             realm.beginTransaction();
-            user.setEmail("");
+            currentUser.setEmail("");
             realm.commitTransaction();
         }
 
-        if(user.isProUser()) {
+        if(currentUser.isProUser()) {
             freeUserMessage.setVisibility(View.GONE);
 
             if(mAuth.getCurrentUser() != null){
@@ -252,16 +268,15 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 spaceOne.setVisibility(View.VISIBLE);
                 spaceTwo.setVisibility(View.VISIBLE);
 
-                if(null != user.getLastUpload() &&
-                        !user.getLastUpload().isEmpty()){
+                if(null != currentUser.getLastUpload() && !currentUser.getLastUpload().isEmpty()){
                     lastUploadDate.setVisibility(View.VISIBLE);
-                    lastUploadDate.setText("Last Upload : " + user.getLastUpload());
+                    lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
                 }
             }
         }
 
-        String titleLinesNumber = String.valueOf(user.getTitleLines());
-        String previewLinesNumber = String.valueOf(user.getContentLines());
+        String titleLinesNumber = String.valueOf(currentUser.getTitleLines());
+        String previewLinesNumber = String.valueOf(currentUser.getContentLines());
 
         // sets the current select title lines and preview lines
         // by default it is 3
@@ -273,9 +288,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         setSupportActionBar(toolbar);
 
         signUp.setOnClickListener(view -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 if (mAuth.getCurrentUser() == null) {
-                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, user, realm, true);
+                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, true);
                     accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
                 }
             }
@@ -284,33 +300,38 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         logIn.setOnClickListener(view -> {
+            realmStatus();
             if (mAuth.getCurrentUser() != null) {
                 showBackupRestoreInfo(8);
             } else {
-                AccountSheet accountLoginSheet = new AccountSheet(mAuth, user, realm, false);
+                AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, false);
                 accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
             }
         });
 
         sync.setOnClickListener(view -> {
-            if(user.isProUser())
+            realmStatus();
+            if(currentUser.isProUser())
                 if (mAuth.getCurrentUser() != null)
                     showBackupRestoreInfo(7);
         });
 
         upload.setOnClickListener(view -> {
-            if(user.isProUser())
+            realmStatus();
+            if(currentUser.isProUser())
                 if (mAuth.getCurrentUser() != null)
                     showBackupRestoreInfo(6);
         });
 
         backup.setOnClickListener(v -> {
+            realmStatus();
             betaBackup = false;
             showBackupRestoreInfo(1);
         });
 
         backupBeta.setOnClickListener(view -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 betaBackup = true;
                 showBackupRestoreInfo(2);
             }
@@ -319,12 +340,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         restoreBackup.setOnClickListener(v -> {
+            realmStatus();
             betaRestore = false;
             openFile();
         });
 
         restoreBackupBeta.setOnClickListener(view -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 betaRestore = true;
                 openFile();
             }
@@ -332,21 +355,22 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
-        if(!user.isProUser()){
+        if(!currentUser.isProUser()){
             showPreview.setChecked(false);
             showPreviewNoteInfo.setChecked(true);
             openFoldersOnStart.setChecked(false);
             showFolderNotes.setChecked(false);
             realm.beginTransaction();
-            user.setShowPreview(true);
-            user.setOpenFoldersOnStart(false);
-            user.setShowFolderNotes(false);
-            user.setShowPreviewNoteInfo(true);
+            currentUser.setShowPreview(true);
+            currentUser.setOpenFoldersOnStart(false);
+            currentUser.setShowFolderNotes(false);
+            currentUser.setShowPreviewNoteInfo(true);
             realm.commitTransaction();
         }
 
         titleLayout.setOnClickListener(v -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 isTitleSelected = true;
                 showLineNumberMenu(titleLines, null);
             }
@@ -355,7 +379,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         previewLayout.setOnClickListener(v -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 isTitleSelected = false;
                 showLineNumberMenu(previewLines, null);
             }
@@ -366,9 +391,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         appSettings.setOnClickListener(v -> openAppInSettings());
 
         row.setOnClickListener(v -> {
-            if(user.isProUser()){
+            realmStatus();
+            if(currentUser.isProUser()){
                 realm.beginTransaction();
-                user.setLayoutSelected("row");
+                currentUser.setLayoutSelected("row");
                 realm.commitTransaction();
                 row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
                 grid.setCardBackgroundColor(context.getColor(R.color.gray));
@@ -379,9 +405,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         grid.setOnClickListener(v -> {
-            if(user.isProUser()){
+            realmStatus();
+            if(currentUser.isProUser()){
                 realm.beginTransaction();
-                user.setLayoutSelected("grid");
+                currentUser.setLayoutSelected("grid");
                 realm.commitTransaction();
                 grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
                 row.setCardBackgroundColor(context.getColor(R.color.gray));
@@ -392,9 +419,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         staggered.setOnClickListener(v -> {
-            if(!user.getLayoutSelected().equals("stag")) {
+            realmStatus();
+            if(!currentUser.getLayoutSelected().equals("stag")) {
                 realm.beginTransaction();
-                user.setLayoutSelected("stag");
+                currentUser.setLayoutSelected("stag");
                 realm.commitTransaction();
                 staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
                 grid.setCardBackgroundColor(context.getColor(R.color.gray));
@@ -409,9 +437,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         close.setOnClickListener(v -> close());
 
         showPreview.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 realm.beginTransaction();
-                user.setShowPreview(isChecked);
+                currentUser.setShowPreview(isChecked);
                 realm.commitTransaction();
             }
             else if(initializing) {
@@ -421,9 +450,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         showPreviewNoteInfo.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 realm.beginTransaction();
-                user.setShowPreviewNoteInfo(isChecked);
+                currentUser.setShowPreviewNoteInfo(isChecked);
                 realm.commitTransaction();
             }
             else if(initializing) {
@@ -433,11 +463,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 realm.beginTransaction();
-                user.setOpenFoldersOnStart(isChecked);
+                currentUser.setOpenFoldersOnStart(isChecked);
                 realm.commitTransaction();
-                AppData.isAppFirstStarted = false;
             }
             else if(initializing) {
                 openFoldersOnStart.setChecked(false);
@@ -446,9 +476,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         showFolderNotes.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(user.isProUser()) {
+            realmStatus();
+            if(currentUser.isProUser()) {
                 realm.beginTransaction();
-                user.setShowFolderNotes(isChecked);
+                currentUser.setShowFolderNotes(isChecked);
                 realm.commitTransaction();
             }
             else if(initializing) {
@@ -458,14 +489,16 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
             realm.beginTransaction();
-            user.setModeSettings(isChecked);
+            currentUser.setModeSettings(isChecked);
             realm.commitTransaction();
             checkModeSettings();
         });
 
         buyPro.setOnClickListener(v -> {
-            if(!user.isProUser()) {
+            realmStatus();
+            if(!currentUser.isProUser()) {
                 UpgradeSheet upgradeSheet = new UpgradeSheet();
                 upgradeSheet.show(getSupportFragmentManager(), upgradeSheet.getTag());
             }
@@ -485,9 +518,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void upgradeToPro(){
         realm.beginTransaction();
-        user.setProUser(!user.isProUser());
+        currentUser.setProUser(!currentUser.isProUser());
         realm.commitTransaction();
-        if(user.isProUser()) {
+        if(currentUser.isProUser()) {
             Helper.showMessage(SettingsScreen.this, "Upgrade Successful", "" +
                     "Thank you and Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
         }
@@ -688,10 +721,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void checkModeSettings(){
-        if(user.isModeSettings()) {
+        if(currentUser.isModeSettings()) {
             modeSetting.setText("Light Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
-            AppData.getAppData().isLightTheme = true;
+            AppData.getAppData().isLightMode = true;
             updateGapLayoutColor();
             getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
@@ -699,7 +732,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         else {
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
-            AppData.getAppData().isLightTheme = false;
+            AppData.getAppData().isLightMode = false;
             getWindow().setStatusBarColor(context.getColor(R.color.gray));
             updateGapLayoutColor();
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
@@ -708,7 +741,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void updateGapLayoutColor(){
         int gapColor = 0;
-        if(AppData.getAppData().isLightTheme)
+        if(AppData.getAppData().isLightMode)
             gapColor = context.getColor(R.color.light_mode);
         else
             gapColor = context.getColor(R.color.gray);
@@ -725,22 +758,22 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void initializeSettings(){
-        showPreview.setChecked(user.isShowPreview());
-        showPreviewNoteInfo.setChecked(user.isShowPreviewNoteInfo());
-        openFoldersOnStart.setChecked(user.isOpenFoldersOnStart());
-        showFolderNotes.setChecked(user.isShowFolderNotes());
-        modeSetting.setChecked(user.isModeSettings());
+        showPreview.setChecked(currentUser.isShowPreview());
+        showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
+        openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
+        showFolderNotes.setChecked(currentUser.isShowFolderNotes());
+        modeSetting.setChecked(currentUser.isModeSettings());
         checkModeSettings();
 
-        if(user.isProUser()){
+        if(currentUser.isProUser()){
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));
             buyPro.setText("PRO USER");
             buyPro.setElevation(0);
         }
 
-        if(user.getLayoutSelected().equals("row"))
+        if(currentUser.getLayoutSelected().equals("row"))
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-        else if(user.getLayoutSelected().equals("grid"))
+        else if(currentUser.getLayoutSelected().equals("grid"))
             grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         else
             staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
@@ -811,6 +844,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         realmBackupRestore.update(this, context);
         File exportedFilePath = realmBackupRestore.backup_Share();
         allPaths.add(exportedFilePath.getAbsolutePath());
+        realmStatus();
         return zipPhotos(allPaths);
     }
 
@@ -888,9 +922,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             restart();
         }).addOnSuccessListener(taskSnapshot -> {
             realm.beginTransaction();
-            user.setLastUpload(Helper.getCurrentDate());
+            currentUser.setLastUpload(Helper.getCurrentDate());
             lastUploadDate.setVisibility(View.VISIBLE);
-            lastUploadDate.setText("Last Upload : " + user.getLastUpload());
+            lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
             realm.commitTransaction();
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload Success",
@@ -912,6 +946,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private void shareFile(File backup){
+        realmStatus();
 
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("text/plain");
@@ -970,7 +1005,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             // close realm before restoring
             RealmConfiguration configuration = realm.getConfiguration();
             realm.close();
-            realm.deleteRealm(configuration);
+            Realm.deleteRealm(configuration);
 
             // initialize backup object
             realmBackupRestore = new RealmBackupRestore(this);
@@ -991,6 +1026,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             close();
 
             // update image paths from restored database so it knows where the images are
+            realm = RealmDatabase.setUpDatabase(context);
             updateAlarms(realm.where(Note.class)
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
@@ -1017,7 +1053,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     // close realm before restoring
                     RealmConfiguration configuration = realm.getConfiguration();
                     realm.close();
-                    realm.deleteRealm(configuration);
+                    Realm.deleteRealm(configuration);
 
                     // delete all files first
                     FilesKt.deleteRecursively(new File(getApplicationContext()
@@ -1032,7 +1068,12 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
 
                     // update image paths from restored database so it knows where the images are
-                    realm = realm;
+                    try {
+                        realm = Realm.getDefaultInstance();
+                    }
+                    catch (Exception e){
+                        realm = RealmDatabase.setUpDatabase(context);
+                    }
                     updateImages(images);
 
                     Helper.showMessage(this, "Restored", "" +
@@ -1077,7 +1118,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 try {
                     RealmConfiguration configuration = realm.getConfiguration();
                     realm.close();
-                    realm.deleteRealm(configuration);
+                    Realm.deleteRealm(configuration);
 
                     RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
                     realmBackupRestore.restore(uri, "default.realm", false);
@@ -1156,13 +1197,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private void updateSelectedLines(int position){
         if(isTitleSelected) {
             realm.beginTransaction();
-            user.setTitleLines(position);
+            currentUser.setTitleLines(position);
             realm.commitTransaction();
             titleLines.setText(String.valueOf(position));
         }
         else {
             realm.beginTransaction();
-            user.setContentLines(position);
+            currentUser.setContentLines(position);
             realm.commitTransaction();
             previewLines.setText(String.valueOf(position));
         }
@@ -1188,6 +1229,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void close(){
         Intent intent = new Intent(this, Homepage.class);
+        intent.putExtra("app_started", 2);
         startActivity(intent);
         finish();
         overridePendingTransition(0, R.anim.hide_to_bottom);

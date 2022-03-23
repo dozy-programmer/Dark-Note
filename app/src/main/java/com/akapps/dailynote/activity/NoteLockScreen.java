@@ -57,7 +57,7 @@ public class NoteLockScreen extends AppCompatActivity {
 
         initializeLayout();
 
-        if(AppData.getAppData().isLightTheme) {
+        if(AppData.getAppData().isLightMode) {
             getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
             findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.light_mode));
             lockView.setTextColor(context.getColor(R.color.gray));
