@@ -83,7 +83,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         passwordInput = view.findViewById(R.id.insert_password);
         loginButton = view.findViewById(R.id.login);
 
-        if (AppData.getAppData().isLightMode) {
+        if (AppData.getAppData().isLightTheme) {
             emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
             emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
             emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
@@ -198,7 +198,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isLightTheme)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

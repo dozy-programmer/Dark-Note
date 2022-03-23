@@ -21,7 +21,9 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.classes.other.UpgradeSheet;
 import com.akapps.dailynote.fragments.notes;
@@ -41,7 +43,6 @@ import www.sanju.motiontoast.MotionToast;
 public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.MyViewHolder>{
 
     // project data
-    private final RealmResults<Note> allNotes;
     private String noteText;
     private final Activity activity;
     private final Fragment noteFragment;
@@ -49,9 +50,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private boolean showPreviewNotesInfo;
     private final String TITLE_KEY = "title_lines";
     private final String PREVIEW_KEY = "preview_lines";
-
-    // database
-    private final Realm realm;
 
     // multi select
     private boolean enableSelectMultiple;
@@ -103,10 +101,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
     }
 
-    public notes_recyclerview(RealmResults<Note> allNotes, Realm realm, Activity activity, Fragment fragment,
+    public notes_recyclerview(Activity activity, Fragment fragment,
                               boolean showPreview, boolean showPreviewNotesInfo) {
-        this.allNotes = allNotes;
-        this.realm = realm;
         this.activity = activity;
         this.noteFragment = fragment;
         this.showPreview = showPreview;
@@ -124,10 +120,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current note object
-        Note currentNote = allNotes.get(position);
+        Note currentNote = AppData.getAppData().getNotes(activity).get(position);
 
         // retrieves all photos that belong to note
-        RealmResults<Photo> allPhotos = realm.where(Photo.class)
+        RealmResults<Photo> allPhotos = RealmDatabase.getRealm(activity).where(Photo.class)
                 .equalTo("noteId", currentNote.getNoteId()).findAll();
 
         // retrieves note text, the lock status of note and reminder status
@@ -173,7 +169,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if(currentNote.getCategory().equals("none"))
             holder.category.setVisibility(View.GONE);
         else {
-            Folder folderColor = realm.where(Folder.class)
+            Folder folderColor = RealmDatabase.getRealm(activity).where(Folder.class)
                     .equalTo("name", currentNote.getCategory())
                     .findFirst();
 
@@ -210,9 +206,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
             }
 
-            realm.beginTransaction();
+            RealmDatabase.getRealm(activity).beginTransaction();
             currentNote.setChecklistConvertedToString(checkListString.toString());
-            realm.commitTransaction();
+            RealmDatabase.getRealm(activity).commitTransaction();
             holder.note_preview.setText(checkListString.toString());
             holder.note_preview.setTextSize(15);
             holder.note_preview.setGravity(Gravity.LEFT);
@@ -507,13 +503,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     @Override
     public int getItemCount() {
-        return allNotes.size();
+        return AppData.getAppData().getNotes(activity).size();
     }
 
     // Checks to see if note is locked, if it is then user is sent to lock screen activity
     // where they need to enter a pin. If not locked, it opens note
     private void openNoteActivity(Note currentNote){
-        if(currentNote.getPinNumber()==0){
+        if(currentNote.getPinNumber() == 0){
             Intent note = new Intent(activity, NoteEdit.class);
             note.putExtra("id", currentNote.getNoteId());
             note.putExtra("isChecklist", currentNote.isCheckList());
@@ -533,8 +529,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     // updates select status of note in database
     private void saveSelected(Note currentNote, boolean status){
         // save status to database
-        realm.beginTransaction();
+        RealmDatabase.getRealm(activity).beginTransaction();
         currentNote.setSelected(status);
-        realm.commitTransaction();
+        RealmDatabase.getRealm(activity).commitTransaction();
     }
 }

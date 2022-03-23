@@ -56,7 +56,7 @@ public class UpgradeSheet extends RoundedBottomSheetDialogFragment{
         seven = view.findViewById(R.id.bottom_message);
 
 
-        if (AppData.getAppData().isLightMode)
+        if (AppData.getAppData().isLightTheme)
             view.setBackgroundColor(getContext().getColor(R.color.light_mode));
         else {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -89,7 +89,7 @@ public class UpgradeSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isLightTheme)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

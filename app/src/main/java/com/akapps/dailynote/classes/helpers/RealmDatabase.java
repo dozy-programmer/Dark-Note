@@ -21,6 +21,14 @@ import io.realm.RealmSchema;
 
 public class RealmDatabase {
 
+    public static Realm getRealm(Context context){
+        try {
+            return Realm.getDefaultInstance();
+        } catch (Exception e) {
+            return setUpDatabase(context);
+        }
+    }
+
     public static Realm setUpDatabase(Context context){
         int currentVersion = Integer.parseInt(context.getString(R.string.schema));
 

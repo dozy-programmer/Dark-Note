@@ -90,7 +90,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         TextInputEditText securityWord = view.findViewById(R.id.security_word);
         ImageView unlock = view.findViewById(R.id.unlock);
 
-        if (AppData.getAppData().isLightMode) {
+        if (AppData.getAppData().isLightTheme) {
             securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
             securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
@@ -284,7 +284,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isLightTheme)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

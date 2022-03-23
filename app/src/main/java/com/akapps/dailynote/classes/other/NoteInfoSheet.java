@@ -62,7 +62,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_note_info, container, false);
 
-        if (AppData.getAppData().isLightMode) {
+        if (AppData.getAppData().isLightTheme) {
             view.setBackgroundColor(getContext().getColor(R.color.light_mode));
         }
         else
@@ -205,7 +205,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isLightTheme)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;
