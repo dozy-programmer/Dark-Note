@@ -25,6 +25,10 @@ public class User extends RealmObject {
 
     private String lastUpload;
 
+    private int backupReminderOccurrence;
+
+    private boolean enableSublists;
+
     public User() {}
 
     public User(int userId) {
@@ -38,6 +42,8 @@ public class User extends RealmObject {
         lastUpload = "";
         showPreviewNoteInfo = true;
         showFolderNotes = false;
+        backupReminderOccurrence = 0;
+        enableSublists = false;
     }
 
     public int getUserId() {
@@ -142,5 +148,21 @@ public class User extends RealmObject {
 
     public void setModeSettings(boolean modeSettings) {
         this.modeSettings = modeSettings;
+    }
+
+    public int getBackupReminderOccurrence() {
+        return backupReminderOccurrence;
+    }
+
+    public void setBackupReminderOccurrence(int backupReminderOccurrence) {
+        this.backupReminderOccurrence = backupReminderOccurrence;
+    }
+
+    public boolean isEnableSublists() {
+        return enableSublists;
+    }
+
+    public void setEnableSublists(boolean enableSublists) {
+        this.enableSublists = enableSublists;
     }
 }

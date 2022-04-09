@@ -52,6 +52,8 @@ public class Note extends RealmObject {
     // sorting
     private int sort;
 
+    private boolean enableSublist;
+
     public Note(){}
 
     public Note(String title, String note){
@@ -64,6 +66,7 @@ public class Note extends RealmObject {
         dateCreatedMilli = dateEditedMilli = Helper.dateToCalender(this.dateCreated).getTimeInMillis();
         category = "none";
         sort = -1;
+        enableSublist = false;
     }
 
     public int getNoteId(){
@@ -256,5 +259,13 @@ public class Note extends RealmObject {
 
     public void setSort(int sort) {
         this.sort = sort;
+    }
+
+    public boolean isEnableSublist() {
+        return enableSublist;
+    }
+
+    public void setEnableSublist(boolean enableSublist) {
+        this.enableSublist = enableSublist;
     }
 }

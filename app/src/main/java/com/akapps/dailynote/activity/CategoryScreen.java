@@ -55,6 +55,7 @@ public class CategoryScreen extends AppCompatActivity {
     private TextView unpinned;
     private MaterialButton pinned;
     private MaterialButton locked;
+    private MaterialButton reminder;
     private RecyclerView customCategories;
     public RecyclerView.Adapter categoriesAdapter;
     private FloatingActionButton addCategory;
@@ -74,6 +75,7 @@ public class CategoryScreen extends AppCompatActivity {
     private RealmResults<Note> pinnedAllNotes;
     private RealmResults<Note> trashAllNotes;
     private RealmResults<Note> lockedAllNotes;
+    private RealmResults<Note> reminderAllNotes;
 
     // activity data
     private boolean editingRegularNote;
@@ -132,6 +134,8 @@ public class CategoryScreen extends AppCompatActivity {
                 .equalTo("trash", true).findAll();
         lockedAllNotes = allNotes.where()
                 .greaterThan("pinNumber", 0).findAll();
+        reminderAllNotes = allNotes.where()
+                .isNotEmpty("reminderDateTime").findAll();
 
         initializeLayout();
 
@@ -184,6 +188,7 @@ public class CategoryScreen extends AppCompatActivity {
         pinned = findViewById(R.id.pinned);
         unpinned = findViewById(R.id.un_pinned);
         locked = findViewById(R.id.locked);
+        reminder = findViewById(R.id.reminder);
         info = findViewById(R.id.info);
         edit = findViewById(R.id.edit);
         showEmptyMessage = findViewById(R.id.empty_category);
@@ -197,6 +202,7 @@ public class CategoryScreen extends AppCompatActivity {
         pinned.setText(pinned.getText() + " [" + pinnedAllNotes.size() + "]");
         trash.setText(trash.getText() + " (" + trashAllNotes.size() + ")");
         locked.setText(locked.getText() + " [" + lockedAllNotes.size() + "]");
+        reminder.setText(reminder.getText() + " [" + reminderAllNotes.size() + "]");
 
         if(editingRegularNote){
             allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
@@ -210,6 +216,7 @@ public class CategoryScreen extends AppCompatActivity {
             archived.setVisibility(View.GONE);
             pinned.setVisibility(View.GONE);
             locked.setVisibility(View.GONE);
+            reminder.setVisibility(View.GONE);
         }
         else{
             int allNotesSize = 0;
@@ -246,7 +253,8 @@ public class CategoryScreen extends AppCompatActivity {
 
                 findViewById(R.id.pinned_layout).setVisibility(View.GONE);
 
-                locked.setVisibility(View.INVISIBLE);
+                reminder.setVisibility(View.INVISIBLE);
+                locked.setVisibility(View.GONE);
             }
         }
 
@@ -427,6 +435,15 @@ public class CategoryScreen extends AppCompatActivity {
             if(!isNotesSelected && lockedAllNotes.size() > 0)
                 closeActivity(-14);
             else if(lockedAllNotes.size() == 0)
+                showEmptyMessage();
+            else
+                showErrorMessage();
+        });
+
+        reminder.setOnClickListener(v -> {
+            if(!isNotesSelected && reminderAllNotes.size() > 0)
+                closeActivity(-15);
+            else if(reminderAllNotes.size() == 0)
                 showEmptyMessage();
             else
                 showErrorMessage();

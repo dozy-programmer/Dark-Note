@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+
+import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
 import static android.content.Context.MODE_PRIVATE;
 
@@ -205,28 +207,47 @@ public class Helper {
         }
     }
 
-    public static void startAlarm(Activity activity, Note currentNote) {
+    public static void startAlarm(Activity activity, Note currentNote, Realm realm) {
         Log.d("Here", "Attempting to set alarm");
-        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(activity, AlertReceiver.class);
-        intent.putExtra("id", currentNote.getNoteId());
-        intent.putExtra("title", currentNote.getTitle().replace("\n", " "));
-        intent.putExtra("pin", currentNote.getPinNumber());
-        intent.putExtra("securityWord", currentNote.getSecurityWord());
-        intent.putExtra("fingerprint", currentNote.isFingerprint());
-        intent.putExtra("checklist", currentNote.isCheckList());
-        PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-            pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
-                    PendingIntent.FLAG_MUTABLE);
-        else
-            pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
-                    PendingIntent.FLAG_ONE_SHOT);
+        if(currentNote.getReminderDateTime().length() > 0) {
+            Date reminderDate = null;
+            try {
+                reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date now = new Date();
+            if (!now.after(reminderDate)){
+                AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(activity, AlertReceiver.class);
+                intent.putExtra("id", currentNote.getNoteId());
+                intent.putExtra("title", currentNote.getTitle().replace("\n", " "));
+                intent.putExtra("pin", currentNote.getPinNumber());
+                intent.putExtra("securityWord", currentNote.getSecurityWord());
+                intent.putExtra("fingerprint", currentNote.isFingerprint());
+                intent.putExtra("checklist", currentNote.isCheckList());
+                PendingIntent pendingIntent;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+                    pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
+                            PendingIntent.FLAG_IMMUTABLE);
+                else
+                    pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
+                            PendingIntent.FLAG_ONE_SHOT);
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                dateToCal(currentNote.getReminderDateTime()).getTimeInMillis(),
-                pendingIntent);
-        Log.d("Here", "Setting alarm for " +  dateToCal(currentNote.getReminderDateTime()).getTimeInMillis());
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                        dateToCal(currentNote.getReminderDateTime()).getTimeInMillis(),
+                        pendingIntent);
+                Log.d("Here", "Setting alarm for " +  dateToCal(currentNote.getReminderDateTime()).getTimeInMillis());
+            }
+            else {
+                if(!realm.isClosed()){
+                    realm.beginTransaction();
+                    currentNote.setReminderDateTime("");
+                    realm.commitTransaction();
+                }
+                Log.d("Here", "Alarm already past");
+            }
+        }
     }
 
     private static Calendar dateToCal(String dateString){

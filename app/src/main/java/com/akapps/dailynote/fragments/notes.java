@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,13 +77,11 @@ public class notes extends Fragment{
 
     // activity data
     private boolean isSearchingNotes;
-    private String searchingString;
     private boolean deletingMultipleNotes;
     private boolean isAllSelected;
     private boolean isTrashSelected;
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
-    private boolean isAppStarted;
     private boolean isLightMode;
     private int lightColor;
 
@@ -162,17 +161,15 @@ public class notes extends Fragment{
             getActivity().getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
         }
 
-        AppData appData = AppData.getAppData();
-        appData.setUser(user);
-        appData.setLightMode(isLightMode);
+        AppData.getAppData().setLightMode(isLightMode);
 
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
         initializeLayout();
         showData();
 
-        isAppStarted = Helper.getBooleanPreference(context, "app_started");
-        if(user.isOpenFoldersOnStart() && !isAppStarted){
+        if(user.isOpenFoldersOnStart() && AppData.isAppFirstStarted){
+            AppData.isAppFirstStarted = false;
             Helper.saveBooleanPreference(context, true, "app_started");
             Intent category = new Intent(getActivity(), CategoryScreen.class);
             Helper.setOrientation(getActivity(), context);
@@ -192,14 +189,14 @@ public class notes extends Fragment{
             savePreferences();
 
         if(realm.isClosed()) {
+            Log.d("Here", "Realm is reopened");
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
         }
         else{
-            if(!realm.isClosed()) {
-                adapterNotes.notifyDataSetChanged();
-                // if list is empty, then it shows an empty layout
-                isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
-            }
+            adapterNotes.notifyDataSetChanged();
+
+            // if list is empty, then it shows an empty layout
+            isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
         }
         Helper.deleteCache(context);
     }
@@ -365,7 +362,6 @@ public class notes extends Fragment{
             public boolean onQueryTextChange(String s) {
                 if(isSearchingNotes) {
                     searchNotesAndUpdate(s);
-                    searchingString = s;
                 }
                 return false;
             }
@@ -418,7 +414,7 @@ public class notes extends Fragment{
     private void clearMultipleSelect(){
         numMultiSelect = -1;
         unSelectAllNotes();
-        enableSelectMultiple = false;
+        enableSelectMultiple = isNotesFiltered = false;
         settings.setVisibility(View.VISIBLE);
         closeMultipleNotesLayout();
         showData();
@@ -535,6 +531,13 @@ public class notes extends Fragment{
             RealmResults<Note> queryLockedNotes =
                     realm.where(Note.class)
                             .greaterThan("pinNumber", 0).findAll();
+
+            filteringAllNotesRealm(queryLockedNotes, true);
+        }
+        else if(resultCode == -15){
+            RealmResults<Note> queryLockedNotes =
+                    realm.where(Note.class)
+                            .isNotEmpty("reminderDateTime").findAll();
 
             filteringAllNotesRealm(queryLockedNotes, true);
         }
@@ -677,9 +680,11 @@ public class notes extends Fragment{
 
     // populates the recyclerview
     private void populateAdapter(RealmResults<Note> allNotes) {
+        if(isNotesFiltered)
+            Log.d("Here", "Notes is filtered");
         filteredNotes = allNotes;
-        adapterNotes = new notes_recyclerview(allNotes, realm, getActivity(), notes.this,
-                user.isShowPreview(), user.isShowPreviewNoteInfo());
+        adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes: allNotes, realm, getActivity(),
+                notes.this, user.isShowPreview(), user.isShowPreviewNoteInfo());
         recyclerViewNotes.setAdapter(adapterNotes);
     }
 
@@ -933,7 +938,6 @@ public class notes extends Fragment{
         isNotesFiltered = false;
         deletingMultipleNotes = false;
         isTrashSelected = false;
-        searchingString = "";
         isAllSelected = false;
     }
 

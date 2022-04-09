@@ -1,5 +1,7 @@
 package com.akapps.dailynote.activity;
 
+import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.AlarmClock;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -46,6 +49,7 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
@@ -184,6 +188,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteId *=-1;
         else
             overridePendingTransition(R.anim.left_in, R.anim.stay);
+
+        Log.d("Here", "OPENING NOTE AND GETTING A NOTE ID OF " + noteId);
 
         // initializes database and retrieves all notes
         try {
@@ -417,6 +423,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     if (now.after(reminderDate)) {
                         updateReminderDate("");
                         updateReminderLayout(View.GONE);
+                        Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
+                        "so it was deleted", MotionToast.TOAST_SUCCESS);
                     }
                 }
                 if (currentNote.isPin())
@@ -1055,10 +1063,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         int initialPosition = -1;
 
         if(currentNote.getSort() == 6)
-            initialPosition  = currentNote.getChecklist()
-                    .min("positionInList").intValue() - 1;
+            initialPosition = currentNote.getChecklist().min("positionInList").intValue() - 1;
         else
             initialPosition = currentNote.getChecklist().size();
+
+        checkListRecyclerview.smoothScrollToPosition(initialPosition);
 
         Random rand = new Random();
 
@@ -1172,6 +1181,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
             noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
             noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
+            if(realm.where(User.class).findFirst().isProUser() && realm.where(User.class).findFirst().isEnableSublists()) {
+                String sublistStatus = "";
+                if(currentNote.isEnableSublist())
+                    sublistStatus = sublistStatus + "Disable Sublist";
+                else
+                    sublistStatus = sublistStatus + "Enable Sublist";
+                noteMenu.addItem(6, new IconPowerMenuItem(getDrawable(R.drawable.sublist_icon), sublistStatus));
+            }
         }
         noteMenu.showAsDropDown(expandMenu);
     }
@@ -1243,6 +1260,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 textSizeLayout.setVisibility(View.VISIBLE);
                 addCheckListItem.setVisibility(View.GONE);
             }
+            else if(position == 6)
+                updateSublistEnabledStatus();
+
             noteMenu.dismiss();
         }
     };
@@ -1282,7 +1302,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         Helper.showMessage(this, "Note Locked", "Note has been " +
                 "locked" , MotionToast.TOAST_SUCCESS);
 
-        if(currentNote.getReminderDateTime().length()>1){
+        if(currentNote.getReminderDateTime().length() > 1){
             InfoSheet info = new InfoSheet(-1);
             info.show(getSupportFragmentManager(), info.getTag());
         }
@@ -1350,7 +1370,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             span = 2;
         GridLayoutManager layout = new GridLayoutManager(context, span);
         checkListRecyclerview.setLayoutManager(layout);
-        checklistAdapter = new checklist_recyclerview(realm.where(User.class).findFirst().isProUser(),
+        checklistAdapter = new checklist_recyclerview(realm.where(User.class).findFirst(),
                 currentList, currentNote, realm, this);
         checklistAdapter.setHasStableIds(true);
         checkListRecyclerview.setAdapter(checklistAdapter);
@@ -1409,6 +1429,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void startAlarm(Calendar c) {
         int month = c.get(Calendar.MONTH)-1;
         c.set(Calendar.MONTH, month);
+
         if (c.after(Calendar.getInstance())) {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(this, AlertReceiver.class);
@@ -1423,9 +1444,20 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             Helper.showMessage(this, "Reminder set", "Will Remind you " +
                     "in " + Helper.getTimeDifference(c, true), MotionToast.TOAST_SUCCESS);
             PendingIntent pendingIntent;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                if(alarmManager.canScheduleExactAlarms()){
+                    Log.d("Here", "Can set alarms");
+                }
+                else {
+                    Helper.showMessage(this, "Alarm Not Set", "Please Enable " +
+                            "Alarms & Reminders ", MotionToast.TOAST_ERROR);
+                    Intent intent2 = new Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                    startActivity(intent2);
+                }
                 pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
-                        PendingIntent.FLAG_MUTABLE);
+                        PendingIntent.FLAG_IMMUTABLE);
+            }
             else
                 pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
                         PendingIntent.FLAG_ONE_SHOT);
@@ -1452,7 +1484,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         PendingIntent pendingIntent;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
             pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
-                    PendingIntent.FLAG_MUTABLE);
+                    PendingIntent.FLAG_IMMUTABLE);
         else
             pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
                     PendingIntent.FLAG_ONE_SHOT);
@@ -1481,6 +1513,31 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             Helper.showMessage(this, "Archived Status", "Note has been " +
                     "archived and put in the archived folder", MotionToast.TOAST_SUCCESS);
         }
+    }
+
+    private void updateSublistEnabledStatus() {
+        boolean isSublistEnabled = currentNote.isEnableSublist();
+
+        if (isSublistEnabled) {
+            realm.beginTransaction();
+            currentNote.setEnableSublist(false);
+            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
+            realm.commitTransaction();
+            updateDateEdited();
+            Helper.showMessage(this, "Sublist Status", "It has has been " +
+                    "disabled", MotionToast.TOAST_SUCCESS);
+        } else {
+            realm.beginTransaction();
+            currentNote.setEnableSublist(true);
+            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
+            realm.commitTransaction();
+            updateDateEdited();
+            Helper.showMessage(this, "Sublist Status", "It has been " +
+                    "enabled", MotionToast.TOAST_SUCCESS);
+        }
+        checklistAdapter.notifyDataSetChanged();
     }
 
     // determines if there were changes to the note

@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.classes.other.UpgradeSheet;
@@ -30,7 +33,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import io.realm.Realm;
@@ -120,7 +126,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         return vh;
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current note object
@@ -252,8 +257,20 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.pin_icon.setVisibility(View.GONE);
 
         // if a note has a reminder, then a clock icon is showed
-        if(hasReminder)
+        if(hasReminder) {
             holder.reminder_icon.setVisibility(View.VISIBLE);
+            Date reminderDate = null;
+            try {
+                reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date now = new Date();
+            if (now.after(reminderDate))
+                holder.reminder_icon.setColorFilter(activity.getColor(R.color.red));
+            else
+                holder.reminder_icon.setColorFilter(activity.getColor(R.color.green));
+        }
         else
             holder.reminder_icon.setVisibility(View.GONE);
 
@@ -441,8 +458,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // if not, it opens note
         holder.view.setOnClickListener(v -> {
             enableSelectMultiple = ((notes) noteFragment).enableSelectMultiple;
-            if(!enableSelectMultiple)
+            if(!enableSelectMultiple) {
                 openNoteActivity(currentNote);
+            }
             else{
                 if(currentNote.isSelected()) {
                     saveSelected(currentNote, false);

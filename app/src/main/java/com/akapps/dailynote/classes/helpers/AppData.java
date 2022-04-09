@@ -5,20 +5,17 @@ import com.akapps.dailynote.classes.data.User;
 public class AppData{
     private static AppData appData;
     public boolean isLightMode;
-    public User user;
+    public static boolean isAppFirstStarted;
 
     private AppData() { }
 
     public static AppData getAppData() {
         //instantiate a new CustomerLab if we didn't instantiate one yet
         if (appData == null) {
+            isAppFirstStarted = true;
             appData = new AppData();
         }
         return appData;
-    }
-
-    public void setUser(User user){
-        this.user = user;
     }
 
     public void setLightMode(boolean isLightMode){

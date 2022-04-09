@@ -109,6 +109,13 @@ public class RealmDatabase {
 
                 if(!schema.get("User").hasField("modeSettings"))
                     schema.get("User").addField("modeSettings", boolean.class);
+
+                if(!schema.get("User").hasField("backupReminderOccurrence"))
+                    schema.get("User").addField("backupReminderOccurrence", int.class);
+                if(!schema.get("Note").hasField("enableSublist"))
+                    schema.get("Note").addField("enableSublist", boolean.class);
+                if(!schema.get("User").hasField("enableSublists"))
+                    schema.get("User").addField("enableSublists", boolean.class);
             }
             else {
                 if(!schema.get("User").hasField("email"))
@@ -151,6 +158,15 @@ public class RealmDatabase {
 
                 if(!schema.get("User").hasField("modeSettings"))
                     schema.get("User").addField("modeSettings", boolean.class);
+
+                if(!schema.get("User").hasField("backupReminderOccurrence"))
+                    schema.get("User").addField("backupReminderOccurrence", int.class);
+
+                if(!schema.get("Note").hasField("enableSublist"))
+                    schema.get("Note").addField("enableSublist", boolean.class);
+
+                if(!schema.get("User").hasField("enableSublists"))
+                    schema.get("User").addField("enableSublists", boolean.class);
             }
 
         }

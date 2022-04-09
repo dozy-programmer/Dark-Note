@@ -1,5 +1,7 @@
 package com.akapps.dailynote.activity;
 
+import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,8 +9,12 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.content.IntentCompat;
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,23 +27,25 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.SecurityForPurchases;
 import com.akapps.dailynote.classes.other.AccountSheet;
-import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.UpgradeSheet;
@@ -47,13 +55,12 @@ import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ConsumeParams;
-import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -68,13 +75,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
-import io.realm.Sort;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
@@ -118,6 +126,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private SwitchCompat openFoldersOnStart;
     private SwitchCompat showFolderNotes;
     private SwitchCompat modeSetting;
+    private SwitchCompat sublistMode;
     private MaterialButton buyPro;
     private MaterialCardView grid;
     private MaterialCardView row;
@@ -133,6 +142,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private Dialog progressDialog;
     private ImageView spaceOne;
     private ImageView spaceTwo;
+    private Slider reminderSeekbar;
+    private TextView reminderSeekbarText;
 
     // Billing client
     private BillingClient billingClient;
@@ -141,6 +152,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     // variables
     private boolean betaBackup  = false;
     private boolean betaRestore = false;
+    private final int backupCode = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +179,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         initializeBilling();
 
         if(backingUp)
-            new Handler().postDelayed(this::openBackUpRestoreDialog, 1000);
+            showBackupRestoreInfo(7);
 
         boolean upgrade = getIntent().getBooleanExtra("upgrade", false);
 
@@ -226,6 +238,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
         showFolderNotes = findViewById(R.id.show_folder_switch);
         modeSetting = findViewById(R.id.mode_setting);
+        sublistMode = findViewById(R.id.sublists_switch);
         buyPro = findViewById(R.id.buy_pro);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
@@ -242,6 +255,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         lastUploadDate = findViewById(R.id.last_upload);
         spaceOne = findViewById(R.id.space_one);
         spaceTwo = findViewById(R.id.space_two);
+        reminderSeekbar = findViewById(R.id.reminder_seekbar);
+        reminderSeekbarText = findViewById(R.id.reminder_occurrence);
 
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
@@ -463,6 +478,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppData.isAppFirstStarted = false;
             realmStatus();
             if(currentUser.isProUser()) {
                 realm.beginTransaction();
@@ -496,6 +512,28 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             checkModeSettings();
         });
 
+        sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(currentUser.isProUser()) {
+                realmStatus();
+                realm.beginTransaction();
+                currentUser.setEnableSublists(isChecked);
+                realm.commitTransaction();
+            }
+            else {
+                sublistMode.setChecked(false);
+                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            }
+        });
+
+        reminderSeekbar.addOnChangeListener((slider, value, fromUser) -> {
+            realm.beginTransaction();
+            currentUser.setBackupReminderOccurrence((int)value);
+            realm.commitTransaction();
+            reminderSeekbarText.setText(value != 0 ? "Remind Every " + (int) value + " Days" :
+                    "No Reminder");
+            changeReminderNotification((int)value);
+        });
+
         buyPro.setOnClickListener(v -> {
             realmStatus();
             if(!currentUser.isProUser()) {
@@ -516,9 +554,48 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
     }
 
+    private void changeReminderNotification(int value){
+        if(value != 0) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, AlertReceiver.class);
+            intent.putExtra("id", backupCode);
+            PendingIntent pendingIntent;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+                pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
+                        PendingIntent.FLAG_MUTABLE);
+            else
+                pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Calendar currentTime = Calendar.getInstance();
+
+            Log.d("Here", "Time for reminder is " + currentTime.toString());
+
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentTime.getTimeInMillis(),
+                    24L * 60 * 60 * 1000 * value, pendingIntent);
+        }
+        else
+            cancelReminderNotification();
+    }
+
+    private void cancelReminderNotification() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
+                    PendingIntent.FLAG_IMMUTABLE);
+        else
+            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+        alarmManager.cancel(pendingIntent);
+    }
+
     private void upgradeToPro(){
         realm.beginTransaction();
         currentUser.setProUser(!currentUser.isProUser());
+        currentUser.setEnableSublists(true);
         realm.commitTransaction();
         if(currentUser.isProUser()) {
             Helper.showMessage(SettingsScreen.this, "Upgrade Successful", "" +
@@ -766,9 +843,23 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         checkModeSettings();
 
         if(currentUser.isProUser()){
+            sublistMode.setChecked(currentUser.isEnableSublists());
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));
             buyPro.setText("PRO USER");
             buyPro.setElevation(0);
+            if(!currentUser.getEmail().isEmpty()) {
+                reminderSeekbar.setValue(currentUser.getBackupReminderOccurrence());
+                reminderSeekbarText.setText(reminderSeekbar.getValue() != 0 ? "Remind Every " + currentUser.getBackupReminderOccurrence() + " Days" :
+                        "No Reminder");
+            }
+            else{
+                reminderSeekbar.setVisibility(View.GONE);
+                reminderSeekbarText.setVisibility(View.GONE);
+            }
+        }
+        else{
+            reminderSeekbar.setVisibility(View.GONE);
+            reminderSeekbarText.setVisibility(View.GONE);
         }
 
         if(currentUser.getLayoutSelected().equals("row"))
@@ -1074,6 +1165,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     catch (Exception e){
                         realm = RealmDatabase.setUpDatabase(context);
                     }
+                    updateAlarms(realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("trash", false).findAll());
                     updateImages(images);
 
                     Helper.showMessage(this, "Restored", "" +
@@ -1124,6 +1218,17 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     realmBackupRestore.restore(uri, "default.realm", false);
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
+
+                    try {
+                        realm = Realm.getDefaultInstance();
+                    }
+                    catch (Exception e){
+                        realm = RealmDatabase.setUpDatabase(context);
+                    }
+                    updateAlarms(realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("trash", false).findAll());
+
                     close();
                 } catch (Exception e) {
                     if(tryAgain){
@@ -1147,7 +1252,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         for (int i=0; i < allNotes.size(); i++){
             Note currentNote = allNotes.get(i);
             if(!currentNote.getReminderDateTime().isEmpty())
-                Helper.startAlarm(this, currentNote);
+                Helper.startAlarm(this, currentNote, realm);
         }
     }
 
@@ -1229,7 +1334,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void close(){
         Intent intent = new Intent(this, Homepage.class);
-        intent.putExtra("app_started", 2);
         startActivity(intent);
         finish();
         overridePendingTransition(0, R.anim.hide_to_bottom);

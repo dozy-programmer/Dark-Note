@@ -17,6 +17,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
@@ -40,7 +41,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private Context context;
     private FragmentActivity activity;
     private final Realm realm;
-    private boolean isProUser;
+    private User user;
 
     private GridLayoutManager layout;
 
@@ -64,8 +65,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
     }
 
-    public checklist_recyclerview(boolean isProUser, RealmResults<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
-        this.isProUser = isProUser;
+    public checklist_recyclerview(User user, RealmResults<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
+        this.user = user;
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;
@@ -95,14 +96,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             Log.d("Here", "Changed duplicate at position " + position);
         }
 
-
-        Log.d("Here", "Printing subid " + checkListItem.getSubListId());
         isAllItemsSelected();
 
         holder.subChecklist.setAdapter(null);
 
         RecyclerView.Adapter subChecklistAdapter = null;
-        if(isProUser) {
+        if(user.isProUser() && user.isEnableSublists() && currentNote.isEnableSublist()) {
+            holder.addSubChecklist.setVisibility(View.VISIBLE);
             if (null == checkListItem.getSubChecklist()) {
                 realm.beginTransaction();
                 checkListItem.setSubChecklist(new RealmList<>());
