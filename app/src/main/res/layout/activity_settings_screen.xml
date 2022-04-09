@@ -250,8 +250,12 @@
                     android:id="@+id/reminder_seekbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:trackColor="@color/blue"
+                    app:trackColorActive="@color/blue"
+                    app:trackColorInactive="@color/ultra_white"
                     app:thumbColor="@color/ultra_white"
+                    app:haloColor="@color/blue"
+                    app:tickColorActive="@color/blue"
+                    app:tickColorInactive="@color/greyish"
                     app:trackHeight="5dp"
                     android:valueFrom="0"
                     android:valueTo="14"
@@ -268,7 +272,7 @@
                     android:text="Remind every _ Days"
                     android:textStyle="bold"
                     android:layout_marginBottom="10dp"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/ultra_white"/>
 
             </LinearLayout>
 

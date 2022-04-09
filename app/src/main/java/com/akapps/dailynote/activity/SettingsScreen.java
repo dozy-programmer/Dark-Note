@@ -16,6 +16,7 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -25,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.util.Log;
@@ -68,12 +70,16 @@ import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -87,7 +93,8 @@ import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
 
-public class SettingsScreen extends AppCompatActivity implements PurchasesUpdatedListener{
+public class SettingsScreen extends AppCompatActivity implements PurchasesUpdatedListener, DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener{
 
     // activity
     private Context context;
@@ -153,6 +160,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private boolean betaBackup  = false;
     private boolean betaRestore = false;
     private final int backupCode = 1234;
+    private Calendar reminderDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -517,6 +525,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                 realmStatus();
                 realm.beginTransaction();
                 currentUser.setEnableSublists(isChecked);
+                if(isChecked)
+                    realm.where(Note.class).findAll().setBoolean("enableSublist", true);
                 realm.commitTransaction();
             }
             else {
@@ -525,13 +535,27 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             }
         });
 
-        reminderSeekbar.addOnChangeListener((slider, value, fromUser) -> {
-            realm.beginTransaction();
-            currentUser.setBackupReminderOccurrence((int)value);
-            realm.commitTransaction();
-            reminderSeekbarText.setText(value != 0 ? "Remind Every " + (int) value + " Days" :
-                    "No Reminder");
-            changeReminderNotification((int)value);
+        reminderSeekbar.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) { }
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                if(initializing) {
+                    realm.beginTransaction();
+                    currentUser.setBackupReminderOccurrence((int) slider.getValue());
+                    realm.commitTransaction();
+
+                    Log.d("Here", "Slider is at " + currentUser.getBackupReminderOccurrence());
+
+                    if(slider.getValue() != 0)
+                        showDatePickerDialog();
+                    else
+                        resetReminderSlider();
+                }
+            }
         });
 
         buyPro.setOnClickListener(v -> {
@@ -554,29 +578,36 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
     }
 
-    private void changeReminderNotification(int value){
-        if(value != 0) {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(this, AlertReceiver.class);
-            intent.putExtra("id", backupCode);
-            PendingIntent pendingIntent;
+    private void changeReminderNotification(){
+        int value = currentUser.getBackupReminderOccurrence();
+        Log.d("Here", "Changing reminder notification and value is " + value);
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-                pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
-                        PendingIntent.FLAG_MUTABLE);
-            else
-                pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        intent.putExtra("id", backupCode);
+        PendingIntent pendingIntent;
 
-            Calendar currentTime = Calendar.getInstance();
-
-            Log.d("Here", "Time for reminder is " + currentTime.toString());
-
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, currentTime.getTimeInMillis(),
-                    24L * 60 * 60 * 1000 * value, pendingIntent);
-        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
+                    PendingIntent.FLAG_MUTABLE);
         else
-            cancelReminderNotification();
+            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // calender is off by a month
+        SimpleDateFormat format1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss aa");
+        String reminderDateFormatted = format1.format(reminderDate.getTime());
+
+        changeUserReminderDate(reminderDateFormatted);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderDate.getTimeInMillis() + AlarmManager.INTERVAL_DAY,
+                AlarmManager.INTERVAL_DAY * value, pendingIntent);
+
+        reminderSeekbarText.setText(value != 0 ? "Remind Every " + value+ " Days\n" +
+                "Starting on: " + currentUser.getBackupReminderDate() :
+                "No Reminder");
+        Log.d("Here", "Reminder setting text and value is " + value);
+        Log.d("Here", "Date set is " + reminderDateFormatted);
     }
 
     private void cancelReminderNotification() {
@@ -590,6 +621,82 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
                     PendingIntent.FLAG_ONE_SHOT);
         alarmManager.cancel(pendingIntent);
+    }
+
+    private void timeDialog() {
+        TimePickerDialog timer = TimePickerDialog.newInstance(
+                this,
+                reminderDate.get(Calendar.HOUR_OF_DAY),
+                reminderDate.get(Calendar.MINUTE),
+                false
+        );
+        timer.setThemeDark(true);
+        timer.setAccentColor(getColor(R.color.light_gray_2));
+        timer.setOkColor(getColor(R.color.blue));
+        timer.setCancelColor(getColor(R.color.light_gray_2));
+        timer.setOnCancelListener(onCancelListener);
+        timer.show(getSupportFragmentManager(), "Datepickerdialog");
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        // Get Current Time
+        reminderDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        reminderDate.set(Calendar.MINUTE, minute);
+        reminderDate.set(Calendar.SECOND, 0);
+        reminderDate.set(Calendar.MONTH, reminderDate.get(Calendar.MONTH)-1);
+        if(reminderDate.after(Calendar.getInstance()))
+            changeReminderNotification();
+        else
+            Helper.showMessage(this, "Reminder not set", "Reminder cannot be in the past",
+                    MotionToast.TOAST_ERROR);
+    }
+
+    public void showDatePickerDialog() {
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DAY_OF_MONTH, 1);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                this,
+                now.get(Calendar.YEAR), // Initial year selection
+                now.get(Calendar.MONTH), // Initial month selection
+                now.get(Calendar.DAY_OF_MONTH) // Initial day selection
+        );
+        datePickerDialog.setTitle("Set Reminder Starting Date");
+        datePickerDialog.setThemeDark(true);
+        datePickerDialog.setAccentColor(getColor(R.color.light_gray_2));
+        datePickerDialog.setOkColor(getColor(R.color.blue));
+        datePickerDialog.setCancelColor(getColor(R.color.light_gray_2));
+        datePickerDialog.setOnCancelListener(onCancelListener);
+        datePickerDialog.show(getSupportFragmentManager(), "Datepickerdialog");
+    }
+
+    //onDismiss handler
+    private DialogInterface.OnCancelListener onCancelListener =
+            dialog -> resetReminderSlider();
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int month, int day) {
+        reminderDate = Calendar.getInstance();
+        reminderDate.set(Calendar.YEAR, year);
+        reminderDate.set(Calendar.MONTH, ++month);
+        reminderDate.set(Calendar.DAY_OF_MONTH, day);
+        timeDialog();
+    }
+
+    private void resetReminderSlider(){
+        realm.beginTransaction();
+        currentUser.setBackupReminderOccurrence(0);
+        realm.commitTransaction();
+        reminderSeekbarText.setText("No Reminder");
+        changeUserReminderDate("");
+        cancelReminderNotification();
+        new Handler().postDelayed(() -> reminderSeekbar.setValue(0), 500);
+    }
+
+    private void changeUserReminderDate(String date){
+        realm.beginTransaction();
+        currentUser.setBackupReminderDate(date);
+        realm.commitTransaction();
     }
 
     private void upgradeToPro(){
@@ -848,9 +955,15 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             buyPro.setText("PRO USER");
             buyPro.setElevation(0);
             if(!currentUser.getEmail().isEmpty()) {
-                reminderSeekbar.setValue(currentUser.getBackupReminderOccurrence());
-                reminderSeekbarText.setText(reminderSeekbar.getValue() != 0 ? "Remind Every " + currentUser.getBackupReminderOccurrence() + " Days" :
-                        "No Reminder");
+                if(currentUser.getBackupReminderOccurrence() > 0 && currentUser.getBackupReminderDate().isEmpty())
+                    resetReminderSlider();
+                else {
+                    reminderSeekbar.setValue(currentUser.getBackupReminderOccurrence());
+                    reminderSeekbarText.setText(reminderSeekbar.getValue() != 0 ? "Remind Every " +
+                            (int) reminderSeekbar.getValue() + " Days\n" +
+                            "Starting on: " + currentUser.getBackupReminderDate() :
+                            "No Reminder");
+                }
             }
             else{
                 reminderSeekbar.setVisibility(View.GONE);
