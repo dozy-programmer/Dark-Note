@@ -12,8 +12,8 @@ android {
         applicationId "com.akapps.dailynote"
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 57
-        versionName "6.6"
+        versionCode 58
+        versionName "6.7"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

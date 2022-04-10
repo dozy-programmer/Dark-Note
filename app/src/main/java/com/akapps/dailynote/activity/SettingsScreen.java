@@ -376,13 +376,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         restoreBackupBeta.setOnClickListener(view -> {
-            realmStatus();
-            if(currentUser.isProUser()) {
-                betaRestore = true;
-                openFile();
-            }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            betaRestore = true;
+            openFile();
         });
 
         if(!currentUser.isProUser()){
