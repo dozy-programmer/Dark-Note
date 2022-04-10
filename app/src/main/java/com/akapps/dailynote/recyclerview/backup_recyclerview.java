@@ -100,9 +100,15 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
 
         String fileName = currentBackup.getFileName().replace("_backup.zip", "");
 
-        holder.file_name.setText(fileName.split("~")[1] + "_backup.zip");
-        holder.file_date.setText(fileName.split("~")[0].replace("_", " "));
-        holder.file_size.setText("~ " + fileName.split("~")[2]+ " MB");
+        try {
+            holder.file_name.setText(fileName.split("~")[1] + "_backup.zip");
+            holder.file_date.setText(fileName.split("~")[0].replace("_", " "));
+            holder.file_size.setText("~ " + fileName.split("~")[2] + " MB");
+        }catch (Exception e){
+            holder.file_name.setText(fileName);
+            holder.file_date.setText("Date Unknown");
+            holder.file_size.setText("         ~ ? MB");
+        }
 
         holder.view.setOnClickListener(view -> ((SettingsScreen) activity).restoreFromDatabase(currentBackup.getFileName()));
 

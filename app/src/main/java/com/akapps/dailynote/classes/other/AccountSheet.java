@@ -1,8 +1,10 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.SettingsScreen;
+import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -64,6 +69,8 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     private User currentUser;
     private boolean signUp;
 
+    private FragmentActivity activity;
+
     public AccountSheet(FirebaseAuth mAuth, User currentUser, Realm realm, boolean signUp){
         this.mAuth = mAuth;
         this.currentUser = currentUser;
@@ -74,6 +81,8 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_account_login, container, false);
+
+        activity = getActivity();
 
         // layout
         title = view.findViewById(R.id.title);
@@ -143,7 +152,30 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                             currentUser.setProUser(true);
                             realm.commitTransaction();
                             dialog.dismiss();
-                            ((SettingsScreen) getActivity()).restart();
+
+                            StorageReference backupFiles = FirebaseStorage.getInstance().getReference().child("users")
+                                    .child(currentUser.getEmail());
+
+                            Log.d("Here", "Starting backup retrieval");
+                            backupFiles.listAll()
+                                    .addOnSuccessListener(listResult -> {
+                                        realm.beginTransaction();
+                                        realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
+                                        realm.commitTransaction();
+                                        Log.d("Here", "Deleted old backups ");
+                                        for (StorageReference item : listResult.getItems()) {
+                                            realm.beginTransaction();
+                                            realm.insert(new Backup(currentUser.getUserId(), item.getName(), "", 0));
+                                            realm.commitTransaction();
+                                            Log.d("Here", "items are " + item.getName());
+                                        }
+                                        ((SettingsScreen) activity).restart();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Uh-oh, an error occurred!
+                                        ((SettingsScreen) activity).restart();
+                                        Log.d("Here", "Failure to retrieve backups ");
+                                    });
                         } else {
                             loginAttempts++;
                             // If sign in fails, display a message to the user.
