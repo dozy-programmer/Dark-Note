@@ -11,14 +11,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.activity.SettingsScreen;
+import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.recyclerview.backup_recyclerview;
+import com.akapps.dailynote.recyclerview.categories_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -45,6 +52,10 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
     private Photo currentPhoto;
     private RealmResults<Photo> allNotePhotos;
     private RecyclerView.Adapter adapter;
+
+    private RealmResults<Backup> allBackups;
+    private RecyclerView backupRecyclerview;
+    public RecyclerView.Adapter backupAdapter;
 
     private String userSecurityWord;
     private int attempts;
@@ -183,24 +194,42 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             info.setGravity(Gravity.CENTER);
         }
         else if(message == 6){
-              // initialize layout
-              title.setText("Upload");
-              backup.setVisibility(View.VISIBLE);
-              backup.setBackgroundColor(getContext().getColor(R.color.darker_blue));
-              backup.setText("UPLOAD");
-              info.setText("This will override the backup that is used to sync across devices.");
-              info.setGravity(Gravity.CENTER);
-              securityWord.setVisibility(View.GONE);
+              realm = ((SettingsScreen) getActivity()).realm;
+              User currentUser = realm.where(User.class).findFirst();
+              allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+
+              if(allBackups.size() <= 5){
+                  ((SettingsScreen) getActivity()).upLoadData();
+                  this.dismiss();
+              }
+              else{
+                  // initialize layout
+                  title.setText("Upload");
+                  info.setText("Max Uploads of 6 has been reached. Please delete a backup by pressing sync button.");
+                  info.setGravity(Gravity.CENTER);
+                  securityWord.setVisibility(View.GONE);
+              }
         }
         else if(message == 7) {
               // initialize layout
               title.setText("Sync");
-              backup.setVisibility(View.VISIBLE);
-              backup.setBackgroundColor(getContext().getColor(R.color.darker_blue));
-              backup.setText("SYNC");
-              info.setText("All local data will be deleted and replaced by the backup (if you have uploaded).");
               info.setGravity(Gravity.CENTER);
               securityWord.setVisibility(View.GONE);
+
+              realm = ((SettingsScreen) getActivity()).realm;
+              User currentUser = realm.where(User.class).findFirst();
+              // recyclerview
+              allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+              if(allBackups.size() == 0)
+                  info.setText("No files to sync");
+              else {
+                  info.setText("Select file to sync");
+                  backupRecyclerview = view.findViewById(R.id.backup_recyclerview);
+                  backupRecyclerview.setVisibility(View.VISIBLE);
+                  backupRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                  backupAdapter = new backup_recyclerview(allBackups, currentUser, realm, getActivity(), getContext());
+                  backupRecyclerview.setAdapter(backupAdapter);
+              }
         }
         else if(message == 8){
               // initialize layout
@@ -256,10 +285,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                 Helper.showMessage(getActivity(), "Delete Status", "Photo has been deleted",
                         MotionToast.TOAST_SUCCESS);
             }
-            else if(message == 6)
-                ((SettingsScreen) getActivity()).upLoadData();
-            else if(message == 7)
-                ((SettingsScreen) getActivity()).restoreFromDatabase();
             else if(message == 8){
                 FirebaseAuth.getInstance().signOut();
                 ((SettingsScreen) getActivity()).restart();

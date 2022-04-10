@@ -38,6 +38,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
+import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
@@ -60,11 +61,14 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetailsParams;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
@@ -104,7 +108,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private int upgradeToProCounter;
 
     private User currentUser;
-    private Realm realm;
+    public Realm realm;
 
     // account authentication
     private FirebaseAuth mAuth;
@@ -186,8 +190,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         populateUserSettings();
         initializeBilling();
 
+        RealmResults<Backup> allBackups = realm.where(Backup.class).equalTo("userId",
+                currentUser.getUserId()).findAll();
+
         if(backingUp)
-            showBackupRestoreInfo(7);
+            showBackupRestoreInfo(6);
 
         boolean upgrade = getIntent().getBooleanExtra("upgrade", false);
 
@@ -952,7 +959,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));
             buyPro.setText("PRO USER");
             buyPro.setElevation(0);
-            if(!currentUser.getEmail().isEmpty()) {
+            if(mAuth.getCurrentUser() != null && !currentUser.getEmail().isEmpty()) {
                 if(currentUser.getBackupReminderOccurrence() > 0 && null != currentUser.getBackupReminderDate() &&
                         currentUser.getBackupReminderDate().isEmpty())
                     resetReminderSlider();
@@ -1108,32 +1115,47 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     public void upLoadData(){
-        progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
-        Uri file = Uri.fromFile(new File(backUpZip()));
-        String userEmail = mAuth.getCurrentUser().getEmail();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("users")
-                .child(userEmail)
-                .child("backup.zip");
-        UploadTask uploadTask = storageRef.putFile(file);
+        File backupFile = new File(backUpZip());
+        Uri file = Uri.fromFile(backupFile);
+        // file info
+        long fileSizeInMB = backupFile.length() / (1024 * 1024);
+        String currentDate = Helper.getBackupDate((int) fileSizeInMB);
+        String fileName = currentDate + "_backup.zip";
 
-        uploadTask.addOnFailureListener(exception -> {
-            Helper.showLoading("", progressDialog, context, false);
-            Helper.showMessage(this, "Upload error",
-                    "Error Uploading data, try again",
-                    MotionToast.TOAST_ERROR);
-            restart();
-        }).addOnSuccessListener(taskSnapshot -> {
-            realm.beginTransaction();
-            currentUser.setLastUpload(Helper.getCurrentDate());
-            lastUploadDate.setVisibility(View.VISIBLE);
-            lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
-            realm.commitTransaction();
-            Helper.showLoading("", progressDialog, context, false);
-            Helper.showMessage(this, "Upload Success",
-                    "Data Uploaded",
-                    MotionToast.TOAST_SUCCESS);
-        });
+        // check if file exists
+        if(realm.where(Backup.class).equalTo("fileName", fileName).count() == 1){
+            Helper.showMessage(this, "Upload Failed", "File name exists, " +
+                    "please wait a minute and try again", MotionToast.TOAST_ERROR);
+        }
+        else {
+            progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
+            String userEmail = mAuth.getCurrentUser().getEmail();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference().child("users")
+                    .child(userEmail)
+                    .child(fileName);
+            UploadTask uploadTask = storageRef.putFile(file);
+
+
+            uploadTask.addOnFailureListener(exception -> {
+                Helper.showLoading("", progressDialog, context, false);
+                Helper.showMessage(this, "Upload error",
+                        "Error Uploading data, try again",
+                        MotionToast.TOAST_ERROR);
+                restart();
+            }).addOnSuccessListener(taskSnapshot -> {
+                realm.beginTransaction();
+                realm.insert(new Backup(currentUser.getUserId(), fileName, "", 0));
+                currentUser.setLastUpload(Helper.getCurrentDate());
+                lastUploadDate.setVisibility(View.VISIBLE);
+                lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
+                realm.commitTransaction();
+                Helper.showLoading("", progressDialog, context, false);
+                Helper.showMessage(this, "Upload Success",
+                        "Data Uploaded",
+                        MotionToast.TOAST_SUCCESS);
+            });
+        }
     }
 
     private void showBackupRestoreInfo(int selection){
@@ -1175,12 +1197,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         }
     }
 
-    public void restoreFromDatabase(){
+    public void restoreFromDatabase(String fileName){
         progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
         String userEmail = mAuth.getCurrentUser().getEmail();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference()
-                .child("users/" + userEmail + "/backup.zip");
+                .child("users/" + userEmail + "/" + fileName);
+
+        Log.d("Here", "Attempting to restore filename " + fileName);
 
         FilesKt.deleteRecursively(new File(getApplicationContext().getExternalFilesDir(null) + ""));
 
@@ -1226,15 +1250,42 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
             Helper.showLoading("", progressDialog, context, false);
 
-            close();
-
             // update image paths from restored database so it knows where the images are
             realm = RealmDatabase.setUpDatabase(context);
             updateAlarms(realm.where(Note.class)
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
             updateImages(images);
+
+            Log.d("Here", "Everything restores except backups ");
+
+            User currentUser = realm.where(User.class).findFirst();
+
+            StorageReference backupFiles = FirebaseStorage.getInstance().getReference().child("users")
+                    .child(currentUser.getEmail());
+
+            Log.d("Here", "Starting backup retrieval");
+            backupFiles.listAll()
+                    .addOnSuccessListener(listResult -> {
+                        realm.beginTransaction();
+                        realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
+                        realm.commitTransaction();
+                        Log.d("Here", "Deleted old backups ");
+                        for (StorageReference item : listResult.getItems()) {
+                            realm.beginTransaction();
+                            realm.insert(new Backup(currentUser.getUserId(), item.getName(), "", 0));
+                            realm.commitTransaction();
+                            Log.d("Here", "items are " + item.getName());
+                        }
+                        close();
+                    })
+                    .addOnFailureListener(e -> {
+                        // Uh-oh, an error occurred!
+                        Log.d("Here", "Failure to retrieve backups ");
+                        close();
+                    });
         } catch (Exception e) {
+            Log.d("Here", "backup error ");
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Error", "" +
                     "Restoring Error to device, try again", MotionToast.TOAST_ERROR);

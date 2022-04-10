@@ -77,6 +77,13 @@ public class Helper {
         return sdf.format(c.getTime());
     }
 
+    public static String getBackupDate(int fileSize){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM_dd_yyyy~hh_mm_a~" + (fileSize+1));
+        // first is file date, then file name aka time_backup.zip, and then file size
+        return sdf.format(c.getTime());
+    }
+
     public static void unSetOrientation(Activity activity, Context context){
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
