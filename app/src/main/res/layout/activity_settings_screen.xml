@@ -899,7 +899,7 @@
                     android:layout_weight="10"
                     android:theme="@style/ThemeOverlay.MySwitchCompat"
                     android:layout_marginRight="5dp"
-                    android:checked="true">
+                    android:checked="false">
                 </androidx.appcompat.widget.SwitchCompat>
             </LinearLayout>
 

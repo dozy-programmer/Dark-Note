@@ -548,8 +548,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     currentUser.setBackupReminderOccurrence((int) slider.getValue());
                     realm.commitTransaction();
 
-                    Log.d("Here", "Slider is at " + currentUser.getBackupReminderOccurrence());
-
                     if(slider.getValue() != 0)
                         showDatePickerDialog();
                     else
@@ -955,7 +953,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             buyPro.setText("PRO USER");
             buyPro.setElevation(0);
             if(!currentUser.getEmail().isEmpty()) {
-                if(currentUser.getBackupReminderOccurrence() > 0 && currentUser.getBackupReminderDate().isEmpty())
+                if(currentUser.getBackupReminderOccurrence() > 0 && null != currentUser.getBackupReminderDate() &&
+                        currentUser.getBackupReminderDate().isEmpty())
                     resetReminderSlider();
                 else {
                     reminderSeekbar.setValue(currentUser.getBackupReminderOccurrence());
@@ -1364,7 +1363,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private void updateAlarms(RealmResults<Note> allNotes){
         for (int i=0; i < allNotes.size(); i++){
             Note currentNote = allNotes.get(i);
-            if(!currentNote.getReminderDateTime().isEmpty())
+            if(null != currentNote.getReminderDateTime() && !currentNote.getReminderDateTime().isEmpty())
                 Helper.startAlarm(this, currentNote, realm);
         }
     }
