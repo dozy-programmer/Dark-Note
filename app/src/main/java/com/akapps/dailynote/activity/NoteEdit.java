@@ -189,8 +189,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
-        Log.d("Here", "OPENING NOTE AND GETTING A NOTE ID OF " + noteId);
-
         // initializes database and retrieves all notes
         try {
             realm = Realm.getDefaultInstance();
@@ -355,8 +353,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 expandMenu.setVisibility(View.VISIBLE);
                 // current note
                 currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
-                checkListItems = currentNote.getChecklist()
-                    .sort("positionInList");
+                if(null != currentNote.getChecklist())
+                    checkListItems = currentNote.getChecklist().sort("positionInList");
                 allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
                 populatePhotos();
                 oldTitle = currentNote.getTitle();
@@ -1067,8 +1065,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else
             initialPosition = currentNote.getChecklist().size();
 
-        checkListRecyclerview.smoothScrollToPosition(initialPosition);
-
         Random rand = new Random();
 
         // insert data to database
@@ -1093,6 +1089,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             ((NoteEdit)context).title.setPaintFlags(((NoteEdit) context).title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         else
             ((NoteEdit)context).title.setPaintFlags(0);
+
+        checkListRecyclerview.smoothScrollToPosition(initialPosition < 0 ? 0 : initialPosition);
     }
 
     public void addSubCheckList(CheckListItem checkListItem, String itemText) {
@@ -1447,7 +1445,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 if(alarmManager.canScheduleExactAlarms()){
-                    Log.d("Here", "Can set alarms");
                 }
                 else {
                     Helper.showMessage(this, "Alarm Not Set", "Please Enable " +

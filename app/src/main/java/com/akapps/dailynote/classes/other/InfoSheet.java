@@ -2,6 +2,7 @@ package com.akapps.dailynote.classes.other;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -220,16 +223,45 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               User currentUser = realm.where(User.class).findFirst();
               // recyclerview
               allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
-              if(allBackups.size() == 0)
-                  info.setText("No files to sync");
-              else {
-                  info.setText("Select file to sync");
-                  backupRecyclerview = view.findViewById(R.id.backup_recyclerview);
-                  backupRecyclerview.setVisibility(View.VISIBLE);
-                  backupRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                  backupAdapter = new backup_recyclerview(allBackups, currentUser, realm, getActivity(), getContext());
-                  backupRecyclerview.setAdapter(backupAdapter);
-              }
+              info.setText("Select file\n\nLoading...");
+              backupRecyclerview = view.findViewById(R.id.backup_recyclerview);
+              backupRecyclerview.setVisibility(View.VISIBLE);
+              backupRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+
+              StorageReference backupFiles = FirebaseStorage.getInstance().getReference().child("users")
+                      .child(currentUser.getEmail());
+
+              Log.d("Here", "Starting backup retrieval");
+              backupFiles.listAll()
+                      .addOnSuccessListener(listResult -> {
+                          realm.beginTransaction();
+                          realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
+                          realm.commitTransaction();
+                          Log.d("Here", "Deleted old backups ");
+                          for (StorageReference item : listResult.getItems()) {
+                              realm.beginTransaction();
+                              realm.insert(new Backup(currentUser.getUserId(), item.getName(), "", 0));
+                              realm.commitTransaction();
+                              Log.d("Here", "items are " + item.getName());
+                          }
+                          allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+
+                          if (allBackups.size() == 0)
+                              info.setText("No files to sync");
+                          else {
+                              info.setText("Select file");
+                              backupAdapter = new backup_recyclerview(allBackups, currentUser, realm, getActivity(), getContext());
+                              backupRecyclerview.setAdapter(backupAdapter);
+                          }
+                      })
+                      .addOnFailureListener(e -> {
+                          info.setText("Error Retrieving, check internet connection");
+                          // Uh-oh, an error occurred!
+                          Log.d("Here", "Failure to retrieve backups ");
+                          Helper.showMessage(getActivity(), "Error", "" +
+                                  "Failed to get backups", MotionToast.TOAST_ERROR);
+                          dismiss();
+                      });
         }
         else if(message == 8){
               // initialize layout

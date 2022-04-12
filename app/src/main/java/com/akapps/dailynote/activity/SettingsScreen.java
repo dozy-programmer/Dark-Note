@@ -83,6 +83,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -600,7 +601,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         changeUserReminderDate(reminderDateFormatted);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderDate.getTimeInMillis() + AlarmManager.INTERVAL_DAY,
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderDate.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY * value, pendingIntent);
 
         reminderSeekbarText.setText(value != 0 ? "Remind Every " + value+ " Days\n" +
@@ -1113,8 +1114,20 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         File backupFile = new File(backUpZip());
         Uri file = Uri.fromFile(backupFile);
         // file info
-        long fileSizeInMB = backupFile.length() / (1024 * 1024);
-        String currentDate = Helper.getBackupDate((int) fileSizeInMB);
+        double fileSizeInMB = backupFile.length() / (Math.pow(1024, 2));
+        fileSizeInMB = Double.valueOf(new DecimalFormat("#.##").format(fileSizeInMB));
+
+
+        String fileSizeString;
+        if(fileSizeInMB < 1) {
+            fileSizeInMB = backupFile.length() / 1024;
+            fileSizeInMB = Double.valueOf(new DecimalFormat("#.##").format(fileSizeInMB));
+            fileSizeString = fileSizeInMB + "_KB";
+        }
+        else
+            fileSizeString = fileSizeInMB + "_MB";
+
+        String currentDate = Helper.getBackupDate(fileSizeString);
         String fileName = currentDate + "_backup.zip";
 
         // check if file exists
@@ -1251,36 +1264,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
             updateImages(images);
-
-            Log.d("Here", "Everything restores except backups ");
-
-            User currentUser = realm.where(User.class).findFirst();
-
-            StorageReference backupFiles = FirebaseStorage.getInstance().getReference().child("users")
-                    .child(currentUser.getEmail());
-
-            Log.d("Here", "Starting backup retrieval");
-            backupFiles.listAll()
-                    .addOnSuccessListener(listResult -> {
-                        realm.beginTransaction();
-                        realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
-                        realm.commitTransaction();
-                        Log.d("Here", "Deleted old backups ");
-                        for (StorageReference item : listResult.getItems()) {
-                            realm.beginTransaction();
-                            realm.insert(new Backup(currentUser.getUserId(), item.getName(), "", 0));
-                            realm.commitTransaction();
-                            Log.d("Here", "items are " + item.getName());
-                        }
-                        close();
-                    })
-                    .addOnFailureListener(e -> {
-                        // Uh-oh, an error occurred!
-                        Log.d("Here", "Failure to retrieve backups ");
-                        close();
-                    });
+            close();
         } catch (Exception e) {
-            Log.d("Here", "backup error ");
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Error", "" +
                     "Restoring Error to device, try again", MotionToast.TOAST_ERROR);

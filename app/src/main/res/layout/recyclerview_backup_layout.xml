@@ -1,112 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/light_gray">
+    app:cardCornerRadius="20dp"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/light_gray">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:background="@color/light_gray">
 
         <ImageView
             android:id="@+id/folder_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/cloud_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:layout_gravity="center">
-        </ImageView>
+            android:src="@drawable/cloud_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ImageView>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="100">
+            android:paddingHorizontal="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/folder_icon"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="75"
-                android:paddingTop="10dp"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="10dp"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:weightSum="100">
 
-                <TextView
-                    android:id="@+id/file_name"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:text="File Name"
-                    android:textSize="16sp"
-                    android:textColor="@color/ultra_white">
-                </TextView>
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="75"
+                    android:orientation="vertical"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:id="@+id/file_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="10dp"
+                        android:text="File Name"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"></TextView>
+
+                    <TextView
+                        android:id="@+id/file_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="10dp"
+                        android:text="Date"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"></TextView>
+
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/file_date"
+                    android:id="@+id/file_size"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:text="Date"
-                    android:textSize="16sp"
-                    android:textColor="@color/ultra_white">
-                </TextView>
+                    android:layout_height="match_parent"
+                    android:layout_weight="15"
+                    android:gravity="center"
+                    android:text="0 MB"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="16sp"></TextView>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/file_size"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="0 MB"
-                android:textSize="16sp"
-                android:textColor="@color/ultra_white"
-                android:layout_weight="15"
-                android:gravity="center">
-            </TextView>
-
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="5dp"
-        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_gravity="left"
+            android:layout_marginVertical="5dp"
+            android:layout_marginLeft="20dp"
             android:backgroundTint="@color/red"
             android:text="DELETE"
-            android:textSize="14sp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_gravity="left"
             android:textColor="@color/black"
-            app:cornerRadius="10dp" />
+            android:textSize="14sp"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/folder_icon"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/sync"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:textSize="14sp"
+            android:layout_marginVertical="5dp"
+            android:layout_marginRight="20dp"
             android:backgroundTint="@color/darker_blue"
-            android:layout_marginHorizontal="10dp"
             android:text="SYNC"
             android:textColor="@color/black"
-            app:cornerRadius="10dp" />
+            android:textSize="14sp"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
