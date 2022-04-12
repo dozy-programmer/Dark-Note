@@ -67,6 +67,7 @@ public class Note extends RealmObject {
         category = "none";
         sort = -1;
         enableSublist = false;
+        checklist = new RealmList<>();
     }
 
     public int getNoteId(){
