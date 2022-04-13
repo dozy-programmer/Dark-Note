@@ -221,8 +221,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
         else
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
-
-        Log.d("Here", "Opening note:\n...Note has current widget id of " + currentNote.getWidgetId());
     }
 
     // when orientation changes, then note data is saved

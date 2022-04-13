@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.provider.Settings;
 import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import com.akapps.dailynote.R;
@@ -95,6 +96,7 @@ public class NotificationHelper extends ContextWrapper {
                 .setSmallIcon(R.drawable.note_icon)
                 .setColor(getApplicationContext().getColor(R.color.orange))
                 .setContentIntent(contentIntent)
+                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setAutoCancel(true)
                 .addAction(R.drawable.note_icon, buttonTitle, contentIntent);
         return builder;
