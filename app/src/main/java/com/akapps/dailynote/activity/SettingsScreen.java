@@ -1,7 +1,5 @@
 package com.akapps.dailynote.activity;
 
-import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,13 +7,11 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.content.IntentCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,15 +23,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
@@ -50,7 +43,7 @@ import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.SecurityForPurchases;
 import com.akapps.dailynote.classes.other.AccountSheet;
-import com.akapps.dailynote.classes.other.AppWidget;
+import com.akapps.dailynote.classes.other.CreditsSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.UpgradeSheet;
@@ -63,14 +56,11 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetailsParams;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
@@ -78,7 +68,6 @@ import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -89,7 +78,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -569,7 +557,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                         "Pro User. Thank you for your support!", MotionToast.TOAST_WARNING);
         });
 
-        about.setOnClickListener(v -> upgradeToProCounter++);
+        about.setOnClickListener(v -> {
+            upgradeToProCounter++;
+            if(upgradeToProCounter == 1) {
+                CreditsSheet creditSheet = new CreditsSheet();
+                creditSheet.show(getSupportFragmentManager(), creditSheet.getTag());
+            }
+        });
 
         about.setOnLongClickListener(v -> {
             if(upgradeToProCounter == 12)
@@ -580,7 +574,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void changeReminderNotification(){
         int value = currentUser.getBackupReminderOccurrence();
-        Log.d("Here", "Changing reminder notification and value is " + value);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
@@ -839,13 +832,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     // else purchase is valid
                     //if item is purchased and not consumed
                     if (!purchase.isAcknowledged()) {
-                        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
-                            @Override
-                            public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-                                int consumeCountValue = getPurchaseCountValueFromPref(purchaseItemIDs.get(index))+1;
-                                savePurchaseCountValueToPref(purchaseItemIDs.get(index),consumeCountValue);
-                                upgradeToPro();
-                            }
+                        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = billingResult -> {
+                            int consumeCountValue = getPurchaseCountValueFromPref(purchaseItemIDs.get(index))+1;
+                            savePurchaseCountValueToPref(purchaseItemIDs.get(index),consumeCountValue);
+                            upgradeToPro();
                         };
 
                         AcknowledgePurchaseParams acknowledgePurchaseParams =
@@ -1208,8 +1198,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference()
                 .child("users/" + userEmail + "/" + fileName);
-
-        Log.d("Here", "Attempting to restore filename " + fileName);
 
         FilesKt.deleteRecursively(new File(getApplicationContext().getExternalFilesDir(null) + ""));
 

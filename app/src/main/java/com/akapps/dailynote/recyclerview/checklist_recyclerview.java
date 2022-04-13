@@ -22,13 +22,11 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;

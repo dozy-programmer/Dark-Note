@@ -1,12 +1,9 @@
 package com.akapps.dailynote.recyclerview;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,22 +20,17 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
-import com.akapps.dailynote.classes.other.UpgradeSheet;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.stfalcon.imageviewer.StfalconImageViewer;
-
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;

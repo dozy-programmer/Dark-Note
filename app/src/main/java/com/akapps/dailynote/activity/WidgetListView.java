@@ -3,15 +3,12 @@ package com.akapps.dailynote.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +23,6 @@ public class WidgetListView extends RemoteViewsService {
         private final Context context;
         private List<String> checklist;
         private int noteId;
-        private int called = 0;
 
         public WidgetListViewFactory(Context context, int noteId, ArrayList<String> checklist) {
             this.context = context;
@@ -40,9 +36,6 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            called++;
-            Log.d("Here", "##################Data has changed######################");
-            Log.d("Here", "called is " + called);
             checklist = AppData.getNoteChecklist(noteId, getApplicationContext());
         }
 

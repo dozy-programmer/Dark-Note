@@ -952,7 +952,7 @@
             android:background="@color/gray"
             android:elevation="2dp"
             android:padding="5dp"
-            android:src="@drawable/koala"
+            android:src="@drawable/bee_icon"
             app:layout_constraintBottom_toBottomOf="@+id/about_info"
             app:layout_constraintEnd_toEndOf="@+id/about_info"
             app:layout_constraintStart_toStartOf="@+id/about_info"

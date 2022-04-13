@@ -3,12 +3,10 @@ package com.akapps.dailynote.recyclerview;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,10 +15,8 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
 import com.stfalcon.imageviewer.StfalconImageViewer;
-
 import java.io.File;
 import java.util.ArrayList;
-
 import io.realm.RealmResults;
 
 public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclerview.MyViewHolder>{

@@ -1,7 +1,6 @@
 package com.akapps.dailynote.activity;
 
 import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,20 +18,15 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.AlarmClock;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,12 +40,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
-import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.AppWidget;
@@ -66,7 +58,6 @@ import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
 import com.akapps.dailynote.recyclerview.checklist_recyclerview;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
-import com.akapps.dailynote.recyclerview.sub_checklist_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
@@ -84,8 +75,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -263,7 +252,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         super.onPause();
 
         if(currentNote.getWidgetId() > 0){
-            Log.d("Here", "\n\n___________________\nUpdating widget for note " + currentNote.getTitle());
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
             appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
@@ -1705,16 +1693,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
-    }
-
-    private void refreshNoteEditText(){
-        note = findViewById(R.id.note);
-        note.setHtml(currentNote.getNote());
-        String textSize = Helper.getPreference(context, "size");
-        if(textSize==null)
-            textSize = "20";
-        note.setEditorFontSize(Integer.parseInt(textSize));
-        note.setEditorFontColor(currentNote.getTextColor());
     }
 
     private void showMessage(String title, String message, boolean error){

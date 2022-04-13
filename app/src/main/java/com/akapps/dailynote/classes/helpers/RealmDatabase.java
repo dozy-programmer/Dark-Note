@@ -1,21 +1,10 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.data.CheckListItem;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Random;
-
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmList;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
 

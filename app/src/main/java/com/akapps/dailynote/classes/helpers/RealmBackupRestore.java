@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
-
-import com.akapps.dailynote.R;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +15,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import io.realm.Realm;
 import kotlin.io.FilesKt;
 

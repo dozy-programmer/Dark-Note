@@ -10,22 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
-import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 

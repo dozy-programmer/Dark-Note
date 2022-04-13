@@ -5,12 +5,10 @@ import android.util.Log;
 
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.data.SubCheckListItem;
 
 import java.util.ArrayList;
-
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class AppData{
@@ -72,8 +70,16 @@ public class AppData{
             }
             else {
                 noteArrayList.addAll(realm.copyFromRealm(currentNote.getChecklist()));
-                for (CheckListItem current : noteArrayList)
-                    allArraylistChecklist.add(current.isChecked() ? current.getText() + "~~" : current.getText());
+                for (CheckListItem current : noteArrayList) {
+                    if(current.getSubChecklist().size() == 0)
+                        allArraylistChecklist.add(current.isChecked() ? current.getText() + "~~" : current.getText());
+                    else{
+                        allArraylistChecklist.add(current.isChecked() ? current.getText() + "~~" : current.getText());
+                        for(SubCheckListItem subCheckListItem: current.getSubChecklist())
+                            allArraylistChecklist.add(subCheckListItem.isChecked() ? "⤷️  " + subCheckListItem.getText() + "~~" :
+                                    "⤷️  " + subCheckListItem.getText());
+                    }
+                }
                 if(allArraylistChecklist.size() == 0)
                     allArraylistChecklist.add("Empty");
             }
@@ -91,13 +97,9 @@ public class AppData{
                 .equalTo("noteId", noteId).findFirst();
 
         if(currentNote.getWidgetId() != widgetId){
-            Log.d("Here", "... Setting Widget id for note " + currentNote.getTitle() + " is " + widgetId);
             realm.beginTransaction();
             currentNote.setWidgetId(widgetId);
             realm.commitTransaction();
-        }
-        else{
-            Log.d("Here", "... Failed, already set " + widgetId);
         }
 
         if(realm != null)

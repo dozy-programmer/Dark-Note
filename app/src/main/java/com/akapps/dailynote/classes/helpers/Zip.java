@@ -2,10 +2,6 @@ package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
-
-import com.akapps.dailynote.R;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -16,9 +12,6 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class Zip{
     private static int BUFFER_SIZE = 6 * 1024;

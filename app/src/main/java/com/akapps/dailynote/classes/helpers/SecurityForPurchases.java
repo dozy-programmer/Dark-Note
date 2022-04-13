@@ -2,7 +2,6 @@ package com.akapps.dailynote.classes.helpers;
 
 import android.text.TextUtils;
 import android.util.Base64;
-
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;

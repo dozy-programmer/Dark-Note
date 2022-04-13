@@ -9,9 +9,6 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
@@ -20,17 +17,11 @@ import com.akapps.dailynote.activity.WidgetConfigureActivity;
 import com.akapps.dailynote.activity.WidgetListView;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
-import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmDatabase;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class AppWidget extends AppWidgetProvider {
 
@@ -67,7 +58,6 @@ public class AppWidget extends AppWidgetProvider {
 
         Note currentNote = getCurrentNote(allNotes, (String) widgetText, noteId);
         boolean isAllChecklistDone = isAllChecklistChecked(currentNote);
-        Log.d("Here", "Attempting to set Widget id for note " + currentNote.getTitle() + " is " + appWidgetId);
         AppData.updateNoteWidget(context, currentNote.getNoteId(), appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
@@ -81,8 +71,16 @@ public class AppWidget extends AppWidgetProvider {
 
         ArrayList<String> list = new ArrayList<>();
         if(currentNote.isCheckList()) {
-            for(CheckListItem currentChecklist: currentNote.getChecklist())
-                list.add(currentChecklist.getText());
+            for(CheckListItem currentChecklist: currentNote.getChecklist()) {
+                if(currentChecklist.getSubChecklist().size() == 0)
+                    list.add(currentChecklist.getText());
+                else{
+                    StringBuilder subList = new StringBuilder();
+                    for(SubCheckListItem subCheckListItem: currentChecklist.getSubChecklist())
+                        subList.append("-> " + subCheckListItem.getText() + "\n");
+                    list.add(currentChecklist.getText() + "\n" + subList);
+                }
+            }
         }
         else {
             String preview = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();

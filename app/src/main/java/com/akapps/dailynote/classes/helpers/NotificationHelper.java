@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.provider.Settings;
-import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
@@ -95,10 +94,11 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentText(content)
                 .setSmallIcon(R.drawable.note_icon)
                 .setColor(getApplicationContext().getColor(R.color.orange))
-                .setContentIntent(contentIntent)
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setAutoCancel(true)
-                .addAction(R.drawable.note_icon, buttonTitle, contentIntent);
+                .setOngoing(false)
+                .addAction(R.drawable.note_icon, buttonTitle, contentIntent)
+                .setContentIntent(contentIntent);
         return builder;
     }
 }

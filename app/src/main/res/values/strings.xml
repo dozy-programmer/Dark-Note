@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Dark Note</string>
-    <string name="app_version">Version 6.9</string>
+    <string name="app_version">Version 7.0</string>
     <string name="schema">17</string>
 
     <!-- Account Login Sheet !-->
@@ -11,4 +11,50 @@
     <string name="login_max_title">Too many attempts</string>
     <string name="login_max_message">Please contact admin</string>
     <string name="input_error">Incorrect Input</string>
+
+    <string name="credits_text">
+
+        <font color='#ff6600'>Icons from Flaticon</font>\n
+        www.flaticon.com\n\n
+
+        Github Libraries Used:\n\n
+
+        <font color='#ff6600'>Message Toast</font>\n
+        https://github.com/Spikeysanju/MotionToast\n\n
+
+        <font color='#ff6600'>Image Loading</font>\n
+        https://github.com/bumptech/glide\n\n
+
+        <font color='#ff6600'>Color Picker</font>\n
+        https://github.com/QuadFlask/colorpicker\n\n
+
+        <font color='#ff6600'>Pop up Menu</font>\n
+        https://github.com/skydoves/PowerMenu\n\n
+
+        <font color='#ff6600'>Image Picker</font>\n
+        https://github.com/Dhaval2404/ImagePicker\n\n
+
+        <font color='#ff6600'>Date Picker</font>\n
+        https://github.com/wdullaer/MaterialDateTimePicker\n\n
+
+        <font color='#ff6600'>Lock Screen</font>\n
+        https://github.com/aritraroy/PinLockView\n\n
+
+        <font color='#ff6600'>Bottom Sheet</font>\n
+        https://github.com/Deishelon/RoundedBottomSheet \n\n
+
+        <font color='#ff6600'>Rich Text Editing</font>\n
+        https://github.com/wasabeef/richeditor-android\n\n
+
+        <font color='#ff6600'>Floating Action Button</font>\n
+        https://github.com/Clans/FloatingActionButton\n\n
+
+        <font color='#ff6600'>Loading Indicator</font>\n
+        https://github.com/yash786agg/AnimatedLoadingIndicator\n\n
+
+        <font color='#ff6600'>Image Full Screen</font>\n
+        https://github.com/stfalcon-studio/StfalconImageViewer\n\n
+
+    </string>
+
 </resources>
