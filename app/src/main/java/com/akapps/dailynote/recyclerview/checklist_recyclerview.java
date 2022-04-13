@@ -96,8 +96,6 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             Log.d("Here", "Changed duplicate at position " + position);
         }
 
-        isAllItemsSelected();
-
         holder.subChecklist.setAdapter(null);
 
         RecyclerView.Adapter subChecklistAdapter = null;
@@ -226,15 +224,15 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     // determines if all items are select and if they are, checklist is set to check or "finished"
     private void isAllItemsSelected(){
         RealmResults<CheckListItem> select = realm.where(CheckListItem.class)
-                .equalTo("checked", true)
                 .equalTo("id", currentNote.getNoteId())
+                .equalTo("checked", true)
                 .findAll();
 
         boolean isAllChecked = select.size() == checkList.size();
         if(select.size()==0 && checkList.size()==0)
             isAllChecked = false;
 
-        if(currentNote.isChecked()!=isAllChecked) {
+        if(currentNote.isChecked() != isAllChecked) {
             realm.beginTransaction();
             currentNote.setChecked(isAllChecked);
             realm.commitTransaction();

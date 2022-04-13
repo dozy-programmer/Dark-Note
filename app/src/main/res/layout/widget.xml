@@ -13,9 +13,9 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:text="Example"
+        android:text="Note"
         android:textColor="@color/ultra_white"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <LinearLayout

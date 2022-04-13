@@ -261,6 +261,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(currentNote.getWidgetId() > 0){
+            Log.d("Here", "\n\n___________________\nUpdating widget for note " + currentNote.getTitle());
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
+            appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
     }
@@ -1668,14 +1680,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void updateDateEdited(){
-        if(currentNote.getWidgetId() > 0){
-            Log.d("Here", "\n\n___________________\nUpdating widget for note " + currentNote.getTitle());
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getWidgetId());
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, AppWidget.class));
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.preview_checklist);
-        }
-
         if(currentNote.isCheckList())
             isListEmpty(currentNote.getChecklist().size());
         handler = new Handler();

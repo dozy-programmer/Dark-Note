@@ -19,7 +19,6 @@ public class WidgetListView extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         int noteId = intent.getIntExtra("id", 0);
-        ArrayList<String> checklist= intent.getExtras().getStringArrayList("list");
         return new WidgetListViewFactory(getApplicationContext(), noteId, AppData.getNoteChecklist(noteId, getApplicationContext()));
     }
 
@@ -27,6 +26,7 @@ public class WidgetListView extends RemoteViewsService {
         private final Context context;
         private List<String> checklist;
         private int noteId;
+        private int called = 0;
 
         public WidgetListViewFactory(Context context, int noteId, ArrayList<String> checklist) {
             this.context = context;
@@ -40,7 +40,9 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
+            called++;
             Log.d("Here", "##################Data has changed######################");
+            Log.d("Here", "called is " + called);
             checklist = AppData.getNoteChecklist(noteId, getApplicationContext());
         }
 

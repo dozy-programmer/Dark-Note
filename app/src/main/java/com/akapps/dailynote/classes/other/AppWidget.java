@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
@@ -39,7 +40,7 @@ public class AppWidget extends AppWidgetProvider {
         // initialize database and get data
 
         for (int appWidgetId : appWidgetIds)
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            updateAppWidget(context, appWidgetManager, -1, appWidgetId);
     }
 
     @Override
@@ -51,22 +52,12 @@ public class AppWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d("Here", "ON RECIEVE ");
-        super.onReceive(context, intent);
-    }
+    public void onEnabled(Context context) {}
 
     @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
+    public void onDisabled(Context context) {}
 
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
-    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId) {
         CharSequence widgetText = WidgetConfigureActivity.loadTitlePref(context, appWidgetId);
 
         if(widgetText.equals("null"))
@@ -74,13 +65,18 @@ public class AppWidget extends AppWidgetProvider {
 
         ArrayList<Note> allNotes = AppData.getAllNotes(context);
 
-        Note currentNote = getCurrentNote(allNotes, (String) widgetText);
+        Note currentNote = getCurrentNote(allNotes, (String) widgetText, noteId);
+        boolean isAllChecklistDone = isAllChecklistChecked(currentNote);
         Log.d("Here", "Attempting to set Widget id for note " + currentNote.getTitle() + " is " + appWidgetId);
         AppData.updateNoteWidget(context, currentNote.getNoteId(), appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        views.setTextViewText(R.id.appwidget_text, noteId != -1 ? currentNote.getTitle() : (String) widgetText);
         views.setInt(R.id.background, "setBackgroundColor", currentNote.getBackgroundColor());
+        if(isAllChecklistDone)
+            views.setInt(R.id.appwidget_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
+        else
+            views.setInt(R.id.appwidget_text, "setPaintFlags", 0);
         views.setTextColor(R.id.appwidget_text, currentNote.getTextColor());
 
         ArrayList<String> list = new ArrayList<>();
@@ -123,11 +119,30 @@ public class AppWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
-    private static Note getCurrentNote(ArrayList<Note> allNotes, String noteTitle){
-        List<Note> results = allNotes.stream()
-                .filter(item -> item.getTitle().equals(noteTitle))
-                .collect(Collectors.toList());
+    private static Note getCurrentNote(ArrayList<Note> allNotes, String noteTitle, int noteId){
+        List<Note> results;
+
+        if(noteId != -1)
+            results = allNotes.stream()
+                    .filter(item -> item.getNoteId() == noteId)
+                    .collect(Collectors.toList());
+        else
+            results = allNotes.stream()
+                    .filter(item -> item.getTitle().equals(noteTitle))
+                    .collect(Collectors.toList());
 
         return results.get(0);
+    }
+
+    private static boolean isAllChecklistChecked(Note currentNote){
+        if(currentNote.isCheckList()){
+            List<CheckListItem> results = currentNote.getChecklist().stream()
+                    .filter(item -> item.isChecked() == true)
+                    .collect(Collectors.toList());
+
+            if(results.size() == currentNote.getChecklist().size())
+                return true;
+        }
+        return false;
     }
 }
