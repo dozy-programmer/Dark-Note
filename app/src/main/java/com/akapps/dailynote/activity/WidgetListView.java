@@ -2,6 +2,7 @@ package com.akapps.dailynote.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -18,15 +19,18 @@ public class WidgetListView extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         int noteId = intent.getIntExtra("id", 0);
-        return new WidgetListViewFactory(getApplicationContext(), AppData.getNoteChecklist(noteId, getApplicationContext()));
+        ArrayList<String> checklist= intent.getExtras().getStringArrayList("list");
+        return new WidgetListViewFactory(getApplicationContext(), noteId, AppData.getNoteChecklist(noteId, getApplicationContext()));
     }
 
     class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
         private final Context context;
         private List<String> checklist;
+        private int noteId;
 
-        public WidgetListViewFactory(Context context, ArrayList<String> checklist) {
+        public WidgetListViewFactory(Context context, int noteId, ArrayList<String> checklist) {
             this.context = context;
+            this.noteId = noteId;
             this.checklist = checklist;
         }
 
@@ -36,6 +40,8 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
+            Log.d("Here", "##################Data has changed######################");
+            checklist = AppData.getNoteChecklist(noteId, getApplicationContext());
         }
 
         @Override
@@ -55,7 +61,13 @@ public class WidgetListView extends RemoteViewsService {
 
             String preview = Html.fromHtml(currentItem, Html.FROM_HTML_MODE_COMPACT).toString();
             preview = preview.replaceAll("(\\s{2,})", " ");
-            remoteView.setTextViewText(R.id.checklist_text, preview);
+
+            if(currentItem.contains("~~"))
+                remoteView.setInt(R.id.checklist_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
+            else
+                remoteView.setInt(R.id.checklist_text, "setPaintFlags", 0);
+
+            remoteView.setTextViewText(R.id.checklist_text, preview.replace("~~", ""));
 
             return remoteView;
         }

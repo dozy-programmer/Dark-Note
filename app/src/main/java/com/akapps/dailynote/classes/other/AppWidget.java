@@ -51,6 +51,12 @@ public class AppWidget extends AppWidgetProvider {
     }
 
     @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d("Here", "ON RECIEVE ");
+        super.onReceive(context, intent);
+    }
+
+    @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
     }
@@ -60,9 +66,7 @@ public class AppWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                       int appWidgetId) {
-
+    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         CharSequence widgetText = WidgetConfigureActivity.loadTitlePref(context, appWidgetId);
 
         if(widgetText.equals("null"))
@@ -71,6 +75,8 @@ public class AppWidget extends AppWidgetProvider {
         ArrayList<Note> allNotes = AppData.getAllNotes(context);
 
         Note currentNote = getCurrentNote(allNotes, (String) widgetText);
+        Log.d("Here", "Attempting to set Widget id for note " + currentNote.getTitle() + " is " + appWidgetId);
+        AppData.updateNoteWidget(context, currentNote.getNoteId(), appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
@@ -90,7 +96,8 @@ public class AppWidget extends AppWidgetProvider {
 
         Intent intent = new Intent(context, WidgetListView.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        intent.putStringArrayListExtra("list", list);
+        intent.setData((Uri.fromParts("content", String.valueOf(appWidgetId), null)));
         intent.putExtra("id", currentNote.getNoteId());
         views.setRemoteAdapter(R.id.preview_checklist, intent);
 
@@ -108,7 +115,7 @@ public class AppWidget extends AppWidgetProvider {
             intent.putExtra("fingerprint", currentNote.isFingerprint());
         }
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE
+                context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
         views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
 

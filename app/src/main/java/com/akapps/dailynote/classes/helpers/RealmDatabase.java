@@ -122,11 +122,16 @@ public class RealmDatabase {
                 if(!schema.get("User").hasField("backupReminderDate"))
                     schema.get("User").addField("backupReminderDate", String.class);
 
-                schema.create("Backup")
-                        .addField("userId", int.class)
-                        .addField("fileSize", int.class)
-                        .addField("fileName", String.class)
-                        .addField("upLoadTime", String.class);
+                if(!schema.contains("Backup")) {
+                    schema.create("Backup")
+                            .addField("userId", int.class)
+                            .addField("fileSize", int.class)
+                            .addField("fileName", String.class)
+                            .addField("upLoadTime", String.class);
+                }
+
+                if(!schema.get("Note").hasField("widgetId"))
+                    schema.get("Note").addField("widgetId", int.class);
             }
             else {
                 if(!schema.get("User").hasField("email"))
@@ -182,11 +187,16 @@ public class RealmDatabase {
                 if(!schema.get("User").hasField("backupReminderDate"))
                     schema.get("User").addField("backupReminderDate", String.class);
 
-                schema.create("Backup")
-                        .addField("userId", int.class)
-                        .addField("fileSize", int.class)
-                        .addField("fileName", String.class)
-                        .addField("upLoadTime", String.class);
+                if(!schema.contains("Backup")) {
+                    schema.create("Backup")
+                            .addField("userId", int.class)
+                            .addField("fileSize", int.class)
+                            .addField("fileName", String.class)
+                            .addField("upLoadTime", String.class);
+                }
+
+                if(!schema.get("Note").hasField("widgetId"))
+                    schema.get("Note").addField("widgetId", int.class);
             }
 
         }

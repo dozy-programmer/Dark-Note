@@ -73,7 +73,7 @@ public class AppData{
             else {
                 noteArrayList.addAll(realm.copyFromRealm(currentNote.getChecklist()));
                 for (CheckListItem current : noteArrayList)
-                    allArraylistChecklist.add(current.getText());
+                    allArraylistChecklist.add(current.isChecked() ? current.getText() + "~~" : current.getText());
                 if(allArraylistChecklist.size() == 0)
                     allArraylistChecklist.add("Empty");
             }
@@ -83,6 +83,25 @@ public class AppData{
             realm.close();
 
         return allArraylistChecklist;
+    }
+
+    public static void updateNoteWidget(Context context, int noteId, int widgetId){
+        Realm realm = getRealm(context);
+        Note currentNote = realm.where(Note.class)
+                .equalTo("noteId", noteId).findFirst();
+
+        if(currentNote.getWidgetId() != widgetId){
+            Log.d("Here", "... Setting Widget id for note " + currentNote.getTitle() + " is " + widgetId);
+            realm.beginTransaction();
+            currentNote.setWidgetId(widgetId);
+            realm.commitTransaction();
+        }
+        else{
+            Log.d("Here", "... Failed, already set " + widgetId);
+        }
+
+        if(realm != null)
+            realm.close();
     }
 
 

@@ -30,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/appwidget_text"
-        android:background="@drawable/round_corner"></ListView>
+        android:background="@drawable/round_corner"
+        android:backgroundTint="@color/light_gray"></ListView>
 
     <Button
         android:id="@+id/add_button"

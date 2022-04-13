@@ -54,6 +54,8 @@ public class Note extends RealmObject {
 
     private boolean enableSublist;
 
+    private int widgetId;
+
     public Note(){}
 
     public Note(String title, String note){
@@ -68,6 +70,7 @@ public class Note extends RealmObject {
         sort = -1;
         enableSublist = false;
         checklist = new RealmList<>();
+        widgetId = -1;
     }
 
     public int getNoteId(){
@@ -268,5 +271,13 @@ public class Note extends RealmObject {
 
     public void setEnableSublist(boolean enableSublist) {
         this.enableSublist = enableSublist;
+    }
+
+    public int getWidgetId() {
+        return widgetId;
+    }
+
+    public void setWidgetId(int widgetId) {
+        this.widgetId = widgetId;
     }
 }

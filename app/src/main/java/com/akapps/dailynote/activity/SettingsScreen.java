@@ -15,6 +15,7 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +50,7 @@ import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.SecurityForPurchases;
 import com.akapps.dailynote.classes.other.AccountSheet;
+import com.akapps.dailynote.classes.other.AppWidget;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.UpgradeSheet;
@@ -190,9 +192,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         populateUserSettings();
         initializeBilling();
-
-        RealmResults<Backup> allBackups = realm.where(Backup.class).equalTo("userId",
-                currentUser.getUserId()).findAll();
 
         if(backingUp)
             showBackupRestoreInfo(6);
@@ -607,8 +606,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         reminderSeekbarText.setText(value != 0 ? "Remind Every " + value+ " Days\n" +
                 "Starting on: " + currentUser.getBackupReminderDate() :
                 "No Reminder");
-        Log.d("Here", "Reminder setting text and value is " + value);
-        Log.d("Here", "Date set is " + reminderDateFormatted);
     }
 
     private void cancelReminderNotification() {

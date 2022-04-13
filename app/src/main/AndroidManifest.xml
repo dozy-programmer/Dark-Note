@@ -19,7 +19,9 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.DailyDay" >
 
-        <receiver android:name=".classes.helpers.AlertReceiver" />
+        <receiver android:name=".classes.helpers.AlertReceiver"
+            android:exported="false"/>
+
         <receiver android:name=".classes.other.AppWidget"
             android:exported="false">
             <intent-filter>
@@ -33,13 +35,14 @@
 
         <service
             android:name=".activity.WidgetListView"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false"/>
 
         <activity
             android:name=".activity.WidgetConfigureActivity"
             android:theme="@android:style/Theme.Dialog"
             android:excludeFromRecents="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -47,16 +50,16 @@
 
         <activity
             android:name=".activity.CategoryScreen"
-            android:exported="true" />
+            android:exported="false"/>
         <activity
             android:name=".activity.NoteLockScreen"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activity.NoteEdit"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activity.SettingsScreen"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".activity.Homepage"
             android:exported="true" >

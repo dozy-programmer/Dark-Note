@@ -18,8 +18,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -52,6 +54,7 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.other.AppWidget;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
 import com.akapps.dailynote.classes.other.FilterChecklistSheet;
@@ -151,7 +154,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private ActivityResultLauncher<Intent> launcher;
     public boolean sortEnable;
     private boolean isLightMode;
-
     // dialog
     // dialog
     private AlertDialog colorPickerView;
@@ -219,6 +221,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
         else
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
+
+        Log.d("Here", "Opening note:\n...Note has current widget id of " + currentNote.getWidgetId());
     }
 
     // when orientation changes, then note data is saved
@@ -237,12 +241,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         savedInstanceState.putBoolean("search", isSearchingNotes);
     }
 
-    public void onPause() {
-        super.onPause();
-        // close keyboard if open
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
     @Override
     public void onBackPressed() {
         if(isSearchingNotes) {
@@ -254,8 +252,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if(isChangingTextSize)
             isChangingTextSize = false;
         else {
-            if (!isNewNote && noteChanged())
-                saveEditedNote();
+            if(noteChanged())
+                Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
+
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
@@ -553,6 +552,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if(currentNote!=null) {
             note.setOnTextChangeListener(text -> {
+                oldTitle = currentNote.getTitle();
+                oldNote = note.getHtml().toString();
                 if (text.length() == 0 || currentNote.getNote().equals(text)) {
                     if (text.length() == 0)
                         saveChanges(text, 0);
@@ -635,8 +636,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         closeNote.setOnClickListener(v -> {
-            if (!isNewNote && noteChanged())
-                saveEditedNote();
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         });
@@ -716,14 +715,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 startActivity(refresh);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 checkListRecyclerview.requestFocus();
-            }
-            // if it's not a new note, then it updates note data
-            else if (checkInput() && !isNewNote && noteChanged()) {
-                // if note has just been added, then it updates its
-                // position to last item in the list so it can be updated
-                if (noteId == -1)
-                    currentNote = allNotes.get(allNotes.size() - 1);
-                saveEditedNote();
             }
         });
     }
@@ -1109,24 +1100,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             title.requestFocus();
         else
             title.clearFocus();
-    }
-
-    // saves note if has been edited
-    private void saveEditedNote() {
-        // saves inputted note to database
-        // insert data to database
-        realm.beginTransaction();
-        currentNote.setTitle(title.getText().toString());
-        currentNote.setNote(note.getHtml().toString());
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
-        realm.commitTransaction();
-        updateDateEdited();
-        // show user a message and hide the keyboard
-        Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
-        // save inputted data to ensure when saving again, there is changes
-        oldTitle = title.getText().toString();
-        oldNote = note.getHtml().toString();
     }
 
     // makes sure all the photos exist and have not been deleted from the device
@@ -1695,6 +1668,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void updateDateEdited(){
+        if(currentNote.getWidgetId() > 0){
+            Log.d("Here", "\n\n___________________\nUpdating widget for note " + currentNote.getTitle());
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getWidgetId());
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, AppWidget.class));
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.preview_checklist);
+        }
+
         if(currentNote.isCheckList())
             isListEmpty(currentNote.getChecklist().size());
         handler = new Handler();
