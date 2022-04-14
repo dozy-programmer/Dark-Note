@@ -855,7 +855,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:text="Other Settings"
-            android:textColor="@color/ultra_white"
+            android:textColor="@color/orange_red"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

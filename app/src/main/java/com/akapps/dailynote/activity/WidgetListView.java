@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.akapps.dailynote.R;
@@ -62,7 +61,8 @@ public class WidgetListView extends RemoteViewsService {
             else
                 remoteView.setInt(R.id.checklist_text, "setPaintFlags", 0);
 
-            remoteView.setTextViewText(R.id.checklist_text, preview.replace("~~", ""));
+            String checklistItemText = preview.replace("~~", "");
+            remoteView.setTextViewText(R.id.checklist_text, checklistItemText);
 
             return remoteView;
         }
@@ -79,7 +79,7 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public long getItemId(int position) {
-            return checklist.get(position).getBytes().length;
+            return position;
         }
 
         @Override

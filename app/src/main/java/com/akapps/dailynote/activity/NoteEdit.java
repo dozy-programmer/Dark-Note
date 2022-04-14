@@ -239,7 +239,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if(isChangingTextSize)
             isChangingTextSize = false;
         else {
-            if(noteChanged())
+            if(noteChanged() && !isNewNote)
                 Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
 
             finish();
@@ -251,7 +251,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     protected void onPause() {
         super.onPause();
 
-        if(currentNote.getWidgetId() > 0){
+        if(null != currentNote && currentNote.getWidgetId() > 0){
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
             appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);

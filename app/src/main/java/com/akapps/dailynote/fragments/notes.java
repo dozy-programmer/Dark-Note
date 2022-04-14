@@ -35,6 +35,7 @@ import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.other.UpdateSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -90,6 +91,8 @@ public class notes extends Fragment{
 
     // filter
     private FilterSheet customSheet;
+
+    private UpdateSheet updateSheet;
 
     // empty list layout
     private ScrollView empty_Layout;
@@ -148,6 +151,8 @@ public class notes extends Fragment{
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+        showUpdateSheet();
     }
 
     @Override
@@ -207,6 +212,12 @@ public class notes extends Fragment{
 
         if(realm!=null)
             realm.close();
+
+        if(customSheet != null)
+            customSheet.dismiss();
+
+        if(updateSheet != null)
+            updateSheet.dismiss();
     }
 
     private void setRecyclerviewLayout(){
@@ -546,6 +557,14 @@ public class notes extends Fragment{
     private void showFilterMenu(){
         customSheet = new FilterSheet(this);
         customSheet.show(getParentFragmentManager(), customSheet.getTag());
+    }
+
+    private void showUpdateSheet(){
+        if(Helper.getPreference(context, "update_7_0") == null) {
+            updateSheet = new UpdateSheet();
+            updateSheet.show(getParentFragmentManager(), updateSheet.getTag());
+            Helper.savePreference(context, "seen", "update");
+        }
     }
 
     public void filterAndSortNotes(String dateType, boolean oldestToNewest,

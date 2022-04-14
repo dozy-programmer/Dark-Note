@@ -54,6 +54,7 @@ import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.google.android.material.button.MaterialButton;
@@ -722,21 +723,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         billingClient = BillingClient.newBuilder(SettingsScreen.this)
                 .enablePendingPurchases().setListener(this).build();
 
-        billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                if(billingResult.getResponseCode()==BillingClient.BillingResponseCode.OK){
-                    Purchase.PurchasesResult queryPurchase = billingClient.queryPurchases(INAPP);
-                    List<Purchase> queryPurchases = queryPurchase.getPurchasesList();
-                    if(queryPurchases!=null && queryPurchases.size()>0){
-                        handlePurchases(queryPurchases);
-                    }
-                }
-            }
-
-            @Override
-            public void onBillingServiceDisconnected() {
-            }
+        billingClient.queryPurchasesAsync(INAPP, (billingResult, list) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK)
+                if (list != null && list.size() > 0)
+                    handlePurchases(list);
         });
     }
 
@@ -745,17 +735,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK)
                     initiatePurchase(purchaseItemIDs.get(0));
-                }
-                else {
+                else
                     Helper.showMessage(SettingsScreen.this, "Error", "" +
                             "Issue connecting to Google Play", MotionToast.TOAST_ERROR);
-                }
             }
             @Override
-            public void onBillingServiceDisconnected() {
-            }
+            public void onBillingServiceDisconnected() { }
         });
     }
 
@@ -793,12 +780,13 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         }
         //if item already purchased then check and reflect changes
         else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-            Purchase.PurchasesResult queryAlreadyPurchasesResult = billingClient.queryPurchases(INAPP);
-            List<Purchase> alreadyPurchases = queryAlreadyPurchasesResult.getPurchasesList();
-            if(alreadyPurchases!=null){
-                handlePurchases(alreadyPurchases);
-                upgradeToPro();
-            }
+            billingClient.queryPurchasesAsync(INAPP, (alreadyPurchases, list) -> {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK)
+                    if (list != null && list.size() > 0) {
+                        handlePurchases(list);
+                        upgradeToPro();
+                    }
+            });
         }
         //if purchase cancelled
         else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
@@ -818,7 +806,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             final int index = 0;
             //purchase found
             if(index>-1) {
-
                 //if item is purchased
                 if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED)
                 {
@@ -878,7 +865,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private boolean verifyValidSignature(String signedData, String signature) {
         try {
-            // To get key go to Developer Console > Select your app > Development Tools > Services &amp; APIs.
             String base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlqExfT33U95ES4pLlToMPGeicHArv0AKfCDfAJGO13yzCEtWnUikI0IW7SEyc7vGSN5VDRFT1bJlbMPloQ/ULSL/wEWSpbqXI/xCLNduZ4T6XQnRzYssPWN3kLq/kzu5QPBYxv6XD0T9n7V6LyRSheI+ldPYaRsAT0y6nHCv14GAzIuW4lAnpc4TMeR7hkkifsu/VltHeonQYyCEF+Z+K1tHkttQxk3Xz0/ABZuqL36rI33hCJYhZPu2v1RCkRap9hqGOyeBGiEoBI5tNLaQ8sRaCcb+bRAraUt+hHKDWHnGFHSN/tcMTP0f2iETKQbReLNEgdXaLkypBTKJIWChBwIDAQAB";
             return SecurityForPurchases.verifyPurchase(base64Key, signedData, signature);
         } catch (IOException e) {
