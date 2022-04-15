@@ -560,10 +560,10 @@ public class notes extends Fragment{
     }
 
     private void showUpdateSheet(){
-        if(Helper.getPreference(context, "update_7_0") == null) {
+        if(Helper.getPreference(context, getString(R.string.app_version)) == null) {
             updateSheet = new UpdateSheet();
             updateSheet.show(getParentFragmentManager(), updateSheet.getTag());
-            Helper.savePreference(context, "seen", "update");
+            Helper.savePreference(context, "seen", getString(R.string.app_version));
         }
     }
 

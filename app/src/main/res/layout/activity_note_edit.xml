@@ -137,7 +137,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
-                            android:layout_marginRight="15dp"
+                            android:layout_marginRight="8dp"
                             android:layout_weight="5"
                             app:cardBackgroundColor="@color/light_gray"
                             app:cardCornerRadius="15dp"

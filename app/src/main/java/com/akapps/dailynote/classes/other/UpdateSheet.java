@@ -31,11 +31,13 @@ public class UpdateSheet extends RoundedBottomSheetDialogFragment{
             TextView title = view.findViewById(R.id.title);
             TextView appVersion = view.findViewById(R.id.app_version);
             TextView what_is_new_title = view.findViewById(R.id.new_update_title);
+            TextView message = view.findViewById(R.id.message);
             title.setTextColor(getContext().getColor(R.color.light_gray));
             appVersion.setTextColor(getContext().getColor(R.color.light_gray));
             what_is_new_title.setTextColor(getContext().getColor(R.color.light_gray));
+            message.setTextColor(getContext().getColor(R.color.light_gray));
         }
-        else
+        else 
             view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         return view;

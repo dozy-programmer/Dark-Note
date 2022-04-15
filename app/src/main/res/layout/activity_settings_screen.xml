@@ -128,7 +128,7 @@
                     android:visibility="gone"
                     android:layout_gravity="center"
                     android:layout_weight="50"
-                    android:textColor="@color/blue"/>
+                    android:textColor="@color/cornflower_blue"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -241,7 +241,7 @@
                         android:visibility="gone"
                         android:layout_gravity="center"
                         android:layout_weight="50"
-                        android:textColor="@color/blue"
+                        android:textColor="@color/cornflower_blue"
                         android:textSize="16sp"/>
 
                 </LinearLayout>

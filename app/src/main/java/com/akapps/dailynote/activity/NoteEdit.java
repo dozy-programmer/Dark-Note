@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -27,6 +29,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -202,14 +205,21 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isLightMode = true;
             scrollView.setBackgroundColor(context.getColor(R.color.light_mode));
             note.setBackgroundColor(context.getColor(R.color.light_mode));
-            if(noteId != -1 && !isNewNote) {
-                if (currentNote.getTextColor() == 0)
+            searchEditText.setTextColor(context.getColor(R.color.light_gray));
+            Log.d("Here", "Text color is " + currentNote.getTextColor());
+            if(noteId != -1 && !isNewNote)
+                if (currentNote.getTextColor() <= 0)
                     note.setEditorFontColor(context.getColor(R.color.gray));
-            }
             date.setTextColor(context.getColor(R.color.light_gray));
         }
-        else
+        else {
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
+            searchEditText.setTextColor(context.getColor(R.color.light_gray));
+
+            if(noteId != -1 && !isNewNote)
+                if (currentNote.getTextColor() <= 0)
+                    note.setEditorFontColor(context.getColor(R.color.ultra_white));
+        }
     }
 
     // when orientation changes, then note data is saved
@@ -232,7 +242,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public void onBackPressed() {
         if(isSearchingNotes) {
             hideSearchBar();
-            textSizeLayout.setVisibility(View.GONE);
             note.clearFocus();
             title.clearFocus();
         }
@@ -474,8 +483,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         search.setOnClickListener(v -> {
             if(note.getHtml().length()>0) {
-                showSearchBar();
                 textSizeLayout.setVisibility(View.VISIBLE);
+                showSearchBar();
             }
             else
                 Helper.showMessage(this, "Empty", "Searching for something " +
@@ -505,10 +514,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         searchClose.setOnClickListener(v -> {
-            if(isSearchingNotes) {
+            if(isSearchingNotes)
                 hideSearchBar();
-                textSizeLayout.setVisibility(View.GONE);
-            }
         });
 
         sort.setOnClickListener(v -> {
@@ -566,18 +573,17 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
 
         closeTextLayout.setOnClickListener(v -> {
-            textSizeLayout.setVisibility(View.GONE);
-                if(!isSearchingNotes) {
-                    if (currentNote.isCheckList())
-                        addCheckListItem.setVisibility(View.VISIBLE);
-                }
-                else{
-                    hideSearchBar();
-                    textSizeLayout.setVisibility(View.GONE);
-                    isChangingTextSize = false;
-                    noteSearching.clearFocus();
-                    title.clearFocus();
-                }
+            if(!isSearchingNotes) {
+                hideButtons();
+                if (currentNote.isCheckList())
+                    addCheckListItem.setVisibility(View.VISIBLE);
+            }
+            else{
+                hideSearchBar();
+                isChangingTextSize = false;
+                noteSearching.clearFocus();
+                title.clearFocus();
+            }
         });
 
         increaseTextSize.setOnTouchListener(new RepeatListener(500, 100, v -> {
@@ -786,7 +792,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         search.setVisibility(View.GONE);
 
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
+
+        if(isLightMode)
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_mode));
+        else {
+            searchEditText.setTextColor(context.getColor(R.color.ultra_white));
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
+        }
+
         searchEditText.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 100, 0);
@@ -812,6 +825,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(textSize));
         noteSearching.setVisibility(View.VISIBLE);
         noteSearching.setText(Html.fromHtml(note.getHtml(), Html.FROM_HTML_MODE_COMPACT).toString());
+
+        showButtons();
     }
 
     private void hideSearchBar(){
@@ -825,13 +840,17 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         pinNoteButton.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
 
+        if(isLightMode)
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        else
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
+
         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) photosNote.getLayoutParams();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         searchLayout.setLayoutParams(params);
-        params.setMargins(0, 0, vlp.rightMargin, 0);
+        params.setMargins(0, 0, vlp.rightMargin + 30, 0);
         searchLayout.setLayoutParams(params);
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
         searchEditText.setVisibility(View.GONE);
         searchEditText.setVisibility(View.GONE);
         searchClose.setVisibility(View.GONE);
@@ -848,6 +867,25 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
         note.setVisibility(View.VISIBLE);
         noteSearching.setVisibility(View.GONE);
+
+        hideButtons();
+    }
+
+    private void showButtons(){
+        new Handler().postDelayed(() -> {
+            ObjectAnimator refreshAnimation = ObjectAnimator.ofFloat(textSizeLayout, "translationY",-1 * (textSizeLayout.getY() / 2));
+            refreshAnimation.setDuration(500);
+            refreshAnimation.start();
+        }, 100);
+    }
+
+    private void hideButtons(){
+        ObjectAnimator refreshAnimation = ObjectAnimator.ofFloat(textSizeLayout, "translationY", 0f);
+        refreshAnimation.setDuration(500);
+        refreshAnimation.start();
+        new Handler().postDelayed(() -> {
+            textSizeLayout.setVisibility(View.GONE);
+        }, 500);
     }
 
     public void sortChecklist(){
@@ -1228,6 +1266,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 isChangingTextSize = true;
                 textSizeLayout.setVisibility(View.VISIBLE);
                 addCheckListItem.setVisibility(View.GONE);
+                decreaseTextSize.setAlpha(new Float(1.0));
+                increaseTextSize.setAlpha(new Float(1.0));
             }
             else if(position == 6)
                 updateSublistEnabledStatus();
