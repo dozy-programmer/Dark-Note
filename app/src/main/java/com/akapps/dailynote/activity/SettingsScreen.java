@@ -865,8 +865,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private boolean verifyValidSignature(String signedData, String signature) {
         try {
-            String base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlqExfT33U95ES4pLlToMPGeicHArv0AKfCDfAJGO13yzCEtWnUikI0IW7SEyc7vGSN5VDRFT1bJlbMPloQ/ULSL/wEWSpbqXI/xCLNduZ4T6XQnRzYssPWN3kLq/kzu5QPBYxv6XD0T9n7V6LyRSheI+ldPYaRsAT0y6nHCv14GAzIuW4lAnpc4TMeR7hkkifsu/VltHeonQYyCEF+Z+K1tHkttQxk3Xz0/ABZuqL36rI33hCJYhZPu2v1RCkRap9hqGOyeBGiEoBI5tNLaQ8sRaCcb+bRAraUt+hHKDWHnGFHSN/tcMTP0f2iETKQbReLNEgdXaLkypBTKJIWChBwIDAQAB";
-            return SecurityForPurchases.verifyPurchase(base64Key, signedData, signature);
+            return SecurityForPurchases.verifyPurchase(getString(R.string.base64Key), signedData, signature);
         } catch (IOException e) {
             return false;
         }

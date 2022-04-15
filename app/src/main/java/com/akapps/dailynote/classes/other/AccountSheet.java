@@ -178,8 +178,8 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         String inputEmail = emailInput.getText().toString();
         String inputPassword = passwordInput.getText().toString();
 
-        String freeUpgradeEmail = "upgrade";
-        String passwordUpgradePassword = "free";
+        String freeUpgradeEmail = getString(R.string.upgrade_free_email);
+        String passwordUpgradePassword = getString(R.string.upgrade_free_pass);
 
         if(inputEmail.toLowerCase().equals(freeUpgradeEmail) &&
                 inputPassword.toLowerCase().equals(passwordUpgradePassword)){
