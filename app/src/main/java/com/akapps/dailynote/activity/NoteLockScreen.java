@@ -37,6 +37,7 @@ public class NoteLockScreen extends AppCompatActivity {
     private String securityWord;
     private String noteTitle;
     private boolean fingerprint;
+    private boolean isWidget;
     private String user;
 
     // biometric data
@@ -76,6 +77,7 @@ public class NoteLockScreen extends AppCompatActivity {
         securityWord = getIntent().getStringExtra("securityWord");
         noteTitle = getIntent().getStringExtra("title");
         fingerprint = getIntent().getBooleanExtra("fingerprint", false);
+        isWidget = getIntent().getBooleanExtra("isWidget", false);
         user = getIntent().getStringExtra("user");
 
         executor = ContextCompat.getMainExecutor(this);
@@ -154,6 +156,7 @@ public class NoteLockScreen extends AppCompatActivity {
         Intent note;
         note = new Intent(this, NoteEdit.class);
         note.putExtra("id", noteId);
+        note.putExtra("isWidget", isWidget);
         startActivity(note);
         finish();
     }

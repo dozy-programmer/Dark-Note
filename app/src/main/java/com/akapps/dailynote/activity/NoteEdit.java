@@ -142,6 +142,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private ArrayList wordOccurences = new ArrayList();
     private boolean isChangingTextSize;
     private boolean isChanged;
+    private boolean isWidget;
     private Handler handler;
     private ActivityResultLauncher<Intent> launcher;
     public boolean sortEnable;
@@ -177,6 +178,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         context = this;
         noteId = getIntent().getIntExtra("id", -1);
         isCheckList = getIntent().getBooleanExtra("isChecklist", false);
+        isWidget = getIntent().getBooleanExtra("isWidget", false);
 
         if(noteId<-1)
             noteId *=-1;
@@ -206,7 +208,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             scrollView.setBackgroundColor(context.getColor(R.color.light_mode));
             note.setBackgroundColor(context.getColor(R.color.light_mode));
             searchEditText.setTextColor(context.getColor(R.color.light_gray));
-            Log.d("Here", "Text color is " + currentNote.getTextColor());
             if(noteId != -1 && !isNewNote)
                 if (currentNote.getTextColor() <= 0)
                     note.setEditorFontColor(context.getColor(R.color.gray));
@@ -259,12 +260,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onPause() {
         super.onPause();
-
-        if(null != currentNote && currentNote.getWidgetId() > 0){
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
-            appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
-        }
+        try {
+            if (isWidget && null != currentNote && currentNote.getWidgetId() > 0) {
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
+                appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
+            }
+        }catch (Exception e){}
     }
 
     @Override
@@ -840,10 +842,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         pinNoteButton.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
 
-        if(isLightMode)
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
-        else
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
+        searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
 
         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) photosNote.getLayoutParams();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

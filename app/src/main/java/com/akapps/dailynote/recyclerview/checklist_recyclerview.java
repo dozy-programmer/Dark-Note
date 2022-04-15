@@ -221,8 +221,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
     // determines if all items are select and if they are, checklist is set to check or "finished"
     private void isAllItemsSelected(){
-        RealmResults<CheckListItem> select = realm.where(CheckListItem.class)
-                .equalTo("id", currentNote.getNoteId())
+        RealmResults<CheckListItem> select = checkList.where()
                 .equalTo("checked", true)
                 .findAll();
 

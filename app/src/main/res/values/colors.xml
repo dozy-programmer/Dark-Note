@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="darker_blue">#008ae6</color>
-    <color name="blue">#0088cc</color>
+    <color name="blue">#619eea</color>
     <color name="colorPrimaryDark">#0099ff</color>
     <color name="red">#cc0000</color>
     <color name="green">#0AFF19</color>
