@@ -144,8 +144,12 @@ public class notes extends Fragment{
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if(isSearchingNotes)
+                if(isSearchingNotes) {
                     hideSearchBar();
+                    closeMultipleNotesLayout();
+                    showData();
+                    isListEmpty(allNotes.size(), false);
+                }
                 else
                     getActivity().finish();
             }
@@ -315,22 +319,16 @@ public class notes extends Fragment{
         filterNotes.setOnClickListener(v -> {
             if (deletingMultipleNotes)
                 selectAllNotes();
-            else if ((realm.where(Note.class).findAll().size() != 0)) {
+            else
                 showFilterMenu();
-            } else
-                showMessage("Empty", "There are no notes \uD83D\uDE10", true);
         });
 
         categoryNotes.setOnClickListener(v -> {
-           if(realm.where(Note.class).findAll().size()!=0) {
-               Intent category = new Intent(getActivity(), CategoryScreen.class);
-               Helper.setOrientation(getActivity(), context);
-               if (enableSelectMultiple)
-                   category.putExtra("multi_select", true);
-               startActivityForResult(category, 5);
-            }
-            else
-                showMessage("Empty", "There are no notes \uD83D\uDE10", true);
+           Intent category = new Intent(getActivity(), CategoryScreen.class);
+           Helper.setOrientation(getActivity(), context);
+           if (enableSelectMultiple)
+               category.putExtra("multi_select", true);
+           startActivityForResult(category, 5);
         });
 
         search.setOnClickListener(v -> {
@@ -339,13 +337,12 @@ public class notes extends Fragment{
                 isAllSelected = false;
                 deleteMultipleNotes();
             }
-            else if(realm.where(Note.class).findAll().size()!=0) {
+            else {
                 showSearchBar();
                 isListEmpty(0, true);
                 populateAdapter(realm.where(Note.class).equalTo("title", "~~test~~").findAll());
             }
-            else
-                showMessage("Not Searching...", "Can't looking for something that does not exist", true);
+
         });
 
         restoreNotes.setOnClickListener(v -> restoreMultipleNotes());

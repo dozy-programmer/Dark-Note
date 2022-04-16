@@ -90,7 +90,12 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         holder.sync.setOnClickListener(view -> ((SettingsScreen) activity).restoreFromDatabase(currentBackup.getFileName()));
 
         holder.delete.setOnClickListener(view -> {
+            Helper.showMessage(activity, "Delete File", "Long click to delete", MotionToast.TOAST_WARNING);
+        });
+
+        holder.delete.setOnLongClickListener(view -> {
             deleteBackupFile(currentBackup);
+            return false;
         });
 
         holder.background.setCardBackgroundColor(isLightMode ? context.getColor(R.color.light_mode) : context.getColor(R.color.gray));
