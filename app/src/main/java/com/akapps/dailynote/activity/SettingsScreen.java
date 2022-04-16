@@ -262,6 +262,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         reminderSeekbar = findViewById(R.id.reminder_seekbar);
         reminderSeekbarText = findViewById(R.id.reminder_occurrence);
 
+        Helper.moveBee(findViewById(R.id.bee_icon), 200f);
+
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
         if(null == currentUser.getEmail()){

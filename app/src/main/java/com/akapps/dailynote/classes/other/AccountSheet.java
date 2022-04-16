@@ -136,29 +136,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                             realm.commitTransaction();
                             dialog.dismiss();
 
-                            StorageReference backupFiles = FirebaseStorage.getInstance().getReference().child("users")
-                                    .child(currentUser.getEmail());
-
-                            Log.d("Here", "Starting backup retrieval");
-                            backupFiles.listAll()
-                                    .addOnSuccessListener(listResult -> {
-                                        realm.beginTransaction();
-                                        realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
-                                        realm.commitTransaction();
-                                        Log.d("Here", "Deleted old backups ");
-                                        for (StorageReference item : listResult.getItems()) {
-                                            realm.beginTransaction();
-                                            realm.insert(new Backup(currentUser.getUserId(), item.getName(), "", 0));
-                                            realm.commitTransaction();
-                                            Log.d("Here", "items are " + item.getName());
-                                        }
-                                        ((SettingsScreen) activity).restart();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        // Uh-oh, an error occurred!
-                                        ((SettingsScreen) activity).restart();
-                                        Log.d("Here", "Failure to retrieve backups ");
-                                    });
+                            ((SettingsScreen) activity).restart();
                         } else {
                             loginAttempts++;
                             // If sign in fails, display a message to the user.

@@ -15,6 +15,7 @@ public class AlertReceiver extends BroadcastReceiver {
         String noteTitle = intent.getStringExtra("title");
         boolean fingerprint = intent.getBooleanExtra("fingerprint", false);
         boolean isChecklist = intent.getBooleanExtra("checklist", false);
+
         NotificationHelper notificationHelper = new NotificationHelper(context, noteId,
                 notePinNumber, noteTitle, fingerprint, isChecklist, allNoteSize);
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification();

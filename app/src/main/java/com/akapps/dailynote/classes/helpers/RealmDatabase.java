@@ -16,7 +16,7 @@ public class RealmDatabase {
         Realm.init(context);
 
         RealmConfiguration config = new RealmConfiguration.Builder()
-                    .schemaVersion(currentVersion) // Must be bumped when the schema changes
+                    .schemaVersion(currentVersion)
                     .migration(new MyMigration())
                     .compactOnLaunch()
                     .build();
@@ -58,135 +58,61 @@ public class RealmDatabase {
                         .removeField("categories")
                         .removeField("liveNoteAutoComplete");
 
-                if(!schema.get("User").hasField("lastUpload"))
-                    schema.get("User").addField("lastUpload", String.class);
-
-                if(!schema.get("User").hasField("email"))
-                    schema.get("User").addField("email", String.class);
-
-                if(!schema.get("Note").hasField("dateCreatedMilli"))
-                    schema.get("Note").addField("dateCreatedMilli", long.class);
-
-                if(!schema.get("Note").hasField("dateEditedMilli"))
-                    schema.get("Note").addField("dateEditedMilli", long.class);
-
-                if(!schema.get("Note").hasField("sort"))
-                    schema.get("Note").addField("sort", int.class);
-
-                if(!schema.get("CheckListItem").hasField("lastCheckedDate"))
-                    schema.get("CheckListItem").addField("lastCheckedDate", long.class);
-
-                if(!schema.contains("SubCheckListItem")) {
-                    schema.create("SubCheckListItem")
-                            .addField("id", int.class)
-                            .addField("text", String.class)
-                            .addField("checked", boolean.class)
-                            .addField("positionInList", int.class);
-                }
-
-                if(!schema.get("CheckListItem").hasField("subChecklist"))
-                    schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
-
-                if(!schema.get("CheckListItem").hasField("subListId"))
-                    schema.get("CheckListItem").addField("subListId", int.class);
-
-                if(!schema.get("User").hasField("showFolderNotes"))
-                    schema.get("User").addField("showFolderNotes", boolean.class);
-
-                if(!schema.get("User").hasField("showPreviewNoteInfo"))
-                    schema.get("User").addField("showPreviewNoteInfo", boolean.class);
-
-                if(!schema.get("User").hasField("modeSettings"))
-                    schema.get("User").addField("modeSettings", boolean.class);
-
-                if(!schema.get("User").hasField("backupReminderOccurrence"))
-                    schema.get("User").addField("backupReminderOccurrence", int.class);
-
-                if(!schema.get("Note").hasField("enableSublist"))
-                    schema.get("Note").addField("enableSublist", boolean.class);
-
-                if(!schema.get("User").hasField("enableSublists"))
-                    schema.get("User").addField("enableSublists", boolean.class);
-
-                if(!schema.get("User").hasField("backupReminderDate"))
-                    schema.get("User").addField("backupReminderDate", String.class);
-
-                if(!schema.contains("Backup")) {
-                    schema.create("Backup")
-                            .addField("userId", int.class)
-                            .addField("fileSize", int.class)
-                            .addField("fileName", String.class)
-                            .addField("upLoadTime", String.class);
-                }
-
-                if(!schema.get("Note").hasField("widgetId"))
-                    schema.get("Note").addField("widgetId", int.class);
             }
-            else {
-                if(!schema.get("User").hasField("email"))
-                    schema.get("User").addField("email", String.class);
 
-                if(!schema.get("User").hasField("lastUpload"))
-                    schema.get("User").addField("lastUpload", String.class);
+            // added User fields
+            if(!schema.get("User").hasField("lastUpload"))
+                schema.get("User").addField("lastUpload", String.class);
+            if(!schema.get("User").hasField("email"))
+                schema.get("User").addField("email", String.class);
+            if(!schema.get("User").hasField("showFolderNotes"))
+                schema.get("User").addField("showFolderNotes", boolean.class);
+            if(!schema.get("User").hasField("showPreviewNoteInfo"))
+                schema.get("User").addField("showPreviewNoteInfo", boolean.class);
+            if(!schema.get("User").hasField("modeSettings"))
+                schema.get("User").addField("modeSettings", boolean.class);
+            if(!schema.get("User").hasField("backupReminderOccurrence"))
+                schema.get("User").addField("backupReminderOccurrence", int.class);
+            if(!schema.get("Note").hasField("enableSublist"))
+                schema.get("Note").addField("enableSublist", boolean.class);
+            if(!schema.get("User").hasField("enableSublists"))
+                schema.get("User").addField("enableSublists", boolean.class);
+            if(!schema.get("User").hasField("backupReminderDate"))
+                schema.get("User").addField("backupReminderDate", String.class);
 
-                if(!schema.get("Note").hasField("dateCreatedMilli"))
-                    schema.get("Note").addField("dateCreatedMilli", long.class);
+            // added note fields
+            if(!schema.get("Note").hasField("dateCreatedMilli"))
+                schema.get("Note").addField("dateCreatedMilli", long.class);
+            if(!schema.get("Note").hasField("dateEditedMilli"))
+                schema.get("Note").addField("dateEditedMilli", long.class);
+            if(!schema.get("Note").hasField("sort"))
+                schema.get("Note").addField("sort", int.class);
+            if(!schema.get("Note").hasField("widgetId"))
+                schema.get("Note").addField("widgetId", int.class);
 
-                if(!schema.get("Note").hasField("dateEditedMilli"))
-                    schema.get("Note").addField("dateEditedMilli", long.class);
+            // added checklist item fields
+            if(!schema.get("CheckListItem").hasField("lastCheckedDate"))
+                schema.get("CheckListItem").addField("lastCheckedDate", long.class);
+            if(!schema.get("CheckListItem").hasField("subChecklist"))
+                schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
+            if(!schema.get("CheckListItem").hasField("subListId"))
+                schema.get("CheckListItem").addField("subListId", int.class);
 
-                if(!schema.get("Note").hasField("sort"))
-                    schema.get("Note").addField("sort", int.class);
+            // added sub-lists class
+            if(!schema.contains("SubCheckListItem"))
+                schema.create("SubCheckListItem")
+                        .addField("id", int.class)
+                        .addField("text", String.class)
+                        .addField("checked", boolean.class)
+                        .addField("positionInList", int.class);
 
-                if(!schema.get("CheckListItem").hasField("lastCheckedDate"))
-                    schema.get("CheckListItem").addField("lastCheckedDate", long.class);
-
-                if(!schema.contains("SubCheckListItem")) {
-                    schema.create("SubCheckListItem")
-                            .addField("id", int.class)
-                            .addField("text", String.class)
-                            .addField("checked", boolean.class)
-                            .addField("positionInList", int.class);
-                }
-
-                if(!schema.get("CheckListItem").hasField("subChecklist"))
-                    schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
-
-                if(!schema.get("CheckListItem").hasField("subListId"))
-                    schema.get("CheckListItem").addField("subListId", int.class);
-
-                if(!schema.get("User").hasField("showFolderNotes"))
-                    schema.get("User").addField("showFolderNotes", boolean.class);
-
-                if(!schema.get("User").hasField("showPreviewNoteInfo"))
-                    schema.get("User").addField("showPreviewNoteInfo", boolean.class);
-
-                if(!schema.get("User").hasField("modeSettings"))
-                    schema.get("User").addField("modeSettings", boolean.class);
-
-                if(!schema.get("User").hasField("backupReminderOccurrence"))
-                    schema.get("User").addField("backupReminderOccurrence", int.class);
-
-                if(!schema.get("Note").hasField("enableSublist"))
-                    schema.get("Note").addField("enableSublist", boolean.class);
-
-                if(!schema.get("User").hasField("enableSublists"))
-                    schema.get("User").addField("enableSublists", boolean.class);
-
-                if(!schema.get("User").hasField("backupReminderDate"))
-                    schema.get("User").addField("backupReminderDate", String.class);
-
-                if(!schema.contains("Backup")) {
-                    schema.create("Backup")
-                            .addField("userId", int.class)
-                            .addField("fileSize", int.class)
-                            .addField("fileName", String.class)
-                            .addField("upLoadTime", String.class);
-                }
-
-                if(!schema.get("Note").hasField("widgetId"))
-                    schema.get("Note").addField("widgetId", int.class);
-            }
+            // added backup class
+            if(!schema.contains("Backup"))
+                schema.create("Backup")
+                        .addField("userId", int.class)
+                        .addField("fileSize", int.class)
+                        .addField("fileName", String.class)
+                        .addField("upLoadTime", String.class);
 
         }
     }

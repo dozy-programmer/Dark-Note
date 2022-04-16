@@ -1,10 +1,14 @@
 package com.akapps.dailynote.classes.other;
 
+import android.animation.ObjectAnimator;
 import android.content.res.Configuration;
+import android.graphics.Path;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -12,9 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.imageview.ShapeableImageView;
+
 import org.jetbrains.annotations.NotNull;
 
 public class UpdateSheet extends RoundedBottomSheetDialogFragment{
@@ -40,8 +47,13 @@ public class UpdateSheet extends RoundedBottomSheetDialogFragment{
         else 
             view.setBackgroundColor(getContext().getColor(R.color.gray));
 
+        ShapeableImageView versionIcon = view.findViewById(R.id.version_icon);
+
+        Helper.moveBee(versionIcon, 400f);
+
         return view;
     }
+
 
     @Override
     public int getTheme() {

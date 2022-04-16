@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.helpers;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -11,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,6 +25,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
+import com.google.android.material.imageview.ShapeableImageView;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -373,6 +377,40 @@ public class Helper {
                 progressDialog.cancel();
         }catch (Exception e){ }
         return progressDialog;
+    }
+
+    public static void moveBee(ShapeableImageView bee, float max) {
+        new Handler().postDelayed(() -> {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(bee, "translationX", max);
+            animator.setDuration(2000);
+            animator.start();
+
+            new Handler().postDelayed(() -> {
+                ObjectAnimator animator2 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
+                animator2.setDuration(2000);
+                animator2.start();
+
+                new Handler().postDelayed(() -> {
+                    ObjectAnimator animator3 = ObjectAnimator.ofFloat(bee, "translationX", -1 * max);
+                    animator3.setDuration(2000);
+                    animator3.start();
+
+                    new Handler().postDelayed(() -> {
+                        ObjectAnimator animator4 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
+                        animator4.setDuration(2000);
+                        animator4.start();
+
+                        new Handler().postDelayed(() -> {
+                            moveBee(bee, max);
+                        }, 1500);
+
+                    }, 1500);
+
+                }, 1500);
+
+            }, 1500);
+
+        }, 1000);
     }
 
     // deletes cache directory to ensure app size does not get too big
