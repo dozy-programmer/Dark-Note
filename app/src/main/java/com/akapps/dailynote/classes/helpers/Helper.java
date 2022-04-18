@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -379,13 +381,14 @@ public class Helper {
         return progressDialog;
     }
 
-    public static void moveBee(ShapeableImageView bee, float max) {
+    public static void moveBee(LottieAnimationView bee, float max) {
         new Handler().postDelayed(() -> {
             ObjectAnimator animator = ObjectAnimator.ofFloat(bee, "translationX", max);
             animator.setDuration(2000);
             animator.start();
 
             new Handler().postDelayed(() -> {
+                bee.setRotationY(180);
                 ObjectAnimator animator2 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
                 animator2.setDuration(2000);
                 animator2.start();
@@ -396,6 +399,7 @@ public class Helper {
                     animator3.start();
 
                     new Handler().postDelayed(() -> {
+                        bee.setRotationY(0);
                         ObjectAnimator animator4 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
                         animator4.setDuration(2000);
                         animator4.start();

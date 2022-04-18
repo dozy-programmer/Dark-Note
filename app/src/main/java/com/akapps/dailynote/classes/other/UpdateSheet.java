@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -47,7 +49,7 @@ public class UpdateSheet extends RoundedBottomSheetDialogFragment{
         else 
             view.setBackgroundColor(getContext().getColor(R.color.gray));
 
-        ShapeableImageView versionIcon = view.findViewById(R.id.version_icon);
+        LottieAnimationView versionIcon = view.findViewById(R.id.version_icon);
 
         Helper.moveBee(versionIcon, 400f);
 

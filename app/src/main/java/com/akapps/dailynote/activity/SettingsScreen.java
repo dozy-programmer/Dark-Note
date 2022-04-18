@@ -262,7 +262,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         reminderSeekbar = findViewById(R.id.reminder_seekbar);
         reminderSeekbarText = findViewById(R.id.reminder_occurrence);
 
-        Helper.moveBee(findViewById(R.id.bee_icon), 200f);
+        Helper.moveBee(findViewById(R.id.version_icon), 200f);
 
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
@@ -778,15 +778,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         //if item newly purchased
         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
             handlePurchases(purchases);
-            upgradeToPro();
         }
+
         //if item already purchased then check and reflect changes
         else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
             billingClient.queryPurchasesAsync(INAPP, (alreadyPurchases, list) -> {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK)
                     if (list != null && list.size() > 0) {
                         handlePurchases(list);
-                        upgradeToPro();
                     }
             });
         }
@@ -824,7 +823,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                         AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = billingResult -> {
                             int consumeCountValue = getPurchaseCountValueFromPref(purchaseItemIDs.get(index))+1;
                             savePurchaseCountValueToPref(purchaseItemIDs.get(index),consumeCountValue);
-                            upgradeToPro();
                         };
 
                         AcknowledgePurchaseParams acknowledgePurchaseParams =
@@ -833,18 +831,18 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                                         .build();
 
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                        upgradeToPro();
                     }
                 }
                 //if purchase is pending
                 else if(purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
                     Helper.showMessage(SettingsScreen.this, "Upgrade Pending", "" +
-                            " Purchase is Pending. Please complete Transaction", MotionToast.TOAST_WARNING);
+                            "Purchase is Pending. Please complete Transaction", MotionToast.TOAST_WARNING);
                 }
                 //if purchase is refunded or unknown
                 else if( purchase.getPurchaseState() == Purchase.PurchaseState.UNSPECIFIED_STATE) {
                     Helper.showMessage(SettingsScreen.this, "Upgrade Error", "" +
                             purchaseItemIDs.get(index)+" Purchase Status Unknown", MotionToast.TOAST_WARNING);
-
                 }
             }
 

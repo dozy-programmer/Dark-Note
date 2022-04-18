@@ -140,7 +140,6 @@ public class notes extends Fragment{
 
         unSelectAllNotes();
 
-        // This callback will only be called when MyFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

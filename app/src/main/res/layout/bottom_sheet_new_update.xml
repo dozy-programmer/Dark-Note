@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/baloo_bhai"
-            android:text="Version 7.4"
+            android:text="Version 7.5"
             android:textColor="@color/greyish"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -73,22 +73,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
-
-        <com.google.android.material.imageview.ShapeableImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/version_icon"
-            android:layout_width="80dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="@color/greyish"
-            android:padding="2dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/bee_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            app:lottie_rawRes="@raw/bee_flying"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_version"
-            app:shapeAppearanceOverlay="@style/circular"
-            app:strokeColor="@color/darker_blue"
-            app:strokeWidth="2dp" />
+            app:layout_constraintTop_toBottomOf="@+id/app_version"/>
 
         <TextView
             android:id="@+id/new_update_title"

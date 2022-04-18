@@ -12,8 +12,8 @@ android {
         applicationId "com.akapps.dailynote"
         minSdkVersion 26
         targetSdkVersion 31
-        versionCode 65
-        versionName "7.4"
+        versionCode 66
+        versionName "7.5"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -65,6 +65,7 @@ dependencies {
     implementation 'com.github.clans:fab:1.6.4'                                // floating action button
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'     // image full screen
     implementation 'com.github.yash786agg:AnimatedLoadingIndicator:v1.3'       // loading screen
+    implementation "com.airbnb.android:lottie:5.0.3"                           // lottie animation
 
     // image loader
     implementation 'com.github.bumptech.glide:glide:4.12.0'
