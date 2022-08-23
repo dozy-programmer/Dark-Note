@@ -1,11 +1,14 @@
 package com.akapps.dailynote.classes.other;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,26 +17,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
@@ -45,6 +56,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private boolean isAdding;
     private RecyclerView.Adapter adapter;
     private int position;
+    private boolean isProUser;
 
     private Realm realm;
 
@@ -56,6 +68,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private CheckListItem checkListItem;
     private CustomPowerMenu noteMenu;
     private ImageView dropDownMenu;
+
+    private MaterialCardView itemImageLayout;
+    private ImageView itemImage;
 
     // adding
     public ChecklistItemSheet(){
@@ -72,11 +87,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     }
 
     // editing note
-    public ChecklistItemSheet(CheckListItem checkListItem, int position, RecyclerView.Adapter adapter){
+    public ChecklistItemSheet(CheckListItem checkListItem, int position, boolean isProUser, RecyclerView.Adapter adapter){
         isAdding = false;
         isSubChecklist = false;
         this.currentItem = checkListItem;
         this.position = position;
+        this.isProUser = isProUser;
         this.adapter = adapter;
     }
 
@@ -109,6 +125,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         itemName = view.findViewById(R.id.item_name);
         TextView title = view.findViewById(R.id.title);
 
+        itemImageLayout = view.findViewById(R.id.item_image_layout);
+        itemImage = view.findViewById(R.id.item_image);
+
         itemName.requestFocusFromTouch();
 
         if (AppData.getAppData().isLightMode) {
@@ -119,6 +138,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+
+        if(isSubChecklist || isAdding)
+            itemImageLayout.setVisibility(View.GONE);
 
         if(isAdding){
             dropDownMenu.setVisibility(View.GONE);
@@ -138,6 +160,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 else {
                     title.setText("Editing");
                     itemName.setText(currentItem.getText());
+
+                    if(currentItem.getItemImage()!=null && !currentItem.getItemImage().isEmpty())
+                        Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
                 }
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
@@ -148,14 +173,24 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             }
         }
 
+        // ability to add photo to checklist only for pro user
+        if(!isProUser)
+            itemImageLayout.setVisibility(View.GONE);
+
         delete.setOnClickListener(v-> {
+            Helper.showMessage(getActivity(), "How to delete",
+                    "Long click delete button", MotionToast.TOAST_WARNING);
+        });
+
+        delete.setOnLongClickListener(view13 -> {
             if(!isAdding) {
                 if(isSubChecklist)
                     deleteItem(currentSubItem);
                 else
                     deleteItem(currentItem);
-                this.dismiss();
+                dismiss();
             }
+            return false;
         });
 
         dropDownMenu.setOnClickListener(view1 -> openMenuDialog());
@@ -175,6 +210,22 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                     checklistItemSheet = new ChecklistItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
             }
+        });
+
+        itemImageLayout.setOnClickListener(view12 -> {
+            Helper.showMessage(getActivity(), "Photo Instructions",
+                    "Long click to delete", MotionToast.TOAST_WARNING);
+            showCameraDialog();
+        });
+
+        itemImageLayout.setOnLongClickListener(view14 -> {
+            realm.beginTransaction();
+            currentItem.setItemImage("");
+            realm.commitTransaction();
+
+            Glide.with(getContext()).load(getContext().getDrawable(R.drawable.icon_image)).into(itemImage);
+            adapter.notifyItemChanged(position);
+            return true;
         });
 
         return view;
@@ -254,6 +305,41 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         return false;
     }
 
+    private void showCameraDialog(){
+        ImagePicker.with(this)
+                .maxResultSize(814, 814)
+                .compress(1024)
+                .saveDir(getActivity().getExternalFilesDir("/Documents"))
+                .start(1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+            Uri uri = data.getData();
+
+            File file = new File(uri.getPath());
+            String fileName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
+            File newFile = new File(getActivity().getExternalFilesDir("/Documents"), "~" + fileName);
+            file.renameTo(newFile);
+
+            if(currentItem.getItemImage()!=null && !currentItem.getItemImage().isEmpty()){
+                File fdelete = new File(currentItem.getItemImage());
+                if (fdelete.exists())
+                    fdelete.delete();
+            }
+
+            realm.beginTransaction();
+            currentItem.setItemImage(newFile.getPath());
+            realm.commitTransaction();
+
+            Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
+            adapter.notifyItemChanged(position);
+        }
+        else if (resultCode== ImagePicker.RESULT_ERROR) {}
+    }
+
     private void openMenuDialog() {
         noteMenu = new CustomPowerMenu.Builder<>(getContext(), new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.copy_icon), "Copy"))
@@ -279,11 +365,25 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                         "Copied successfully", MotionToast.TOAST_SUCCESS);
             }
             else if(position == 1){
-                // send text
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
-                startActivity(intent);
+                Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                emailIntent.setType("*/*");
+
+                // attaching to intent to send folders
+                ArrayList<Uri> uris = new ArrayList<>();
+
+                // only attaches to email if there are project photos
+                File file = new File(currentItem.getItemImage());
+                if(file.exists()) {
+                    uris.add(FileProvider.getUriForFile(
+                            getContext(),
+                            "com.akapps.dailynote.fileprovider",
+                            file));
+                }
+
+                // adds email subject and email body to intent
+                emailIntent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
+                emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                getContext().startActivity(Intent.createChooser(emailIntent, "Share Checklist Item"));
             }
             noteMenu.dismiss();
         }

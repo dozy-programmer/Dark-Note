@@ -1,7 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -18,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.view.menu.ShowableListMenu;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
@@ -31,14 +28,12 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import io.realm.RealmList;
@@ -98,7 +93,9 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         if(allPhotos.size() == 0 || currentNote.getPinNumber() > 0)
             photosScrollView.setVisibility(View.GONE);
 
-        open.setOnClickListener(view1 -> openNoteActivity(currentNote));
+        open.setOnClickListener(view1 -> {
+            openNoteActivity(currentNote);
+        });
 
         String moneyTotalString = getMoneyTotal(currentNote.getChecklist());
         try {
@@ -209,13 +206,17 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         for (CheckListItem currentItem: noteChecklist){
             String checklistString = currentItem.getText();
             if(checklistString.contains("$")){
-                String[] checklistStringTokens = checklistString.replaceAll("\n", " ").split(" ");
+                String[] checklistStringTokens = checklistString.replaceAll("\n", " ")
+                        .replaceAll(",", "")
+                        .replaceAll("[$]+", "\\$")
+                        .split(" ");
                 for(String currentToken: checklistStringTokens) {
                     if (currentToken.contains("$")) {
                         if(currentToken.contains("-$")) {
                             if (budget == 0)
                                 try {
-                                    budget = Double.parseDouble(currentToken.replaceAll(",", "").replace("-$", ""));
+                                    budget = Double.parseDouble(currentToken.replaceAll(",", "")
+                                            .replace("-$", ""));
                                 }catch (Exception e){
                                     budget = -1;
                                 }
@@ -223,7 +224,9 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                                 budget = -1;
                         }
                         else {
-                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim().replaceAll(",", "");
+                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1)
+                                    .trim().replaceAll("[$]+", "\\$")
+                                    .replaceAll(",", "");
                             try {
                                 Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
                                 if (currentItem.isChecked())
@@ -240,13 +243,18 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                     for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
                         String sublistString = sublistItem.getText();
                         if (sublistString.contains("$")) {
-                            String[] sublistStringTokens = sublistString.replaceAll("\n", " ").split(" ");
+                            String[] sublistStringTokens = sublistString.replaceAll("\n", " ")
+                                    .replaceAll(",", "")
+                                    .replaceAll("[$]+", "\\$")
+                                    .split(" ");
                             for (String currentToken : sublistStringTokens) {
                                 if (currentToken.contains("$")) {
                                     if(currentToken.contains("-$")) {
                                         if (budget == 0)
                                             try {
-                                                budget = Double.parseDouble(currentToken.replaceAll(",", "").replace("-$", ""));
+                                                budget = Double.parseDouble(currentToken.replaceAll(",", "")
+                                                        .replaceAll("[$]+", "\\$")
+                                                        .replace("-$", ""));
                                             }catch (Exception e){
                                                 budget = -1;
                                             }
@@ -254,7 +262,9 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                                             budget = -1;
                                     }
                                     else {
-                                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim().replaceAll(",", "");
+                                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim()
+                                                .replaceAll(",", "")
+                                                .replaceAll(",", "");
                                         try {
                                             Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
                                             if (currentItem.isChecked())
@@ -295,7 +305,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     }
 
     private void openNoteActivity(Note currentNote){
-        if(currentNote.getPinNumber()==0){
+        if(currentNote.getPinNumber() == 0){
             Intent note = new Intent(getActivity(), NoteEdit.class);
             note.putExtra("id", currentNote.getNoteId());
             note.putExtra("isChecklist", currentNote.isCheckList());

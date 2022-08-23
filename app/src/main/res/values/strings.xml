@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Dark Note</string>
-    <string name="app_version">Version 7.5</string>
-    <string name="schema">17</string>
+    <string name="app_version">Version 7.6</string>
+    <string name="schema">18</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_error_title">Wrong Login/Password</string>

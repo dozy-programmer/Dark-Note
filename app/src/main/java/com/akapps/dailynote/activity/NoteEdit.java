@@ -1578,14 +1578,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         ImagePicker.with(this)
                 .maxResultSize(814, 814)
                 .compress(1024)
-                .saveDir(getExternalFilesDir(null))
-                .start();
+                .saveDir(getExternalFilesDir("/Documents"))
+                .start(0);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && requestCode == 0) {
             Uri uri = data.getData();
 
             Photo currentPhoto;

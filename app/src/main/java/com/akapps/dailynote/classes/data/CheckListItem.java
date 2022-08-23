@@ -11,12 +11,10 @@ public class CheckListItem extends RealmObject {
     private String text;
     private boolean checked;
     private int positionInList;
-
     private long lastCheckedDate;
-
     private int subListId;
-
     private RealmList<SubCheckListItem> subChecklist;
+    private String itemImage;
 
     public CheckListItem(){}
 
@@ -28,6 +26,7 @@ public class CheckListItem extends RealmObject {
         lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
         subChecklist = new RealmList<>();
         this.subListId = subListId;
+        itemImage = "";
     }
 
     public String getText() {
@@ -84,5 +83,13 @@ public class CheckListItem extends RealmObject {
 
     public void setSubListId(int subListId) {
         this.subListId = subListId;
+    }
+
+    public String getItemImage() {
+        return itemImage;
+    }
+
+    public void setItemImage(String itemImage) {
+        this.itemImage = itemImage;
     }
 }

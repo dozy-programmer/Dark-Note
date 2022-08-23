@@ -57,7 +57,6 @@ public class RealmDatabase {
                         .removeField("startingDate")
                         .removeField("categories")
                         .removeField("liveNoteAutoComplete");
-
             }
 
             // added User fields
@@ -97,6 +96,8 @@ public class RealmDatabase {
                 schema.get("CheckListItem").addRealmListField("subChecklist", schema.get("SubCheckListItem"));
             if(!schema.get("CheckListItem").hasField("subListId"))
                 schema.get("CheckListItem").addField("subListId", int.class);
+            if(!schema.get("CheckListItem").hasField("itemImage"))
+                schema.get("CheckListItem").addField("itemImage", String.class);
 
             // added sub-lists class
             if(!schema.contains("SubCheckListItem"))

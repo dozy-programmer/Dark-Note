@@ -226,18 +226,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               StorageReference backupFiles = FirebaseStorage.getInstance().getReference().child("users")
                       .child(currentUser.getEmail());
 
-              Log.d("Here", "Starting backup retrieval");
               backupFiles.listAll()
                       .addOnSuccessListener(listResult -> {
                           realm.beginTransaction();
                           realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
                           realm.commitTransaction();
-                          Log.d("Here", "Deleted old backups ");
                           for (StorageReference item : listResult.getItems()) {
                               realm.beginTransaction();
                               realm.insert(new Backup(currentUser.getUserId(), item.getName(), "", 0));
                               realm.commitTransaction();
-                              Log.d("Here", "items are " + item.getName());
                           }
                           allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 

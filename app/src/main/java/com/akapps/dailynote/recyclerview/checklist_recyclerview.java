@@ -21,9 +21,14 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
+import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.stfalcon.imageviewer.StfalconImageViewer;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -50,6 +55,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final LinearLayout edit;
         private final RecyclerView subChecklist;
         private final FloatingActionButton addSubChecklist;
+        private final MaterialCardView itemImageLayout;
+        private final ImageView itemImage;
 
         public MyViewHolder(View v) {
             super(v);
@@ -60,6 +67,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             subChecklist = v.findViewById(R.id.subchecklist);
             addSubChecklist = v.findViewById(R.id.add_subchecklist);
             subChecklist.setLayoutManager(new GridLayoutManager(v.getContext(), 1));
+            itemImageLayout = v.findViewById(R.id.item_image_layout);
+            itemImage = v.findViewById(R.id.item_image);
         }
     }
 
@@ -162,6 +171,14 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.checklistText.setTextColor(currentNote.getTextColor());
         }
 
+        // show if checklist item has an image
+        if(user.isProUser() && checkListItem.getItemImage()!=null && !checkListItem.getItemImage().isEmpty()) {
+            holder.itemImageLayout.setVisibility(View.VISIBLE);
+            Glide.with(context).load(checkListItem.getItemImage()).into(holder.itemImage);
+        }
+        else
+            holder.itemImageLayout.setVisibility(View.GONE);
+
         RecyclerView.Adapter finalSubChecklistAdapter = subChecklistAdapter;
         holder.addSubChecklist.setOnClickListener(view -> {
             ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, checkListText, true, finalSubChecklistAdapter);
@@ -180,6 +197,22 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         holder.edit.setOnClickListener(v -> {
             openEditDialog(checkListItem, position);
+        });
+
+        holder.itemImageLayout.setOnClickListener(view -> {
+            ArrayList<String> images = new ArrayList<>();
+            images.add(checkListItem.getItemImage());
+            new StfalconImageViewer.Builder<>(context, images, (imageView, image) ->
+                    Glide.with(context)
+                            .load(image)
+                            .into(imageView))
+                    .withBackgroundColor(context.getColor(R.color.gray))
+                    .allowZooming(true)
+                    .allowSwipeToDismiss(true)
+                    .withHiddenStatusBar(false)
+                    .withStartPosition(0)
+                    .withTransitionFrom(holder.itemImage)
+                    .show();
         });
 
     }
@@ -215,7 +248,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
     // opens dialog that allows user to edit or delete checklist item
     private void openEditDialog(CheckListItem checkListItem, int position){
-        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, position, this);
+        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, position, user.isProUser(), this);
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
     }
 

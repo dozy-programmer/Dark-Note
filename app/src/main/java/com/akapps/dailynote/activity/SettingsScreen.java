@@ -25,6 +25,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Backup;
+import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
@@ -84,6 +86,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
@@ -1016,21 +1019,38 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     private String backUpZip(){
-        ArrayList<String> allPaths = getAllFilePaths(realm.where(Photo.class).findAll());
+        RealmResults<Note> checklistPhotos = realm.where(Note.class).findAll();
+        ArrayList<String> allPhotos = getAllFilePaths(realm.where(Photo.class).findAll(), checklistPhotos);
         realm.close();
         RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
         realmBackupRestore.update(this, context);
         File exportedFilePath = realmBackupRestore.backup_Share();
-        allPaths.add(exportedFilePath.getAbsolutePath());
+        allPhotos.add(exportedFilePath.getAbsolutePath());
         realmStatus();
-        return zipPhotos(allPaths);
+        return zipPhotos(allPhotos);
     }
 
-    private ArrayList<String> getAllFilePaths(RealmResults<Photo> allPhotos){
-        ArrayList<String> filePaths = new ArrayList<>();
-        for(int i = 0; i < allPhotos.size(); i++)
-            filePaths.add(allPhotos.get(i).getPhotoLocation());
-        return filePaths;
+    private ArrayList<String> getAllFilePaths(RealmResults<Photo> allNotePhotos, RealmResults<Note> allNotes){
+        ArrayList<String> allPhotos = new ArrayList<>();
+        for(int i = 0; i < allNotePhotos.size(); i++) {
+            allPhotos.add(allNotePhotos.get(i).getPhotoLocation());
+            Log.d("Here", "Regular photo added  " + allNotePhotos.get(i).getPhotoLocation());
+        }
+
+        for(int i=0; i< allNotes.size(); i++){
+            RealmList<CheckListItem> currentNoteChecklist= allNotes.get(i).getChecklist();
+            if(currentNoteChecklist.size() > 0){
+                for(int j=0 ;j < currentNoteChecklist.size(); j++){
+                    CheckListItem currentChecklistItem = currentNoteChecklist.get(j);
+                    if(currentChecklistItem.getItemImage() != null && !currentChecklistItem.getItemImage().isEmpty()) {
+                        allPhotos.add(currentChecklistItem.getItemImage());
+                        Log.d("Here", "--> Checklist photo - " + allNotes.get(i).getTitle() + " - Added " + currentChecklistItem.getItemImage());
+                    }
+                }
+            }
+        }
+
+        return allPhotos;
     }
 
     // creates a zip folder
@@ -1083,6 +1103,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     public void upLoadData(){
+        progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
         File backupFile = new File(backUpZip());
         Uri file = Uri.fromFile(backupFile);
         // file info
@@ -1104,11 +1125,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         // check if file exists
         if(realm.where(Backup.class).equalTo("fileName", fileName).count() == 1){
+            Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload Failed", "File name exists, " +
                     "please wait a minute and try again", MotionToast.TOAST_ERROR);
         }
         else {
-            progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
             String userEmail = mAuth.getCurrentUser().getEmail();
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference().child("users")
@@ -1219,9 +1240,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
             Helper.showLoading("", progressDialog, context, false);
 
-            Helper.showMessage(this, "Synced", "" +  "Data was synced",
-                    MotionToast.TOAST_SUCCESS);
-
             ArrayList<String> images = realmBackupRestore.getImagesPath();
             realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
 
@@ -1234,6 +1252,21 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
             updateImages(images);
+
+            // prompt user to change backup reminder as it is currently not set
+            // due to restoring backup
+            currentUser  = realm.where(User.class).findFirst();
+            if(currentUser.getBackupReminderDate()!= null && currentUser.getBackupReminderDate().length() > 0
+                    && currentUser.getBackupReminderOccurrence() > 0) {
+                new Handler().postDelayed(() ->
+                        Helper.showMessage(this, "Backup Reminder", "" +
+                                "Needs to be reset", MotionToast.TOAST_WARNING), 3500);
+                realm.beginTransaction();
+                currentUser.setBackupReminderDate("");
+                currentUser.setBackupReminderOccurrence(0);
+                realm.commitTransaction();
+            }
+
             close();
         } catch (Exception e) {
             Helper.showLoading("", progressDialog, context, false);
@@ -1375,11 +1408,21 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         if(imagePaths.size() != 0) {
             for (int i = 0; i < imagePaths.size(); i++) {
                 String imagePath = imagePaths.get(i).substring(imagePaths.get(i).lastIndexOf("/") + 1);
-                Photo currentPhoto = realm.where(Photo.class).contains("photoLocation", imagePath).findFirst();
-                if(currentPhoto != null) {
-                    realm.beginTransaction();
-                    currentPhoto.setPhotoLocation(imagePaths.get(i));
-                    realm.commitTransaction();
+                if(imagePaths.get(i).contains("~")){
+                    CheckListItem currentChecklistPhoto = realm.where(CheckListItem.class).contains("itemImage", imagePath).findFirst();
+                    if(currentChecklistPhoto != null) {
+                        realm.beginTransaction();
+                        currentChecklistPhoto.setItemImage(imagePaths.get(i));
+                        realm.commitTransaction();
+                    }
+                }
+                else{
+                    Photo currentPhoto = realm.where(Photo.class).contains("photoLocation", imagePath).findFirst();
+                    if(currentPhoto != null) {
+                        realm.beginTransaction();
+                        currentPhoto.setPhotoLocation(imagePaths.get(i));
+                        realm.commitTransaction();
+                    }
                 }
             }
         }
