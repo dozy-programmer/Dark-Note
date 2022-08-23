@@ -1217,6 +1217,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             // make a copy of the backup zip file selected by user and unzip it
             realmBackupRestore.restore(uri, "backup.zip", true);
 
+            Helper.showLoading("", progressDialog, context, false);
+
             Helper.showMessage(this, "Synced", "" +  "Data was synced",
                     MotionToast.TOAST_SUCCESS);
 
@@ -1225,8 +1227,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
             Helper.showMessage(this, "Restored", "" + "Notes have been restored",
                     MotionToast.TOAST_SUCCESS);
-
-            Helper.showLoading("", progressDialog, context, false);
 
             // update image paths from restored database so it knows where the images are
             realm = RealmDatabase.setUpDatabase(context);
@@ -1341,6 +1341,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     updateAlarms(realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
+
+                    Helper.showLoading("", progressDialog, context, false);
 
                     close();
                 } catch (Exception e) {

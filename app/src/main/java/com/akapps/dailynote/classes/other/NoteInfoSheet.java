@@ -1,6 +1,10 @@
 package com.akapps.dailynote.classes.other;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,18 +13,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.ShowableListMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
+import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
@@ -30,23 +38,26 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
 public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     private Note currentNote;
-    private Fragment fragment;
     private RealmResults<Photo> allPhotos;
 
-    int deleteCounter;
+    boolean showOpenButton;
 
     public NoteInfoSheet(){}
 
-    public NoteInfoSheet(Note currentNote, Fragment fragment, RealmResults<Photo> allPhotos){
+    public NoteInfoSheet(Note currentNote, RealmResults<Photo> allPhotos, boolean showOpenButton){
         this.currentNote = currentNote;
-        this.fragment = fragment;
         this.allPhotos = allPhotos;
+        this.showOpenButton = showOpenButton;
     }
 
     @SuppressLint("SetTextI18n")
@@ -67,14 +78,18 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         TextView numPhotos = view.findViewById(R.id.num_photos);
         TextView numWords = view.findViewById(R.id.num_words);
         TextView numChars = view.findViewById(R.id.num_chars);
+        TextView moneyTotal = view.findViewById(R.id.money_total);
         ImageView lockIcon = view.findViewById(R.id.lock_icon);
         ImageView pinIcon = view.findViewById(R.id.pin_icon);
         ImageView trashIcon = view.findViewById(R.id.trash_icon);
         ImageView archiveIcon = view.findViewById(R.id.archive_icon);
-        MaterialButton delete = view.findViewById(R.id.delete);
-        MaterialButton copy = view.findViewById(R.id.copy);
         MaterialButton open = view.findViewById(R.id.open);
+        ImageButton moneyTotalCopy = view.findViewById(R.id.money_total_copy);
+        ImageButton moneyTotalInfo = view.findViewById(R.id.money_total_info);
         RecyclerView photosScrollView = view.findViewById(R.id.note_photos);
+
+        if(!showOpenButton)
+            open.setVisibility(View.GONE);
 
         photosScrollView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         RecyclerView.Adapter scrollAdapter = new photos_recyclerview(allPhotos, getActivity(), getContext(), false);
@@ -85,18 +100,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
         open.setOnClickListener(view1 -> openNoteActivity(currentNote));
 
-        delete.setOnClickListener(view12 -> {
-            if(deleteCounter == 1) {
-                ((notes) fragment).deleteNote(currentNote);
-                NoteInfoSheet.this.dismiss();
-            }
-            else{
-                deleteCounter++;
-                Helper.showMessage(getActivity(), "Confirm", "Press delete again " +
-                        " to confirm delete action", MotionToast.TOAST_ERROR);
-            }
-        });
-
+        String moneyTotalString = getMoneyTotal(currentNote.getChecklist());
         try {
             if(currentNote.getPinNumber() == 0)
                 lockIcon.setVisibility(View.GONE);
@@ -165,16 +169,129 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                             getChecklistString.length():
                             getNoteString.length()) + " characters" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
+
+            moneyTotal.setText(Html.fromHtml(moneyTotal.getText() + "<br>" +
+                            "<font color='#e65c00'>" + moneyTotalString + "</font>",
+                    Html.FROM_HTML_MODE_COMPACT));
         }catch (Exception e){
             this.dismiss();
         }
 
+        moneyTotalCopy.setOnClickListener(view12 -> copyToClipboard(moneyTotalString.replaceAll("<br>", "\n")));
+
+        moneyTotalInfo.setOnClickListener(view13 -> {
+            InfoSheet info = new InfoSheet(10);
+            info.show(getParentFragmentManager(), info.getTag());
+        });
+
         return view;
+    }
+
+    private void copyToClipboard(String wordToCopy){
+        ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Code", wordToCopy);
+        clipboard.setPrimaryClip(clip);
+        Helper.showMessage(getActivity(), "Total $",
+                "Copied successfully, now you can share", MotionToast.TOAST_SUCCESS);
     }
 
     private String sanitizeWord(String word){
         return word.replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ")
                 .replaceAll("\\s+", " ").trim();
+    }
+
+    private String getMoneyTotal(RealmList<CheckListItem>  noteChecklist){
+        double itemsCompleted = 0;
+        double itemsNotCompleted = 0;
+        double budget = 0;
+        ArrayList wrongFormat = new ArrayList();
+
+        for (CheckListItem currentItem: noteChecklist){
+            String checklistString = currentItem.getText();
+            if(checklistString.contains("$")){
+                String[] checklistStringTokens = checklistString.replaceAll("\n", " ").split(" ");
+                for(String currentToken: checklistStringTokens) {
+                    if (currentToken.contains("$")) {
+                        if(currentToken.contains("-$")) {
+                            if (budget == 0)
+                                try {
+                                    budget = Double.parseDouble(currentToken.replaceAll(",", "").replace("-$", ""));
+                                }catch (Exception e){
+                                    budget = -1;
+                                }
+                            else
+                                budget = -1;
+                        }
+                        else {
+                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim().replaceAll(",", "");
+                            try {
+                                Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
+                                if (currentItem.isChecked())
+                                    itemsCompleted += currentTokenDouble;
+                                else
+                                    itemsNotCompleted += currentTokenDouble;
+                            } catch (Exception e) {
+                                wrongFormat.add("$" + currentTokenTrimmed);
+                            }
+                        }
+                    }
+                }
+                if(currentItem.getSubChecklist().size() > 0) {
+                    for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
+                        String sublistString = sublistItem.getText();
+                        if (sublistString.contains("$")) {
+                            String[] sublistStringTokens = sublistString.replaceAll("\n", " ").split(" ");
+                            for (String currentToken : sublistStringTokens) {
+                                if (currentToken.contains("$")) {
+                                    if(currentToken.contains("-$")) {
+                                        if (budget == 0)
+                                            try {
+                                                budget = Double.parseDouble(currentToken.replaceAll(",", "").replace("-$", ""));
+                                            }catch (Exception e){
+                                                budget = -1;
+                                            }
+                                        else
+                                            budget = -1;
+                                    }
+                                    else {
+                                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim().replaceAll(",", "");
+                                        try {
+                                            Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
+                                            if (currentItem.isChecked())
+                                                itemsCompleted += currentTokenDouble;
+                                            else
+                                                itemsNotCompleted += currentTokenDouble;
+                                        } catch (Exception e) {
+                                            wrongFormat.add("$" + currentTokenTrimmed);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+        String addingResults = "";
+
+        if(budget > 0)
+            addingResults += "Budget : $" + df.format(budget) + "<br>";
+
+        addingResults += "Completed  Total = $" + df.format(itemsCompleted) + "<br>" +
+                "In-Progress Total = $" + df.format(itemsNotCompleted);
+
+        if(wrongFormat.size() > 0)
+            addingResults += "<br>Items Not added due to format error (fix these) : " + wrongFormat.toString();
+
+        if(budget == -1)
+            addingResults += "<br>Budget format error";
+        else if(budget !=0)
+            addingResults += "<br>Budget - Completed Total = $" + df.format(budget - itemsCompleted) + "<br>" +
+                    "Budget - (In-Progress Total) = $" + df.format(budget - itemsNotCompleted);
+
+        return addingResults;
     }
 
     private void openNoteActivity(Note currentNote){

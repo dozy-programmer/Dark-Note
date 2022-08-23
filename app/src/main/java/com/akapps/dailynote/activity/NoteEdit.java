@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -59,6 +60,7 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.RepeatListener;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
+import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.recyclerview.checklist_recyclerview;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
@@ -725,65 +727,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
     }
 
-    private void enableDragDrop(){
-        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_DRAG | ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
-            int start = -1, end = -1;
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
-                int started = dragged.getAbsoluteAdapterPosition();
-                int ended = target.getAbsoluteAdapterPosition();
-                if(sortEnable) {
-                    CheckListItem item = checkListItems.get(started);
-                    CheckListItem item2 = checkListItems.get(ended);
-                    realm.beginTransaction();
-                    if (Math.abs(ended - started) > 1) {
-                        if (started < ended) {
-                            CheckListItem item3 = checkListItems.get(started + 1);
-                            int middlePosition = item3.getPositionInList();
-                            item.setPositionInList(ended);
-                            item3.setPositionInList(started);
-                            item2.setPositionInList(middlePosition);
-                        } else {
-                            CheckListItem item3 = checkListItems.get(started - 1);
-                            int middlePosition = item3.getPositionInList();
-                            item.setPositionInList(ended);
-                            item3.setPositionInList(started);
-                            item2.setPositionInList(middlePosition);
-                        }
-                    } else {
-                        item.setPositionInList(ended);
-                        item2.setPositionInList(started);
-                    }
-                    realm.commitTransaction();
-                    checklistAdapter.notifyItemMoved(started, ended);
-//                    checklistAdapter.notifyItemChanged(started);
-//                    checklistAdapter.notifyItemChanged(ended);
-                }
-                return false;
-            }
-
-            @Override
-            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-                if (!recyclerView.isComputingLayout()) {
-                    checklistAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            }
-
-        });
-
-        if(sortEnable)
-            helper.attachToRecyclerView(checkListRecyclerview);
-        else
-            helper.attachToRecyclerView(null);
-        checklistAdapter.notifyDataSetChanged();
-    }
-
     private void showSearchBar(){
         isSearchingNotes = true;
         closeNote.setVisibility(View.GONE);
@@ -909,7 +852,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
 
         populateChecklist(results);
-        enableDragDrop();
     }
 
     public void updateColors(){
@@ -1176,6 +1118,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.format_size_icon), "Text Size"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.info_icon), "Note Info"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
                 .setBackgroundColor(getColor(R.color.light_gray))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
@@ -1260,6 +1203,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             else if(item.getTitle().equals("Delete All")){
                 InfoSheet info = new InfoSheet(3, true);
                 info.show(getSupportFragmentManager(), info.getTag());
+            }
+            else if(item.getTitle().equals("Note Info")){
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allNotePhotos, false);
+                noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             }
             else if(item.getTitle().contains("Text")){
                 isChangingTextSize = true;
@@ -1654,7 +1601,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             showPhotos(View.VISIBLE);
         }
         else if (resultCode== ImagePicker.RESULT_ERROR) {}
-
     }
 
     private void openNewItemDialog(){

@@ -18,6 +18,8 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,6 +44,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
     // layout
     private TextView title;
+    private TextView forgotPassword;
     private TextInputLayout emailLayout;
     private TextInputEditText emailInput;
     private TextInputLayout passwordLayout;
@@ -69,6 +72,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
         // layout
         title = view.findViewById(R.id.title);
+        forgotPassword = view.findViewById(R.id.forgot_password);
         emailLayout = view.findViewById(R.id.insert_email_layout);
         emailInput = view.findViewById(R.id.insert_email);
         passwordLayout = view.findViewById(R.id.insert_password_layout);
@@ -89,11 +93,33 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
 
-        if(!signUp){
+        if(!signUp)
             title.setText("Log in");
-        }
+        else
+            forgotPassword.setVisibility(View.INVISIBLE);
 
         loginButton.setOnClickListener(view1 -> getInput());
+
+        forgotPassword.setOnClickListener(view12 -> {
+            String inputEmail = emailInput.getText().toString();
+            if(inputEmail.contains("@") && inputEmail.contains(".com")) {
+                mAuth.sendPasswordResetEmail(inputEmail)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Helper.showMessage(getActivity(), getContext().getString(R.string.password_reset_title),
+                                        getContext().getString(R.string.password_reset_message),
+                                        MotionToast.TOAST_SUCCESS);
+                                dismiss();
+                            } else {
+                                Helper.showMessage(getActivity(), "Reset Password",
+                                        "Account does not exists or no internet connection",
+                                        MotionToast.TOAST_ERROR);
+                            }
+                        });
+            }
+            else
+                emailLayout.setError("Enter Email to Reset");
+        });
 
         return view;
     }

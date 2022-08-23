@@ -23,18 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
-import com.google.android.material.imageview.ShapeableImageView;
-
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import io.realm.Realm;

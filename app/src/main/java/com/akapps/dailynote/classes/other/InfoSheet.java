@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
 
 public class InfoSheet extends RoundedBottomSheetDialogFragment{
@@ -209,7 +210,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         }
         else if(message == 7) {
               // initialize layout
-              title.setText("Sync");
+              title.setText("Backups");
               info.setGravity(Gravity.CENTER);
               securityWord.setVisibility(View.GONE);
 
@@ -243,7 +244,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                           if (allBackups.size() == 0)
                               info.setText("No files to sync");
                           else {
-                              info.setText("Select file");
+                              info.setVisibility(View.GONE);
                               backupAdapter = new backup_recyclerview(allBackups, currentUser, realm, getActivity(), getContext());
                               backupRecyclerview.setAdapter(backupAdapter);
                           }
@@ -276,6 +277,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               info.setText("Are you sure?");
               info.setGravity(Gravity.CENTER);
        }
+        else if(message == 10){
+              title.setText("Budget $ Guide");
+              backup.setVisibility(View.GONE);
+              securityWord.setVisibility(View.GONE);
+              info.setText("Budget $ tracks your expenses and makes it easier to budget.\n\n" +
+                      "In order to add an expense(s), all you have to do is add the \"$\" symbol with your " +
+                      "amount, it is recommended to include a description for future reference.\n\n" +
+                      "To add your budget, include a minus \"-\" before the \"$\" symbol, like so \"-$\" ");
+          }
 
 
         unlock.setOnClickListener(v -> {

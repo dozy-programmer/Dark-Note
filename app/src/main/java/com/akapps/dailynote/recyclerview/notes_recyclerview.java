@@ -488,7 +488,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         });
 
         holder.note_info.setOnClickListener(view -> {
-            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, noteFragment, allPhotos);
+            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allPhotos, true);
             noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
         });
     }

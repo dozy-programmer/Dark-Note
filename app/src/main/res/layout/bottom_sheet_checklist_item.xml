@@ -61,33 +61,35 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/item_name_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="20dp"
             android:hint="Item name"
-            app:boxBackgroundColor="@color/gray"
-            app:errorIconTint="@color/red"
-            app:boxStrokeErrorColor="@color/red"
             android:textColorHint="@color/white"
             android:theme="@style/TextInputLayout"
-            app:hintTextColor="@color/white"
+            app:boxBackgroundColor="@color/gray"
             app:boxStrokeColor="@color/havelock_blue"
+            app:boxStrokeErrorColor="@color/red"
             app:boxStrokeWidth="2dp"
             app:endIconMode="clear_text"
             app:endIconTint="@color/red"
-            android:layout_margin="10dp"
+            app:errorIconTint="@color/red"
+            app:hintTextColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checklist_info"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            app:layout_constraintTop_toBottomOf="@+id/checklist_info">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:windowSoftInputMode="adjustPan|adjustResize"
                 android:hint=""
+                android:textColor="@color/white"
                 android:textColorHint="@color/ultra_white"
-                android:textColor="@color/white"/>
+                android:windowSoftInputMode="adjustPan|adjustResize" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,7 +98,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="[Add multiple using two commas &quot;,,&quot; ]"
+            android:text="[Add multiple using two commas &quot;,,&quot; ]\n"
             android:textColor="@color/ultra_white"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,34 +107,33 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/next_confirm"
-            android:layout_width="0dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="20dp"
-            android:padding="15dp"
-            android:text="Next"
+            app:icon="@drawable/add_icon"
+            android:padding="10dp"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
             android:textColor="@color/ultra_white"
             app:backgroundTint="@color/orange"
-            app:cornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:cornerRadius="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/delete" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/confirm_filter"
-            android:layout_width="0dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:padding="15dp"
-            android:text="SAVE"
+            android:padding="10dp"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/ic_check_green"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
             android:textColor="@color/ultra_white"
             app:backgroundTint="@color/havelock_blue"
-            app:cornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/next_confirm"
-            app:layout_constraintTop_toBottomOf="@+id/item_name_layout" />
+            app:layout_constraintTop_toTopOf="@+id/dropdown_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

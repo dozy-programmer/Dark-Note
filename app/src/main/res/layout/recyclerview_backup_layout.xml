@@ -43,26 +43,26 @@
                 android:weightSum="100">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="10dp"
-                    android:layout_weight="75"
+                    android:layout_weight="30"
                     android:orientation="vertical"
                     android:paddingTop="10dp">
 
                     <TextView
                         android:id="@+id/file_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="10dp"
                         android:text="File Name"
-                        android:textColor="@color/ultra_white"
+                        android:textColor="@color/golden_rod"
                         android:textSize="16sp"></TextView>
 
                     <TextView
                         android:id="@+id/file_date"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="10dp"
                         android:text="Date"
@@ -73,10 +73,11 @@
 
                 <TextView
                     android:id="@+id/file_size"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="15"
-                    android:gravity="center"
+                    android:layout_weight="70"
+                    android:layout_marginRight="20dp"
+                    android:gravity="right|center_vertical"
                     android:text="0 MB"
                     android:textColor="@color/ultra_white"
                     android:textSize="16sp"></TextView>
@@ -88,7 +89,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/delete"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_gravity="left"
             android:layout_marginVertical="5dp"
             android:layout_marginLeft="20dp"
@@ -104,7 +105,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/sync"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_marginVertical="5dp"
             android:layout_marginRight="20dp"
             android:backgroundTint="@color/darker_blue"
