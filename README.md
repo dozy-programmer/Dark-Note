@@ -1,6 +1,6 @@
 # Dark Note
 
-Dark note is a simple and intuitive note app for your notes and checklists. 
+Dark note is a feature rich and intuitive app for your notes and checklists. 
 
 ## Table of contents
 * [Preview](#preview)
@@ -48,7 +48,7 @@ Home Page | Sample Note | Folder Page | Settings Page
 	* Notes with folders can be hid away and can only be viewed via Folders.
 
 ## Purpose
-This app was created because I wanted to modernize the popular note app ColorNote. Although it is a great and useful app, I felt like the user interface took away from the user experience. After having used ColorNote for a couple years, I felt it was time to do it. Using ColorNote and BlackNote as inspiration, I combined the best of these two apps and I created Dark Note.
+This app was created because I wanted to modernize the popular note app ColorNote. Although it is a great and useful app, I felt like the user interface took away from the user experience. After having used ColorNote for a couple years, I felt it was time to do it. Using ColorNote and BlackNote as inspiration, I combined the best of both worlds and I created Dark Note. Now I use dark note everyday to keep track of my notes and even my monthly budget. 
 	
 ## Tools
 * Android Studio
