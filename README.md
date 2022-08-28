@@ -18,7 +18,7 @@ Dark note is a feature rich and intuitive app for your notes and checklists.
 
 Home Page | Sample Note | Folder Page | Settings Page
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-<img src="Screenshots/Regular%20Device/1_oneplus-oneplus8pro-portrait.png" width="310" height="500"/> | <img src="Screenshots/Regular%20Device/2_oneplus-oneplus8pro-portrait.png" width="310" height="500"/> | <img src="Screenshots/Regular%20Device/Folders_Page.png" width="310" height="500"/> | <img src="Screenshots/Regular%20Device/8_oneplus-oneplus8pro-portrait.png" width="310" height="500"/>
+<img src="Screenshots/Regular%20Device/1_oneplus-oneplus8pro-portrait.png" width="310" height="450"/> | <img src="Screenshots/Regular%20Device/2_oneplus-oneplus8pro-portrait.png" width="310" height="450"/> | <img src="Screenshots/Regular%20Device/Folders_Page.png" width="310" height="450"/> | <img src="Screenshots/Regular%20Device/8_oneplus-oneplus8pro-portrait.png" width="310" height="450"/>
 
 ## Features
 
