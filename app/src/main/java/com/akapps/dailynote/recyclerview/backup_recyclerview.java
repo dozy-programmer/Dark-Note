@@ -77,17 +77,21 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
 
         String fileName = currentBackup.getFileName().replace("_backup.zip", "");
 
+        double fileSize = 0;
+
         try {
             holder.file_name.setText(fileName.split("~")[1] + "_backup.zip");
             holder.file_date.setText(fileName.split("~")[0].replace("_", " "));
-            holder.file_size.setText("" + fileName.split("~")[2].replace("_", " "));
+            fileSize = Double.parseDouble(fileName.split("~")[2].replace("_", " ").replace("MB", "").trim());
+            holder.file_size.setText(fileSize + " MB");
         }catch (Exception e){
             holder.file_name.setText("00_00_00_" + fileName);
             holder.file_date.setText("Date ?");
             holder.file_size.setText("? MB");
         }
 
-        holder.sync.setOnClickListener(view -> ((SettingsScreen) activity).restoreFromDatabase(currentBackup.getFileName()));
+        double finalFileSize = fileSize;
+        holder.sync.setOnClickListener(view -> ((SettingsScreen) activity).restoreFromDatabase(currentBackup.getFileName(), finalFileSize));
 
         holder.delete.setOnClickListener(view -> {
             Helper.showMessage(activity, "Delete File", "Long click to delete", MotionToast.TOAST_WARNING);

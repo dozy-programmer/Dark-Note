@@ -80,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:nextFocusDown="@id/insert_password"
                 android:textColor="@color/white"
                 android:imeOptions="actionGo" />
 

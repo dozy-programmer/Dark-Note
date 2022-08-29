@@ -69,8 +69,29 @@
                     android:layout_gravity="center"
                     android:src="@drawable/add_icon"
                     android:elevation="5dp"
+                    android:layout_marginRight="5dp"
                     app:backgroundTint="@color/darker_blue"
                     app:fabCustomSize="40dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/item_image_layout"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:cardCornerRadius="10dp"
+                    android:backgroundTint="@color/chetwode_blue">
+
+                    <ImageView
+                        android:id="@+id/item_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:backgroundTint="@color/mdtp_transparent_black"
+                        android:src="@drawable/icon_image"/>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 

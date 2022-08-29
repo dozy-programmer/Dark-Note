@@ -35,6 +35,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -233,10 +238,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                           realm.commitTransaction();
                           for (StorageReference item : listResult.getItems()) {
                               realm.beginTransaction();
-                              realm.insert(new Backup(currentUser.getUserId(), item.getName(), "", 0));
+                              realm.insert(new Backup(currentUser.getUserId(), item.getName(), addDate(item.getName()), 0));
                               realm.commitTransaction();
                           }
-                          allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+                          allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId())
+                                  .sort("upLoadTime", Sort.DESCENDING).findAll();
 
                           if (allBackups.size() == 0)
                               info.setText("No files to sync");
@@ -329,6 +335,21 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         });
 
         return view;
+    }
+
+    private Date addDate(String currentDate){
+        String fileName = currentDate.replace("_backup.zip", "");
+        String [] splitDate = fileName.split("~");
+        String newDate = splitDate[0] + " " + splitDate[1];
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM_dd_yyyy hh_mm_a");
+
+        Date date = null;
+        try {
+            date = formatter.parse(newDate);
+        } catch (ParseException e) {
+            return null;
+        }
+        return date;
     }
 
     @Override

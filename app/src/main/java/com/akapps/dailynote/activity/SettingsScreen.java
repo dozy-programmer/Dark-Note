@@ -59,11 +59,14 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetailsParams;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
@@ -81,6 +84,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -1032,20 +1036,16 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private ArrayList<String> getAllFilePaths(RealmResults<Photo> allNotePhotos, RealmResults<Note> allNotes){
         ArrayList<String> allPhotos = new ArrayList<>();
-        for(int i = 0; i < allNotePhotos.size(); i++) {
+        for(int i = 0; i < allNotePhotos.size(); i++)
             allPhotos.add(allNotePhotos.get(i).getPhotoLocation());
-            Log.d("Here", "Regular photo added  " + allNotePhotos.get(i).getPhotoLocation());
-        }
 
         for(int i=0; i< allNotes.size(); i++){
             RealmList<CheckListItem> currentNoteChecklist= allNotes.get(i).getChecklist();
             if(currentNoteChecklist.size() > 0){
                 for(int j=0 ;j < currentNoteChecklist.size(); j++){
                     CheckListItem currentChecklistItem = currentNoteChecklist.get(j);
-                    if(currentChecklistItem.getItemImage() != null && !currentChecklistItem.getItemImage().isEmpty()) {
+                    if(currentChecklistItem.getItemImage() != null && !currentChecklistItem.getItemImage().isEmpty())
                         allPhotos.add(currentChecklistItem.getItemImage());
-                        Log.d("Here", "--> Checklist photo - " + allNotes.get(i).getTitle() + " - Added " + currentChecklistItem.getItemImage());
-                    }
                 }
             }
         }
@@ -1103,13 +1103,20 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     public void upLoadData(){
-        progressDialog = Helper.showLoading("Uploading...", progressDialog, context, true);
         File backupFile = new File(backUpZip());
         Uri file = Uri.fromFile(backupFile);
         // file info
         double fileSizeInMB = backupFile.length() / (Math.pow(1024, 2));
-        fileSizeInMB = Double.valueOf(new DecimalFormat("#.##").format(fileSizeInMB));
+        fileSizeInMB = Double.parseDouble(new DecimalFormat("#.##").format(fileSizeInMB));
 
+        progressDialog = Helper.showLoading("Uploading...\n" + fileSizeInMB + " MB",
+                progressDialog, context, true);
+
+        if(fileSizeInMB > 100){
+            Helper.showMessage(this, "Upload Failed", "File size is too big, backup locally",
+                    MotionToast.TOAST_ERROR);
+            return;
+        }
 
         String fileSizeString;
         if(fileSizeInMB < 1) {
@@ -1137,24 +1144,40 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     .child(fileName);
             UploadTask uploadTask = storageRef.putFile(file);
 
-
-            uploadTask.addOnFailureListener(exception -> {
-                Helper.showLoading("", progressDialog, context, false);
+            double finalFileSizeInMB = fileSizeInMB;
+            uploadTask.addOnProgressListener(snapshot -> {
+                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("#.##").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
+                progressDialog = Helper.showLoading("Uploading...\n" + fileSizeInMBTransferred + " MB / " + finalFileSizeInMB + " MB",
+                        progressDialog, context, true);
+            }).addOnFailureListener(exception -> {
+                progressDialog.cancel();
                 Helper.showMessage(this, "Upload error",
                         "Error Uploading data, try again",
                         MotionToast.TOAST_ERROR);
                 restart();
             }).addOnSuccessListener(taskSnapshot -> {
-                realm.beginTransaction();
-                realm.insert(new Backup(currentUser.getUserId(), fileName, "", 0));
-                currentUser.setLastUpload(Helper.getCurrentDate());
-                lastUploadDate.setVisibility(View.VISIBLE);
-                lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
-                realm.commitTransaction();
-                Helper.showLoading("", progressDialog, context, false);
-                Helper.showMessage(this, "Upload Success",
-                        "Data Uploaded",
-                        MotionToast.TOAST_SUCCESS);
+                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("#.##").format(taskSnapshot.getBytesTransferred() / (Math.pow(1024, 2))));
+                if(fileSizeInMBTransferred == finalFileSizeInMB){
+                    realm.beginTransaction();
+                    realm.insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
+                    currentUser.setLastUpload(Helper.getCurrentDate());
+                    lastUploadDate.setVisibility(View.VISIBLE);
+                    lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
+                    realm.commitTransaction();
+                    progressDialog.cancel();
+                    Helper.showMessage(SettingsScreen.this, "Upload Success",
+                            "Data Uploaded",
+                            MotionToast.TOAST_SUCCESS);
+                }
+                else{
+                    // deleting file since it was missing files
+                    storageRef.delete().addOnSuccessListener(aVoid -> {})
+                            .addOnFailureListener(exception -> {});
+                    progressDialog.cancel();
+                    Helper.showMessage(SettingsScreen.this, "Upload Error",
+                            "Files missing, please upload again!",
+                            MotionToast.TOAST_ERROR);
+                }
             });
         }
     }
@@ -1198,7 +1221,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         }
     }
 
-    public void restoreFromDatabase(String fileName){
+    public void restoreFromDatabase(String fileName, double fileSize){
         progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
         String userEmail = mAuth.getCurrentUser().getEmail();
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -1216,12 +1239,17 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         File localFile = new File(storageDir,"backup.zip");
 
-        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+        storageRef.getFile(localFile)
+                .addOnProgressListener(snapshot -> {
+                    double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("##.#").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
+                    progressDialog = Helper.showLoading("Syncing...\n" + fileSizeInMBTransferred + " MB / " + fileSize + " MB",
+                            progressDialog, context, true);
+                }).addOnSuccessListener(taskSnapshot -> {
             restoreFromDatabase(Uri.fromFile(localFile));
         }).addOnFailureListener(exception ->{
                 Helper.showLoading("", progressDialog, context, false);
                 Helper.showMessage(SettingsScreen.this, "Error", "" +
-                "Restoring Error from database, try again", MotionToast.TOAST_ERROR);
+                "Restoring Error from database, please clear app storage & try again", MotionToast.TOAST_ERROR);
         });
     }
 
@@ -1232,7 +1260,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             RealmConfiguration configuration = realm.getConfiguration();
             realm.close();
             Realm.deleteRealm(configuration);
-
             // initialize backup object
             realmBackupRestore = new RealmBackupRestore(this);
             // make a copy of the backup zip file selected by user and unzip it
@@ -1252,20 +1279,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
             updateImages(images);
-
             // prompt user to change backup reminder as it is currently not set
             // due to restoring backup
-            currentUser  = realm.where(User.class).findFirst();
-            if(currentUser.getBackupReminderDate()!= null && currentUser.getBackupReminderDate().length() > 0
-                    && currentUser.getBackupReminderOccurrence() > 0) {
-                new Handler().postDelayed(() ->
-                        Helper.showMessage(this, "Backup Reminder", "" +
-                                "Needs to be reset", MotionToast.TOAST_WARNING), 3500);
-                realm.beginTransaction();
-                currentUser.setBackupReminderDate("");
-                currentUser.setBackupReminderOccurrence(0);
-                realm.commitTransaction();
-            }
+            updateBackupReminder();
 
             close();
         } catch (Exception e) {
@@ -1315,6 +1331,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
                     updateImages(images);
+                    // prompt user to change backup reminder as it is currently not set
+                    // due to restoring backup
+                    updateBackupReminder();
 
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
@@ -1393,6 +1412,22 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             else
                 Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
                         "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
+        }
+    }
+
+    private void updateBackupReminder(){
+        // prompt user to change backup reminder as it is currently not set
+        // due to restoring backup
+        currentUser  = realm.where(User.class).findFirst();
+        if(currentUser.getBackupReminderDate()!= null && currentUser.getBackupReminderDate().length() > 0
+                && currentUser.getBackupReminderOccurrence() > 0) {
+            new Handler().postDelayed(() ->
+                    Helper.showMessage(this, "Backup Reminder", "" +
+                            "Needs to be reset", MotionToast.TOAST_WARNING), 3500);
+            realm.beginTransaction();
+            currentUser.setBackupReminderDate("");
+            currentUser.setBackupReminderOccurrence(0);
+            realm.commitTransaction();
         }
     }
 

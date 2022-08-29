@@ -1,16 +1,18 @@
 package com.akapps.dailynote.classes.data;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 
 public class Backup extends RealmObject {
     private int userId;
     private String fileName;
-    private String upLoadTime;
+    private Date upLoadTime;
     private int fileSize;
 
     public Backup(){}
 
-    public Backup(int userId, String fileName, String upLoadTime, int fileSize) {
+    public Backup(int userId, String fileName, Date upLoadTime, int fileSize) {
         this.userId = userId;
         this.fileName = fileName;
         this.upLoadTime = upLoadTime;
@@ -33,11 +35,11 @@ public class Backup extends RealmObject {
         this.fileName = fileName;
     }
 
-    public String getUpLoadTime() {
+    public Date getUpLoadTime() {
         return upLoadTime;
     }
 
-    public void setUpLoadTime(String upLoadTime) {
+    public void setUpLoadTime(Date upLoadTime) {
         this.upLoadTime = upLoadTime;
     }
 

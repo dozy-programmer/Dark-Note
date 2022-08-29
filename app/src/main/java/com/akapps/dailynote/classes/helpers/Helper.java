@@ -356,12 +356,12 @@ public class Helper {
         try {
             if (show) {
                 loadingText += "\nDo not close app";
-                if(loadingText.toLowerCase().contains("sync"))
-                    loadingText += "\nData might be Lost\nThis should take not take more than a minute" +
-                            " depending on size of backup";
-                progressDialog = new Dialog(context);
-                progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                progressDialog.setContentView(R.layout.custom_dialog_progress);
+
+                if(progressDialog == null) {
+                    progressDialog = new Dialog(context);
+                    progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    progressDialog.setContentView(R.layout.custom_dialog_progress);
+                }
 
                 TextView progressTv = progressDialog.findViewById(R.id.progress_tv);
                 progressTv.setText(loadingText);

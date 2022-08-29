@@ -191,8 +191,9 @@ public class RealmBackupRestore {
         for (int i = 0; i < files.length; i++) {
             if(files[i].getName().contains(".png"))
                 images.add(files[i].getPath());
-            else if(files[i].getName().contains(".realm"))
+            else if(files[i].getName().contains(".realm")) {
                 backupPath = files[i].getPath();
+            }
         }
 
         return images;

@@ -1,7 +1,12 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.akapps.dailynote.R;
+
+import java.util.Date;
+
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -113,8 +118,11 @@ public class RealmDatabase {
                         .addField("userId", int.class)
                         .addField("fileSize", int.class)
                         .addField("fileName", String.class)
-                        .addField("upLoadTime", String.class);
+                        .addField("upLoadTime", String.class)
+                        .removeField("upLoadTime")
+                        .addField("upLoadTime", Date.class);
 
+            schema.get("Backup").removeField("upLoadTime").addField("upLoadTime", Date.class);
         }
     }
 }
