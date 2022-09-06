@@ -259,6 +259,7 @@
                 android:hint="Title"
                 android:textColor="@color/ultra_white"
                 android:textColorHint="@color/light_gray"
+                android:textCursorDrawable="@drawable/cursor"
                 android:textSize="30sp"
                 app:layout_constraintEnd_toStartOf="@+id/sort"
                 app:layout_constraintStart_toStartOf="parent"
@@ -293,6 +294,23 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title"></TextView>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/info_icon"
+                android:visibility="visible"
+                app:fab_colorNormal="@color/light_gray"
+                app:fab_colorPressed="@color/gray"
+                app:fab_colorRipple="@color/light_gray"
+                app:fab_size="mini"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="40dp"
+                app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+                app:layout_constraintBottom_toBottomOf="@+id/date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/date" />
 
             <LinearLayout
                 android:id="@+id/category_layout"

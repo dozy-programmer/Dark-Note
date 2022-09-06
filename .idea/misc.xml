@@ -9,6 +9,7 @@
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/drawable/arrow_right_icon.xml" value="0.229" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/drawable/bullets_icon.xml" value="0.218" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/drawable/checklist_icon.xml" value="0.2708333333333333" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/drawable/cursor.xml" value="0.218" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/drawable/dialog_corner.xml" value="0.2535" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/drawable/error_icon.xml" value="0.229" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/drawable/expand_menu_icon.xml" value="0.218" />
@@ -26,7 +27,7 @@
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-land/activity_note_edit.xml" value="0.18333333333333332" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-land/activity_settings_screen.xml" value="0.2" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_category_screen.xml" value="0.4" />
-        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_note_edit.xml" value="0.268" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_note_edit.xml" value="0.5905797101449275" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_note_lock_screen.xml" value="0.191015625" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/activity_settings_screen.xml" value="0.44000000000000006" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/bottom_sheet_checklist_category.xml" value="0.1" />
@@ -42,10 +43,10 @@
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/recyclerview_checklist_layout.xml" value="0.5" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/recyclerview_note_layout.xml" value="0.268" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/recyclerview_photo_layout.xml" value="0.5" />
-        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/recyclerview_subchecklist_layout.xml" value="0.268" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout-sw600dp/recyclerview_subchecklist_layout.xml" value="0.2" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_category_screen.xml" value="0.268" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_homepage_screen.xml" value="0.3" />
-        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_note_edit.xml" value="0.268" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_note_edit.xml" value="0.36" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_note_lock_screen.xml" value="0.16085526315789472" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_settings_screen.xml" value="0.23385939741750358" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/activity_widget_configure.xml" value="0.18550834597875568" />
@@ -66,10 +67,10 @@
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_add_subchecklist_layout.xml" value="0.2546875" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_backup_layout.xml" value="0.3" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_category_layout.xml" value="0.2546875" />
-        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_checklist_layout.xml" value="0.3" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_checklist_layout.xml" value="0.8" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_note_layout.xml" value="0.2546875" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_photo_layout.xml" value="0.8028571428571428" />
-        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_subchecklist_layout.xml" value="0.2546875" />
+        <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_subchecklist_layout.xml" value="0.36" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/recyclerview_widget.xml" value="0.18550834597875568" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/widget.xml" value="0.18550834597875568" />
         <entry key="..\:/Users/amark/Desktop/My Stuff/Projects/Note_App_Lite/daily_day_app_lite/app/src/main/res/layout/widget_preview.xml" value="0.18550834597875568" />

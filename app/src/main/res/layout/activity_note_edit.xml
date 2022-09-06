@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -257,6 +258,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:hint="Title"
                 android:textColor="@color/ultra_white"
+                android:textCursorDrawable="@drawable/cursor"
                 android:textColorHint="@color/light_gray"
                 android:textSize="30sp"
                 app:layout_constraintEnd_toStartOf="@+id/sort"
@@ -281,18 +283,35 @@
 
             <TextView
                 android:id="@+id/date"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="23dp"
+                android:layout_marginLeft="23dp"
                 android:layout_weight="50"
                 android:gravity="left"
                 android:text="Date"
                 android:textColor="@color/greyish"
                 android:textSize="15sp"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/info"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title"></TextView>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/info_icon"
+                android:visibility="visible"
+                app:fab_colorNormal="@color/light_gray"
+                app:fab_colorPressed="@color/gray"
+                app:fab_colorRipple="@color/light_gray"
+                app:fab_size="mini"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+                app:layout_constraintBottom_toBottomOf="@+id/date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/date" />
 
             <LinearLayout
                 android:id="@+id/category_layout"
@@ -379,7 +398,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:clipToPadding="false"
-                android:paddingBottom="55dp"
+                android:paddingBottom="70dp"
                 android:visibility="gone"
                 android:layout_marginHorizontal="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"

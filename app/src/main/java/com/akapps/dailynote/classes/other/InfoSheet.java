@@ -201,7 +201,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               User currentUser = realm.where(User.class).findFirst();
               allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
-              if(allBackups.size() <= 5){
+              if(allBackups.size() <= 12){
                   ((SettingsScreen) getActivity()).upLoadData();
                   this.dismiss();
               }
@@ -287,7 +287,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               info.setText("Budget $ tracks your expenses and makes it easier to budget.\n\n" +
                       "In order to add an expense(s), all you have to do is add the \"$\" symbol with your " +
                       "amount, it is recommended to include a description for future reference.\n\n" +
-                      "To add your budget, include a minus \"-\" before the \"$\" symbol, like so \"-$\" ");
+                      "To add your budget, include a plus \"+\" before the \"$\" symbol, like so \"+$\" ");
           }
 
 

@@ -1146,7 +1146,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
             double finalFileSizeInMB = fileSizeInMB;
             uploadTask.addOnProgressListener(snapshot -> {
-                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("#.##").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
+                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("##.##").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
                 progressDialog = Helper.showLoading("Uploading...\n" + fileSizeInMBTransferred + " MB / " + finalFileSizeInMB + " MB",
                         progressDialog, context, true);
             }).addOnFailureListener(exception -> {
@@ -1156,7 +1156,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                         MotionToast.TOAST_ERROR);
                 restart();
             }).addOnSuccessListener(taskSnapshot -> {
-                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("#.##").format(taskSnapshot.getBytesTransferred() / (Math.pow(1024, 2))));
+                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("##.##").format(taskSnapshot.getBytesTransferred() / (Math.pow(1024, 2))));
                 if(fileSizeInMBTransferred == finalFileSizeInMB){
                     realm.beginTransaction();
                     realm.insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
@@ -1228,8 +1228,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         StorageReference storageRef = storage.getReference()
                 .child("users/" + userEmail + "/" + fileName);
 
-        FilesKt.deleteRecursively(new File(getApplicationContext().getExternalFilesDir(null) + ""));
-
         File storageDir = new File(context
                 .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
 
@@ -1241,7 +1239,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         storageRef.getFile(localFile)
                 .addOnProgressListener(snapshot -> {
-                    double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("##.#").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
+                    double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("###.#").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
                     progressDialog = Helper.showLoading("Syncing...\n" + fileSizeInMBTransferred + " MB / " + fileSize + " MB",
                             progressDialog, context, true);
                 }).addOnSuccessListener(taskSnapshot -> {
@@ -1282,6 +1280,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             // prompt user to change backup reminder as it is currently not set
             // due to restoring backup
             updateBackupReminder();
+
+            // delete backup folder
+            File backupDir = new File(context
+                    .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
+            FilesKt.deleteRecursively(backupDir);
 
             close();
         } catch (Exception e) {
@@ -1339,6 +1342,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
                     Helper.showLoading("", progressDialog, context, false);
+
+                    // delete backup folder
+                    File backupDir = new File(context
+                            .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
+                    FilesKt.deleteRecursively(backupDir);
 
                     close();
                 } catch (Exception e) {

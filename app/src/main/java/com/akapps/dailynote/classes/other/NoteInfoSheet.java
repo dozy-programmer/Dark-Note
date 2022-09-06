@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -205,25 +206,24 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
         for (CheckListItem currentItem: noteChecklist){
             String checklistString = currentItem.getText();
-            if(checklistString.contains("$")){
+            if(checklistString.contains("$")) {
                 String[] checklistStringTokens = checklistString.replaceAll("\n", " ")
                         .replaceAll(",", "")
                         .replaceAll("[$]+", "\\$")
                         .split(" ");
-                for(String currentToken: checklistStringTokens) {
+                for (String currentToken : checklistStringTokens) {
                     if (currentToken.contains("$")) {
-                        if(currentToken.contains("-$")) {
+                        if (currentToken.contains("+$")) {
                             if (budget == 0)
                                 try {
                                     budget = Double.parseDouble(currentToken.replaceAll(",", "")
-                                            .replace("-$", ""));
-                                }catch (Exception e){
+                                            .replace("+$", ""));
+                                } catch (Exception e) {
                                     budget = -1;
                                 }
                             else
                                 budget = -1;
-                        }
-                        else {
+                        } else {
                             String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1)
                                     .trim().replaceAll("[$]+", "\\$")
                                     .replaceAll(",", "");
@@ -239,42 +239,41 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                         }
                     }
                 }
-                if(currentItem.getSubChecklist().size() > 0) {
-                    for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
-                        String sublistString = sublistItem.getText();
-                        if (sublistString.contains("$")) {
-                            String[] sublistStringTokens = sublistString.replaceAll("\n", " ")
-                                    .replaceAll(",", "")
-                                    .replaceAll("[$]+", "\\$")
-                                    .split(" ");
-                            for (String currentToken : sublistStringTokens) {
-                                if (currentToken.contains("$")) {
-                                    if(currentToken.contains("-$")) {
-                                        if (budget == 0)
-                                            try {
-                                                budget = Double.parseDouble(currentToken.replaceAll(",", "")
-                                                        .replaceAll("[$]+", "\\$")
-                                                        .replace("-$", ""));
-                                            }catch (Exception e){
-                                                budget = -1;
-                                            }
-                                        else
-                                            budget = -1;
+            }
+
+            for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
+                Log.d("Here", "Adding sublist item " + currentItem.getText());
+                String sublistString = sublistItem.getText();
+                if (sublistString.contains("$")) {
+                    String[] sublistStringTokens = sublistString.replaceAll("\n", " ")
+                            .replaceAll(",", "")
+                            .replaceAll("[$]+", "\\$")
+                            .split(" ");
+                    for (String currentToken : sublistStringTokens) {
+                        if (currentToken.contains("$")) {
+                            if(currentToken.contains("+$")) {
+                                if (budget == 0)
+                                    try {
+                                        budget = Double.parseDouble(currentToken.replaceAll(",", "")
+                                                .replaceAll("[$]+", "\\$")
+                                                .replace("+$", ""));
+                                    }catch (Exception e){
+                                        budget = -1;
                                     }
-                                    else {
-                                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim()
-                                                .replaceAll(",", "")
-                                                .replaceAll(",", "");
-                                        try {
-                                            Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
-                                            if (currentItem.isChecked())
-                                                itemsCompleted += currentTokenDouble;
-                                            else
-                                                itemsNotCompleted += currentTokenDouble;
-                                        } catch (Exception e) {
-                                            wrongFormat.add("$" + currentTokenTrimmed);
-                                        }
-                                    }
+                                else
+                                    budget = -1;
+                            }
+                            else {
+                                String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim()
+                                        .replaceAll(",", "");
+                                try {
+                                    Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
+                                    if (currentItem.isChecked())
+                                        itemsCompleted += currentTokenDouble;
+                                    else
+                                        itemsNotCompleted += currentTokenDouble;
+                                } catch (Exception e) {
+                                    wrongFormat.add("$" + currentTokenTrimmed);
                                 }
                             }
                         }
@@ -283,23 +282,28 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             }
         }
 
-        DecimalFormat df = new DecimalFormat("#,##0.00");
         String addingResults = "";
+        if(budget > 0 || itemsCompleted > 0 || itemsNotCompleted > 0){
+            DecimalFormat df = new DecimalFormat("#,##0.00");
+            addingResults = "";
+            if(budget > 0)
+                addingResults += "Budget : $" + df.format(budget) + "<br>";
 
-        if(budget > 0)
-            addingResults += "Budget : $" + df.format(budget) + "<br>";
+            addingResults += "Completed  Total = $" + df.format(itemsCompleted) + "<br>" +
+                    "In-Progress Total = $" + df.format(itemsNotCompleted);
 
-        addingResults += "Completed  Total = $" + df.format(itemsCompleted) + "<br>" +
-                "In-Progress Total = $" + df.format(itemsNotCompleted);
+            if(wrongFormat.size() > 0)
+                addingResults += "<br>Items Not added due to format error (fix these) : " + wrongFormat.toString();
 
-        if(wrongFormat.size() > 0)
-            addingResults += "<br>Items Not added due to format error (fix these) : " + wrongFormat.toString();
+            if(budget == -1)
+                addingResults += "<br>Budget format error";
+            else if(budget !=0)
+                addingResults += "<br>Budget - Completed Total = $" + df.format(budget - itemsCompleted) + "<br>" +
+                        "Budget - (In-Progress Total) = $" + df.format(budget - itemsNotCompleted);
+        }
+        else
+            addingResults = "No Budget Set (Try it Out)";
 
-        if(budget == -1)
-            addingResults += "<br>Budget format error";
-        else if(budget !=0)
-            addingResults += "<br>Budget - Completed Total = $" + df.format(budget - itemsCompleted) + "<br>" +
-                    "Budget - (In-Progress Total) = $" + df.format(budget - itemsNotCompleted);
 
         return addingResults;
     }

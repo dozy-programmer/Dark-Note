@@ -103,6 +103,8 @@ public class RealmDatabase {
                 schema.get("CheckListItem").addField("subListId", int.class);
             if(!schema.get("CheckListItem").hasField("itemImage"))
                 schema.get("CheckListItem").addField("itemImage", String.class);
+            if(!schema.get("CheckListItem").hasField("dateCreated"))
+                schema.get("CheckListItem").addField("dateCreated", String.class);
 
             // added sub-lists class
             if(!schema.contains("SubCheckListItem"))
@@ -111,6 +113,9 @@ public class RealmDatabase {
                         .addField("text", String.class)
                         .addField("checked", boolean.class)
                         .addField("positionInList", int.class);
+
+            if(!schema.get("SubCheckListItem").hasField("dateCreated"))
+                schema.get("SubCheckListItem").addField("dateCreated", String.class);
 
             // added backup class
             if(!schema.contains("Backup"))

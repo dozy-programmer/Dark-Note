@@ -57,6 +57,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final FloatingActionButton addSubChecklist;
         private final MaterialCardView itemImageLayout;
         private final ImageView itemImage;
+        private final TextView dateCreated;
 
         public MyViewHolder(View v) {
             super(v);
@@ -69,6 +70,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             subChecklist.setLayoutManager(new GridLayoutManager(v.getContext(), 1));
             itemImageLayout = v.findViewById(R.id.item_image_layout);
             itemImage = v.findViewById(R.id.item_image);
+            dateCreated = v.findViewById(R.id.date_created);
         }
     }
 
@@ -153,6 +155,18 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         // populates note into the recyclerview
         holder.checklistText.setText(checkListText);
+
+        if(checkListItem.getDateCreated() != null) {
+            if (!checkListItem.getDateCreated().isEmpty()) {
+                holder.dateCreated.setText(checkListItem.getDateCreated());
+                holder.dateCreated.setVisibility(View.VISIBLE);
+            }
+            else
+                holder.dateCreated.setVisibility(View.GONE);
+        }
+        else
+            holder.dateCreated.setVisibility(View.GONE);
+
         String textSize = Helper.getPreference(context, "size");
         if(textSize==null)
             textSize = "20";

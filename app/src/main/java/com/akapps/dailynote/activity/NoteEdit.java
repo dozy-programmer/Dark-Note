@@ -112,6 +112,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private TextView folderText;
     private ConstraintLayout scrollView;
     private FloatingActionButton sort;
+    private FloatingActionButton info;
     // search
     private EditText searchEditText;
     private ImageView searchClose;
@@ -330,6 +331,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         empty_Layout = findViewById(R.id.empty_Layout);
         empty_title = findViewById(R.id.empty_title);
         sort = findViewById(R.id.sort);
+        info = findViewById(R.id.info);
         subtitle = findViewById(R.id.empty_subtitle);
         subSubTitle = findViewById(R.id.empty_sub_subtitle);
         category = findViewById(R.id.category);
@@ -396,6 +398,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 else {
                     formatMenu.setVisibility(View.VISIBLE);
                     sort.setVisibility(View.GONE);
+                    info.setVisibility(View.GONE);
                 }
 
                 if(currentNote.isChecked())
@@ -450,6 +453,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteColor.setVisibility(View.GONE);
             expandMenu.setVisibility(View.GONE);
             sort.setVisibility(View.GONE);
+            info.setVisibility(View.GONE);
             if(isCheckList)
                 showCheckListLayout(false);
             title.requestFocus();
@@ -527,6 +531,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 FilterChecklistSheet filter = new FilterChecklistSheet(realm, currentNote);
                 filter.show(this.getSupportFragmentManager(), filter.getTag());
             }
+        });
+
+        info.setOnClickListener(view -> {
+            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allNotePhotos, false);
+            noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
         });
 
         category.setOnClickListener(v -> {
@@ -1037,8 +1046,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         // insert data to database
         realm.beginTransaction();
-        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, rand.nextInt(10000) + 1));
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, rand.nextInt(10000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         currentNote.setChecked(false);
         realm.commitTransaction();
@@ -1066,7 +1075,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         int initialPosition = checkListItem.getSubChecklist().size();
         // insert data to database
         realm.beginTransaction();
-        checkListItem.getSubChecklist().add(new SubCheckListItem(itemText, false, checkListItem.getSubListId(), initialPosition));
+        checkListItem.getSubChecklist().add(new SubCheckListItem(itemText, false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
@@ -1118,7 +1127,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.format_size_icon), "Text Size"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.info_icon), "Note Info"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
                 .setBackgroundColor(getColor(R.color.light_gray))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
@@ -1203,10 +1211,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             else if(item.getTitle().equals("Delete All")){
                 InfoSheet info = new InfoSheet(3, true);
                 info.show(getSupportFragmentManager(), info.getTag());
-            }
-            else if(item.getTitle().equals("Note Info")){
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allNotePhotos, false);
-                noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             }
             else if(item.getTitle().contains("Text")){
                 isChangingTextSize = true;

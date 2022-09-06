@@ -127,7 +127,7 @@
             android:backgroundTint="@color/light_gray_2"
             android:gravity="left"
             android:padding="20dp"
-            android:text="Pro Users:\n\nSyncing now includes 6 last backups to choose from.\n\nSelect recurring reminder to backup your notes.\n\nEnable/Disable sub-lists for your notes.\n\nReset Account Password\n\nAdd a photo to any of your checklist items\n\nBackup Updates for Stability\n"
+            android:text="Pro Users:\n\nSyncing now includes 12 last backups to choose from.\n\nSelect recurring reminder to backup your notes.\n\nEnable/Disable sub-lists for your notes.\n\nReset Account Password\n\nAdd a photo to any of your checklist items\n\nBackup Updates for Stability\n"
             android:textColor="@color/ultra_white"
             android:textSize="15sp"
             android:textStyle="bold"

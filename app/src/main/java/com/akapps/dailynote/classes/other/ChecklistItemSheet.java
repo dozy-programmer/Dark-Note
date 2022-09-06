@@ -71,6 +71,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     private MaterialCardView itemImageLayout;
     private ImageView itemImage;
+    private TextView photo_info;
 
     // adding
     public ChecklistItemSheet(){
@@ -120,6 +121,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         ImageView delete = view.findViewById(R.id.delete);
         dropDownMenu = view.findViewById(R.id.dropdown_menu);
         TextView info = view.findViewById(R.id.checklist_info);
+        photo_info = view.findViewById(R.id.photo_info);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
@@ -161,8 +163,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                     title.setText("Editing");
                     itemName.setText(currentItem.getText());
 
-                    if(currentItem.getItemImage()!=null && !currentItem.getItemImage().isEmpty())
+                    if(currentItem.getItemImage()!=null && !currentItem.getItemImage().isEmpty()) {
                         Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
+                        photo_info.setVisibility(View.VISIBLE);
+                    }
                 }
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
@@ -213,8 +217,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         });
 
         itemImageLayout.setOnClickListener(view12 -> {
-            Helper.showMessage(getActivity(), "Photo Instructions",
-                    "Long click to delete", MotionToast.TOAST_WARNING);
             showCameraDialog();
         });
 
@@ -224,6 +226,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             realm.commitTransaction();
 
             Glide.with(getContext()).load(getContext().getDrawable(R.drawable.icon_image)).into(itemImage);
+            photo_info.setVisibility(View.INVISIBLE);
             adapter.notifyItemChanged(position);
             return true;
         });
@@ -335,6 +338,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             realm.commitTransaction();
 
             Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
+            photo_info.setVisibility(View.VISIBLE);
             adapter.notifyItemChanged(position);
         }
         else if (resultCode== ImagePicker.RESULT_ERROR) {}
