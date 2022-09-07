@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private MaterialCardView itemImageLayout;
     private ImageView itemImage;
     private TextView photo_info;
+    private TextView dateCreated;
 
     // adding
     public ChecklistItemSheet(){
@@ -121,6 +123,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         ImageView delete = view.findViewById(R.id.delete);
         dropDownMenu = view.findViewById(R.id.dropdown_menu);
         TextView info = view.findViewById(R.id.checklist_info);
+        dateCreated = view.findViewById(R.id.date_created);
         photo_info = view.findViewById(R.id.photo_info);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
@@ -158,6 +161,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 if(isSubChecklist){
                     title.setText("Editing Sub-Item");
                     itemName.setText(currentSubItem.getText());
+
+                    if(currentSubItem.getDateCreated() != null)
+                        if (!currentSubItem.getDateCreated().isEmpty()) {
+                            dateCreated.setText("Created: " + currentSubItem.getDateCreated());
+                            dateCreated.setVisibility(View.VISIBLE);
+                            dateCreated.setGravity(Gravity.RIGHT);
+                        }
                 }
                 else {
                     title.setText("Editing");
@@ -166,7 +176,14 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                     if(currentItem.getItemImage()!=null && !currentItem.getItemImage().isEmpty()) {
                         Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
                         photo_info.setVisibility(View.VISIBLE);
+                        dateCreated.setGravity(Gravity.LEFT);
                     }
+
+                    if(currentItem.getDateCreated() != null)
+                        if (!currentItem.getDateCreated().isEmpty()) {
+                            dateCreated.setText("Created: " + currentItem.getDateCreated());
+                            dateCreated.setVisibility(View.VISIBLE);
+                        }
                 }
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
@@ -339,6 +356,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
             Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
             photo_info.setVisibility(View.VISIBLE);
+            dateCreated.setGravity(Gravity.LEFT);
             adapter.notifyItemChanged(position);
         }
         else if (resultCode== ImagePicker.RESULT_ERROR) {}

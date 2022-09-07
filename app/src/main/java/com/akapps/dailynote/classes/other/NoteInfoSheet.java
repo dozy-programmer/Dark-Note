@@ -99,6 +99,10 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         });
 
         String moneyTotalString = getMoneyTotal(currentNote.getChecklist());
+
+        if(moneyTotalString.toLowerCase().contains("try it out"))
+            moneyTotalCopy.setVisibility(View.GONE);
+
         try {
             if(currentNote.getPinNumber() == 0)
                 lockIcon.setVisibility(View.GONE);

@@ -76,13 +76,15 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/version_icon"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            app:lottie_rawRes="@raw/bee_flying"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
+            android:layout_height="120dp"
+            android:elevation="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_version"/>
+            app:layout_constraintTop_toBottomOf="@+id/app_version"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_speed="0.7"
+            app:lottie_rawRes="@raw/bee_flying" />
 
         <TextView
             android:id="@+id/new_update_title"
@@ -101,7 +103,7 @@
 
         <TextView
             android:id="@+id/change_one"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Note Widgets:\n\nView your notes from your home screen.\n\nScroll to see your entire note.\n\nCustomizable colors via note colors.\n\n\More Updates:\n\nUI updates for better user experience\n\nTrack your expenses and budget\n(see checklist info for details)\n"
@@ -111,7 +113,7 @@
             android:background="@drawable/round_corner_2"
             android:backgroundTint="@color/light_gray_2"
             android:textColor="@color/ultra_white"
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -119,7 +121,7 @@
 
         <TextView
             android:id="@+id/change_two"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_marginTop="20dp"
@@ -127,9 +129,9 @@
             android:backgroundTint="@color/light_gray_2"
             android:gravity="left"
             android:padding="20dp"
-            android:text="Pro Users:\n\nSyncing now includes 12 last backups to choose from.\n\nSelect recurring reminder to backup your notes.\n\nEnable/Disable sub-lists for your notes.\n\nReset Account Password\n\nAdd a photo to any of your checklist items\n\nBackup Updates for Stability\n"
+            android:text="Pro Users:\n\nSyncing now includes 12 last backups\nto choose from.\n\nSelect recurring reminder to backup your notes.\n\nEnable/Disable sub-lists for your notes.\n\nReset Account Password\n\nAdd a photo to any of your checklist items\n\nBackup Updates for Stability\n"
             android:textColor="@color/ultra_white"
-            android:textSize="15sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -91,7 +91,12 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         }
 
         double finalFileSize = fileSize;
-        holder.sync.setOnClickListener(view -> ((SettingsScreen) activity).restoreFromDatabase(currentBackup.getFileName(), finalFileSize));
+        holder.sync.setOnClickListener(view -> Helper.showMessage(activity, "Sync File", "Long click to sync", MotionToast.TOAST_WARNING));
+
+        holder.sync.setOnLongClickListener(view -> {
+            ((SettingsScreen) activity).restoreFromDatabase(currentBackup.getFileName(), finalFileSize);
+            return false;
+        });
 
         holder.delete.setOnClickListener(view -> {
             Helper.showMessage(activity, "Delete File", "Long click to delete", MotionToast.TOAST_WARNING);

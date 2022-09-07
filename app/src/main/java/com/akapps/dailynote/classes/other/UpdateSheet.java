@@ -51,7 +51,7 @@ public class UpdateSheet extends RoundedBottomSheetDialogFragment{
 
         LottieAnimationView versionIcon = view.findViewById(R.id.version_icon);
 
-        Helper.moveBee(versionIcon, 400f);
+        Helper.moveBee(versionIcon, 200f);
 
         return view;
     }

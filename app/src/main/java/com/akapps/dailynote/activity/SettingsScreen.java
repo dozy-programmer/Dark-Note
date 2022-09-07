@@ -283,22 +283,24 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             freeUserMessage.setVisibility(View.GONE);
 
             if(mAuth.getCurrentUser() != null){
-                syncLayout.setVisibility(View.VISIBLE);
-                signUp.setVisibility(View.GONE);
-                logIn.setText("Log Out");
-                logIn.setBackgroundColor(context.getColor(R.color.red));
-                sync.setBackgroundColor(context.getColor(R.color.darker_blue));
-                upload.setBackgroundColor(context.getColor(R.color.gold));
-                upload.setTextColor(context.getColor(R.color.gray));
-                accountInfo.setVisibility(View.VISIBLE);
-                accountInfo.setText(mAuth.getCurrentUser().getEmail());
+                if(mAuth.getCurrentUser().isEmailVerified()) {
+                    syncLayout.setVisibility(View.VISIBLE);
+                    signUp.setVisibility(View.GONE);
+                    logIn.setText("Log Out");
+                    logIn.setBackgroundColor(context.getColor(R.color.red));
+                    sync.setBackgroundColor(context.getColor(R.color.darker_blue));
+                    upload.setBackgroundColor(context.getColor(R.color.gold));
+                    upload.setTextColor(context.getColor(R.color.gray));
+                    accountInfo.setVisibility(View.VISIBLE);
+                    accountInfo.setText(mAuth.getCurrentUser().getEmail());
 
-                spaceOne.setVisibility(View.VISIBLE);
-                spaceTwo.setVisibility(View.VISIBLE);
+                    spaceOne.setVisibility(View.VISIBLE);
+                    spaceTwo.setVisibility(View.VISIBLE);
 
-                if(null != currentUser.getLastUpload() && !currentUser.getLastUpload().isEmpty()){
-                    lastUploadDate.setVisibility(View.VISIBLE);
-                    lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
+                    if (null != currentUser.getLastUpload() && !currentUser.getLastUpload().isEmpty()) {
+                        lastUploadDate.setVisibility(View.VISIBLE);
+                        lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload().replaceAll("\n", " "));
+                    }
                 }
             }
         }
@@ -934,7 +936,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));
             buyPro.setText("PRO USER");
             buyPro.setElevation(0);
-            if(mAuth.getCurrentUser() != null && !currentUser.getEmail().isEmpty()) {
+            if(mAuth.getCurrentUser() != null && !currentUser.getEmail().isEmpty() && mAuth.getCurrentUser().isEmailVerified()) {
                 if(currentUser.getBackupReminderOccurrence() > 0 && null != currentUser.getBackupReminderDate() &&
                         currentUser.getBackupReminderDate().isEmpty())
                     resetReminderSlider();
@@ -1162,7 +1164,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     realm.insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
                     currentUser.setLastUpload(Helper.getCurrentDate());
                     lastUploadDate.setVisibility(View.VISIBLE);
-                    lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload());
+                    lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload().replaceAll("\n", " "));
                     realm.commitTransaction();
                     progressDialog.cancel();
                     Helper.showMessage(SettingsScreen.this, "Upload Success",

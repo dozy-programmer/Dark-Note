@@ -106,12 +106,12 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                 mAuth.sendPasswordResetEmail(inputEmail)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Helper.showMessage(getActivity(), getContext().getString(R.string.password_reset_title),
+                                Helper.showMessage(activity, getContext().getString(R.string.password_reset_title),
                                         getContext().getString(R.string.password_reset_message),
                                         MotionToast.TOAST_SUCCESS);
                                 dismiss();
                             } else {
-                                Helper.showMessage(getActivity(), "Reset Password",
+                                Helper.showMessage(activity, "Reset Password",
                                         "Account does not exists or no internet connection",
                                         MotionToast.TOAST_ERROR);
                             }
@@ -125,27 +125,35 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     }
 
     private void signUp(String email, String password){
-        if (mAuth.getCurrentUser() == null) {
+        if(mAuth.getCurrentUser() == null){
             mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(getActivity(), task -> {
-                        if (task.isSuccessful()) {
-                            realm.beginTransaction();
-                            currentUser.setEmail(email);
-                            realm.commitTransaction();
-                            Helper.showMessage(getActivity(), getContext().getString(R.string.signed_up_success_title),
-                                    getContext().getString(R.string.signed_up_success_message),
-                                    MotionToast.TOAST_SUCCESS);
+                    .addOnCompleteListener(activity, task2 -> {
+                        if (task2.isSuccessful()) {
+                            if (mAuth.getCurrentUser() != null) {
+                                mAuth.getCurrentUser().sendEmailVerification()
+                                        .addOnCompleteListener(task -> {
+                                            FirebaseAuth.getInstance().signOut();
+                                            if (task.isSuccessful()) {
+                                                Helper.showMessage(activity, "Verify Email",
+                                                        "Check your Inbox/Spam for email",
+                                                        MotionToast.TOAST_SUCCESS);
+                                            }
+                                            else
+                                                Helper.showMessage(activity, "Signing Up",
+                                                        "Cannot Send Email, check internet connection",
+                                                        MotionToast.TOAST_ERROR);
+                                        });
+                            }
                             dialog.dismiss();
-                            ((SettingsScreen) getActivity()).restart();
                         } else {
-                            Helper.showMessage(getActivity(), "Signing Up",
+                            Helper.showMessage(activity, "Signing Up",
                                     "Account exists or no internet connection",
                                     MotionToast.TOAST_ERROR);
                         }
                     });
         }
         else{
-            Helper.showMessage(getActivity(), "Error",
+            Helper.showMessage(activity, "Error",
                     "Currently logged in",
                     MotionToast.TOAST_ERROR);
         }
@@ -154,26 +162,41 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
     private void login(String email, String password){
         if(loginAttempts <= maxLoginAttempts) {
             mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(getActivity(), task -> {
+                    .addOnCompleteListener(activity, task -> {
                         if (task.isSuccessful()) {
-                            realm.beginTransaction();
-                            currentUser.setEmail(email);
-                            currentUser.setProUser(true);
-                            realm.commitTransaction();
-                            dialog.dismiss();
-
-                            ((SettingsScreen) activity).restart();
+                            if(mAuth.getCurrentUser().isEmailVerified()){
+                                realm.beginTransaction();
+                                currentUser.setEmail(email);
+                                currentUser.setProUser(true);
+                                realm.commitTransaction();
+                                dialog.dismiss();
+                                ((SettingsScreen) activity).restart();
+                            }
+                            else {
+                                mAuth.getCurrentUser().sendEmailVerification()
+                                        .addOnCompleteListener(task3 -> {
+                                            if (task.isSuccessful())
+                                                Helper.showMessage(activity, "Email Verification Sent",
+                                                        "Check your Inbox/Spam and try again",
+                                                        MotionToast.TOAST_ERROR);
+                                            else
+                                                Helper.showMessage(activity, "Signing Up",
+                                                        "Cannot Send Email, check internet connection",
+                                                        MotionToast.TOAST_ERROR);
+                                            FirebaseAuth.getInstance().signOut();
+                                        });
+                            }
                         } else {
                             loginAttempts++;
                             // If sign in fails, display a message to the user.
-                            Helper.showMessage(getActivity(), getContext().getString(R.string.login_error_title),
+                            Helper.showMessage(activity, getContext().getString(R.string.login_error_title),
                                     getContext().getString(R.string.login_error_message),
                                     MotionToast.TOAST_ERROR);
                         }
                     });
         }
         else
-            Helper.showMessage(getActivity(), getContext().getString(R.string.login_max_title),
+            Helper.showMessage(activity, getContext().getString(R.string.login_max_title),
                     getContext().getString(R.string.login_max_message),
                     MotionToast.TOAST_ERROR);
     }
@@ -188,7 +211,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         if(inputEmail.toLowerCase().equals(freeUpgradeEmail) &&
                 inputPassword.toLowerCase().equals(passwordUpgradePassword)){
             if(currentUser.isProUser()){
-                Helper.showMessage(getActivity(), "Whatcha Doing?",
+                Helper.showMessage(activity, "Whatcha Doing?",
                         "Buddy, you are already a pro user, thanks!",
                         MotionToast.TOAST_WARNING);
             }
@@ -197,7 +220,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                 currentUser.setProUser(true);
                 realm.commitTransaction();
                 dialog.dismiss();
-                ((SettingsScreen) getActivity()).restart();
+                ((SettingsScreen) activity).restart();
             }
         }
         else {

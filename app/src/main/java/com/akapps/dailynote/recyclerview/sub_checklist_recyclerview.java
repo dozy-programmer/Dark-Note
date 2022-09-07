@@ -38,7 +38,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         private final ImageView selectedIcon;
         private final LinearLayout checkItem;
         private final LinearLayout edit;
-        private final TextView dateCreated;
 
         public MyViewHolder(View v) {
             super(v);
@@ -46,7 +45,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             selectedIcon = v.findViewById(R.id.check_status);
             checkItem = v.findViewById(R.id.checkItem);
             edit = v.findViewById(R.id.edit);
-            dateCreated = v.findViewById(R.id.date_created);
         }
     }
 
@@ -81,17 +79,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
-        if(checkListItem.getDateCreated() != null) {
-            if (!checkListItem.getDateCreated().isEmpty()) {
-                holder.dateCreated.setText(checkListItem.getDateCreated());
-                holder.dateCreated.setVisibility(View.VISIBLE);
-            }
-            else
-                holder.dateCreated.setVisibility(View.GONE);
-        }
-        else
-            holder.dateCreated.setVisibility(View.GONE);
-
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
         if(isSelected) {
@@ -109,7 +96,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         holder.checkItem.setOnClickListener(v -> {
             saveSelected(checkListItem, !isSelected);
             notifyItemChanged(position);
-            Log.d("Here", "Sublist id " + checkListItem.getId());
         });
 
         holder.edit.setOnClickListener(v -> {

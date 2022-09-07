@@ -382,37 +382,37 @@ public class Helper {
     public static void moveBee(LottieAnimationView bee, float max) {
         new Handler().postDelayed(() -> {
             ObjectAnimator animator = ObjectAnimator.ofFloat(bee, "translationX", max);
-            animator.setDuration(2000);
+            animator.setDuration(4000);
             animator.start();
 
             new Handler().postDelayed(() -> {
                 bee.setRotationY(180);
                 ObjectAnimator animator2 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
-                animator2.setDuration(2000);
+                animator2.setDuration(4000);
                 animator2.start();
 
                 new Handler().postDelayed(() -> {
                     ObjectAnimator animator3 = ObjectAnimator.ofFloat(bee, "translationX", -1 * max);
-                    animator3.setDuration(2000);
+                    animator3.setDuration(4000);
                     animator3.start();
 
                     new Handler().postDelayed(() -> {
                         bee.setRotationY(0);
                         ObjectAnimator animator4 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
-                        animator4.setDuration(2000);
+                        animator4.setDuration(4000);
                         animator4.start();
 
                         new Handler().postDelayed(() -> {
                             moveBee(bee, max);
-                        }, 1500);
+                        }, 3000);
 
-                    }, 1500);
+                    }, 3000);
 
-                }, 1500);
+                }, 3000);
 
-            }, 1500);
+            }, 3000);
 
-        }, 1000);
+        }, 2000);
     }
 
     // deletes cache directory to ensure app size does not get too big

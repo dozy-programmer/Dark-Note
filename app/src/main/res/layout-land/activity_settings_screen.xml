@@ -947,14 +947,16 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/version_icon"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="100dp"
             android:elevation="2dp"
             android:layout_marginTop="-10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/about_info"
+            app:layout_constraintBottom_toBottomOf="@+id/about_info"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
+            app:lottie_speed="0.1"
             app:lottie_rawRes="@raw/bee_flying" />
 
         <com.google.android.material.card.MaterialCardView
