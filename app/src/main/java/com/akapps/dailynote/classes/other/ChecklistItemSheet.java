@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -46,6 +48,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
@@ -148,6 +151,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             itemImageLayout.setVisibility(View.GONE);
 
         if(isAdding){
+            if(!isSubChecklist)
+                info.setText(info.getText() + "\n[Add sublist using \"--\" after item]");
             dropDownMenu.setVisibility(View.GONE);
             if(isSubChecklist)
                 title.setText("Adding Sub-Item to\n" + parentNode);
@@ -276,9 +281,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     // updates select status of note in database
     private void deleteItem(CheckListItem checkListItem){
         // save status to database
+//        realm.beginTransaction();
+//        checkListItem.getSubChecklist().deleteAllFromRealm();
+//        checkListItem.deleteFromRealm();
+        RealmHelper.deleteChecklistItem(checkListItem);
         realm.beginTransaction();
-        checkListItem.getSubChecklist().deleteAllFromRealm();
-        checkListItem.deleteFromRealm();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();
         ((NoteEdit)getActivity()).updateDateEdited();
@@ -288,8 +295,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     // updates select status of sub-note in database
     private void deleteItem(SubCheckListItem checkListItem){
         // save status to database
+        RealmHelper.deleteSublistItem(checkListItem);
         realm.beginTransaction();
-        checkListItem.deleteFromRealm();
+        //checkListItem.deleteFromRealm();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();
         ((NoteEdit)getActivity()).updateDateEdited();
@@ -300,16 +308,20 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout){
         if(!itemName.getText().toString().isEmpty()){
             if(isAdding) {
-                String text = itemName.getText().toString();
+                String text = itemName.getText().toString().trim().replaceAll(" +", " ");
                 String[] items = text.replaceAll(" +, +", ",,").split(",,");
-                if(isSubChecklist){
-                    for (String item : items)
-                        ((NoteEdit) getActivity()).addSubCheckList(checkListItem, item.trim().replaceAll(" +", " "));
-                }
-                else {
-                    for (String item : items)
-                        ((NoteEdit) getActivity()).addCheckList(item.trim().replaceAll(" +", " "));
-                }
+                if(isSubChecklist)
+                    for (String subItem : items)
+                        ((NoteEdit) getActivity()).addSubCheckList(checkListItem, subItem);
+                else
+                    for (String item : items) {
+                        currentItem = ((NoteEdit) getActivity()).addCheckList(item.split("--")[0]);
+                        String[] currentSublistItems = item.split("--");
+                        for (String currentSublistItem : currentSublistItems) {
+                            if(!currentSublistItem.equals(currentItem.getText()))
+                                ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                        }
+                    }
             }
             else {
                 if(isSubChecklist)

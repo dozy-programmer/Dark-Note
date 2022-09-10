@@ -305,9 +305,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             if(message == 1 || message == 2)
                 ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
             else if(message == 3 || message == -3){
-                if(deleteAllChecklists){
+                if(deleteAllChecklists)
                     ((NoteEdit) getActivity()).deleteChecklist();
-                }
                 else
                     ((NoteEdit) getActivity()).deleteNote();
             }

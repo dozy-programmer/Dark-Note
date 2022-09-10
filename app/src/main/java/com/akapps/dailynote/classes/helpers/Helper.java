@@ -12,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import io.realm.Realm;
+import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 import static android.content.Context.MODE_PRIVATE;
 
@@ -418,25 +420,17 @@ public class Helper {
     // deletes cache directory to ensure app size does not get too big
     public static void deleteCache(Context context) {
         try {
-            File dir = context.getCacheDir();
-            deleteDir(dir);
-        } catch (Exception e) { e.printStackTrace();}
+            File cacheDir = context.getCacheDir();
+            FilesKt.deleteRecursively(cacheDir);
+        }catch (Exception e){}
     }
 
-    public static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-            return dir.delete();
-        } else if(dir!= null && dir.isFile()) {
-            return dir.delete();
-        } else {
-            return false;
-        }
+    public static void deleteAppFiles(Context context){
+        try {
+            // delete backup folder
+            File mainDir = new File(context
+                    .getExternalFilesDir(null) + "");
+            FilesKt.deleteRecursively(mainDir);
+        }catch (Exception e){}
     }
 }

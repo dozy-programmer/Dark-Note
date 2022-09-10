@@ -50,6 +50,7 @@ import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.AppWidget;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
@@ -1034,7 +1035,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     // adds note
-    public void addCheckList(String itemText) {
+    public CheckListItem addCheckList(String itemText) {
         int initialPosition = -1;
 
         if(currentNote.getSort() == 6)
@@ -1047,7 +1048,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         // insert data to database
         realm.beginTransaction();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.getChecklist().add(new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, rand.nextInt(10000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
+        CheckListItem currentItem = new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime()));
+        currentNote.getChecklist().add(currentItem);
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         currentNote.setChecked(false);
         realm.commitTransaction();
@@ -1068,6 +1070,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             ((NoteEdit)context).title.setPaintFlags(0);
 
         checkListRecyclerview.smoothScrollToPosition(initialPosition < 0 ? 0 : initialPosition);
+        return currentItem;
     }
 
     public void addSubCheckList(CheckListItem checkListItem, String itemText) {
@@ -1080,9 +1083,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateDateEdited();
+
         checklistAdapter.notifyDataSetChanged();
 
-        if(title.getText().length()==0)
+        if(title.getText().length() == 0)
             title.requestFocus();
         else
             title.clearFocus();
@@ -1180,13 +1184,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             else if(item.getTitle().equals("Select All")){
                 if(checkListItems.size()!=0) {
-                    RealmResults<SubCheckListItem> subCheckListItems = realm.where(SubCheckListItem.class).
-                            equalTo("id", currentNote.getChecklist()
-                            .get(0).getSubListId()).findAll();
-                    realm.beginTransaction();
-                    checkListItems.setBoolean("checked", true);
-                    subCheckListItems.setBoolean("checked", true);
-                    realm.commitTransaction();
+                    RealmHelper.selectAllChecklists(currentNote, true);
                     checkNote(true);
                     checklistAdapter.notifyDataSetChanged();
                     Helper.showMessage(NoteEdit.this, "Success", "All items " +
@@ -1195,13 +1193,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             else if(item.getTitle().equals("Deselect All")){
                 if(checkListItems.size()!=0) {
-                    RealmResults<SubCheckListItem> subCheckListItems = realm.where(SubCheckListItem.class).
-                            equalTo("id", currentNote.getChecklist()
-                                    .get(0).getSubListId()).findAll();
-                    realm.beginTransaction();
-                    checkListItems.setBoolean("checked", false);
-                    subCheckListItems.setBoolean("checked", false);
-                    realm.commitTransaction();
+                    RealmHelper.selectAllChecklists(currentNote, false);
                     checkNote(false);
                     checklistAdapter.notifyDataSetChanged();
                     Helper.showMessage(NoteEdit.this, "Success", "All items " +
@@ -1227,9 +1219,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     };
 
     public void deleteChecklist(){
-        realm.beginTransaction();
-        currentNote.getChecklist().deleteAllFromRealm();
-        realm.commitTransaction();
+//        realm.beginTransaction();
+//        currentNote.getChecklist().deleteAllFromRealm();
+//        realm.commitTransaction();
+        RealmHelper.deleteChecklist(currentNote);
         checklistAdapter.notifyDataSetChanged();
         Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
         isListEmpty(0, true);
@@ -1622,11 +1615,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             handler.removeCallbacksAndMessages(null);
         if(currentNote.isTrash()){
             String noteTitle = currentNote.getTitle();
-            deleteSubLists(currentNote.getChecklist());
-            realm.beginTransaction();
-            currentNote.getChecklist().deleteAllFromRealm();
-            currentNote.deleteFromRealm();
-            realm.commitTransaction();
+            RealmHelper.deleteNote(currentNote.getNoteId());
             Helper.showMessage(NoteEdit.this, "Deleted", noteTitle, MotionToast.TOAST_SUCCESS);
         }
         else {

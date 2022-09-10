@@ -31,6 +31,7 @@ import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -197,7 +198,6 @@ public class notes extends Fragment{
             savePreferences();
 
         if(realm.isClosed()) {
-            Log.d("Here", "Realm is reopened");
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
         }
         else{
@@ -206,7 +206,10 @@ public class notes extends Fragment{
             // if list is empty, then it shows an empty layout
             isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
         }
+
         Helper.deleteCache(context);
+        if(realm.where(Note.class).findAll().size() == 0)
+            Helper.deleteAppFiles(context);
     }
 
     @Override
@@ -695,8 +698,6 @@ public class notes extends Fragment{
 
     // populates the recyclerview
     private void populateAdapter(RealmResults<Note> allNotes) {
-        if(isNotesFiltered)
-            Log.d("Here", "Notes is filtered");
         filteredNotes = allNotes;
         adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes: allNotes, realm, getActivity(),
                 notes.this, user.isShowPreview(), user.isShowPreviewNoteInfo());
@@ -820,15 +821,19 @@ public class notes extends Fragment{
             if (selectedNotes.size() != 0) {
                 int number = selectedNotes.size();
                 if (isTrashSelected) {
-                    realm.beginTransaction();
-                    selectedNotes.deleteAllFromRealm();
-                    realm.commitTransaction();
+                    for(Note deleteCurrentNote: selectedNotes)
+                        RealmHelper.deleteNote(deleteCurrentNote.getNoteId());
                     isListEmpty(allNotes.size(), false);
                     numberSelected(0, 0, 0);
                     Helper.showMessage(getActivity(), "Deleted", number + " selected " +
                             "have been deleted", MotionToast.TOAST_SUCCESS);
                     closeMultipleNotesLayout();
                     showData();
+
+                    if(allNotes.size() == 0){
+                        Log.d("Here", "Deleting app directory");
+                        Helper.deleteAppFiles(context);
+                    }
                 }
                 else {
                     realm.beginTransaction();

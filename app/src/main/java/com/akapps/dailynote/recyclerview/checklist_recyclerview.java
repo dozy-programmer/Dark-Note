@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -89,7 +90,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         CheckListItem checkListItem = checkList.get(position);
 
         // search for duplicate sublist id
@@ -100,11 +101,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             realm.beginTransaction();
             checkListItem.setSubListId(rand.nextInt(100000) + 1);
             realm.commitTransaction();
-            Log.d("Here", "Changed duplicate at position " + position);
         }
 
         holder.subChecklist.setAdapter(null);
-
         RecyclerView.Adapter subChecklistAdapter = null;
         if(user.isProUser() && user.isEnableSublists() && currentNote.isEnableSublist()) {
             holder.addSubChecklist.setVisibility(View.VISIBLE);
@@ -238,6 +237,14 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // save status to database
         realm.beginTransaction();
         checkListItem.setChecked(status);
+
+        if(null != checkListItem.getSubChecklist()) {
+            if (checkListItem.getSubChecklist().size() > 0) {
+                RealmResults<SubCheckListItem> subCheckListItems = realm.where(SubCheckListItem.class).equalTo("id", checkListItem.getSubListId()).findAll();
+                subCheckListItems.setBoolean("checked", status);
+            }
+        }
+
         if(status)
             checkListItem.setLastCheckedDate(Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis());
         else

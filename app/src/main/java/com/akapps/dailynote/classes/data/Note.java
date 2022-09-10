@@ -39,11 +39,11 @@ public class Note extends RealmObject {
     private String reminderDateTime;
 
     // note photos locations
-    private RealmList<String> photos;
+    private RealmList<String> photos = new RealmList<>();
 
     // checklist
     private boolean isCheckList;
-    private RealmList<CheckListItem> checklist;
+    private RealmList<CheckListItem> checklist = new RealmList<>();
     private String checklistConvertedToString;
 
     // category
@@ -69,7 +69,6 @@ public class Note extends RealmObject {
         category = "none";
         sort = -1;
         enableSublist = false;
-        checklist = new RealmList<>();
         widgetId = -1;
     }
 

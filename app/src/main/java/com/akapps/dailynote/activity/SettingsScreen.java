@@ -171,7 +171,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         setContentView(R.layout.activity_settings_screen);
 
         context = this;
-        Helper.deleteCache(context);
 
         mAuth = FirebaseAuth.getInstance();
 

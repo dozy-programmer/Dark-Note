@@ -1,7 +1,6 @@
 package com.akapps.dailynote.classes.data;
 
 import com.akapps.dailynote.classes.helpers.Helper;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -24,11 +23,11 @@ public class CheckListItem extends RealmObject {
         this.checked = checked;
         this.id = id;
         this.positionInList = positionInList;
-        lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
-        subChecklist = new RealmList<>();
+        this.lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
         this.subListId = subListId;
-        itemImage = "";
+        this.itemImage = "";
         this.dateCreated = dateCreated;
+        this.subChecklist = new RealmList<>();
     }
 
     public String getText() {

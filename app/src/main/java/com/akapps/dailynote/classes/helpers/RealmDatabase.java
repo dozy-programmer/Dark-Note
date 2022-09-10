@@ -24,6 +24,7 @@ public class RealmDatabase {
                     .schemaVersion(currentVersion)
                     .migration(new MyMigration())
                     .compactOnLaunch()
+                    .allowWritesOnUiThread(true)
                     .build();
 
         Realm.setDefaultConfiguration(config);

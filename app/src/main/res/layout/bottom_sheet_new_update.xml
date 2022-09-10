@@ -103,11 +103,11 @@
 
         <TextView
             android:id="@+id/change_one"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Note Widgets:\n\nView your notes from your home screen.\n\nScroll to see your entire note.\n\nCustomizable colors via note colors.\n\n\More Updates:\n\nUI updates for better user experience\n\nTrack your expenses and budget\n(see checklist info for details)\n"
-            android:gravity="left"
+            android:text="UI improvements for a better user experience\n\nTrack your expenses and budget (see checklist info for details)\n\nOptimizations to decrease note sizes\n\nDecreased app size"
+            android:gravity="center"
             android:padding="20dp"
             android:layout_margin="10dp"
             android:background="@drawable/round_corner_2"
@@ -120,38 +120,20 @@
             app:layout_constraintTop_toBottomOf="@+id/new_update_title" />
 
         <TextView
-            android:id="@+id/change_two"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/round_corner_2"
-            android:backgroundTint="@color/light_gray_2"
-            android:gravity="left"
-            android:padding="20dp"
-            android:text="Pro Users:\n\nSyncing now includes 12 last backups\nto choose from.\n\nSelect recurring reminder to backup your notes.\n\nEnable/Disable sub-lists for your notes.\n\nReset Account Password\n\nAdd a photo to any of your checklist items\n\nBackup Updates for Stability\n"
-            android:textColor="@color/ultra_white"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/change_one" />
-
-        <TextView
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="20dp"
             android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:paddingHorizontal="40dp"
             android:text="Do you have any suggestions for new features or are experiencing issues, please message me via settings.\nThanks!"
             android:textColor="@color/greyish"
             android:textSize="16sp"
-            android:paddingHorizontal="40dp"
-            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/change_two" />
+            app:layout_constraintTop_toBottomOf="@+id/change_one" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
