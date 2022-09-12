@@ -256,7 +256,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
     // opens dialog that allows user to edit or delete checklist item
     private void openEditDialog(CheckListItem checkListItem, int position){
-        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, position, user.isProUser(), this);
+        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, position, this);
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
     }
 

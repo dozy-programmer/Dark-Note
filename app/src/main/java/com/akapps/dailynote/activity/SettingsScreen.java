@@ -97,7 +97,7 @@ import www.sanju.motiontoast.MotionToast;
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
 
 public class SettingsScreen extends AppCompatActivity implements PurchasesUpdatedListener, DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener{
+        TimePickerDialog.OnTimeSetListener {
 
     // activity
     private Context context;
@@ -1057,8 +1057,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     // creates a zip folder
     public String createZipFolder(){
         File storageDir = new File(
-                context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-                        + getString(R.string.app_name));
+                context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "");
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
@@ -1072,7 +1071,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         File zipFile = new File(zipPath);
 
         int BUFFER = 1024;
-
         try {
             BufferedInputStream origin;
             FileOutputStream dest = new FileOutputStream(zipFile);
@@ -1082,16 +1080,23 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             byte[] data = new byte[BUFFER];
 
             for (int i = 0; i < files.size(); i++) {
-                if(new File(files.get(i)).exists()) {
-                    FileInputStream fi = new FileInputStream(files.get(i));
-                    origin = new BufferedInputStream(fi, BUFFER);
-                    ZipEntry entry = new ZipEntry(files.get(i).substring(files.get(i).lastIndexOf("/") + 1));
-                    out.putNextEntry(entry);
-                    int count;
-                    while ((count = origin.read(data, 0, BUFFER)) != -1) {
-                        out.write(data, 0, count);
+                File newFile = new File(files.get(i));
+                if(newFile.exists()) {
+                    String canonicalPath = newFile.getCanonicalPath();
+                    if (!canonicalPath.startsWith(zipPath.replace(".zip", ""))) {
+                        throw new SecurityException("Zipping Error");
                     }
-                    origin.close();
+                    else {
+                        FileInputStream fi = new FileInputStream(files.get(i));
+                        origin = new BufferedInputStream(fi, BUFFER);
+                        ZipEntry entry = new ZipEntry(files.get(i).substring(files.get(i).lastIndexOf("/") + 1));
+                        out.putNextEntry(entry);
+                        int count;
+                        while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                            out.write(data, 0, count);
+                        }
+                        origin.close();
+                    }
                 }
             }
 

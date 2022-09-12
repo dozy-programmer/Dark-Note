@@ -109,6 +109,11 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         return checkList.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     // updates select status of note in database
     private void saveSelected(SubCheckListItem checkListItem, boolean status){
         // save status to database

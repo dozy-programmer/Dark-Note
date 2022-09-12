@@ -52,6 +52,17 @@
             android:layout_marginRight="10dp"
             android:src="@drawable/archive_icon"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/copy_icon"
+            app:layout_constraintTop_toTopOf="@+id/note_name" />
+
+        <ImageView
+            android:id="@+id/copy_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="10dp"
+            android:padding="2dp"
+            android:src="@drawable/copy_icon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/note_name" />
 
         <com.google.android.material.card.MaterialCardView

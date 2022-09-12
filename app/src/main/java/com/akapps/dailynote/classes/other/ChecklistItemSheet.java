@@ -28,6 +28,7 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
 public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
@@ -60,7 +62,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private boolean isAdding;
     private RecyclerView.Adapter adapter;
     private int position;
-    private boolean isProUser;
+    private boolean isProUser = false;
 
     private Realm realm;
 
@@ -93,12 +95,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     }
 
     // editing note
-    public ChecklistItemSheet(CheckListItem checkListItem, int position, boolean isProUser, RecyclerView.Adapter adapter){
+    public ChecklistItemSheet(CheckListItem checkListItem, int position, RecyclerView.Adapter adapter){
         isAdding = false;
         isSubChecklist = false;
         this.currentItem = checkListItem;
         this.position = position;
-        this.isProUser = isProUser;
         this.adapter = adapter;
     }
 
@@ -120,6 +121,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         currentNote = ((NoteEdit)getActivity()).currentNote;
         realm = ((NoteEdit)getActivity()).realm;
+
+        try(Realm realm = Realm.getDefaultInstance()) {
+            isProUser = realm.where(User.class).findFirst().isProUser();
+        }
 
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
@@ -151,8 +156,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             itemImageLayout.setVisibility(View.GONE);
 
         if(isAdding){
-            if(!isSubChecklist)
+            if(isProUser) {
+                info.setVisibility(View.VISIBLE);
                 info.setText(info.getText() + "\n[Add sublist using \"--\" after item]");
+            }
             dropDownMenu.setVisibility(View.GONE);
             if(isSubChecklist)
                 title.setText("Adding Sub-Item to\n" + parentNode);
@@ -308,8 +315,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout){
         if(!itemName.getText().toString().isEmpty()){
             if(isAdding) {
-                String text = itemName.getText().toString().trim().replaceAll(" +", " ");
-                String[] items = text.replaceAll(" +, +", ",,").split(",,");
+                String text = itemName.getText().toString().trim().replaceAll("<br>", "\n").replaceAll(" +", " ");
+                String[] items = text.replaceAll("\n+", "\n").replaceAll(" +, +", ",,").split(",,");
                 if(isSubChecklist)
                     for (String subItem : items)
                         ((NoteEdit) getActivity()).addSubCheckList(checkListItem, subItem);
@@ -393,7 +400,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             if (position == 0) {
                 // copy text
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("Code", currentItem.getText());
+                ClipData clip;
+                if(!isSubChecklist)
+                    clip = ClipData.newPlainText("Code", currentItem.getText());
+                else
+                    clip = ClipData.newPlainText("Code", currentSubItem.getText());
                 clipboard.setPrimaryClip(clip);
                 Helper.showMessage(getActivity(), "Success!",
                         "Copied successfully", MotionToast.TOAST_SUCCESS);
@@ -402,21 +413,23 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                 emailIntent.setType("*/*");
 
-                // attaching to intent to send folders
                 ArrayList<Uri> uris = new ArrayList<>();
 
-                // only attaches to email if there are project photos
-                File file = new File(currentItem.getItemImage());
-                if(file.exists()) {
-                    uris.add(FileProvider.getUriForFile(
-                            getContext(),
-                            "com.akapps.dailynote.fileprovider",
-                            file));
+                if(!isSubChecklist) {
+                    File file = new File(currentItem.getItemImage());
+                    if (file.exists()) {
+                        uris.add(FileProvider.getUriForFile(
+                                getContext(),
+                                "com.akapps.dailynote.fileprovider",
+                                file));
+                        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                    }
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
                 }
+                else
+                    emailIntent.putExtra(Intent.EXTRA_TEXT, currentSubItem.getText());
 
                 // adds email subject and email body to intent
-                emailIntent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
-                emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                 getContext().startActivity(Intent.createChooser(emailIntent, "Share Checklist Item"));
             }
             noteMenu.dismiss();

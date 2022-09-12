@@ -174,6 +174,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private TextView subtitle;
     private TextView subSubTitle;
 
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,7 +206,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         initializeLayout(savedInstanceState);
 
-        User user = realm.where(User.class).findFirst();
+        user = realm.where(User.class).findFirst();
         assert user != null;
         if (user.isModeSettings()) {
             getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
@@ -881,12 +883,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void findText(String target){
         if(!currentNote.isCheckList()) {
 
-            // Get the text from TextView
-//            String originalString = Html.fromHtml(note.getHtml(),
-//                    Html.FROM_HTML_MODE_COMPACT).toString()
-//                    .replaceAll("(\\s{2,})", " ")
-//                    .replaceAll("\n", "<br>");
-
             String originalString = Html.fromHtml(note.getHtml(),
                     Html.FROM_HTML_MODE_COMPACT).toString()
                     .replaceAll("<.*?>", "")
@@ -1055,7 +1051,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         realm.commitTransaction();
         updateDateEdited();
         isListEmpty(currentNote.getChecklist().size());
+
         checklistAdapter.notifyDataSetChanged();
+
         if(title.getText().length()==0)
             title.requestFocus();
         else
@@ -1138,6 +1136,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 .setMenuRadius(15f)
                 .setMenuShadow(10f)
                 .build();
+
         if(currentNote.isCheckList()){
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
             noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
@@ -1151,6 +1150,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 noteMenu.addItem(6, new IconPowerMenuItem(getDrawable(R.drawable.sublist_icon), sublistStatus));
             }
         }
+        else
+            noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.info_icon), "Info"));
+
+
         noteMenu.showAsDropDown(expandMenu);
     }
 
@@ -1211,6 +1214,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 decreaseTextSize.setAlpha(new Float(1.0));
                 increaseTextSize.setAlpha(new Float(1.0));
             }
+            else if(item.getTitle().equals("Info")){
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allNotePhotos, false);
+                noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
+            }
             else if(position == 6)
                 updateSublistEnabledStatus();
 
@@ -1219,9 +1226,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     };
 
     public void deleteChecklist(){
-//        realm.beginTransaction();
-//        currentNote.getChecklist().deleteAllFromRealm();
-//        realm.commitTransaction();
         RealmHelper.deleteChecklist(currentNote);
         checklistAdapter.notifyDataSetChanged();
         Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);

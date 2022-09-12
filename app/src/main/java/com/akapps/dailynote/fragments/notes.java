@@ -157,6 +157,8 @@ public class notes extends Fragment{
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
 
         showUpdateSheet();
+
+        Helper.deleteCache(context);
     }
 
     @Override
@@ -206,8 +208,6 @@ public class notes extends Fragment{
             // if list is empty, then it shows an empty layout
             isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
         }
-
-        Helper.deleteCache(context);
         if(realm.where(Note.class).findAll().size() == 0)
             Helper.deleteAppFiles(context);
     }
@@ -224,6 +224,8 @@ public class notes extends Fragment{
 
         if(updateSheet != null)
             updateSheet.dismiss();
+
+        Helper.deleteCache(context);
     }
 
     private void setRecyclerviewLayout(){

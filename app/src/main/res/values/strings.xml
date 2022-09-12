@@ -1,15 +1,13 @@
 <resources>
     <string name="app_name">Dark Note</string>
-    <string name="app_version">Version 8.2</string>
+    <string name="app_version">Version 8.3</string>
     <string name="schema">22</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_error_title">Wrong Login/Password</string>
     <string name="login_error_message">Please try again.</string>
-    <string name="signed_up_success_title">Signed Up</string>
     <string name="password_reset_title">Reset Password</string>
     <string name="password_reset_message">Check your email or SPAM folder to change password</string>
-    <string name="signed_up_success_message">Thanks for signing up!</string>
     <string name="login_max_title">Too many attempts</string>
     <string name="login_max_message">Please contact admin</string>
     <string name="input_error">Incorrect Input</string>

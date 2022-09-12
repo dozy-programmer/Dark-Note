@@ -79,6 +79,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         ImageView pinIcon = view.findViewById(R.id.pin_icon);
         ImageView trashIcon = view.findViewById(R.id.trash_icon);
         ImageView archiveIcon = view.findViewById(R.id.archive_icon);
+        ImageView copyIcon = view.findViewById(R.id.copy_icon);
         MaterialButton open = view.findViewById(R.id.open);
         ImageButton moneyTotalCopy = view.findViewById(R.id.money_total_copy);
         ImageButton moneyTotalInfo = view.findViewById(R.id.money_total_info);
@@ -86,6 +87,9 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
         if(!showOpenButton)
             open.setVisibility(View.GONE);
+
+        if(currentNote.isCheckList())
+            copyIcon.setVisibility(View.GONE);
 
         photosScrollView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         RecyclerView.Adapter scrollAdapter = new photos_recyclerview(allPhotos, getActivity(), getContext(), false);
@@ -186,6 +190,15 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             info.show(getParentFragmentManager(), info.getTag());
         });
 
+        copyIcon.setOnClickListener(view14 -> {
+            // copy text
+            ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Code", copyWord(currentNote.getNote()));
+            clipboard.setPrimaryClip(clip);
+            Helper.showMessage(getActivity(), "Success!",
+                    "Copied successfully", MotionToast.TOAST_SUCCESS);
+        });
+
         return view;
     }
 
@@ -199,6 +212,11 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     private String sanitizeWord(String word){
         return word.replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ")
+                .replaceAll("\\s+", " ").trim();
+    }
+
+    private String copyWord(String word){
+        return word.replaceAll("<br>", "\n").replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ")
                 .replaceAll("\\s+", " ").trim();
     }
 
