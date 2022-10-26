@@ -1079,6 +1079,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         checkListItem.getSubChecklist().add(new SubCheckListItem(itemText, false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
+        currentNote.setEnableSublist(true);
         realm.commitTransaction();
         updateDateEdited();
 
@@ -1658,8 +1659,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             public void run() {
                 if (!realm.isClosed()) {
                     if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
-                        date.setText(currentNote.getDateEdited().replace("\n", " ") +
-                                "\nLast Edit: " + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago");
+                        date.setText(Html.fromHtml(currentNote.getDateEdited().replace("\n", " ") +
+                                "<br><font color='#FFFFFF'>Last Edit:</font> " + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                     } else {
                         date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
                     }

@@ -128,7 +128,8 @@ public class RealmDatabase {
                         .removeField("upLoadTime")
                         .addField("upLoadTime", Date.class);
 
-            schema.get("Backup").removeField("upLoadTime").addField("upLoadTime", Date.class);
+            if(!schema.get("Backup").hasField("upLoadTime"))
+                schema.get("Backup").removeField("upLoadTime").addField("upLoadTime", Date.class);
         }
     }
 }

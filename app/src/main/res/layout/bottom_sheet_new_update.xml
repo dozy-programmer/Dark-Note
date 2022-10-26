@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="UI improvements for a better user experience\n\nTrack your expenses and budget (see checklist info for details)\n\nOptimizations to decrease note sizes\n\nDecreased App Size\n\nFixed issue where Select/Close button on color dialog was not showing"
+            android:text="UI improvements for a better user experience\n\nTrack your expenses and budget (see checklist info for details)\n\nOptimizations to decrease note sizes\n\nDecreased App Size\n\nFixed issues:\nSelect/Close button on color dialog was not showing\nCrashing on app start"
             android:gravity="center"
             android:padding="20dp"
             android:layout_margin="10dp"

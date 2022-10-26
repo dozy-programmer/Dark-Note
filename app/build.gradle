@@ -7,16 +7,18 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 32
     buildToolsVersion "30.0.3"
+    ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId "com.akapps.dailynote"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 74
-        versionName "8.3"
+        versionCode 75
+        versionName "8.4"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        android.buildTypes.release.ndk.debugSymbolLevel = 'FULL'
     }
 
     compileOptions {
