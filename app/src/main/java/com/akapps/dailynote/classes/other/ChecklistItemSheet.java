@@ -62,7 +62,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private boolean isAdding;
     private RecyclerView.Adapter adapter;
     private int position;
-    private boolean isProUser = false;
 
     private Realm realm;
 
@@ -122,10 +121,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         currentNote = ((NoteEdit)getActivity()).currentNote;
         realm = ((NoteEdit)getActivity()).realm;
 
-        try(Realm realm = Realm.getDefaultInstance()) {
-            isProUser = realm.where(User.class).findFirst().isProUser();
-        }
-
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
         ImageView delete = view.findViewById(R.id.delete);
@@ -156,10 +151,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             itemImageLayout.setVisibility(View.GONE);
 
         if(isAdding){
-            if(isProUser) {
-                info.setVisibility(View.VISIBLE);
-                info.setText(info.getText() + "\n[Add sublist using \"--\" after item]");
-            }
+            info.setVisibility(View.VISIBLE);
+            info.setText(info.getText() + "\n[Add sublist using \"--\" after item]");
             dropDownMenu.setVisibility(View.GONE);
             if(isSubChecklist)
                 title.setText("Adding Sub-Item to\n" + parentNode);
@@ -205,10 +198,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 this.dismiss();
             }
         }
-
-        // ability to add photo to checklist only for pro user
-        if(!isProUser)
-            itemImageLayout.setVisibility(View.GONE);
 
         delete.setOnClickListener(v-> {
             Helper.showMessage(getActivity(), "How to delete",
@@ -287,10 +276,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     // updates select status of note in database
     private void deleteItem(CheckListItem checkListItem){
-        // save status to database
-//        realm.beginTransaction();
-//        checkListItem.getSubChecklist().deleteAllFromRealm();
-//        checkListItem.deleteFromRealm();
         RealmHelper.deleteChecklistItem(checkListItem);
         realm.beginTransaction();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));

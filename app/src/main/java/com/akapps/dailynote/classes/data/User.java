@@ -6,6 +6,7 @@ public class User extends RealmObject {
 
     private int userId;
     private boolean proUser;
+    private boolean ultimateUser;
 
     private String layoutSelected;
 
@@ -34,7 +35,7 @@ public class User extends RealmObject {
 
     public User(int userId) {
         this.userId = userId;
-        proUser = openFoldersOnStart = showFolderNotes = enableSublists = modeSettings = false;
+        ultimateUser = proUser = openFoldersOnStart = showFolderNotes = enableSublists = modeSettings = false;
         textSize = backupReminderOccurrence = 0;
         layoutSelected = "stag";
         showPreview = showPreviewNoteInfo = true;
@@ -168,5 +169,13 @@ public class User extends RealmObject {
 
     public void setBackupReminderDate(String backupReminderDate) {
         this.backupReminderDate = backupReminderDate;
+    }
+
+    public boolean isUltimateUser() {
+        return ultimateUser;
+    }
+
+    public void setUltimateUser(boolean ultimateUser) {
+        this.ultimateUser = ultimateUser;
     }
 }

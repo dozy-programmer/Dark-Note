@@ -105,7 +105,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         holder.subChecklist.setAdapter(null);
         RecyclerView.Adapter subChecklistAdapter = null;
-        if(user.isProUser() && user.isEnableSublists() && currentNote.isEnableSublist()) {
+        if(user.isEnableSublists() && currentNote.isEnableSublist()) {
             holder.addSubChecklist.setVisibility(View.VISIBLE);
             if (null == checkListItem.getSubChecklist()) {
                 realm.beginTransaction();
@@ -172,7 +172,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
 
         // show if checklist item has an image
-        if(user.isProUser() && checkListItem.getItemImage()!=null && !checkListItem.getItemImage().isEmpty()) {
+        if(checkListItem.getItemImage()!=null && !checkListItem.getItemImage().isEmpty()) {
             holder.itemImageLayout.setVisibility(View.VISIBLE);
             Glide.with(context).load(checkListItem.getItemImage()).into(holder.itemImage);
         }

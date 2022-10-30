@@ -279,10 +279,7 @@ public class notes extends Fragment{
 
     private void initializeLayout(){
         setRecyclerviewLayout();
-
-        if(user.isProUser()) {
-            adLayout.setVisibility(View.GONE);
-        }
+        adLayout.setVisibility(View.GONE);
 
         searchEditText.setIconifiedByDefault(false);
         int searchPlateId = searchEditText.getContext().getResources()

@@ -72,6 +72,7 @@ public class RealmBackupRestore {
             storageDir = new File(activity.getApplicationContext()
                             .getExternalFilesDir(null) + "");
         }
+
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
@@ -120,7 +121,6 @@ public class RealmBackupRestore {
                 e.printStackTrace();
             }
         }
-
         copyBundledRealmFile(restoreFilePath, exportFileName);
     }
 
@@ -128,9 +128,7 @@ public class RealmBackupRestore {
         try {
             File file = new File(activity.getApplicationContext().getFilesDir(), outFileName);
             FileOutputStream outputStream = new FileOutputStream(file);
-
             FileInputStream inputStream = new FileInputStream(new File(oldFilePath));
-
             byte[] buf = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buf)) > 0) {
@@ -145,7 +143,6 @@ public class RealmBackupRestore {
     }
 
     public void unzip(String zipFile, String location) {
-
         try {
             FileInputStream inputStream = new FileInputStream(zipFile);
             ZipInputStream zipStream = new ZipInputStream(inputStream);
@@ -162,7 +159,6 @@ public class RealmBackupRestore {
                     while ((read = zipStream.read(buffer)) != -1) {
                         bufout.write(buffer, 0, read);
                     }
-
                     zipStream.closeEntry();
                     bufout.close();
                     fout.close();
@@ -172,7 +168,6 @@ public class RealmBackupRestore {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void handleDirectory(String dir, String location) {
@@ -184,8 +179,7 @@ public class RealmBackupRestore {
 
     private ArrayList<String> findPaths(){
         ArrayList<String> images = new ArrayList<>();
-        String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-                + "";
+        String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "";
         File directory = new File(path);
         File[] files = directory.listFiles();
         for (int i = 0; i < files.length; i++) {
@@ -195,7 +189,6 @@ public class RealmBackupRestore {
                 backupPath = files[i].getPath();
             }
         }
-
         return images;
     }
 

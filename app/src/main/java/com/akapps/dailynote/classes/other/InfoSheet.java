@@ -96,8 +96,9 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             userSecurityWord = savedInstanceState.getString("word");
         }
 
-        TextView title  =view.findViewById(R.id.title);
+        TextView title  = view.findViewById(R.id.title);
         MaterialButton backup = view.findViewById(R.id.backup);
+        MaterialButton delete = view.findViewById(R.id.delete_directly);
         TextView info  = view.findViewById(R.id.info);
 
         TextInputLayout securityWordLayout = view.findViewById(R.id.security_word_layout);
@@ -165,10 +166,16 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                 info.setText("Are you sure you want to delete checklist?");
             }
             else {
-                if(message == 3)
-                    info.setText("Send to trash?");
-                else if(message == -3)
-                    info.setText("Delete from Trash?");
+                if(message == 3) {
+                    delete.setVisibility(View.VISIBLE);
+                    backup.setText("TRASH");
+                    backup.setBackgroundColor(getContext().getColor(R.color.orange));
+                    info.setVisibility(View.GONE);
+                }
+                else if(message == -3) {
+                    backup.setText("DELETE");
+                    info.setVisibility(View.GONE);
+                }
             }
             info.setGravity(Gravity.CENTER);
         }
@@ -331,6 +338,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                 ((NoteEdit) getActivity()).removeFormatting();
 
             this.dismiss();
+        });
+
+        delete.setOnClickListener(view1 -> {
+            // sent to trash
+            ((NoteEdit) getActivity()).deleteNote();
+            // delete from trash
+            ((NoteEdit) getActivity()).deleteNote();
         });
 
         return view;

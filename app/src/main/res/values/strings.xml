@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Dark Note</string>
-    <string name="app_version">Version 8.4</string>
-    <string name="schema">22</string>
+    <string name="app_version">Version 8.5</string>
+    <string name="schema">23</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_error_title">Wrong Login/Password</string>
@@ -11,7 +11,7 @@
     <string name="login_max_title">Too many attempts</string>
     <string name="login_max_message">Please contact admin</string>
     <string name="input_error">Incorrect Input</string>
-
+    <string name="support_me_message">Dark Notes is <font color='#fd4f3f'>free</font> and has <font color='#fd4f3f'>no ads</font> 🎉 \nYou can support me by buying me some much needed <font color='#05fbcd'>coffee</font> or leaving an honest review, even if it is a 1 ⭐</string>
     <string name="credits_text">
 
         <font color='#ff6600'>Icons from Flaticon</font>\n

@@ -1,6 +1,5 @@
 package com.akapps.dailynote.activity;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -8,24 +7,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,54 +29,31 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
-import com.akapps.dailynote.classes.helpers.SecurityForPurchases;
 import com.akapps.dailynote.classes.other.AccountSheet;
 import com.akapps.dailynote.classes.other.CreditsSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
-import com.akapps.dailynote.classes.other.UpgradeSheet;
-import com.android.billingclient.api.AcknowledgePurchaseParams;
-import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesResponseListener;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetailsParams;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.slider.Slider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import io.realm.Realm;
@@ -94,16 +62,13 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
-import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
 
-public class SettingsScreen extends AppCompatActivity implements PurchasesUpdatedListener, DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener {
+public class SettingsScreen extends AppCompatActivity{
 
     // activity
     private Context context;
     private int all_Notes;
     private boolean tryAgain;
-    private boolean initializing;
     private int upgradeToProCounter;
 
     private User currentUser;
@@ -129,6 +94,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private TextView previewLines;
     private LinearLayout titleLayout;
     private LinearLayout previewLayout;
+    private MaterialCardView accountLayout;
+    private TextView accountText;
     private CustomPowerMenu linesMenu;
     private boolean isTitleSelected;
     private SwitchCompat showPreview;
@@ -137,12 +104,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private SwitchCompat showFolderNotes;
     private SwitchCompat modeSetting;
     private SwitchCompat sublistMode;
-    private MaterialButton buyPro;
     private MaterialCardView grid;
     private MaterialCardView row;
     private MaterialCardView staggered;
     private TextView about;
-    private TextView freeUserMessage;
     private MaterialButton signUp;
     private MaterialButton logIn;
     private MaterialButton sync;
@@ -152,18 +117,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     private Dialog progressDialog;
     private ImageView spaceOne;
     private ImageView spaceTwo;
-    private Slider reminderSeekbar;
-    private TextView reminderSeekbarText;
-
-    // Billing client
-    private BillingClient billingClient;
-    private ArrayList<String> purchaseItemIDs;
 
     // variables
     private boolean betaBackup  = false;
     private boolean betaRestore = false;
-    private final int backupCode = 1234;
-    private Calendar reminderDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,11 +128,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         setContentView(R.layout.activity_settings_screen);
 
         context = this;
-
         mAuth = FirebaseAuth.getInstance();
-
         all_Notes = getIntent().getIntExtra("size", 0);
-
         boolean backingUp = getIntent().getBooleanExtra("backup", false);
 
         try {
@@ -186,30 +140,20 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         currentUser = realm.where(User.class).findFirst();
 
         populateUserSettings();
-        initializeBilling();
 
         if(backingUp)
             showBackupRestoreInfo(6);
-
-        boolean upgrade = getIntent().getBooleanExtra("upgrade", false);
-
-        if(upgrade){
-            UpgradeSheet upgradeSheet = new UpgradeSheet();
-            upgradeSheet.show(getSupportFragmentManager(), upgradeSheet.getTag());
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         realmStatus();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if(realm!=null)
             realm.close();
     }
@@ -249,13 +193,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         showFolderNotes = findViewById(R.id.show_folder_switch);
         modeSetting = findViewById(R.id.mode_setting);
         sublistMode = findViewById(R.id.sublists_switch);
-        buyPro = findViewById(R.id.buy_pro);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
         backupBeta = findViewById(R.id.backup_beta);
         restoreBackupBeta = findViewById(R.id.restore_beta_backup);
-        freeUserMessage = findViewById(R.id.free_user);
         syncLayout = findViewById(R.id.logged_in_layout);
         signUp = findViewById(R.id.sign_up);
         logIn = findViewById(R.id.log_in);
@@ -265,11 +207,23 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         lastUploadDate = findViewById(R.id.last_upload);
         spaceOne = findViewById(R.id.space_one);
         spaceTwo = findViewById(R.id.space_two);
-        reminderSeekbar = findViewById(R.id.reminder_seekbar);
-        reminderSeekbarText = findViewById(R.id.reminder_occurrence);
+        accountLayout = findViewById(R.id.account_layout);
+        accountText = findViewById(R.id.account_settings);
+
+        if(Helper.isPortrait(context)){
+            MaterialCardView coffee = findViewById(R.id.coffee_button);
+            TextView coffeeText = findViewById(R.id.support_me_message);
+            coffeeText.setOnClickListener(view -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.buymeacoffee.com/akapps"));
+                startActivity(browserIntent);
+            });
+            coffee.setOnClickListener(view -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.buymeacoffee.com/akapps"));
+                startActivity(browserIntent);
+            });
+        }
 
         Helper.moveBee(findViewById(R.id.version_icon), 200f);
-
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
         if(null == currentUser.getEmail()){
@@ -278,12 +232,12 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             realm.commitTransaction();
         }
 
-        if(currentUser.isProUser()) {
-            freeUserMessage.setVisibility(View.GONE);
-
+        if(currentUser.isUltimateUser()) {
+            accountLayout.setVisibility(View.VISIBLE);
+            syncLayout.setVisibility(View.VISIBLE);
+            accountText.setVisibility(View.VISIBLE);
             if(mAuth.getCurrentUser() != null){
                 if(mAuth.getCurrentUser().isEmailVerified()) {
-                    syncLayout.setVisibility(View.VISIBLE);
                     signUp.setVisibility(View.GONE);
                     logIn.setText("Log Out");
                     logIn.setBackgroundColor(context.getColor(R.color.red));
@@ -292,7 +246,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     upload.setTextColor(context.getColor(R.color.gray));
                     accountInfo.setVisibility(View.VISIBLE);
                     accountInfo.setText(mAuth.getCurrentUser().getEmail());
-
                     spaceOne.setVisibility(View.VISIBLE);
                     spaceTwo.setVisibility(View.VISIBLE);
 
@@ -302,6 +255,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     }
                 }
             }
+        }
+        else{
+            accountLayout.setVisibility(View.GONE);
+            accountText.setVisibility(View.GONE);
         }
 
         String titleLinesNumber = String.valueOf(currentUser.getTitleLines());
@@ -318,14 +275,12 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         signUp.setOnClickListener(view -> {
             realmStatus();
-            if(currentUser.isProUser()) {
+            if(currentUser.isUltimateUser()) {
                 if (mAuth.getCurrentUser() == null) {
                     AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, true);
                     accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
                 }
             }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
         });
 
         logIn.setOnClickListener(view -> {
@@ -340,16 +295,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         sync.setOnClickListener(view -> {
             realmStatus();
-            if(currentUser.isProUser())
-                if (mAuth.getCurrentUser() != null)
-                    showBackupRestoreInfo(7);
+            if (mAuth.getCurrentUser() != null && currentUser.isUltimateUser())
+                showBackupRestoreInfo(7);
         });
 
         upload.setOnClickListener(view -> {
             realmStatus();
-            if(currentUser.isProUser())
-                if (mAuth.getCurrentUser() != null)
-                    showBackupRestoreInfo(6);
+            if (mAuth.getCurrentUser() != null && currentUser.isUltimateUser())
+                showBackupRestoreInfo(6);
         });
 
         backup.setOnClickListener(v -> {
@@ -360,12 +313,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         backupBeta.setOnClickListener(view -> {
             realmStatus();
-            if(currentUser.isProUser()) {
-                betaBackup = true;
-                showBackupRestoreInfo(2);
-            }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            betaBackup = true;
+            showBackupRestoreInfo(2);
         });
 
         restoreBackup.setOnClickListener(v -> {
@@ -379,67 +328,38 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             openFile();
         });
 
-        if(!currentUser.isProUser()){
-            showPreview.setChecked(false);
-            showPreviewNoteInfo.setChecked(true);
-            openFoldersOnStart.setChecked(false);
-            showFolderNotes.setChecked(false);
-            realm.beginTransaction();
-            currentUser.setShowPreview(true);
-            currentUser.setOpenFoldersOnStart(false);
-            currentUser.setShowFolderNotes(false);
-            currentUser.setShowPreviewNoteInfo(true);
-            realm.commitTransaction();
-        }
-
         titleLayout.setOnClickListener(v -> {
             realmStatus();
-            if(currentUser.isProUser()) {
-                isTitleSelected = true;
-                showLineNumberMenu(titleLines, null);
-            }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            isTitleSelected = true;
+            showLineNumberMenu(titleLines, null);
         });
 
         previewLayout.setOnClickListener(v -> {
             realmStatus();
-            if(currentUser.isProUser()) {
-                isTitleSelected = false;
-                showLineNumberMenu(previewLines, null);
-            }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            isTitleSelected = false;
+            showLineNumberMenu(previewLines, null);
         });
 
         appSettings.setOnClickListener(v -> openAppInSettings());
 
         row.setOnClickListener(v -> {
             realmStatus();
-            if(currentUser.isProUser()){
-                realm.beginTransaction();
-                currentUser.setLayoutSelected("row");
-                realm.commitTransaction();
-                row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-                grid.setCardBackgroundColor(context.getColor(R.color.gray));
-                staggered.setCardBackgroundColor(context.getColor(R.color.gray));
-            }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            realm.beginTransaction();
+            currentUser.setLayoutSelected("row");
+            realm.commitTransaction();
+            row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
+            grid.setCardBackgroundColor(context.getColor(R.color.gray));
+            staggered.setCardBackgroundColor(context.getColor(R.color.gray));
         });
 
         grid.setOnClickListener(v -> {
             realmStatus();
-            if(currentUser.isProUser()){
-                realm.beginTransaction();
-                currentUser.setLayoutSelected("grid");
-                realm.commitTransaction();
-                grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-                row.setCardBackgroundColor(context.getColor(R.color.gray));
-                staggered.setCardBackgroundColor(context.getColor(R.color.gray));
-            }
-            else
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
+            realm.beginTransaction();
+            currentUser.setLayoutSelected("grid");
+            realm.commitTransaction();
+            grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
+            row.setCardBackgroundColor(context.getColor(R.color.gray));
+            staggered.setCardBackgroundColor(context.getColor(R.color.gray));
         });
 
         staggered.setOnClickListener(v -> {
@@ -462,55 +382,31 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
         showPreview.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
-            if(currentUser.isProUser()) {
-                realm.beginTransaction();
-                currentUser.setShowPreview(isChecked);
-                realm.commitTransaction();
-            }
-            else if(initializing) {
-                showPreview.setChecked(true);
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
-            }
+            realm.beginTransaction();
+            currentUser.setShowPreview(isChecked);
+            realm.commitTransaction();
         });
 
         showPreviewNoteInfo.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
-            if(currentUser.isProUser()) {
-                realm.beginTransaction();
-                currentUser.setShowPreviewNoteInfo(isChecked);
-                realm.commitTransaction();
-            }
-            else if(initializing) {
-                showPreviewNoteInfo.setChecked(true);
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
-            }
+            realm.beginTransaction();
+            currentUser.setShowPreviewNoteInfo(isChecked);
+            realm.commitTransaction();
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
             AppData.isAppFirstStarted = false;
             realmStatus();
-            if(currentUser.isProUser()) {
-                realm.beginTransaction();
-                currentUser.setOpenFoldersOnStart(isChecked);
-                realm.commitTransaction();
-            }
-            else if(initializing) {
-                openFoldersOnStart.setChecked(false);
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
-            }
+            realm.beginTransaction();
+            currentUser.setOpenFoldersOnStart(isChecked);
+            realm.commitTransaction();
         });
 
         showFolderNotes.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
-            if(currentUser.isProUser()) {
-                realm.beginTransaction();
-                currentUser.setShowFolderNotes(isChecked);
-                realm.commitTransaction();
-            }
-            else if(initializing) {
-                showFolderNotes.setChecked(false);
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
-            }
+            realm.beginTransaction();
+            currentUser.setShowFolderNotes(isChecked);
+            realm.commitTransaction();
         });
 
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -522,50 +418,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
 
         sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(currentUser.isProUser()) {
-                realmStatus();
-                realm.beginTransaction();
-                currentUser.setEnableSublists(isChecked);
-                if(isChecked)
-                    realm.where(Note.class).findAll().setBoolean("enableSublist", true);
-                realm.commitTransaction();
-            }
-            else {
-                sublistMode.setChecked(false);
-                Helper.showMessage(this, "Settings", "Upgrade Required", MotionToast.TOAST_ERROR);
-            }
-        });
-
-        reminderSeekbar.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onStartTrackingTouch(@NonNull Slider slider) { }
-
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onStopTrackingTouch(@NonNull Slider slider) {
-                if(initializing) {
-                    realm.beginTransaction();
-                    currentUser.setBackupReminderOccurrence((int) slider.getValue());
-                    realm.commitTransaction();
-
-                    if(slider.getValue() != 0)
-                        showDatePickerDialog();
-                    else
-                        resetReminderSlider();
-                }
-            }
-        });
-
-        buyPro.setOnClickListener(v -> {
             realmStatus();
-            if(!currentUser.isProUser()) {
-                UpgradeSheet upgradeSheet = new UpgradeSheet();
-                upgradeSheet.show(getSupportFragmentManager(), upgradeSheet.getTag());
-            }
-            else
-                Helper.showMessage(this, "Pro Status", "You are already a " +
-                        "Pro User. Thank you for your support!", MotionToast.TOAST_WARNING);
+            realm.beginTransaction();
+            currentUser.setEnableSublists(isChecked);
+            realm.where(Note.class).findAll().setBoolean("enableSublist", true);
+            realm.commitTransaction();
         });
 
         about.setOnClickListener(v -> {
@@ -583,127 +440,10 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         });
     }
 
-    private void changeReminderNotification(){
-        int value = currentUser.getBackupReminderOccurrence();
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        intent.putExtra("id", backupCode);
-        PendingIntent pendingIntent;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
-                    PendingIntent.FLAG_MUTABLE);
-        else
-            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // calender is off by a month
-        SimpleDateFormat format1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss aa");
-        String reminderDateFormatted = format1.format(reminderDate.getTime());
-
-        changeUserReminderDate(reminderDateFormatted);
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderDate.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY * value, pendingIntent);
-
-        reminderSeekbarText.setText(value != 0 ? "Remind Every " + value+ " Days\n" +
-                "Starting on: " + currentUser.getBackupReminderDate() :
-                "No Reminder");
-    }
-
-    private void cancelReminderNotification() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
-                    PendingIntent.FLAG_IMMUTABLE);
-        else
-            pendingIntent = PendingIntent.getBroadcast(this, backupCode, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
-        alarmManager.cancel(pendingIntent);
-    }
-
-    private void timeDialog() {
-        TimePickerDialog timer = TimePickerDialog.newInstance(
-                this,
-                reminderDate.get(Calendar.HOUR_OF_DAY),
-                reminderDate.get(Calendar.MINUTE),
-                false
-        );
-        timer.setThemeDark(true);
-        timer.setAccentColor(getColor(R.color.light_gray_2));
-        timer.setOkColor(getColor(R.color.blue));
-        timer.setCancelColor(getColor(R.color.light_gray_2));
-        timer.setOnCancelListener(onCancelListener);
-        timer.show(getSupportFragmentManager(), "Datepickerdialog");
-    }
-
-    @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        // Get Current Time
-        reminderDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        reminderDate.set(Calendar.MINUTE, minute);
-        reminderDate.set(Calendar.SECOND, 0);
-        reminderDate.set(Calendar.MONTH, reminderDate.get(Calendar.MONTH)-1);
-        if(reminderDate.after(Calendar.getInstance()))
-            changeReminderNotification();
-        else
-            Helper.showMessage(this, "Reminder not set", "Reminder cannot be in the past",
-                    MotionToast.TOAST_ERROR);
-    }
-
-    public void showDatePickerDialog() {
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.DAY_OF_MONTH, 1);
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                this,
-                now.get(Calendar.YEAR), // Initial year selection
-                now.get(Calendar.MONTH), // Initial month selection
-                now.get(Calendar.DAY_OF_MONTH) // Initial day selection
-        );
-        datePickerDialog.setTitle("Set Reminder Starting Date");
-        datePickerDialog.setThemeDark(true);
-        datePickerDialog.setAccentColor(getColor(R.color.light_gray_2));
-        datePickerDialog.setOkColor(getColor(R.color.blue));
-        datePickerDialog.setCancelColor(getColor(R.color.light_gray_2));
-        datePickerDialog.setOnCancelListener(onCancelListener);
-        datePickerDialog.show(getSupportFragmentManager(), "Datepickerdialog");
-    }
-
-    //onDismiss handler
-    private DialogInterface.OnCancelListener onCancelListener =
-            dialog -> resetReminderSlider();
-
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int month, int day) {
-        reminderDate = Calendar.getInstance();
-        reminderDate.set(Calendar.YEAR, year);
-        reminderDate.set(Calendar.MONTH, ++month);
-        reminderDate.set(Calendar.DAY_OF_MONTH, day);
-        timeDialog();
-    }
-
-    private void resetReminderSlider(){
-        realm.beginTransaction();
-        currentUser.setBackupReminderOccurrence(0);
-        realm.commitTransaction();
-        reminderSeekbarText.setText("No Reminder");
-        changeUserReminderDate("");
-        cancelReminderNotification();
-        new Handler().postDelayed(() -> reminderSeekbar.setValue(0), 500);
-    }
-
-    private void changeUserReminderDate(String date){
-        realm.beginTransaction();
-        currentUser.setBackupReminderDate(date);
-        realm.commitTransaction();
-    }
-
     private void upgradeToPro(){
         realm.beginTransaction();
         currentUser.setProUser(!currentUser.isProUser());
+        currentUser.setUltimateUser(true);
         currentUser.setEnableSublists(true);
         realm.commitTransaction();
         if(currentUser.isProUser()) {
@@ -717,172 +457,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
       restart();
     }
 
-    public void buyApp(){
-        if (billingClient.isReady())
-            initiatePurchase(purchaseItemIDs.get(0));
-        else
-            reconnectBillingService();
-    }
-
-    private void initializeBilling(){
-        purchaseItemIDs = new ArrayList() {{
-            add("dark_note_pro");
-        }};
-        // Establish connection to billing client
-        // check purchase status from google play store cache on every app start
-        billingClient = BillingClient.newBuilder(SettingsScreen.this)
-                .enablePendingPurchases().setListener(this).build();
-
-        billingClient.queryPurchasesAsync(INAPP, (billingResult, list) -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK)
-                if (list != null && list.size() > 0)
-                    handlePurchases(list);
-        });
-    }
-
-    private void reconnectBillingService(){
-        billingClient = BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build();
-        billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK)
-                    initiatePurchase(purchaseItemIDs.get(0));
-                else
-                    Helper.showMessage(SettingsScreen.this, "Error", "" +
-                            "Issue connecting to Google Play", MotionToast.TOAST_ERROR);
-            }
-            @Override
-            public void onBillingServiceDisconnected() { }
-        });
-    }
-
-    private void initiatePurchase(final String PRODUCT_ID) {
-        List<String> skuList = new ArrayList<>();
-        skuList.add(PRODUCT_ID);
-        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-        params.setSkusList(skuList).setType(INAPP);
-        billingClient.querySkuDetailsAsync(params.build(),
-                (billingResult, skuDetailsList) -> {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                        if (skuDetailsList != null && skuDetailsList.size() > 0) {
-                            BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-                                    .setSkuDetails(skuDetailsList.get(0))
-                                    .build();
-                            billingClient.launchBillingFlow(SettingsScreen.this, flowParams);
-                        }
-                        else{
-                            Helper.showMessage(SettingsScreen.this, "Error", "" +
-                                    "Purchase Item "+ PRODUCT_ID +" not Found", MotionToast.TOAST_WARNING);
-                        }
-                    } else {
-                        Helper.showMessage(SettingsScreen.this, "Error", "" +
-                                "Try Again", MotionToast.TOAST_WARNING);
-                    }
-                });
-    }
-
-    @Override
-    public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
-        //if item newly purchased
-        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
-            handlePurchases(purchases);
-        }
-
-        //if item already purchased then check and reflect changes
-        else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-            billingClient.queryPurchasesAsync(INAPP, (alreadyPurchases, list) -> {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK)
-                    if (list != null && list.size() > 0) {
-                        handlePurchases(list);
-                    }
-            });
-        }
-        //if purchase cancelled
-        else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Helper.showMessage(SettingsScreen.this, "Upgrade Canceled", "" +
-                    "\uD83D\uDE2D whhhhhhhhy \uD83D\uDE2D", MotionToast.TOAST_WARNING);
-        }
-        // Handle any other error msgs
-        else {
-            Helper.showMessage(SettingsScreen.this, "Error", "" +
-                    "Try Again", MotionToast.TOAST_WARNING);
-        }
-    }
-
-    private void handlePurchases(List<Purchase>  purchases) {
-        for(Purchase purchase:purchases) {
-
-            final int index = 0;
-            //purchase found
-            if(index>-1) {
-                //if item is purchased
-                if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED)
-                {
-                    if (!verifyValidSignature(purchase.getOriginalJson(), purchase.getSignature())) {
-                        // Invalid purchase
-                        // show error to user
-                        Helper.showMessage(SettingsScreen.this, "Error", "" +
-                                "Try Again", MotionToast.TOAST_WARNING);
-                        continue;
-                    }
-                    // else purchase is valid
-                    //if item is purchased and not consumed
-                    if (!purchase.isAcknowledged()) {
-                        AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = billingResult -> {
-                            int consumeCountValue = getPurchaseCountValueFromPref(purchaseItemIDs.get(index))+1;
-                            savePurchaseCountValueToPref(purchaseItemIDs.get(index),consumeCountValue);
-                        };
-
-                        AcknowledgePurchaseParams acknowledgePurchaseParams =
-                                AcknowledgePurchaseParams.newBuilder()
-                                        .setPurchaseToken(purchase.getPurchaseToken())
-                                        .build();
-
-                        billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-                        upgradeToPro();
-                    }
-                }
-                //if purchase is pending
-                else if(purchase.getPurchaseState() == Purchase.PurchaseState.PENDING) {
-                    Helper.showMessage(SettingsScreen.this, "Upgrade Pending", "" +
-                            "Purchase is Pending. Please complete Transaction", MotionToast.TOAST_WARNING);
-                }
-                //if purchase is refunded or unknown
-                else if( purchase.getPurchaseState() == Purchase.PurchaseState.UNSPECIFIED_STATE) {
-                    Helper.showMessage(SettingsScreen.this, "Upgrade Error", "" +
-                            purchaseItemIDs.get(index)+" Purchase Status Unknown", MotionToast.TOAST_WARNING);
-                }
-            }
-
-        }
-    }
-
-    private SharedPreferences getPreferenceObject() {
-        return getApplicationContext().getSharedPreferences("donate", 0);
-    }
-    private SharedPreferences.Editor getPreferenceEditObject() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("donate", 0);
-        return pref.edit();
-    }
-    private int getPurchaseCountValueFromPref(String PURCHASE_KEY){
-        return getPreferenceObject().getInt( PURCHASE_KEY,0);
-    }
-    private void savePurchaseCountValueToPref(String PURCHASE_KEY, int value){
-        getPreferenceEditObject().putInt(PURCHASE_KEY,value).commit();
-    }
-
-    private boolean verifyValidSignature(String signedData, String signature) {
-        try {
-            return SecurityForPurchases.verifyPurchase(getString(R.string.base64Key), signedData, signature);
-        } catch (IOException e) {
-            return false;
-        }
-    }
-
     private void populateUserSettings(){
         initializeLayout();
         initializeSettings();
-        initializing = true;
     }
 
     private void checkModeSettings(){
@@ -928,34 +505,8 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
         modeSetting.setChecked(currentUser.isModeSettings());
+        sublistMode.setChecked(currentUser.isEnableSublists());
         checkModeSettings();
-
-        if(currentUser.isProUser()){
-            sublistMode.setChecked(currentUser.isEnableSublists());
-            buyPro.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray)));
-            buyPro.setText("PRO USER");
-            buyPro.setElevation(0);
-            if(mAuth.getCurrentUser() != null && !currentUser.getEmail().isEmpty() && mAuth.getCurrentUser().isEmailVerified()) {
-                if(currentUser.getBackupReminderOccurrence() > 0 && null != currentUser.getBackupReminderDate() &&
-                        currentUser.getBackupReminderDate().isEmpty())
-                    resetReminderSlider();
-                else {
-                    reminderSeekbar.setValue(currentUser.getBackupReminderOccurrence());
-                    reminderSeekbarText.setText(reminderSeekbar.getValue() != 0 ? "Remind Every " +
-                            (int) reminderSeekbar.getValue() + " Days\n" +
-                            "Starting on: " + currentUser.getBackupReminderDate() :
-                            "No Reminder");
-                }
-            }
-            else{
-                reminderSeekbar.setVisibility(View.GONE);
-                reminderSeekbarText.setVisibility(View.GONE);
-            }
-        }
-        else{
-            reminderSeekbar.setVisibility(View.GONE);
-            reminderSeekbarText.setVisibility(View.GONE);
-        }
 
         if(currentUser.getLayoutSelected().equals("row"))
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
@@ -966,14 +517,11 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     }
 
     public void openBackUpRestoreDialog(){
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_DENIED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         }
-        else {
+        else
             openBackup();
-        }
     }
 
     @Override
@@ -1066,7 +614,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     // places all the photos in a zip file and returns a string of the file path
     public String zipPhotos(ArrayList<String> files) {
-
         String zipPath = createZipFolder() + ".zip";
         File zipFile = new File(zipPath);
 
@@ -1074,11 +621,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
         try {
             BufferedInputStream origin;
             FileOutputStream dest = new FileOutputStream(zipFile);
-
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
 
             byte[] data = new byte[BUFFER];
-
             for (int i = 0; i < files.size(); i++) {
                 File newFile = new File(files.get(i));
                 if(newFile.exists()) {
@@ -1202,7 +747,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
 
     private void shareFile(File backup){
         realmStatus();
-
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("text/plain");
 
@@ -1218,7 +762,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 1) {
             if(betaRestore)
                 restoreBackupBeta(data);
@@ -1283,15 +826,9 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
             updateImages(images);
-            // prompt user to change backup reminder as it is currently not set
-            // due to restoring backup
-            updateBackupReminder();
 
-            // delete backup folder
-            File backupDir = new File(context
-                    .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
-            FilesKt.deleteRecursively(backupDir);
-
+            // delete all zip files
+            Helper.deleteZipFile(context);
             close();
         } catch (Exception e) {
             Helper.showLoading("", progressDialog, context, false);
@@ -1318,8 +855,7 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                     Realm.deleteRealm(configuration);
 
                     // delete all files first
-                    FilesKt.deleteRecursively(new File(getApplicationContext()
-                            .getExternalFilesDir(null) + ""));
+                    FilesKt.deleteRecursively(new File(context.getExternalFilesDir(null) + ""));
 
                     // initialize backup object
                     realmBackupRestore = new RealmBackupRestore(this);
@@ -1340,19 +876,14 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
                     updateImages(images);
-                    // prompt user to change backup reminder as it is currently not set
-                    // due to restoring backup
-                    updateBackupReminder();
 
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
                     Helper.showLoading("", progressDialog, context, false);
 
-                    // delete backup folder
-                    File backupDir = new File(context
-                            .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
-                    FilesKt.deleteRecursively(backupDir);
+                    // delete all zip files
+                    Helper.deleteZipFile(context);
 
                     close();
                 } catch (Exception e) {
@@ -1426,22 +957,6 @@ public class SettingsScreen extends AppCompatActivity implements PurchasesUpdate
             else
                 Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
                         "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
-        }
-    }
-
-    private void updateBackupReminder(){
-        // prompt user to change backup reminder as it is currently not set
-        // due to restoring backup
-        currentUser  = realm.where(User.class).findFirst();
-        if(currentUser.getBackupReminderDate()!= null && currentUser.getBackupReminderDate().length() > 0
-                && currentUser.getBackupReminderOccurrence() > 0) {
-            new Handler().postDelayed(() ->
-                    Helper.showMessage(this, "Backup Reminder", "" +
-                            "Needs to be reset", MotionToast.TOAST_WARNING), 3500);
-            realm.beginTransaction();
-            currentUser.setBackupReminderDate("");
-            currentUser.setBackupReminderOccurrence(0);
-            realm.commitTransaction();
         }
     }
 

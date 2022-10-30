@@ -15,7 +15,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -33,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import io.realm.Realm;
@@ -116,16 +114,6 @@ public class Helper {
             hour = 12;
 
         return date + " " + hour + ":" + time[1] + ":" + time[2] + " " + end;
-    }
-
-    public static String getOccurrenceInString(int occurrence){
-        if(occurrence == 1)
-            return "Daily";
-        else if(occurrence == 7)
-            return "Weekly";
-        else{
-            return "Every " + occurrence + " days";
-        }
     }
 
     public static Calendar dateToCalender(String dateString){
@@ -213,7 +201,6 @@ public class Helper {
     }
 
     public static void startAlarm(Activity activity, Note currentNote, Realm realm) {
-        Log.d("Here", "Attempting to set alarm");
         if(currentNote.getReminderDateTime().length() > 0) {
             Date reminderDate = null;
             try {
@@ -242,7 +229,6 @@ public class Helper {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP,
                         dateToCal(currentNote.getReminderDateTime()).getTimeInMillis(),
                         pendingIntent);
-                Log.d("Here", "Setting alarm for " +  dateToCal(currentNote.getReminderDateTime()).getTimeInMillis());
             }
             else {
                 if(!realm.isClosed()){
@@ -250,7 +236,6 @@ public class Helper {
                     currentNote.setReminderDateTime("");
                     realm.commitTransaction();
                 }
-                Log.d("Here", "Alarm already past");
             }
         }
     }
@@ -264,7 +249,6 @@ public class Helper {
             Date date = sdf.parse(dateInString);
             calendar = Calendar.getInstance();
             calendar.setTime(date);
-            Log.d("Here", "Date successfully converted to Calender");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -386,34 +370,26 @@ public class Helper {
             ObjectAnimator animator = ObjectAnimator.ofFloat(bee, "translationX", max);
             animator.setDuration(4000);
             animator.start();
-
             new Handler().postDelayed(() -> {
                 bee.setRotationY(180);
                 ObjectAnimator animator2 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
                 animator2.setDuration(4000);
                 animator2.start();
-
                 new Handler().postDelayed(() -> {
                     ObjectAnimator animator3 = ObjectAnimator.ofFloat(bee, "translationX", -1 * max);
                     animator3.setDuration(4000);
                     animator3.start();
-
                     new Handler().postDelayed(() -> {
                         bee.setRotationY(0);
                         ObjectAnimator animator4 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
                         animator4.setDuration(4000);
                         animator4.start();
-
                         new Handler().postDelayed(() -> {
                             moveBee(bee, max);
                         }, 3000);
-
                     }, 3000);
-
                 }, 3000);
-
             }, 3000);
-
         }, 2000);
     }
 
@@ -428,9 +404,32 @@ public class Helper {
     public static void deleteAppFiles(Context context){
         try {
             // delete backup folder
-            File mainDir = new File(context
-                    .getExternalFilesDir(null) + "");
+            File mainDir = new File(context.getExternalFilesDir(null) + "");
             FilesKt.deleteRecursively(mainDir);
+        }catch (Exception e){}
+    }
+
+    public static void deleteZipFile(Context context){
+        try {
+            // delete backup folder
+            File backupDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
+            FilesKt.deleteRecursively(backupDir);
+
+            // ensure there are no other zip files
+            File directory = new File(context.getExternalFilesDir(null) + "");
+            deleteZipFiles(directory);
+        }catch (Exception e){}
+    }
+
+    public static void deleteZipFiles(File directory){
+        try {
+            File[] files = directory.listFiles();
+            for (File file : files) {
+                if (file.getName().contains(".zip"))
+                    file.delete();
+                else if (file.isDirectory())
+                    deleteZipFiles(file);
+            }
         }catch (Exception e){}
     }
 }

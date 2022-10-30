@@ -51,9 +51,7 @@ public class RealmDatabase {
             if(oldVersion == 0){
                 schema.get("User")
                         .addField("titleLines", int.class)
-                        .transform(obj -> obj.setInt("titleLines", 3))
                         .addField("contentLines", int.class)
-                        .transform(obj -> obj.setInt("contentLines", 3))
                         .addField("openFoldersOnStart", boolean.class)
                         .removeField("lastUpdated")
                         .removeField("backUpOnLaunch")
@@ -84,6 +82,8 @@ public class RealmDatabase {
                 schema.get("User").addField("enableSublists", boolean.class);
             if(!schema.get("User").hasField("backupReminderDate"))
                 schema.get("User").addField("backupReminderDate", String.class);
+            if(!schema.get("User").hasField("ultimateUser"))
+                schema.get("User").addField("ultimateUser", boolean.class);
 
             // added note fields
             if(!schema.get("Note").hasField("dateCreatedMilli"))

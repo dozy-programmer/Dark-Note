@@ -1089,6 +1089,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             title.requestFocus();
         else
             title.clearFocus();
+
+        try {
+            if (!currentNote.isEnableSublist() && checkListItem.getSubChecklist().size() > 0) {
+                realm.beginTransaction();
+                currentNote.setEnableSublist(true);
+                realm.commitTransaction();
+            }
+        }catch (Exception e){}
     }
 
     // makes sure all the photos exist and have not been deleted from the device
@@ -1142,7 +1150,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
             noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
             noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
-            if(realm.where(User.class).findFirst().isProUser() && realm.where(User.class).findFirst().isEnableSublists()) {
+            if( realm.where(User.class).findFirst().isEnableSublists()) {
                 String sublistStatus = "";
                 if(currentNote.isEnableSublist())
                     sublistStatus = sublistStatus + "Disable Sublist";
@@ -1659,8 +1667,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             public void run() {
                 if (!realm.isClosed()) {
                     if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
-                        date.setText(Html.fromHtml(currentNote.getDateEdited().replace("\n", " ") +
-                                "<br><font color='#FFFFFF'>Last Edit:</font> " + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                        date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + currentNote.getDateEdited().replace("\n", " ") +
+                                "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                     } else {
                         date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
                     }

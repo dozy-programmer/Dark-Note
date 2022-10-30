@@ -25,50 +25,19 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/close_icon">
-            </ImageView>
+                android:src="@drawable/close_icon"></ImageView>
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Settings"
+                android:layout_gravity="center"
                 android:fontFamily="@font/baloo_bhai"
+                android:text="Settings"
                 android:textColor="@color/ultra_white"
-                android:textSize="24sp"
-                android:layout_gravity="center">
-            </TextView>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buy_pro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PRO"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/orange"
-                android:textSize="14sp"
-                android:layout_gravity="right"
-                android:backgroundTint="@color/gray"
-                app:cornerRadius="10dp"
-                app:strokeColor="@color/orange"
-                app:strokeWidth="2sp">
-            </com.google.android.material.button.MaterialButton>
+                android:textSize="24sp"></TextView>
 
         </androidx.appcompat.widget.Toolbar>
-
-        <TextView
-            android:id="@+id/free_user"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:fontFamily="@font/baloo_bhai"
-            android:gravity="center"
-            android:text="Hi there, thanks for using my app!\nYou are currently a regular user and do not have access to change settings, but you can backup and restore backups. Consider upgrading to Pro, it would help this college student out. If not, leaving a review would be appreciated. Anyways, Enjoy!"
-            android:textColor="@color/blue"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
         <TextView
             android:id="@+id/account_settings"
@@ -97,7 +66,7 @@
             android:theme="@style/ThemeOverlay.Mode"
             app:layout_constraintEnd_toEndOf="@+id/account_settings"
             app:layout_constraintStart_toStartOf="@+id/account_settings"
-            app:layout_constraintTop_toBottomOf="@+id/free_user"/>
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/account_layout"
@@ -245,30 +214,6 @@
                         android:textSize="16sp"/>
 
                 </LinearLayout>
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/reminder_seekbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:trackColor="@color/blue"
-                    app:thumbColor="@color/ultra_white"
-                    app:trackHeight="5dp"
-                    android:valueFrom="0"
-                    android:valueTo="14"
-                    android:stepSize="1"
-                    android:value="0"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginHorizontal="10dp"/>
-
-                <TextView
-                    android:id="@+id/reminder_occurrence"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Remind every _ Days"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="10dp"
-                    android:textColor="@color/white"/>
 
             </LinearLayout>
 

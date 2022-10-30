@@ -15,5 +15,4 @@ public class Homepage extends FragmentActivity{
         if(savedInstanceState == null)
             getSupportFragmentManager().beginTransaction().add(android.R.id.content, new notes()).commit();
     }
-
 }
