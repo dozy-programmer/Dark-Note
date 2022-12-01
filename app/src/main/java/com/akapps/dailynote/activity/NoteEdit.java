@@ -1623,10 +1623,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         info.show(getSupportFragmentManager(), info.getTag());
     }
 
-    public void deleteNote(){
+    public void deleteNote(boolean deleteNote){
         if(handler!=null)
             handler.removeCallbacksAndMessages(null);
-        if(currentNote.isTrash()){
+
+        if(currentNote.isTrash() || deleteNote){
             String noteTitle = currentNote.getTitle();
             RealmHelper.deleteNote(currentNote.getNoteId());
             Helper.showMessage(NoteEdit.this, "Deleted", noteTitle, MotionToast.TOAST_SUCCESS);

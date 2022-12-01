@@ -99,7 +99,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         TextView title  = view.findViewById(R.id.title);
         MaterialButton backup = view.findViewById(R.id.backup);
         MaterialButton delete = view.findViewById(R.id.delete_directly);
-        TextView info  = view.findViewById(R.id.info);
+        TextView info = view.findViewById(R.id.info);
 
         TextInputLayout securityWordLayout = view.findViewById(R.id.security_word_layout);
         TextInputEditText securityWord = view.findViewById(R.id.security_word);
@@ -315,7 +315,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                 if(deleteAllChecklists)
                     ((NoteEdit) getActivity()).deleteChecklist();
                 else
-                    ((NoteEdit) getActivity()).deleteNote();
+                    ((NoteEdit) getActivity()).deleteNote(false);
             }
             else if(message == 4){
                 // delete file
@@ -341,10 +341,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         });
 
         delete.setOnClickListener(view1 -> {
-            // sent to trash
-            ((NoteEdit) getActivity()).deleteNote();
-            // delete from trash
-            ((NoteEdit) getActivity()).deleteNote();
+            // delete note without sending to trash
+            ((NoteEdit) getActivity()).deleteNote(true);
         });
 
         return view;
