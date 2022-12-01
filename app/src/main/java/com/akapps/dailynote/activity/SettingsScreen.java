@@ -234,12 +234,12 @@ public class SettingsScreen extends AppCompatActivity{
 
         if(currentUser.isUltimateUser()) {
             accountLayout.setVisibility(View.VISIBLE);
-            syncLayout.setVisibility(View.VISIBLE);
             accountText.setVisibility(View.VISIBLE);
             if(mAuth.getCurrentUser() != null){
                 if(mAuth.getCurrentUser().isEmailVerified()) {
                     signUp.setVisibility(View.GONE);
                     logIn.setText("Log Out");
+                    syncLayout.setVisibility(View.VISIBLE);
                     logIn.setBackgroundColor(context.getColor(R.color.red));
                     sync.setBackgroundColor(context.getColor(R.color.darker_blue));
                     upload.setBackgroundColor(context.getColor(R.color.gold));

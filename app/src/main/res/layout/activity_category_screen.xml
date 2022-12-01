@@ -20,15 +20,19 @@
             android:id="@+id/close_activity"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/arrow_down"></ImageView>
+            android:src="@drawable/arrow_down"/>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:paddingTop="40dp"
             android:layout_gravity="center"
+            android:gravity="center"
+            android:ellipsize="end"
             android:fontFamily="@font/baloo_bhai"
             android:text="Folders"
+            android:maxLines="2"
             android:textColor="@color/ultra_white"
             android:textSize="24sp"></TextView>
 

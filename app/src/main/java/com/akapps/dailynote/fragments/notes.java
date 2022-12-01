@@ -229,7 +229,6 @@ public class notes extends Fragment{
         int span = 2;
         if(Helper.isTablet(context))
             span = 3;
-            span = 3;
 
         if(user.getLayoutSelected().equals("stag")) {
             StaggeredGridLayoutManager layout = new StaggeredGridLayoutManager(span, LinearLayoutManager.VERTICAL);

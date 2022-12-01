@@ -200,7 +200,7 @@ public class CategoryScreen extends AppCompatActivity {
 
         if(editingRegularNote){
             allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
-            title.setText("Current: " + allSelectedNotes.get(0).getCategory());
+            title.setText("Current:\n" + allSelectedNotes.get(0).getCategory());
             if(allSelectedNotes.get(0).getCategory().equals("none"))
                 unselectCategories.setVisibility(View.GONE);
 
