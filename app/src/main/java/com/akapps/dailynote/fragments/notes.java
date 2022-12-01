@@ -67,9 +67,6 @@ public class notes extends Fragment{
     private FloatingActionButton addNote;
     private FloatingActionButton addCheckList;
     private FloatingActionMenu addMenu;
-    // ad
-    private MaterialCardView adLayout;
-    private MaterialCardView upgradeButton;
 
     // on-device database
     private Realm realm;
@@ -232,6 +229,7 @@ public class notes extends Fragment{
         int span = 2;
         if(Helper.isTablet(context))
             span = 3;
+            span = 3;
 
         if(user.getLayoutSelected().equals("stag")) {
             StaggeredGridLayoutManager layout = new StaggeredGridLayoutManager(span, LinearLayoutManager.VERTICAL);
@@ -267,8 +265,6 @@ public class notes extends Fragment{
         addMenu = view.findViewById(R.id.menu);
         addNote = view.findViewById(R.id.add_note);
         addCheckList = view.findViewById(R.id.add_checklist);
-        adLayout = view.findViewById(R.id.ad);
-        upgradeButton = view.findViewById(R.id.upgrade_button);
     }
 
     private void showData(){
@@ -279,7 +275,6 @@ public class notes extends Fragment{
 
     private void initializeLayout(){
         setRecyclerviewLayout();
-        adLayout.setVisibility(View.GONE);
 
         searchEditText.setIconifiedByDefault(false);
         int searchPlateId = searchEditText.getContext().getResources()
@@ -374,18 +369,6 @@ public class notes extends Fragment{
                 }
                 return false;
             }
-        });
-
-        upgradeButton.setOnClickListener(view -> {
-            int size = realm.where(Note.class).findAll().size();
-            Intent settings = new Intent(context, SettingsScreen.class);
-            settings.putExtra("size", size);
-            settings.putExtra("upgrade", true);
-            settings.putExtra("user", String.valueOf(user.getUserId()));
-            startActivity(settings);
-            getActivity().finish();
-            getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
-            realm.close();
         });
     }
 
