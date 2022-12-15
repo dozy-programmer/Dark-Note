@@ -1,6 +1,6 @@
 # Dark Note
 
-Dark note is a feature rich and intuitive app for your notes and checklists. 
+Dark Note offers a wide range of features for taking notes and creating checklists. Its simple and elegant user interface makes it easy to use and navigate, allowing you to quickly and easily create and manage your notes and checklists.
 
 ## Table of contents
 * [Preview](#preview)
@@ -16,9 +16,13 @@ Dark note is a feature rich and intuitive app for your notes and checklists.
 
 ## App Layout
 
-Home Page | Sample Note | Folder Page | Settings Page
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-<img src="Screenshots/Regular%20Device/1_oneplus-oneplus8pro-portrait.png" width="310" height="450"/> | <img src="Screenshots/Regular%20Device/2_oneplus-oneplus8pro-portrait.png" width="310" height="450"/> | <img src="Screenshots/Regular%20Device/Folders_Page.png" width="310" height="450"/> | <img src="Screenshots/Regular%20Device/8_oneplus-oneplus8pro-portrait.png" width="310" height="450"/>
+Home Page | Sample Note |
+:-------------------------:|:-------------------------:|
+<img src="Screenshots/Regular%20Device/1_oneplus-oneplus8pro-portrait.png" width="100" height="200"/> | <img src="Screenshots/Regular%20Device/2_oneplus-oneplus8pro-portrait.png" width="100" height="200"/> 
+
+| Folder Page  | Settings Page |
+| ------------- | ------------- |
+| <img src="Screenshots/Regular%20Device/Folders_Page.png" width="100" height="200"/>  | <img src="Screenshots/Regular%20Device/8_oneplus-oneplus8pro-portrait.png" width="100" height="200"/>  |
 
 ## Features
 
@@ -57,5 +61,4 @@ This app was created because I wanted to modernize the popular note app ColorNot
 * Realm DB
 
 ## Download
-
-Download [app!](https://play.google.com/store/apps/details?id=com.akapps.dailynote) (using an Android device)
+[![Website](https://img.shields.io/badge/Dark%20Note-Play%20Store-orange)](https://play.google.com/store/apps/details?id=com.akapps.dailynote)
