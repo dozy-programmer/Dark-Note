@@ -118,12 +118,13 @@ public class RealmHelper {
                 realm.executeTransaction(tRealm -> {
                     item.setChecked(status);
                 });
-                if(null != item.getSubChecklist())
-                    if(item.getSubChecklist().size() > 0)
-                        for(SubCheckListItem subItem: item.getSubChecklist())
+                if(null != item.getSubChecklist()) {
+                    if (item.getSubChecklist().size() > 0)
+                        for (SubCheckListItem subItem : item.getSubChecklist())
                             realm.executeTransaction(tRealm -> {
                                 subItem.setChecked(status);
                             });
+                }
             }
         }
     }

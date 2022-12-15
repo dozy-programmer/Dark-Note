@@ -996,9 +996,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         }
 
-        if(realm.where(Note.class).equalTo("noteId", newNote.getNoteId()).findAll().size()!=0){
+        if(realm.where(Note.class).equalTo("noteId", newNote.getNoteId()).findAll().size()!=0)
             addNote();
-        }
         else {
             newNote.setPin(currentPin);
             newNote.setIsCheckList(isCheckList);
@@ -1236,6 +1235,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void deleteChecklist(){
         RealmHelper.deleteChecklist(currentNote);
+        checkNote(false);
         checklistAdapter.notifyDataSetChanged();
         Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
         isListEmpty(0, true);
