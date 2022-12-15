@@ -177,9 +177,11 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                     Html.FROM_HTML_MODE_COMPACT));
 
             moneyTotal.setText(Html.fromHtml(moneyTotal.getText() + "<br>" +
-                            "<font color='#e65c00'>" + moneyTotalString + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
-        }catch (Exception e){
+                    "<font color='#e65c00'>" + moneyTotalString
+                    .replaceAll("\n", "<br>")
+                    .replaceAll("~", "&nbsp;")
+                    .replaceAll("\t", "&emsp;") + "</font>", Html.FROM_HTML_MODE_COMPACT));
+        } catch (Exception e){
             this.dismiss();
         }
 
@@ -323,8 +325,9 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                 addingResults += "<br>Budget - Completed Total = $" + df.format(budget - itemsCompleted) + "<br>" +
                         "Budget - (In-Progress Total) = $" + df.format(budget - itemsNotCompleted);
         }
-        else
-            addingResults = "No Budget Set (Try it Out)";
+        else {
+            addingResults = getContext().getString(R.string.try_out_budget);
+        }
 
 
         return addingResults;

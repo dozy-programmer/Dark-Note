@@ -17,6 +17,23 @@
     <string name="login_max_message">Please contact admin</string>
     <string name="input_error">Incorrect Input</string>
 
+    <!-- Note Info Sheet !-->
+    <string name="try_out_budget">
+
+        <!-- ~ is used as a space !-->
+        No Budget Set (Try it Out)\n
+        How to use:\n
+        • add budget via \"+$\"\n
+            \t•~+$2,000 budget\n
+            \t•~+$3,000 budget for Jan\n
+        • add expenses via \"$\"\n
+            \t•~$50 eating out\n
+            \t•~$20 netflix\n
+            \t•~I owe Mike $20\n
+            \t•~Rent $1500
+
+    </string>
+
     <!-- Settings !-->
     <string name="support_me_message">Dark Note is <font color='#fd4f3f'>free</font> and has
         <font color='#fd4f3f'>no ads</font> 🎉 \nYou can support me by buying

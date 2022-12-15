@@ -530,10 +530,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         sort.setOnClickListener(v -> {
-            if(currentNote.getChecklist().size() > 0) {
-                FilterChecklistSheet filter = new FilterChecklistSheet(realm, currentNote);
-                filter.show(this.getSupportFragmentManager(), filter.getTag());
-            }
+            FilterChecklistSheet filter = new FilterChecklistSheet(realm, currentNote);
+            filter.show(this.getSupportFragmentManager(), filter.getTag());
         });
 
         info.setOnClickListener(view -> {
