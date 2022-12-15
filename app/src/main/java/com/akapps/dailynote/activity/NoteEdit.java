@@ -1035,6 +1035,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if(currentNote.getSort() == 6)
             initialPosition = currentNote.getChecklist().min("positionInList").intValue() - 1;
+        else if (currentNote.getSort() == 5)
+            initialPosition = currentNote.getChecklist().max("positionInList").intValue() + 1;
         else
             initialPosition = currentNote.getChecklist().size();
 

@@ -252,7 +252,7 @@
             android:layout_gravity="center"
             android:buttonTint="@color/orange"
             android:text="Apply to All Checklists (Select first)"
-            android:textColor="@color/darker_blue" />
+            android:textColor="@color/cornflower_blue" />
 
     </LinearLayout>
 
