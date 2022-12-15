@@ -58,7 +58,9 @@ dependencies {
 
     // firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
-    implementation 'com.google.firebase:firebase-auth'
+    implementation ('com.google.firebase:firebase-auth'){
+        exclude module: "play-services-safetynet"
+    }
     implementation 'com.google.firebase:firebase-storage'
 
     // git hubs
