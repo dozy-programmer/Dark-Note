@@ -16,7 +16,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/Theme.DailyDay" >
+        android:theme="@style/Theme.DailyDay">
 
         <receiver android:name=".classes.helpers.AlertReceiver"
             android:exported="false"/>

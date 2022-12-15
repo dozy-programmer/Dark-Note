@@ -87,6 +87,3 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
-
-# don't inlcude file
-secure_string.xml

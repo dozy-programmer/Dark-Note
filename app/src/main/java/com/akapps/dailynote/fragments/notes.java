@@ -36,11 +36,10 @@ import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.other.UpdateSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.material.card.MaterialCardView;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -89,8 +88,6 @@ public class notes extends Fragment{
 
     // filter
     private FilterSheet customSheet;
-
-    private UpdateSheet updateSheet;
 
     // empty list layout
     private ScrollView empty_Layout;
@@ -152,8 +149,6 @@ public class notes extends Fragment{
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
-
-        showUpdateSheet();
 
         Helper.deleteCache(context);
     }
@@ -218,9 +213,6 @@ public class notes extends Fragment{
 
         if(customSheet != null)
             customSheet.dismiss();
-
-        if(updateSheet != null)
-            updateSheet.dismiss();
 
         Helper.deleteCache(context);
     }
@@ -537,14 +529,6 @@ public class notes extends Fragment{
     private void showFilterMenu(){
         customSheet = new FilterSheet(this);
         customSheet.show(getParentFragmentManager(), customSheet.getTag());
-    }
-
-    private void showUpdateSheet(){
-        if(Helper.getPreference(context, getString(R.string.app_version)) == null) {
-            updateSheet = new UpdateSheet();
-            updateSheet.show(getParentFragmentManager(), updateSheet.getTag());
-            Helper.savePreference(context, "seen", getString(R.string.app_version));
-        }
     }
 
     public void filterAndSortNotes(String dateType, boolean oldestToNewest,

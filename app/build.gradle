@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 32
@@ -12,8 +12,8 @@ android {
         applicationId "com.akapps.dailynote"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 77
-        versionName "8.6"
+        versionCode 78
+        versionName "@string/app_version_int"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
