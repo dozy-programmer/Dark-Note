@@ -617,9 +617,16 @@ public class notes extends Fragment{
         boolean aToZ = Helper.getBooleanPreference(getContext(),"_aToZ");
         boolean zToA = Helper.getBooleanPreference(getContext(),"_zToA");
 
+        Log.d("Here", "oldestToNewest " + oldestToNewest);
+        Log.d("Here", "newestToOldest " + newestToOldest);
+        Log.d("Here", "aToZ " + aToZ);
+        Log.d("Here", "zToA " + zToA);
+        Log.d("Here", "dateType " + dateType);
+        //dateEditedMilli
+
         sortedBy.setVisibility(View.GONE);
 
-        if (dateType!=null || aToZ || zToA) {
+        if (dateType != null || aToZ || zToA) {
             if (oldestToNewest) {
                 allNotes =  realm.where(Note.class)
                         .equalTo("archived", false)

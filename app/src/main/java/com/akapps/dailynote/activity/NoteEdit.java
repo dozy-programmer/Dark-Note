@@ -558,10 +558,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     if(currentNote!=null && !currentNote.getTitle().equals(s.toString())){
                         realm.beginTransaction();
                         currentNote.setTitle(s.toString());
-                        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-                        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
                         realm.commitTransaction();
-                        updateDateEdited();
+                        updateSaveDateEdited();
                     }
                 }
 
@@ -704,18 +702,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 if (pin) {
                     realm.beginTransaction();
                     currentNote.setPin(false);
-                    currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-                    currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
                     realm.commitTransaction();
-                    updateDateEdited();
+                    updateSaveDateEdited();
                     pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_icon));
                 } else {
                     realm.beginTransaction();
                     currentNote.setPin(true);
-                    currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-                    currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
                     realm.commitTransaction();
-                    updateDateEdited();
+                    updateSaveDateEdited();
                     pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
                 }
             } else
@@ -932,11 +926,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
         realm.beginTransaction();
         currentNote.setNote(text);
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         updateSaveDateEdited();
-        updateDateEdited();
     }
 
     private void showCheckListLayout(boolean status){
@@ -1042,13 +1033,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         // insert data to database
         realm.beginTransaction();
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         CheckListItem currentItem = new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime()));
         currentNote.getChecklist().add(currentItem);
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         currentNote.setChecked(false);
         realm.commitTransaction();
-        updateDateEdited();
+        updateSaveDateEdited();
         isListEmpty(currentNote.getChecklist().size());
 
         checklistAdapter.notifyDataSetChanged();
@@ -1076,11 +1065,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         // insert data to database
         realm.beginTransaction();
         checkListItem.getSubChecklist().add(new SubCheckListItem(itemText, false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         currentNote.setEnableSublist(true);
         realm.commitTransaction();
-        updateDateEdited();
+        updateSaveDateEdited();
 
         checklistAdapter.notifyDataSetChanged();
 
@@ -1245,14 +1232,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void checkNote(boolean status){
         realm.beginTransaction();
         currentNote.setChecked(status);
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
         if(currentNote.isChecked())
             title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         else
             title.setPaintFlags(0);
-        updateDateEdited();
+        updateSaveDateEdited();
     }
 
     public void lockNote(int pin, String securityWord, boolean fingerprint){
@@ -1260,10 +1245,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setPinNumber(pin);
         currentNote.setSecurityWord(securityWord);
         currentNote.setFingerprint(fingerprint);
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
-        updateDateEdited();
+        updateSaveDateEdited();
         Helper.showMessage(this, "Note Locked", "Note has been " +
                 "locked" , MotionToast.TOAST_SUCCESS);
 
@@ -1278,10 +1261,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setPinNumber(0);
         currentNote.setSecurityWord("");
         currentNote.setFingerprint(false);
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
-        updateDateEdited();
+        updateSaveDateEdited();
         Helper.showMessage(this, "Note un-Lock", "Note has been " +
                 "un-locked" , MotionToast.TOAST_SUCCESS);
     }
@@ -1435,10 +1416,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void updateReminderDate(String date){
         realm.beginTransaction();
         currentNote.setReminderDateTime(date);
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
         realm.commitTransaction();
-        updateDateEdited();
+        updateSaveDateEdited();
     }
 
     private void cancelAlarm(int noteId) {
@@ -1461,19 +1440,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (isNoteArchived) {
             realm.beginTransaction();
             currentNote.setArchived(false);
-            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
-            updateDateEdited();
+            updateSaveDateEdited();
             Helper.showMessage(this, "Archived Status", "Note has been " +
                     "un-archived", MotionToast.TOAST_SUCCESS);
         } else {
             realm.beginTransaction();
             currentNote.setArchived(true);
-            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
-            updateDateEdited();
+            updateSaveDateEdited();
             Helper.showMessage(this, "Archived Status", "Note has been " +
                     "archived and put in the archived folder", MotionToast.TOAST_SUCCESS);
         }
@@ -1485,22 +1460,17 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (isSublistEnabled) {
             realm.beginTransaction();
             currentNote.setEnableSublist(false);
-            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
-            updateDateEdited();
             Helper.showMessage(this, "Sublist Status", "It has has been " +
                     "disabled", MotionToast.TOAST_SUCCESS);
         } else {
             realm.beginTransaction();
             currentNote.setEnableSublist(true);
-            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
-            updateDateEdited();
             Helper.showMessage(this, "Sublist Status", "It has been " +
                     "enabled", MotionToast.TOAST_SUCCESS);
         }
+        updateSaveDateEdited();
         checklistAdapter.notifyDataSetChanged();
     }
 
@@ -1602,11 +1572,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             currentPhoto = new Photo(noteId, uri.getPath());
             realm.beginTransaction();
             realm.insert(currentPhoto);
-            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-            currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
             realm.commitTransaction();
-            updateDateEdited();
-
+            updateSaveDateEdited();
             scrollAdapter.notifyDataSetChanged();
             showPhotos(View.VISIBLE);
         }
