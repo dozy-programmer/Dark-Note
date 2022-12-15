@@ -5,8 +5,8 @@
     <string name="schema">25</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">Version 8.7</string>
-    <string name="app_version_int">8.7</string>
+    <string name="app_version">Version 8.8</string>
+    <string name="app_version_int">8.8</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_error_title">Wrong Login/Password</string>
