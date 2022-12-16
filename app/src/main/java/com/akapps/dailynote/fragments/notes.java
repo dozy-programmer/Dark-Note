@@ -132,7 +132,6 @@ public class notes extends Fragment{
             allNotes = allNotes.where().equalTo("category", "none").findAll();
 
         updateDateEditedMilli();
-
         unSelectAllNotes();
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -812,27 +811,6 @@ public class notes extends Fragment{
                         "and thus not deleted", MotionToast.TOAST_ERROR);
             adapterNotes.notifyDataSetChanged();
         }
-    }
-
-    public void deleteNote(Note currentNote){
-        if(currentNote.isTrash()){
-            realm.beginTransaction();
-            currentNote.deleteFromRealm();
-            realm.commitTransaction();
-            isListEmpty(allNotes.size(), false);
-            Helper.showMessage(getActivity(), "Deleted", "Note " +
-                    "have been deleted", MotionToast.TOAST_SUCCESS);
-            showData();
-        }
-        else{
-            realm.beginTransaction();
-            currentNote.setTrash(true);
-            realm.commitTransaction();
-            isListEmpty(allNotes.size(), false);
-            Helper.showMessage(getActivity(), "Sent to trash", "Note " +
-                    "has been sent to trash", MotionToast.TOAST_SUCCESS);
-        }
-        adapterNotes.notifyDataSetChanged();
     }
 
     public void restoreMultipleNotes(){

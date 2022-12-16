@@ -1,6 +1,5 @@
 package com.akapps.dailynote.classes.helpers;
 
-import android.util.Log;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;

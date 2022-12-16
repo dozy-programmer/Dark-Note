@@ -1,12 +1,8 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.akapps.dailynote.R;
-
 import java.util.Date;
-
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

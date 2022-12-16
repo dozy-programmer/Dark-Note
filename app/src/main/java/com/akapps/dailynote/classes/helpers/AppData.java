@@ -1,12 +1,9 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
-
 import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;

@@ -2,7 +2,6 @@ package com.akapps.dailynote.classes.other;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,8 +37,6 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -262,7 +259,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                       .addOnFailureListener(e -> {
                           info.setText("Error Retrieving, check internet connection");
                           // Uh-oh, an error occurred!
-                          Log.d("Here", "Failure to retrieve backups ");
                           Helper.showMessage(getActivity(), "Error", "" +
                                   "Failed to get backups", MotionToast.TOAST_ERROR);
                           dismiss();

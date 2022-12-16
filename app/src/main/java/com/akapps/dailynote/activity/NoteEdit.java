@@ -1,20 +1,15 @@
 package com.akapps.dailynote.activity;
 
 import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -30,7 +25,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,7 +133,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private String currentDateTimeSelected;
     private Calendar dateSelected;
     private int countPicsNotFound;
-    private boolean noteEdited;
     private boolean isSearchingNotes;
     private int currentWordIndex;
     private String target;
@@ -148,7 +141,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isChanged;
     private boolean isWidget;
     private Handler handler;
-    private ActivityResultLauncher<Intent> launcher;
     public boolean sortEnable;
     private boolean isLightMode;
     // dialog
@@ -571,7 +563,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         saveChanges(text, 0);
                 }
                 else {
-                    noteEdited = true;
                     if (currentNote != null && !currentNote.getNote().equals(text)) {
                         saveChanges(text, 1);
                     }
@@ -1624,7 +1615,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }, 0);
     }
 
-    private void updateSaveDateEdited(){
+    public void updateSaveDateEdited(){
         realm.beginTransaction();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());

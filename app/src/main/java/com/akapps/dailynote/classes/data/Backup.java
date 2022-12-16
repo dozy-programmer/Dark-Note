@@ -1,7 +1,6 @@
 package com.akapps.dailynote.classes.data;
 
 import java.util.Date;
-
 import io.realm.RealmObject;
 
 public class Backup extends RealmObject {

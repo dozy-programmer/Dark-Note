@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,6 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     private Note currentNote;
     private RealmResults<Photo> allPhotos;
-
     boolean showOpenButton;
 
     public NoteInfoSheet(){}
@@ -266,7 +264,6 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             }
 
             for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
-                Log.d("Here", "Adding sublist item " + currentItem.getText());
                 String sublistString = sublistItem.getText();
                 if (sublistString.contains("$")) {
                     String[] sublistStringTokens = sublistString.replaceAll("\n", " ")

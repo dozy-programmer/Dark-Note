@@ -2,7 +2,6 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     private Context context;
     private FragmentActivity activity;
     private final Realm realm;
-    private String parentNode;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -48,8 +46,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         }
     }
 
-    public sub_checklist_recyclerview(String parentNode, RealmResults<SubCheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
-        this.parentNode = parentNode;
+    public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;
@@ -75,7 +72,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         // populates note into the recyclerview
         holder.checklistText.setText(checkListText);
         String textSize = Helper.getPreference(context, "size");
-        if(textSize==null)
+        if(textSize == null)
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
@@ -119,9 +116,8 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         // save status to database
         realm.beginTransaction();
         checkListItem.setChecked(status);
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();
-        ((NoteEdit)context).updateDateEdited();
+        ((NoteEdit)context).updateSaveDateEdited();
     }
 
     // opens dialog that allows user to edit or delete checklist item

@@ -81,9 +81,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
             }
 
             new StfalconImageViewer.Builder<>(context, images, (imageView, image) ->
-                    Glide.with(context)
-                            .load(image)
-                            .into(imageView))
+                    Glide.with(context).load(image).into(imageView))
                     .withBackgroundColor(context.getColor(R.color.gray))
                     .allowZooming(true)
                     .allowSwipeToDismiss(true)
@@ -119,7 +117,6 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
 
         // adds email subject and email body to intent
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Sharing Photo");
-
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
 
         context.startActivity(Intent.createChooser(emailIntent, "Share Photo"));

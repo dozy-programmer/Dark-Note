@@ -45,8 +45,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final Fragment noteFragment;
     private boolean showPreview;
     private boolean showPreviewNotesInfo;
-    private final String TITLE_KEY = "title_lines";
-    private final String PREVIEW_KEY = "preview_lines";
 
     // database
     private final Realm realm;
@@ -502,9 +500,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             }
 
             new StfalconImageViewer.Builder<>(noteFragment.getContext(), images, (imageView, image) ->
-                    Glide.with(noteFragment.getContext())
-                            .load(image)
-                            .into(imageView))
+                    Glide.with(noteFragment.getContext()).load(image).into(imageView))
                     .withBackgroundColor(noteFragment.getContext().getColor(R.color.gray))
                     .allowZooming(true)
                     .allowSwipeToDismiss(true)

@@ -1,9 +1,6 @@
 package com.akapps.dailynote.classes.data;
 
-import android.util.Log;
-
 import com.akapps.dailynote.classes.helpers.Helper;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import io.realm.RealmList;

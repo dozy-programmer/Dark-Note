@@ -2,7 +2,6 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
-import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -26,7 +24,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stfalcon.imageviewer.StfalconImageViewer;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,8 +43,6 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private FragmentActivity activity;
     private final Realm realm;
     private User user;
-
-    private GridLayoutManager layout;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -116,7 +111,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             else {
                 if(checkListItem.getSubChecklist().size() != 0) {
                     holder.subChecklist.setVisibility(View.VISIBLE);
-                    subChecklistAdapter = new sub_checklist_recyclerview(checkListItem.getText(), realm.where(SubCheckListItem.class)
+                    subChecklistAdapter = new sub_checklist_recyclerview(realm.where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
                             .sort("positionInList").findAll(), currentNote, realm, activity);
                     holder.subChecklist.setAdapter(subChecklistAdapter);
@@ -203,9 +198,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             ArrayList<String> images = new ArrayList<>();
             images.add(checkListItem.getItemImage());
             new StfalconImageViewer.Builder<>(context, images, (imageView, image) ->
-                    Glide.with(context)
-                            .load(image)
-                            .into(imageView))
+                    Glide.with(context).load(image).into(imageView))
                     .withBackgroundColor(context.getColor(R.color.gray))
                     .allowZooming(true)
                     .allowSwipeToDismiss(true)
@@ -249,9 +242,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             checkListItem.setLastCheckedDate(Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis());
         else
             checkListItem.setLastCheckedDate(0);
-        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();
-        ((NoteEdit)context).updateDateEdited();
+
+        ((NoteEdit)context).updateSaveDateEdited();
     }
 
     // opens dialog that allows user to edit or delete checklist item

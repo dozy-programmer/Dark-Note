@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +24,7 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -45,14 +41,11 @@ import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
 public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
