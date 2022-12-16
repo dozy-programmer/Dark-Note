@@ -1,6 +1,7 @@
 package com.akapps.dailynote.classes.other;
 
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -116,6 +117,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Info");
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
+            info.setTypeface(null, Typeface.BOLD);
             info.setText("Lock screen will not show after clicking reminder notification " +
                     "since reminder was set before locking note. To fix this, just reset reminder ");
               info.setGravity(Gravity.CENTER);
@@ -125,6 +127,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
             info.setTextColor(getContext().getColor(R.color.pressed_blue));
+            info.setTypeface(null, Typeface.BOLD);
             info.setText("Change folder name/color/delete" +
                     " by clicking on edit icon on the top right and then select desired folder.\n\n" +
                     "2 ways to add notes to a folder:\n\n" +
@@ -138,6 +141,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Backup");
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
+            info.setTypeface(null, Typeface.BOLD);
             info.setText("Backup to Google Drive, OneDrive, and " +
                     "more.\nGoogle Drive is recommended\n\n" +
                     "**Photos will NOT backup**\n" +
@@ -148,6 +152,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Backup");
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
+            info.setTypeface(null, Typeface.BOLD);
             info.setText("Backup to Google Drive, OneDrive, and " +
                     "more.\nGoogle Drive is recommended\n\n" +
                     "Backup file name ends in .zip");
@@ -289,10 +294,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               backup.setVisibility(View.GONE);
               securityWord.setVisibility(View.GONE);
               info.setTextColor(getContext().getColor(R.color.pressed_blue));
-              info.setText("Budget $ tracks your expenses and makes it easier to budget.\n\n" +
-                      "In order to add an expense(s), all you have to do is add the \"$\" symbol with your " +
-                      "amount, it is recommended to include a description for future reference.\n\n" +
-                      "To add your budget, include a plus \"+\" before the \"$\" symbol, like so \"+$\" ");
+              info.setTypeface(null, Typeface.BOLD);
+              info.setText(getContext().getString(R.string.try_out_budget));
           }
 
 

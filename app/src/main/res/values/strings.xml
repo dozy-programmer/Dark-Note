@@ -18,20 +18,23 @@
     <string name="input_error">Incorrect Input</string>
 
     <!-- Note Info Sheet !-->
-    <string name="try_out_budget">
+    <string name="try_out_budget">No Budget Set (Try it Out)\n\n
+        How to use:\n\n
 
-        <!-- ~ is used as a space !-->
-        No Budget Set (Try it Out)\n
-        How to use:\n
         • add budget via \"+$\"\n
-            \t•~+$2,000 budget\n
-            \t•~+$3,000 budget for Jan\n
-        • add expenses via \"$\"\n
-            \t•~$50 eating out\n
-            \t•~$20 netflix\n
-            \t•~I owe Mike $20\n
-            \t•~Rent $1500
+            \t\t\t• +$2,000 budget\n
+            \t\t\t• +$3,000 budget for Jan\n
 
+        • add expenses via \"$\"\n\n
+            \t\t\t• $50 eating out\n
+            \t\t\t• $20 netflix\n
+            \t\t\t• I owe Mike $20\n
+            \t\t\t• Rent $1500
+    </string>
+
+    <string name="try_out_budget_message">
+        No Budget Set (Try it Out)\n
+        Click on Info icon to learn more...
     </string>
 
     <!-- Settings !-->

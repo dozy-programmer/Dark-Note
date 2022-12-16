@@ -323,7 +323,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                         "Budget - (In-Progress Total) = $" + df.format(budget - itemsNotCompleted);
         }
         else {
-            addingResults = getContext().getString(R.string.try_out_budget);
+            addingResults = getContext().getString(R.string.try_out_budget_message);
         }
 
 
