@@ -9,7 +9,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,6 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -123,6 +121,8 @@ public class notes extends Fragment{
             }
         }
 
+        // before getting all date, make sure all date and millisecond parameters match
+        RealmHelper.verifyDateWithMilli();
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
@@ -540,8 +540,6 @@ public class notes extends Fragment{
                 .equalTo("trash", false)
                 .findAll();
 
-        Log.d("Here", "date type -> " + dateType);
-
         if(dateType!=null && !dateType.equals("null")) {
             if(newestToOldest)
                 result = result.where().sort(dateType , Sort.DESCENDING).findAll();
@@ -554,13 +552,8 @@ public class notes extends Fragment{
         if(zToA)
             result = result.where().sort("title", Sort.DESCENDING).findAll();
 
-        Log.d("Here", "size is -> " + result.size());
-
-        if(result != null) {
-            //getSortDataAndSort();
+        if(result != null)
             filteringAllNotesRealm(result, false);
-            printRealm(result);
-        }
     }
 
     private void filteringAllNotesRealm(RealmResults<Note> query, boolean isCategory){
@@ -622,8 +615,6 @@ public class notes extends Fragment{
         boolean aToZ = Helper.getBooleanPreference(getContext(),"_aToZ");
         boolean zToA = Helper.getBooleanPreference(getContext(),"_zToA");
 
-        Log.d("Here", "dateType " + dateType);
-
         sortedBy.setVisibility(View.GONE);
 
         if (dateType != null || aToZ || zToA) {
@@ -664,15 +655,8 @@ public class notes extends Fragment{
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
             }
         }
-        printRealm(allNotes);
         populateAdapter(allNotes);
         isListEmpty(allNotes.size(), false);
-    }
-
-    private void printRealm(RealmResults<Note> notes){
-        for(int i=0; i< notes.size(); i++){
-            Log.d("Here", "Note " + notes.get(i).getTitle() + " -> " + notes.get(i).getDateEditedMilli());
-        }
     }
 
     // populates the recyclerview
@@ -809,10 +793,8 @@ public class notes extends Fragment{
                     closeMultipleNotesLayout();
                     showData();
 
-                    if(allNotes.size() == 0){
-                        Log.d("Here", "Deleting app directory");
+                    if(allNotes.size() == 0)
                         Helper.deleteAppFiles(context);
-                    }
                 }
                 else {
                     realm.beginTransaction();

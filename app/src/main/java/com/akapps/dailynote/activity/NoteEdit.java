@@ -973,7 +973,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
 
         if(realm.where(Note.class).equalTo("noteId", newNote.getNoteId()).findAll().size() != 0) {
-            // note id for new note already exists, try adding note again (hopefully with a unique note id)
+            // note id for new note already exists, try to add again with a NEW unique note id
             addNote();
         }
         else {

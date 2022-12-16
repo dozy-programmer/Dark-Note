@@ -1,6 +1,5 @@
 package com.akapps.dailynote.classes.helpers;
 
-import android.content.Context;
 import android.util.Log;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
@@ -20,8 +19,6 @@ public class RealmHelper {
             currentNote = realm.where(Note.class).equalTo("noteId", noteID).findFirst();
         }
 
-        Log.d("Here", "Note title is " + currentNote.getTitle());
-
         // delete checklist, check list item photos, and sublists
         deleteChecklist(currentNote);
 
@@ -30,7 +27,6 @@ public class RealmHelper {
 
         // deletes note
         try(Realm realm = Realm.getDefaultInstance()) {
-            Log.d("Here", "Note is deleted!");
             realm.executeTransaction(tRealm -> {
                 currentNote.deleteFromRealm();
             });
@@ -42,10 +38,8 @@ public class RealmHelper {
             RealmResults<Photo> allNotePhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
             for(Photo currentPhoto: allNotePhotos) {
                 deleteImage(currentPhoto.getPhotoLocation());
-                Log.d("Here", "< -- Photo deleted -- >");
             }
             realm.executeTransaction(tRealm -> {
-                Log.d("Here", "< -- Note photos deleted -- >");
                 allNotePhotos.deleteAllFromRealm();
             });
         }
@@ -62,7 +56,6 @@ public class RealmHelper {
 
         try(Realm realm = Realm.getDefaultInstance()){
             realm.executeTransaction(tRealm -> {
-                Log.d("Here", "< -- Checklist deleted -- >");
                 currentNote.getChecklist().deleteAllFromRealm();
             });
         }
@@ -72,7 +65,6 @@ public class RealmHelper {
         if(null != item.getSubChecklist()) {
             if(item.getSubChecklist().size() > 0)
                 deleteSublist(item.getSubChecklist());
-            Log.d("Here", "Checklist --> " + item.getText());
         }
 
         try(Realm realm = Realm.getDefaultInstance()){
@@ -86,17 +78,14 @@ public class RealmHelper {
 
     public static void deleteImage(String photoPath){
         File photo = new File(photoPath);
-        if (photo.exists()) {
+        if (photo.exists())
             photo.delete();
-            Log.d("Here", "Photo --> " + photoPath);
-        }
     }
 
     public static void deleteSublist(RealmList<SubCheckListItem> sublist){
         if(sublist.size() > 0) {
             try (Realm realm = Realm.getDefaultInstance()) {
                 realm.executeTransaction(tRealm -> {
-                    Log.d("Here", "Sublists - checklist --> " + " ~" + sublist.size() + " deleted");
                     sublist.deleteAllFromRealm();
                 });
             }
@@ -106,7 +95,6 @@ public class RealmHelper {
     public static void deleteSublistItem(SubCheckListItem sublistItem){
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(tRealm -> {
-                Log.d("Here", "Sublist -> " + sublistItem.getText());
                 sublistItem.deleteFromRealm();
             });
         }
@@ -124,6 +112,22 @@ public class RealmHelper {
                             realm.executeTransaction(tRealm -> {
                                 subItem.setChecked(status);
                             });
+                }
+            }
+        }
+    }
+
+    // verify that all notes' formatted date strings match their millisecond date parameter
+    // issue when sorting notes, some millisecond date parameters do not match their date
+    public static void verifyDateWithMilli(){
+        try(Realm realm = Realm.getDefaultInstance()) {
+            RealmResults<Note> allNotes = realm.where(Note.class).findAll();
+            for(Note currentNote: allNotes) {
+                long lastDateEditedNoteInMilli = Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis();
+                if(lastDateEditedNoteInMilli != currentNote.getDateEditedMilli()) {
+                    realm.executeTransaction(tRealm -> {
+                        currentNote.setDateEditedMilli(lastDateEditedNoteInMilli);
+                    });
                 }
             }
         }
