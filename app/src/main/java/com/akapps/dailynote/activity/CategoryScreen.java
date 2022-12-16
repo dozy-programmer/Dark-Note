@@ -10,6 +10,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -225,10 +227,13 @@ public class CategoryScreen extends AppCompatActivity {
 
             noCategory.setText("Uncategorized notes (" + noCategoryNotesSize + ")");
 
-            if(allSelected==0)
+            if(allSelected == 0)
                 unselectCategories.setVisibility(View.GONE);
             else
                 title.setText(allSelected + " Selected");
+
+            // make padding shorter since there isn't a folder opened
+            title.setPadding(0,20,0,0);
 
             if(multiSelect){
                 showAllNotes.setVisibility(View.VISIBLE);
