@@ -360,7 +360,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         // if it's not a new note and note position is not -1 (which means it is a new note)
         // then data and layout info is updated
         if ((noteId != -1 && !isNewNote)) {
-            //try {
                 photosNote.setVisibility(View.VISIBLE);
                 pinNoteIcon.setVisibility(View.VISIBLE);
                 pinNoteButton.setVisibility(View.VISIBLE);
@@ -443,10 +442,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 }
                 if (currentNote.isPin())
                     pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
-//            }catch (Exception e){
-//                Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
-//                        "so it was deleted", MotionToast.TOAST_SUCCESS);
-//            }
         }
         else {
             isNewNote = true;
@@ -695,25 +690,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         pinNoteButton.setOnClickListener(v -> {
-            // if editing a note, then it updates the status and pin image
-            if (!isNewNote) {
-                boolean pin = currentNote.isPin();
+            // update the status and pin image
+            boolean pin = currentNote.isPin();
 
-                if (pin) {
-                    realm.beginTransaction();
-                    currentNote.setPin(false);
-                    realm.commitTransaction();
-                    updateSaveDateEdited();
-                    pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_icon));
-                } else {
-                    realm.beginTransaction();
-                    currentNote.setPin(true);
-                    realm.commitTransaction();
-                    updateSaveDateEdited();
-                    pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
-                }
-            } else
-                updatePin();
+            realm.beginTransaction();
+            currentNote.setPin(!pin);
+            realm.commitTransaction();
+            updateSaveDateEdited();
+
+            if(pin)
+                pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_icon));
+            else
+                pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
 
         });
 
@@ -921,7 +909,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void saveChanges(String text, int size){
-        if(size ==0 ){
+        if(size == 0){
             text = "";
         }
         realm.beginTransaction();
@@ -932,7 +920,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     private void showCheckListLayout(boolean status){
         note.setVisibility(View.GONE);
-        //photosNote.setVisibility(View.GONE);
         addCheckListItem.setVisibility(View.GONE);
 
         if(status) {
@@ -985,8 +972,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         }
 
-        if(realm.where(Note.class).equalTo("noteId", newNote.getNoteId()).findAll().size()!=0)
+        if(realm.where(Note.class).equalTo("noteId", newNote.getNoteId()).findAll().size() != 0) {
+            // note id for new note already exists, try adding note again (hopefully with a unique note id)
             addNote();
+        }
         else {
             newNote.setPin(currentPin);
             newNote.setIsCheckList(isCheckList);
@@ -1013,6 +1002,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             else
                 Helper.showMessage(this, "Added", "Checklist is added", MotionToast.TOAST_SUCCESS);
             allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
+            currentNote = newNote;
+            updateSaveDateEdited();
             // updates note to be editable
             initializeLayout(null);
         }
@@ -1226,7 +1217,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         checklistAdapter.notifyDataSetChanged();
         Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
         isListEmpty(0, true);
-        updateSaveDateEdited();
     }
 
     private void checkNote(boolean status){
@@ -1265,15 +1255,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         updateSaveDateEdited();
         Helper.showMessage(this, "Note un-Lock", "Note has been " +
                 "un-locked" , MotionToast.TOAST_SUCCESS);
-    }
-
-    // updated pinned status
-    private void updatePin() {
-        if (currentPin)
-            pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_icon));
-        else
-            pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
-        currentPin = !currentPin;
     }
 
     private void updateReminderLayout(int visibility){
@@ -1437,18 +1418,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void updateArchivedStatus() {
         boolean isNoteArchived = currentNote.isArchived();
 
+        realm.beginTransaction();
+        currentNote.setArchived(!isNoteArchived);
+        realm.commitTransaction();
+        updateSaveDateEdited();
+
         if (isNoteArchived) {
-            realm.beginTransaction();
-            currentNote.setArchived(false);
-            realm.commitTransaction();
-            updateSaveDateEdited();
             Helper.showMessage(this, "Archived Status", "Note has been " +
                     "un-archived", MotionToast.TOAST_SUCCESS);
         } else {
-            realm.beginTransaction();
-            currentNote.setArchived(true);
-            realm.commitTransaction();
-            updateSaveDateEdited();
             Helper.showMessage(this, "Archived Status", "Note has been " +
                     "archived and put in the archived folder", MotionToast.TOAST_SUCCESS);
         }

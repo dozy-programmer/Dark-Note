@@ -540,6 +540,8 @@ public class notes extends Fragment{
                 .equalTo("trash", false)
                 .findAll();
 
+        Log.d("Here", "date type -> " + dateType);
+
         if(dateType!=null && !dateType.equals("null")) {
             if(newestToOldest)
                 result = result.where().sort(dateType , Sort.DESCENDING).findAll();
@@ -552,9 +554,12 @@ public class notes extends Fragment{
         if(zToA)
             result = result.where().sort("title", Sort.DESCENDING).findAll();
 
-        if(result!=null) {
-            getSortDataAndSort();
+        Log.d("Here", "size is -> " + result.size());
+
+        if(result != null) {
+            //getSortDataAndSort();
             filteringAllNotesRealm(result, false);
+            printRealm(result);
         }
     }
 
@@ -617,12 +622,7 @@ public class notes extends Fragment{
         boolean aToZ = Helper.getBooleanPreference(getContext(),"_aToZ");
         boolean zToA = Helper.getBooleanPreference(getContext(),"_zToA");
 
-        Log.d("Here", "oldestToNewest " + oldestToNewest);
-        Log.d("Here", "newestToOldest " + newestToOldest);
-        Log.d("Here", "aToZ " + aToZ);
-        Log.d("Here", "zToA " + zToA);
         Log.d("Here", "dateType " + dateType);
-        //dateEditedMilli
 
         sortedBy.setVisibility(View.GONE);
 
@@ -664,8 +664,15 @@ public class notes extends Fragment{
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
             }
         }
+        printRealm(allNotes);
         populateAdapter(allNotes);
         isListEmpty(allNotes.size(), false);
+    }
+
+    private void printRealm(RealmResults<Note> notes){
+        for(int i=0; i< notes.size(); i++){
+            Log.d("Here", "Note " + notes.get(i).getTitle() + " -> " + notes.get(i).getDateEditedMilli());
+        }
     }
 
     // populates the recyclerview

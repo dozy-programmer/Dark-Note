@@ -1,5 +1,7 @@
 package com.akapps.dailynote.classes.data;
 
+import android.util.Log;
+
 import com.akapps.dailynote.classes.helpers.Helper;
 
 import java.text.SimpleDateFormat;
@@ -60,12 +62,12 @@ public class Note extends RealmObject {
 
     public Note(String title, String note){
         this.title = title;
-        this.dateCreated = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime());
-        this.dateEdited = dateCreated;
+        dateCreated = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime());
+        dateEdited = dateCreated;
         this.note = note;
         noteId = (int)(Math.random() * 10000000 + 1);
         reminderDateTime = securityWord = "";
-        dateCreatedMilli = dateEditedMilli = Helper.dateToCalender(this.dateCreated).getTimeInMillis();
+        dateCreatedMilli = dateEditedMilli = Helper.dateToCalender(dateCreated).getTimeInMillis();
         category = "none";
         sort = -1;
         enableSublist = false;
