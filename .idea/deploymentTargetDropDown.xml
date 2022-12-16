@@ -12,8 +12,18 @@
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-12-16T04:30:21.808987800Z" />
+    <timeTargetWasSelectedWithDropDown value="2022-12-16T06:19:17.761721600Z" />
+    <multipleDevicesSelectedInDropDown value="true" />
     <runningDeviceTargetsSelectedWithDialog>
+      <Target>
+        <type value="RUNNING_DEVICE_TARGET" />
+        <deviceKey>
+          <Key>
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\amark\.android\avd\4.65_720p_Galaxy_Nexus_API_30.avd" />
+          </Key>
+        </deviceKey>
+      </Target>
       <Target>
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
