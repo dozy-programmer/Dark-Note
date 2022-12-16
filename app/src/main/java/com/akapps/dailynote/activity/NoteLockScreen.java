@@ -6,10 +6,16 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ColorFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieProperty;
+import com.airbnb.lottie.SimpleColorFilter;
+import com.airbnb.lottie.model.KeyPath;
+import com.airbnb.lottie.value.LottieValueCallback;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -25,20 +31,19 @@ public class NoteLockScreen extends AppCompatActivity {
     // layout
     private PinLockView lockView;
     private IndicatorDots indicatorDots;
-    private ImageView lockIcon;
+    private LottieAnimationView lockIcon;
+    private LottieAnimationView pinEmpty;
     private TextView forgotPassword;
     private ImageView fingerprintIcon;
     private TextView noteTitleText;
 
     // activity data
     private int noteId;
-    private String fullId;
     private int notePinNumber;
     private String securityWord;
     private String noteTitle;
     private boolean fingerprint;
     private boolean isWidget;
-    private String user;
 
     // biometric data
     private Executor executor;
@@ -72,28 +77,26 @@ public class NoteLockScreen extends AppCompatActivity {
 
     private void initializeLayout(){
         noteId = getIntent().getIntExtra("id", -1);
-        fullId = getIntent().getStringExtra("fullId");
         notePinNumber = getIntent().getIntExtra("pin", -1);
         securityWord = getIntent().getStringExtra("securityWord");
         noteTitle = getIntent().getStringExtra("title");
         fingerprint = getIntent().getBooleanExtra("fingerprint", false);
         isWidget = getIntent().getBooleanExtra("isWidget", false);
-        user = getIntent().getStringExtra("user");
 
         executor = ContextCompat.getMainExecutor(this);
 
         lockView = findViewById(R.id.pin_lock_view);
         indicatorDots = findViewById(R.id.indicator_dots);
         lockIcon = findViewById(R.id.lock_icon);
+        pinEmpty = findViewById(R.id.pin_empty);
         forgotPassword = findViewById(R.id.forgot_password);
         fingerprintIcon = findViewById(R.id.fingerprint_icon);
         noteTitleText = findViewById(R.id.note_title);
-        lockView.attachIndicatorDots(indicatorDots);
 
+        lockView.attachIndicatorDots(indicatorDots);
         lockView.setDeleteButtonSize(75);
         lockView.setPinLength(String.valueOf(notePinNumber).length());
-        lockView.setDeleteButtonDrawable(getDrawable(R.drawable.backspace_icon));
-        lockView.setShowDeleteButton(true);
+        lockView.setDeleteButtonDrawable(getDrawable(R.drawable.icon_backspace));
         lockView.setDeleteButtonPressedColor(getColor(R.color.red));
 
         // if there is no pin number/it is 0, then just open note
@@ -112,15 +115,20 @@ public class NoteLockScreen extends AppCompatActivity {
                 if(Integer.parseInt(pin) == notePinNumber)
                     openNote();
                 else
-                    lockIcon.setColorFilter(getColor(R.color.red));
+                    changeLottieAnimationColor(lockIcon, R.color.red);
             }
 
             @Override
-            public void onEmpty() { }
+            public void onEmpty() {
+                pinEmpty.setVisibility(View.VISIBLE);
+            }
 
             @Override
             public void onPinChange(int pinLength, String intermediatePin) {
-                lockIcon.setColorFilter(getColor(R.color.darker_blue));
+                if(pinEmpty.getVisibility() == View.VISIBLE)
+                    pinEmpty.setVisibility(View.INVISIBLE);
+
+                changeLottieAnimationColor(lockIcon, R.color.cornflower_blue);
             }
         });
 
@@ -149,6 +157,13 @@ public class NoteLockScreen extends AppCompatActivity {
                         MotionToast.TOAST_ERROR);
             }
         });
+    }
+
+    private void changeLottieAnimationColor(LottieAnimationView animation, int newColor){
+        SimpleColorFilter filter = new SimpleColorFilter(getColor(newColor));
+        KeyPath keyPath = new KeyPath("**");
+        LottieValueCallback<ColorFilter> callback = new LottieValueCallback<ColorFilter>(filter);
+        animation.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback);
     }
 
     // if pin is correct, note is opened

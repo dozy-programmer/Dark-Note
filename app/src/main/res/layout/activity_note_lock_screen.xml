@@ -3,11 +3,12 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,86 +16,118 @@
         android:orientation="vertical"
         android:weightSum="100">
 
-        <ImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lock_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/lock_icon"
-            android:layout_marginVertical="20dp">
-        </ImageView>
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_colorFilter="@color/cornflower_blue"
+            app:lottie_rawRes="@raw/lock_loading"
+            app:lottie_speed="0.7"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/instruction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter pin to open"
+            android:layout_margin="20dp"
+            android:fontFamily="@font/overpass"
             android:gravity="center"
-            android:textSize="14sp"
+            android:text="Enter your PIN to unlock"
             android:textColor="@color/ultra_white"
-            android:layout_marginBottom="10dp">
-        </TextView>
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/note_title"></TextView>
 
         <TextView
             android:id="@+id/note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:maxLines="1"
+            android:layout_margin="20dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/overpass"
             android:gravity="center"
-            android:textSize="14sp"
+            android:maxLines="2"
+            android:text="[ Note Title ]"
             android:textColor="@color/blue"
-            android:layout_marginBottom="10dp"
-            android:layout_marginHorizontal="30dp">
-        </TextView>
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lock_icon"></TextView>
 
         <com.andrognito.pinlockview.IndicatorDots
             android:id="@+id/indicator_dots"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal|bottom"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="70"
-            app:indicatorType="fillWithAnimation" />
+            android:layout_height="30dp"
+            android:gravity="center_horizontal"
+            app:indicatorType="fillWithAnimation"
+            app:layout_constraintBottom_toTopOf="@+id/pin_lock_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/instruction" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/pin_empty"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_colorFilter="@color/cornflower_blue"
+            app:lottie_rawRes="@raw/pin_empty"
+            app:lottie_speed="0.7"
+            app:layout_constraintBottom_toTopOf="@+id/pin_lock_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/instruction"/>
 
         <com.andrognito.pinlockview.PinLockView
             android:id="@+id/pin_lock_view"
             android:layout_width="wrap_content"
-            android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:layout_weight="30"
-            app:pinLength="10"
-            app:keypadTextColor="#E6E6E6"
-            app:keypadTextSize="20dp"
-            app:keypadButtonSize="72dp"
+            app:dotFilledBackground="@color/cornflower_blue"
+            app:keypadButtonSize="70dp"
+            app:keypadButtonBackgroundDrawable="@drawable/circle_background"
+            app:keypadHorizontalSpacing="40dp"
+            app:keypadTextColor="@color/ultra_white"
+            app:keypadTextSize="16dp"
             app:keypadVerticalSpacing="24dp"
-            app:keypadHorizontalSpacing="36dp"
-            app:keypadDeleteButtonSize="16dp"
-            app:keypadShowDeleteButton="false"
-            app:keypadDeleteButtonPressedColor="#C8C8C8"
-            app:dotDiameter="20dp"/>
+            app:layout_constraintBottom_toTopOf="@+id/forgot_password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/note_title"
+            app:pinLength="10" />
 
         <ImageView
             android:id="@+id/fingerprint_icon"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:paddingVertical="20dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:paddingVertical="12dp"
             android:src="@drawable/fingerprint_icon"
-            android:layout_marginVertical="20dp">
-        </ImageView>
+            app:layout_constraintBottom_toBottomOf="@+id/pin_lock_view"
+            app:layout_constraintStart_toStartOf="@+id/pin_lock_view"></ImageView>
 
         <TextView
             android:id="@+id/forgot_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="😔 Forgot password"
             android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="Forgot Passcode\n😔"
+            android:textColor="@color/cornflower_blue"
+            android:fontFamily="@font/overpass"
+            android:textStyle="bold"
             android:textSize="14sp"
-            android:paddingVertical="20dp"
-            android:textColor="@color/darker_blue">
-        </TextView>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"></TextView>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>
