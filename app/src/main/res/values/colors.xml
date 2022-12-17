@@ -16,6 +16,7 @@
     <color name="orange_red">#e65c00</color>
     <color name="orange">#e65c00</color>
     <color name="light_light_gray">#adadad</color>
+    <color name="semi_gray">#808080</color>
     <color name="light_mode">#bdbdbd</color>
 
     <!-- Override TextInputLayout Box Stroke Color !-->

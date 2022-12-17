@@ -13,9 +13,9 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/scroll"
@@ -218,37 +218,37 @@
                 android:id="@+id/reminderLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="10dp"
-                android:weightSum="100"
                 android:gravity="center"
+                android:orientation="horizontal"
                 android:visibility="gone"
+                android:weightSum="100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/cancel"></ImageView>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/cancel"></ImageView>
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/reminder_icon"></ImageView>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/reminder_icon"></ImageView>
 
-                    <TextView
-                        android:id="@+id/reminderDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:gravity="right"
-                        android:layout_gravity="center_vertical"
-                        android:text="Notification"
-                        android:textColor="@color/horizon"
-                        android:textSize="16sp"></TextView>
+                <TextView
+                    android:id="@+id/reminderDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:text="Notification"
+                    android:textColor="@color/horizon"
+                    android:textSize="16sp"></TextView>
 
             </LinearLayout>
 
@@ -260,8 +260,8 @@
                 android:backgroundTint="@android:color/transparent"
                 android:hint="Title"
                 android:textColor="@color/ultra_white"
-                android:textCursorDrawable="@drawable/cursor"
                 android:textColorHint="@color/light_gray"
+                android:textCursorDrawable="@drawable/cursor"
                 android:textSize="30sp"
                 app:layout_constraintEnd_toStartOf="@+id/sort"
                 app:layout_constraintStart_toStartOf="parent"
@@ -289,16 +289,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="23dp"
                 android:layout_weight="50"
+                android:autoSizeMaxTextSize="100sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeStepGranularity="2sp"
+                android:autoSizeTextType="uniform"
                 android:gravity="left"
+                android:maxLines="2"
                 android:text="Date"
                 android:textColor="@color/greyish"
                 android:textSize="15sp"
                 android:visibility="gone"
-                android:maxLines="2"
-                android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeMaxTextSize="100sp"
-                android:autoSizeStepGranularity="2sp"
                 app:layout_constraintEnd_toStartOf="@+id/info"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title"></TextView>
@@ -307,14 +307,14 @@
                 android:id="@+id/info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
                 android:src="@drawable/info_icon"
                 android:visibility="visible"
                 app:fab_colorNormal="@color/light_gray"
                 app:fab_colorPressed="@color/gray"
                 app:fab_colorRipple="@color/light_gray"
                 app:fab_size="mini"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
                 app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
                 app:layout_constraintBottom_toBottomOf="@+id/date"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -350,8 +350,8 @@
                     android:gravity="left|bottom"
                     android:text="category"
                     android:textColor="@color/greyish"
-                    android:textStyle="bold"
                     android:textSize="15sp"
+                    android:textStyle="bold"
                     android:visibility="gone"></TextView>
 
             </LinearLayout>
@@ -360,16 +360,16 @@
                 android:id="@+id/note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="top|start"
-                android:textColorHint="@color/light_gray"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="5dp"
+                android:gravity="top|start"
+                android:textColorHint="@color/light_gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.45"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/category_layout"
-                app:layout_constraintVertical_bias="0.0"/>
+                app:layout_constraintVertical_bias="0.0" />
 
             <EditText
                 android:id="@+id/searchEdittext"
@@ -388,14 +388,14 @@
                 app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/category_layout"
-                app:layout_constraintVertical_bias="0.0"/>
+                app:layout_constraintVertical_bias="0.0" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/note_photos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginTop="20dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -405,10 +405,10 @@
                 android:id="@+id/checklist"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginHorizontal="20dp"
                 android:clipToPadding="false"
                 android:paddingBottom="70dp"
                 android:visibility="gone"
-                android:layout_marginHorizontal="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -421,15 +421,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="30dp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/checklist"
-                app:layout_constraintEnd_toEndOf="@+id/checklist"
-                app:layout_constraintStart_toStartOf="@+id/checklist"
-                app:layout_constraintTop_toTopOf="@+id/checklist">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:paddingTop="75dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -443,11 +444,15 @@
                         android:textColor="@color/blue"
                         android:textSize="20sp" />
 
-                    <ImageView
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/empty_view"
+                        android:layout_width="256dp"
+                        android:layout_height="256dp"
                         android:layout_gravity="center_horizontal|center_vertical"
-                        android:src="@drawable/astronaut_icon" />
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/waiting_astronaut"
+                        app:lottie_speed="1.0" />
 
                     <TextView
                         android:id="@+id/empty_subtitle"

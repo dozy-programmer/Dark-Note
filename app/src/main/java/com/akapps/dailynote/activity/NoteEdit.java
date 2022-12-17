@@ -1577,20 +1577,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         finish();
     }
 
-    public void deleteSubLists(RealmList<CheckListItem> list){
-        for (int i=0; i<list.size(); i++){
-            realm.beginTransaction();
-            list.get(i).getSubChecklist().deleteAllFromRealm();
-            realm.commitTransaction();
-        }
-    }
-
     public void isListEmpty(int size){
-        Helper.isListEmpty(context, size, empty_Layout, empty_title, subtitle, subSubTitle, false, true, false);
+        Helper.isListEmpty(context, size, empty_Layout, empty_title, subtitle, subSubTitle, 
+                false, true, false, empty_Layout.getRootView().findViewById(R.id.empty_view));
     }
 
     public void isListEmpty(int size, boolean isChecklistAdded){
-        Helper.isListEmpty(context, size, empty_Layout, empty_title, subtitle, subSubTitle, false, true, isChecklistAdded);
+        Helper.isListEmpty(context, size, empty_Layout, empty_title, subtitle, subSubTitle,
+                false, true, isChecklistAdded, empty_Layout.getRootView().findViewById(R.id.empty_view));
     }
 
     public void updateDateEdited(){

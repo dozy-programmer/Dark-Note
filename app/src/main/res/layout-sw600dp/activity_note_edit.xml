@@ -434,11 +434,15 @@
                         android:textColor="@color/blue"
                         android:textSize="20sp" />
 
-                    <ImageView
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
-                        android:layout_gravity="center_horizontal|center_vertical"
-                        android:src="@drawable/astronaut_icon" />
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/empty_view"
+                        android:layout_width="256dp"
+                        android:layout_height="256dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/waiting_astronaut"
+                        app:lottie_speed="1.0"
+                        android:layout_gravity="center_horizontal|center_vertical" />
 
                     <TextView
                         android:id="@+id/empty_subtitle"

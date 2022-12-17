@@ -261,27 +261,38 @@ public class Helper {
      * @param empty_Layout   This contains an image
      */
     public static void isListEmpty(Context context, int size, ScrollView empty_Layout, TextView title,
-                                   TextView subTitle, TextView subSubTitle,
-                                   boolean isResults, boolean isChecklist, boolean isChecklistAdded){
+                                   TextView subTitle, TextView subSubTitle, boolean isResults,
+                                   boolean isChecklist, boolean isChecklistAdded,
+                                   LottieAnimationView emptyView){
         if(isResults){
+            if(!emptyView.isAnimating())
+                emptyView.setAnimation(R.raw.waiting_astronaut);
             title.setText("No Results");
-            title.setTextSize(30);
+            title.setTextSize(20);
             subTitle.setText("");
             subSubTitle.setText("");
         }
         else if(isChecklist) {
             title.setText("");
-            subTitle.setText("soooo empty in this checklist");
-            subSubTitle.setText("Tap the bottom right button to create a note");
-            subSubTitle.setTextColor(context.getColor(R.color.light_light_gray));
+            subTitle.setText("\"Houston, we have a problem...\"");
+            subTitle.setTextSize(18);
+            emptyView.setAnimation(R.raw.waiting_astronaut);
+            subSubTitle.setText("Tap the bottom right button to add to checklist");
+            subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
+            subSubTitle.setTextSize(16);
         }
-        else if(!isResults){
-            title.setTextSize(20);
-            title.setText("Don't get lost in the universe trying to remember.");
+        else{
+            title.setTextSize(18);
+            title.setText("Avoid getting lost in the universe trying to remember some info.");
             subTitle.setText("Let me do it for you");
             subSubTitle.setText("Tap the bottom right button to create a note");
-            subSubTitle.setTextColor(context.getColor(R.color.light_light_gray));
+            subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
+            emptyView.setAnimation(R.raw.astronaut_floating);
         }
+
+        // verify that the lottie graphic is animating
+        if(!emptyView.isAnimating())
+            emptyView.playAnimation();
 
         if(isChecklistAdded)
             subSubTitle.setText("");

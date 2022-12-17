@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.activity.NoteEdit;
@@ -355,7 +356,13 @@ public class notes extends Fragment{
             @Override
             public boolean onQueryTextChange(String s) {
                 if(isSearchingNotes) {
-                    searchNotesAndUpdate(s);
+                    if(s.length() == 0){
+                        RealmResults<Note> showEmptyLayout = realm.where(Note.class).equalTo("pinNumber", -1).findAll();
+                        isListEmpty(0, true);
+                        populateAdapter(showEmptyLayout);
+                    }
+                    else
+                        searchNotesAndUpdate(s);
                 }
                 return false;
             }
@@ -711,6 +718,7 @@ public class notes extends Fragment{
 
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
+        ((LottieAnimationView) view.findViewById(R.id.empty_view)).pauseAnimation();
     }
 
     private void hideSearchBar(){
@@ -901,7 +909,8 @@ public class notes extends Fragment{
     }
 
     private void isListEmpty(int size, boolean isResult){
-        Helper.isListEmpty(context, size, empty_Layout, title, subtitle, subSubTitle, isResult, false, false);
+        Helper.isListEmpty(context, size, empty_Layout, title, subtitle, subSubTitle,
+                isResult, false, false, view.findViewById(R.id.empty_view));
     }
 
     private void savePreferences(){
