@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
     ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId "com.akapps.dailynote"
         minSdkVersion 26
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 81
         versionName "@string/app_version_int"
         renderscriptTargetApi 18
@@ -51,7 +51,7 @@ android {
 
 dependencies {
     // base
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
@@ -77,6 +77,7 @@ dependencies {
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'     // image full screen
     implementation 'com.github.yash786agg:AnimatedLoadingIndicator:v1.3'       // loading screen
     implementation "com.airbnb.android:lottie:5.0.3"                           // lottie animation
+    implementation("app.futured.donut:donut:2.2.2")                            // graph
 
     // image loader
     implementation 'com.github.bumptech.glide:glide:4.12.0'

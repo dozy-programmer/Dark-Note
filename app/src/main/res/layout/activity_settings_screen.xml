@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray">
@@ -46,11 +47,12 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:paddingHorizontal="10sp"
+            android:layout_marginTop="5dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/light_mode_message">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,10 +65,10 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_margin="10dp"
+                    app:cardBackgroundColor="@color/gray"
                     app:cardCornerRadius="20dp"
-                    app:strokeWidth="1dp"
                     app:strokeColor="#05fbcd"
-                    app:cardBackgroundColor="@color/gray">
+                    app:strokeWidth="1dp">
 
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/coffee_moving"
@@ -85,13 +87,13 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:autoLink="all"
-                    android:linksClickable="true"
-                    android:gravity="center"
-                    android:maxLines="4"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="9sp"
                     android:autoSizeMaxTextSize="30sp"
+                    android:autoSizeMinTextSize="9sp"
                     android:autoSizeStepGranularity="1sp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:linksClickable="true"
+                    android:maxLines="4"
                     android:text="@string/support_me_message"
                     android:textColor="@color/ultra_white" />
 
@@ -120,6 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:text="Account"
@@ -127,7 +130,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mode_setting" />
+            app:layout_constraintTop_toBottomOf="@+id/buy_me_coffee_layout" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/mode_setting"
@@ -142,13 +145,14 @@
             android:theme="@style/ThemeOverlay.Mode"
             app:layout_constraintEnd_toEndOf="@+id/account_settings"
             app:layout_constraintStart_toStartOf="@+id/account_settings"
-            app:layout_constraintTop_toBottomOf="@+id/buy_me_coffee_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/account_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -300,10 +304,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Backup &amp; Restore (Local)"
+            android:text="Backup &amp; Restore"
             android:textColor="@color/orange"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -464,7 +468,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:text="Note Preview Settings"
@@ -480,7 +484,7 @@
             android:layout_height="203dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -671,7 +675,7 @@
             android:textSize="16sp"
             android:fontFamily="@font/baloo_bhai"
             android:textColor="@color/orange"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -684,7 +688,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -764,7 +768,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:text="Folder Settings"
@@ -778,7 +782,7 @@
             android:id="@+id/materialCardView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:padding="15dp"
             android:layout_marginHorizontal="20dp"
             app:cardBackgroundColor="@color/light_gray"
@@ -869,7 +873,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:text="Other Settings"

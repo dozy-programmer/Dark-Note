@@ -122,8 +122,9 @@ public class notes extends Fragment{
             }
         }
 
-        // before getting all date, make sure all date and millisecond parameters match
+        // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli();
+
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)

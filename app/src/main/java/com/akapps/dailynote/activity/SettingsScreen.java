@@ -210,7 +210,7 @@ public class SettingsScreen extends AppCompatActivity{
         accountLayout = findViewById(R.id.account_layout);
         accountText = findViewById(R.id.account_settings);
 
-        if(Helper.isPortrait(context)){
+        if(!Helper.isTablet(context)) {
             MaterialCardView coffee = findViewById(R.id.coffee_button);
             TextView coffeeText = findViewById(R.id.support_me_message);
             coffeeText.setOnClickListener(view -> {
@@ -440,20 +440,19 @@ public class SettingsScreen extends AppCompatActivity{
         });
     }
 
+    // hidden feature
     private void upgradeToPro(){
         realm.beginTransaction();
-        currentUser.setProUser(!currentUser.isProUser());
-        currentUser.setUltimateUser(true);
-        currentUser.setEnableSublists(true);
+        currentUser.setUltimateUser(!currentUser.isUltimateUser());
         realm.commitTransaction();
-        if(currentUser.isProUser()) {
+
+        if(currentUser.isUltimateUser())
             Helper.showMessage(SettingsScreen.this, "Upgrade Successful", "" +
                     "Thank you and Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
-        }
-        else{
+        else
             Helper.showMessage(SettingsScreen.this, "Downgrade Successful", "" +
                     "Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
-        }
+
       restart();
     }
 

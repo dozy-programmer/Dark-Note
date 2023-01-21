@@ -46,6 +46,7 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.AppWidget;
+import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
 import com.akapps.dailynote.classes.other.FilterChecklistSheet;
@@ -61,6 +62,7 @@ import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
@@ -76,7 +78,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import jp.wasabeef.richeditor.RichEditor;
@@ -106,6 +107,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private TextView category;
     private TextView folderText;
     private ConstraintLayout scrollView;
+    private FloatingActionMenu moreOptionsMenu;
+    private FloatingActionButton budget;
     private FloatingActionButton sort;
     private FloatingActionButton info;
     // search
@@ -325,6 +328,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         checkListRecyclerview = findViewById(R.id.checklist);
         empty_Layout = findViewById(R.id.empty_Layout);
         empty_title = findViewById(R.id.empty_title);
+        budget = findViewById(R.id.budget);
+        moreOptionsMenu = findViewById(R.id.more_options_menu);
         sort = findViewById(R.id.sort);
         info = findViewById(R.id.info);
         subtitle = findViewById(R.id.empty_subtitle);
@@ -379,6 +384,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 category.setTextColor(context.getColor(R.color.orange));
                 searchLayout.setVisibility(View.VISIBLE);
                 saveNote.setVisibility(View.GONE);
+
+                if(currentNote.isCheckList())
+                    moreOptionsMenu.setVisibility(View.VISIBLE);
 
                 initializeEditor();
                 updateColors();
@@ -516,14 +524,22 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 hideSearchBar();
         });
 
+        budget.setOnClickListener(v -> {
+            BudgetSheet budget = new BudgetSheet(currentNote);
+            budget.show(this.getSupportFragmentManager(), budget.getTag());
+            moreOptionsMenu.close(true);
+        });
+
         sort.setOnClickListener(v -> {
             FilterChecklistSheet filter = new FilterChecklistSheet(realm, currentNote);
             filter.show(this.getSupportFragmentManager(), filter.getTag());
+            moreOptionsMenu.close(true);
         });
 
         info.setOnClickListener(view -> {
             NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allNotePhotos, false);
             noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
+            moreOptionsMenu.close(true);
         });
 
         category.setOnClickListener(v -> {
@@ -824,9 +840,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if (currentSort == 2)
             results = results.sort("text", Sort.DESCENDING);
         else if (currentSort == 4)
-            results = results.sort("lastCheckedDate", Sort.ASCENDING);
+            results = results.sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.ASCENDING);
         else if (currentSort == 3)
-            results = results.sort("lastCheckedDate", Sort.DESCENDING);
+            results = results.sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.DESCENDING);
         else if (currentSort == 5 || currentSort == 6)
             results = results.sort("positionInList");
         else {
@@ -1004,10 +1022,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public CheckListItem addCheckList(String itemText) {
         int initialPosition = -1;
 
-        if(currentNote.getSort() == 6)
-            initialPosition = currentNote.getChecklist().min("positionInList").intValue() - 1;
-        else if (currentNote.getSort() == 5)
-            initialPosition = currentNote.getChecklist().max("positionInList").intValue() + 1;
+        if(currentNote.getChecklist().size() != 0) {
+            if (currentNote.getSort() == 6)
+                initialPosition = currentNote.getChecklist().min("positionInList").intValue() - 1;
+            else if (currentNote.getSort() == 5)
+                initialPosition = currentNote.getChecklist().max("positionInList").intValue() + 1;
+        }
         else
             initialPosition = currentNote.getChecklist().size();
 
@@ -1028,9 +1048,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             title.requestFocus();
         else
             title.clearFocus();
-        realm.beginTransaction();
-        currentNote.setChecked(false);
-        realm.commitTransaction();
 
         if(currentNote.isChecked())
             ((NoteEdit)context).title.setPaintFlags(((NoteEdit) context).title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

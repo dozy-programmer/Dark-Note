@@ -58,6 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:padding="100dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -67,11 +68,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select Type of Date"
+                android:text="By Date"
                 android:textStyle="bold"
-                android:textSize="14sp"
-                android:drawableLeft="@drawable/num_one_icon"
-                android:drawablePadding="10dp"
+                android:textSize="16sp"
                 android:layout_gravity="center|top"
                 android:gravity="center"
                 android:fontFamily="@font/overpass"
@@ -82,7 +81,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:padding="10dp"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -143,20 +143,6 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Choose Sorting Method"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:drawableLeft="@drawable/num_two_icon"
-                    android:drawablePadding="10dp"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/overpass"
-                    android:textColor="@color/golden_rod"/>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -169,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginHorizontal="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         app:cardBackgroundColor="@color/gray"
                         app:cardCornerRadius="15dp">
 
@@ -219,32 +205,6 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView6"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:cardBackgroundColor="@color/light_gray"
-            app:cardCornerRadius="10dp"
-            android:layout_marginHorizontal="70dp"
-            app:layout_constraintEnd_toEndOf="@+id/materialCardView9"
-            app:layout_constraintStart_toStartOf="@+id/materialCardView9"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView9"
-            app:strokeColor="@color/darker_blue"
-            app:strokeWidth="0dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingHorizontal="50dp"
-                android:paddingVertical="5dp"
-                android:text="OR"
-                android:textColor="@color/orange"
-                android:textStyle="bold" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
             android:id="@+id/alphabetical_sort"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -254,16 +214,17 @@
             app:cardCornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="@+id/materialCardView9"
             app:layout_constraintStart_toStartOf="@+id/materialCardView9"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView6">
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView9">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:layout_marginVertical="10dp"
+                android:layout_marginVertical="8dp"
                 android:fontFamily="@font/overpass"
                 android:gravity="center"
-                android:text="Alphabetical"
+                android:text="Alphabetically"
+                android:textSize="16sp"
                 android:textColor="@color/golden_rod"
                 android:textStyle="bold" />
 

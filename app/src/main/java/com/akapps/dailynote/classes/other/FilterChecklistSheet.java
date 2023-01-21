@@ -179,12 +179,12 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         clearFilter.setOnClickListener(v -> {
             if(applyAll.isChecked()){
                 realm.beginTransaction();
-                realm.where(Note.class).findAll().setInt("sort", -1);
+                realm.where(Note.class).findAll().setInt("sort", 5);
                 realm.commitTransaction();
             }
             else{
                 realm.beginTransaction();
-                currentNote.setSort(-1);
+                currentNote.setSort(5);
                 realm.commitTransaction();
             }
             ((NoteEdit) getActivity()).sortEnable = true;

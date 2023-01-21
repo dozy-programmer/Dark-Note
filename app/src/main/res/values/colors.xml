@@ -55,6 +55,18 @@
         <item>@color/havelock_blue</item>
         <item>@color/horizon</item>
         <item>@color/casper</item>
+        <item>@color/chathams_blue</item>
+        <item>@color/mauve</item>
+        <item>@color/tuft_bush</item>
+        <item>@color/red_ribbon</item>
+        <item>@color/keppel</item>
+        <item>@color/riptide</item>
+        <item>@color/rob_roy</item>
+        <item>@color/cupid</item>
+        <item>@color/rajah</item>
+        <item>@color/spray</item>
+        <item>@color/wistful</item>
+        <item>@color/ocean_green</item>
     </array>
 
 
@@ -88,4 +100,16 @@
     <color name="chetwode_blue">#7a95d3</color>
     <color name="horizon">#5f91a5</color>
     <color name="casper">#acc6d4</color>
+    <color name="chathams_blue">#a2c6e9</color>
+    <color name="mauve">#416888</color>
+    <color name="tuft_bush">#ffd6c7</color>
+    <color name="red_ribbon">#f51137</color>
+    <color name="keppel">#3eab9e</color>
+    <color name="riptide">#85e6d3</color>
+    <color name="rob_roy">#efc26e</color>
+    <color name="cupid">#fac9c7</color>
+    <color name="rajah">#f4b86a</color>
+    <color name="spray">#8de0f0</color>
+    <color name="wistful">#a8a2d4</color>
+    <color name="ocean_green">#4dba86</color>
 </resources>

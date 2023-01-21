@@ -218,7 +218,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               else{
                   // initialize layout
                   title.setText("Upload");
-                  info.setText("Max Uploads of 6 has been reached. Please delete a backup by pressing sync button.");
+                  info.setText("Max Uploads of 12 has been reached. Please delete a backup by pressing sync button.");
                   info.setGravity(Gravity.CENTER);
                   securityWord.setVisibility(View.GONE);
               }

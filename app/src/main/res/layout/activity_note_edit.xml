@@ -272,6 +272,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:elevation="2dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toolbar"
                 app:menu_backgroundColor="@android:color/transparent"
@@ -473,17 +474,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="30dp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/note">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:paddingTop="75dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingTop="10dp">
 
                     <TextView
                         android:id="@+id/empty_title"
@@ -522,7 +523,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="20dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginVertical="40dp"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="Tap the bottom right button to create a note"
                         android:textColor="@color/light_gray"

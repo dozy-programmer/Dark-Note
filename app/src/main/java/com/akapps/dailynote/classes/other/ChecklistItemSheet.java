@@ -145,12 +145,16 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         if(isAdding){
             info.setVisibility(View.VISIBLE);
-            info.setText(info.getText() + "\n[Add sublist using \"--\" after item]");
             dropDownMenu.setVisibility(View.GONE);
-            if(isSubChecklist)
+            if(isSubChecklist) {
                 title.setText("Adding Sub-Item to\n" + parentNode);
-            else
+                info.setText(info.getText());
+            }
+            else {
                 title.setText("Adding");
+                if(currentNote.isEnableSublist())
+                    info.setText(info.getText() + "\nAdd sublist item(s) using \"--\" (2 dashes) after item\n");
+            }
             delete.setVisibility(View.GONE);
         }
         else{

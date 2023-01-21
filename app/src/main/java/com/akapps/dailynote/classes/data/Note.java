@@ -66,7 +66,7 @@ public class Note extends RealmObject {
         reminderDateTime = securityWord = "";
         dateCreatedMilli = dateEditedMilli = Helper.dateToCalender(dateCreated).getTimeInMillis();
         category = "none";
-        sort = -1;
+        sort = 5;
         enableSublist = false;
         widgetId = -1;
     }

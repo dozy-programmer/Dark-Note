@@ -116,18 +116,22 @@ public class RealmHelper {
         }
     }
 
-    // verify that all notes' formatted date strings match their millisecond date parameter
+    // verify that all notes formatted date strings match their millisecond date parameter
     // issue when sorting notes, some millisecond date parameters do not match their date
     public static void verifyDateWithMilli(){
         try(Realm realm = Realm.getDefaultInstance()) {
             RealmResults<Note> allNotes = realm.where(Note.class).findAll();
-            for(Note currentNote: allNotes) {
-                long lastDateEditedNoteInMilli = Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis();
-                if(lastDateEditedNoteInMilli != currentNote.getDateEditedMilli()) {
-                    realm.executeTransaction(tRealm -> {
-                        currentNote.setDateEditedMilli(lastDateEditedNoteInMilli);
-                    });
-                }
+            for (Note currentNote : allNotes) {
+                    try {
+                        long lastDateEditedNoteInMilli = Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis();
+                        if (lastDateEditedNoteInMilli != currentNote.getDateEditedMilli()) {
+                            realm.executeTransaction(tRealm -> {
+                                currentNote.setDateEditedMilli(lastDateEditedNoteInMilli);
+                            });
+                        }
+                    } catch (Exception e){
+                        continue;
+                    }
             }
         }
     }

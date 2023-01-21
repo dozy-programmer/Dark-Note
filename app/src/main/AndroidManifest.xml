@@ -63,12 +63,14 @@
             android:exported="false" />
         <activity
             android:name=".activity.SettingsScreen"
+            android:screenOrientation="portrait"
             android:exported="false" />
 
         <!-- Main Activity !-->
         <activity
             android:name=".activity.Homepage"
-            android:exported="true" >
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
