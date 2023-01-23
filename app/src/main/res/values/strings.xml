@@ -5,8 +5,8 @@
     <string name="schema">26</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">Version 9.0</string>
-    <string name="app_version_int">9.0</string>
+    <string name="app_version">Version 9.1</string>
+    <string name="app_version_int">9.1</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_error_title">Wrong Login/Password</string>
@@ -29,9 +29,7 @@
             \t\t\t• $50 eating out\n
             \t\t\t• $20 netflix\n
             \t\t\t• I owe Mike $20\n
-            \t\t\t• Rent $1500\n\n
-
-        • see budget info via "Note Info" button
+            \t\t\t• Rent $1500
     </string>
 
     <string name="try_out_budget_message">
