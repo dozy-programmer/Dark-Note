@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.recyclerview.expenses_recyclerview;
@@ -42,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -58,14 +61,14 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
 
     private Note currentNote;
     private ArrayList<Expense> expensesList = new ArrayList<>();
-    List<DonutSection> expensesListGraph = new ArrayList<>();
+    private List<DonutSection> expensesListGraph = new ArrayList<>();
 
     // layout
     private BottomSheetDialog dialog;
-    DonutProgressView budgetProgress;
-    TextView errorMessage;
-    TextView budgetText;
-    RecyclerView expensesRecyclerview;
+    private DonutProgressView budgetProgress;
+    private TextView errorMessage;
+    private TextView budgetText;
+    private RecyclerView expensesRecyclerview;
 
     public BudgetSheet(){}
 
@@ -101,15 +104,21 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
         else if(budget > 0){
             errorMessage.setVisibility(View.GONE);
             budgetProgress.setCap((float) budget);
-            expensesList.sort(Comparator.comparing(Expense::getExpenseAmount, Comparator.reverseOrder()));
             expensesListGraph = getListOfExpenses(currentNote.getChecklist(), errorMessage, budget);
+            // sort by highest to lowest expense
+            expensesListGraph.sort(Comparator.comparing(DonutSection::getAmount, Comparator.reverseOrder()));
+            expensesList.sort(Comparator.comparing(Expense::getExpenseAmountPercentage, Comparator.reverseOrder()));
             if(expensesListGraph != null) {
                 budgetProgress.submitData(expensesListGraph);
-                RecyclerView.Adapter expensesAdapter = new expenses_recyclerview(expensesList);
+                RecyclerView.Adapter expensesAdapter = new expenses_recyclerview(expensesList, budget);
                 expensesRecyclerview.setAdapter(expensesAdapter);
                 expensesRecyclerview.setNestedScrollingEnabled(false);
                 DecimalFormat df = new DecimalFormat("#,##0.00");
-                budgetText.setText("$" + df.format(budget) + "\nTotal");
+                Double budgetNumber = Double.parseDouble(df.format(budget).replaceAll(",", ""));
+                if(budgetNumber % 2 == 0)
+                    budgetText.setText("$" + budgetNumber.intValue() + "\nTotal");
+                else
+                    budgetText.setText("$" + df.format(budget) + "\nTotal");
             }
         }
         else
@@ -133,7 +142,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
 
     private List<DonutSection> getListOfExpenses(RealmList<CheckListItem> noteChecklist,
                                                  TextView errorMessage, double budget){
-        List<DonutSection> expensesList = new ArrayList<>();
+        List<DonutSection> currentExpensesList = new ArrayList<>();
         ArrayList <String> wrongFormatList= new ArrayList();
         String wrongFormatMessage = "";
         double totalExpenses = 0, leftOver = 0;
@@ -143,11 +152,13 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
 
         for (CheckListItem currentItem: noteChecklist){
             double currentExpenseAmount = 0;
+            ArrayList<SubExpense> currentExpenseSubList = new ArrayList<>();
 
             String checklistString = currentItem.getText();
 
             if(checklistString.contains("$")) {
                 String[] checklistStringTokens = getTokenArray(checklistString);
+                double currentSubExpenseTotal = 0;
 
                 for (String currentToken : checklistStringTokens) {
                     if (currentToken.contains("$") && !currentToken.contains("+$")) {
@@ -157,15 +168,18 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
                         try {
                             Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
                             currentExpenseAmount += currentTokenDouble;
+                            currentSubExpenseTotal += currentTokenDouble;
                         } catch (Exception e) {
                             wrongFormatList.add("$" + currentTokenTrimmed);
                         }
                     }
                 }
+                currentExpenseSubList.add(new SubExpense(checklistString, currentSubExpenseTotal));
             }
 
             for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
                 String sublistString = sublistItem.getText();
+                double currentSubExpenseTotal = 0;
 
                 if (sublistString.contains("$")) {
                     String[] sublistStringTokens = getTokenArray(sublistString);
@@ -177,19 +191,22 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
                             try {
                                 Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
                                 currentExpenseAmount += currentTokenDouble;
+                                currentSubExpenseTotal += currentTokenDouble;
                             } catch (Exception e) {
                                 wrongFormatList.add("$" + currentTokenTrimmed);
                             }
                         }
                     }
                 }
+                currentExpenseSubList.add(new SubExpense(sublistString, currentSubExpenseTotal));
             }
 
             if(currentExpenseAmount > 0) {
                 totalExpenses += currentExpenseAmount;
-                expensesList.add(new DonutSection(currentItem.getText().trim(), randomColor[colorCounter], (float) currentExpenseAmount));
-                this.expensesList.add(new Expense(randomColor[colorCounter++], currentItem.getText().trim(),
-                        (currentExpenseAmount / budget)));
+                currentExpensesList.add(new DonutSection(currentItem.getText().trim(), randomColor[colorCounter], (float) currentExpenseAmount));
+                currentExpenseSubList.add(new SubExpense("Total", currentExpenseAmount));
+                expensesList.add(new Expense(randomColor[colorCounter++], currentItem.getText().trim(),
+                        currentExpenseAmount / budget, currentExpenseAmount, currentExpenseSubList));
 
                 if(colorCounter > getContext().getResources().getIntArray(R.array.budgetColors).length)
                     colorCounter = 0;
@@ -202,6 +219,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
             return null;
         }
         else{
+            ArrayList<SubExpense> currentExpenseSubList = new ArrayList<>();
             if(budget - totalExpenses > 0) {
                 leftOver = budget - totalExpenses;
                 leftOverText = "Left to Spend";
@@ -210,12 +228,14 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
                 leftOver = totalExpenses - budget;
                 leftOverText = "Over Budget";
             }
+            currentExpenseSubList.add(new SubExpense(leftOverText, leftOver));
 
-            expensesList.add(new DonutSection(leftOverText, randomColor[colorCounter], (float) leftOver));
-            this.expensesList.add(new Expense(randomColor[colorCounter], leftOverText, leftOver/budget));
+            currentExpensesList.add(new DonutSection(leftOverText, randomColor[colorCounter], (float) leftOver));
+            expensesList.add(new Expense(randomColor[colorCounter], leftOverText,
+                    leftOver/budget, leftOver, currentExpenseSubList));
         }
 
-        return expensesList;
+        return currentExpensesList;
     }
 
     private double getBudgetAmount(RealmList<CheckListItem> noteChecklist){
@@ -295,6 +315,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
                     dialog =(BottomSheetDialog) getDialog ();
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(true);
                     if (dialog != null) {
                         FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
                         if (bottomSheet != null) {

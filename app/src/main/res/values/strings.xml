@@ -5,8 +5,8 @@
     <string name="schema">26</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">Version 9.1</string>
-    <string name="app_version_int">9.1</string>
+    <string name="app_version">Version 9.2</string>
+    <string name="app_version_int">9.2</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_error_title">Wrong Login/Password</string>
@@ -22,14 +22,19 @@
         How to use:\n\n
 
         • add budget via \"+$\"\n
-            \t\t\t• +$2,000 budget\n
             \t\t\t• +$3,000 budget for Jan\n\n
 
         • add expenses via \"$\"\n
             \t\t\t• $50 eating out\n
             \t\t\t• $20 netflix\n
             \t\t\t• I owe Mike $20\n
-            \t\t\t• Rent $1500
+            \t\t\t• Rent $1500\n\n
+
+        • organize expenses by utilizing sub-lists\n
+            \t\t\t• Apartment Expenses\n
+            \t\t\t• ↳ Rent $1000\n
+            \t\t\t• ↳ Water $40\n
+            \t\t\t• ↳ Electricity $97\n
     </string>
 
     <string name="try_out_budget_message">

@@ -4,28 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="false">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/color"
         android:layout_width="30dp"
         android:layout_height="10dp"
+        android:layout_marginVertical="10dp"
         app:cardBackgroundColor="@color/blue"
         app:cardCornerRadius="10dp"
-        android:layout_marginVertical="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/expense_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:text="Expense"
-        android:textColor="@color/blue"
-        android:textSize="16sp"
+        android:textColor="@color/pressed_blue"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:layout_constraintBottom_toBottomOf="@+id/color"
+        app:layout_constraintEnd_toStartOf="@+id/expense_percentage"
         app:layout_constraintStart_toEndOf="@+id/color"
         app:layout_constraintTop_toTopOf="@+id/color" />
 
@@ -33,13 +37,38 @@
         android:id="@+id/expense_percentage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
         android:gravity="right"
         android:text="0%"
         android:textColor="@color/orange"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/expense_name"
+        app:layout_constraintBottom_toBottomOf="@+id/expense_name"
+        app:layout_constraintEnd_toStartOf="@+id/drop_down"
         app:layout_constraintTop_toTopOf="@+id/expense_name" />
+
+    <ImageButton
+        android:id="@+id/drop_down"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/arrow_down"
+        app:layout_constraintBottom_toBottomOf="@+id/expense_percentage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/expense_percentage"
+        app:tint="@color/ultra_white" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sub_expenses"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/expense_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

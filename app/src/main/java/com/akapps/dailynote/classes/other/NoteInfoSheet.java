@@ -72,15 +72,12 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         TextView numPhotos = view.findViewById(R.id.num_photos);
         TextView numWords = view.findViewById(R.id.num_words);
         TextView numChars = view.findViewById(R.id.num_chars);
-        TextView moneyTotal = view.findViewById(R.id.money_total);
         ImageView lockIcon = view.findViewById(R.id.lock_icon);
         ImageView pinIcon = view.findViewById(R.id.pin_icon);
         ImageView trashIcon = view.findViewById(R.id.trash_icon);
         ImageView archiveIcon = view.findViewById(R.id.archive_icon);
         ImageView copyIcon = view.findViewById(R.id.copy_icon);
         MaterialButton open = view.findViewById(R.id.open);
-        ImageButton moneyTotalCopy = view.findViewById(R.id.money_total_copy);
-        ImageButton moneyTotalInfo = view.findViewById(R.id.money_total_info);
         RecyclerView photosScrollView = view.findViewById(R.id.note_photos);
 
         if(!showOpenButton)
@@ -99,11 +96,6 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         open.setOnClickListener(view1 -> {
             openNoteActivity(currentNote);
         });
-
-        String moneyTotalString = getMoneyTotal(currentNote.getChecklist());
-
-        if(moneyTotalString.toLowerCase().contains("try it out"))
-            moneyTotalCopy.setVisibility(View.GONE);
 
         try {
             if(currentNote.getPinNumber() == 0)
@@ -173,22 +165,9 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                             getChecklistString.length():
                             getNoteString.length()) + " characters" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
-
-            moneyTotal.setText(Html.fromHtml(moneyTotal.getText() + "<br>" +
-                    "<font color='#e65c00'>" + moneyTotalString
-                    .replaceAll("\n", "<br>")
-                    .replaceAll("~", "&nbsp;")
-                    .replaceAll("\t", "&emsp;") + "</font>", Html.FROM_HTML_MODE_COMPACT));
         } catch (Exception e){
             this.dismiss();
         }
-
-        moneyTotalCopy.setOnClickListener(view12 -> copyToClipboard(moneyTotalString.replaceAll("<br>", "\n")));
-
-        moneyTotalInfo.setOnClickListener(view13 -> {
-            InfoSheet info = new InfoSheet(10);
-            info.show(getParentFragmentManager(), info.getTag());
-        });
 
         copyIcon.setOnClickListener(view14 -> {
             // copy text
@@ -218,116 +197,6 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     private String copyWord(String word){
         return word.replaceAll("<br>", "\n").replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ")
                 .replaceAll("\\s+", " ").trim();
-    }
-
-    private String getMoneyTotal(RealmList<CheckListItem>  noteChecklist){
-        double itemsCompleted = 0;
-        double itemsNotCompleted = 0;
-        double budget = 0;
-        ArrayList wrongFormat = new ArrayList();
-
-        for (CheckListItem currentItem: noteChecklist){
-            String checklistString = currentItem.getText();
-            if(checklistString.contains("$")) {
-                String[] checklistStringTokens = checklistString.replaceAll("\n", " ")
-                        .replaceAll(",", "")
-                        .replaceAll("[$]+", "\\$")
-                        .split(" ");
-                for (String currentToken : checklistStringTokens) {
-                    if (currentToken.contains("$")) {
-                        if (currentToken.contains("+$")) {
-                            if (budget == 0)
-                                try {
-                                    budget = Double.parseDouble(currentToken.replaceAll(",", "")
-                                            .replace("+$", ""));
-                                } catch (Exception e) {
-                                    budget = -1;
-                                }
-                            else
-                                budget = -1;
-                        } else {
-                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1)
-                                    .trim().replaceAll("[$]+", "\\$")
-                                    .replaceAll(",", "");
-                            try {
-                                Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
-                                if (currentItem.isChecked())
-                                    itemsCompleted += currentTokenDouble;
-                                else
-                                    itemsNotCompleted += currentTokenDouble;
-                            } catch (Exception e) {
-                                wrongFormat.add("$" + currentTokenTrimmed);
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
-                String sublistString = sublistItem.getText();
-                if (sublistString.contains("$")) {
-                    String[] sublistStringTokens = sublistString.replaceAll("\n", " ")
-                            .replaceAll(",", "")
-                            .replaceAll("[$]+", "\\$")
-                            .split(" ");
-                    for (String currentToken : sublistStringTokens) {
-                        if (currentToken.contains("$")) {
-                            if(currentToken.contains("+$")) {
-                                if (budget == 0)
-                                    try {
-                                        budget = Double.parseDouble(currentToken.replaceAll(",", "")
-                                                .replaceAll("[$]+", "\\$")
-                                                .replace("+$", ""));
-                                    }catch (Exception e){
-                                        budget = -1;
-                                    }
-                                else
-                                    budget = -1;
-                            }
-                            else {
-                                String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim()
-                                        .replaceAll(",", "");
-                                try {
-                                    Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
-                                    if (currentItem.isChecked())
-                                        itemsCompleted += currentTokenDouble;
-                                    else
-                                        itemsNotCompleted += currentTokenDouble;
-                                } catch (Exception e) {
-                                    wrongFormat.add("$" + currentTokenTrimmed);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        String addingResults = "";
-        if(budget > 0 || itemsCompleted > 0 || itemsNotCompleted > 0){
-            DecimalFormat df = new DecimalFormat("#,##0.00");
-            addingResults = "";
-            if(budget > 0)
-                addingResults += "Budget : $" + df.format(budget) + "<br>";
-
-            addingResults += "Completed  Total = $" + df.format(itemsCompleted) + "<br>" +
-                    "In-Progress Total = $" + df.format(itemsNotCompleted);
-
-            if(wrongFormat.size() > 0)
-                addingResults += "<br>Items Not added due to format error (fix these) : " + wrongFormat.toString();
-
-            if(budget == -1)
-                addingResults += "<br>Budget format error";
-            else if(budget !=0)
-                addingResults += "<br>Budget - Completed Total = $" + df.format(budget - itemsCompleted) + "<br>" +
-                        "Budget - (In-Progress Total) = $" + df.format(budget - itemsNotCompleted);
-        }
-        else {
-            addingResults = getContext().getString(R.string.try_out_budget_message);
-        }
-
-
-        return addingResults;
     }
 
     private void openNoteActivity(Note currentNote){

@@ -1,17 +1,24 @@
 package com.akapps.dailynote.classes.data;
 
+import java.util.ArrayList;
+
 public class Expense {
 
     private int color;
     private String expenseName;
-    private double expenseAmount;
+    private double expenseAmountPercentage;
+    private double totalExpenseAmount;
+    private ArrayList<SubExpense> subExpensesList;
 
     public Expense(){}
 
-    public Expense(int color, String expenseName, double expenseAmount) {
+    public Expense(int color, String expenseName, double expenseAmountPercentage,
+                   double totalExpenseAmount, ArrayList<SubExpense> subExpensesList) {
         this.color = color;
         this.expenseName = expenseName;
-        this.expenseAmount = expenseAmount;
+        this.expenseAmountPercentage = expenseAmountPercentage;
+        this.totalExpenseAmount = totalExpenseAmount;
+        this.subExpensesList = subExpensesList;
     }
 
     public int getColor() {
@@ -30,11 +37,27 @@ public class Expense {
         this.expenseName = expenseName;
     }
 
-    public double getExpenseAmount() {
-        return expenseAmount;
+    public double getExpenseAmountPercentage() {
+        return expenseAmountPercentage;
     }
 
-    public void setExpenseAmount(double expenseAmount) {
-        this.expenseAmount = expenseAmount;
+    public void setExpenseAmountPercentage(double expenseAmountPercentage) {
+        this.expenseAmountPercentage = expenseAmountPercentage;
+    }
+
+    public double getTotalExpenseAmount() {
+        return totalExpenseAmount;
+    }
+
+    public void setTotalExpenseAmount(double totalExpenseAmount) {
+        this.totalExpenseAmount = totalExpenseAmount;
+    }
+
+    public ArrayList getSubExpensesList() {
+        return subExpensesList;
+    }
+
+    public void setSubExpensesList(ArrayList subExpensesList) {
+        this.subExpensesList = subExpensesList;
     }
 }

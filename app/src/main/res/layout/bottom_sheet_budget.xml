@@ -55,7 +55,7 @@
 
         <app.futured.donut.DonutProgressView
             android:id="@+id/budget_progress_view"
-            android:layout_width="150dp"
+            android:layout_width="175dp"
             android:layout_height="150dp"
             app:donut_bgLineColor="@color/blue"
             app:donut_gapAngle="270"
@@ -69,7 +69,7 @@
             android:id="@+id/expenses_recyclerview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="5dp"
             android:layout_marginVertical="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +105,7 @@
             app:autoSizeTextType="uniform"
             app:maxLines="1"
             android:textColor="@color/pressed_blue"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:fontFamily="@font/baloo_bhai"
             app:layout_constraintBottom_toBottomOf="@+id/budget_progress_view"
             app:layout_constraintEnd_toEndOf="@+id/budget_progress_view"

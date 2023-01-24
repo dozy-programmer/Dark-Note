@@ -443,4 +443,18 @@ public class Helper {
             }
         }catch (Exception e){}
     }
+
+    public static String removeAllMoneyAmounts(String text){
+        String newText = "";
+        String[] tokens = text.replaceAll("\n", " ")
+                .replaceAll(",", "")
+                .replaceAll("\\$+", "\\$")
+                .split(" ");
+
+        for(int i = 0; i < tokens.length; i++){
+            if(!tokens[i].contains("$"))
+                newText += tokens[i] + " ";
+        }
+        return newText.trim();
+    }
 }
