@@ -35,10 +35,10 @@ public class User extends RealmObject {
 
     public User(int userId) {
         this.userId = userId;
-        ultimateUser = proUser = openFoldersOnStart = showFolderNotes = enableSublists = modeSettings = false;
+        ultimateUser = proUser = openFoldersOnStart = showFolderNotes = modeSettings = false;
         textSize = backupReminderOccurrence = 0;
         layoutSelected = "stag";
-        showPreview = showPreviewNoteInfo = true;
+        showPreview = showPreviewNoteInfo = enableSublists = true;
         titleLines = contentLines = 3;
         lastUpload = backupReminderDate = email = "";
     }

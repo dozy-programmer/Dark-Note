@@ -192,9 +192,8 @@ public class notes extends Fragment{
         if(user!=null)
             savePreferences();
 
-        if(realm.isClosed()) {
+        if(realm.isClosed())
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
-        }
         else{
             adapterNotes.notifyDataSetChanged();
 

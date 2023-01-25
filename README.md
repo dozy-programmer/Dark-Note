@@ -18,11 +18,11 @@ Dark Note offers a wide range of features for taking notes and creating checklis
 
 Home Page | Sample Note |
 :-------------------------:|:-------------------------:|
-<img src="Screenshots/Regular%20Device/1_oneplus-oneplus8pro-portrait.png" width="100" height="200"/> | <img src="Screenshots/Regular%20Device/2_oneplus-oneplus8pro-portrait.png" width="100" height="200"/> 
+<img src="Screenshots/Regular%20Device/1_Main_Screen.png" width="100" height="200"/> | <img src="Screenshots/Regular%20Device/3_Note_Example.png" width="100" height="200"/> 
 
 | Folder Page  | Settings Page |
 | ------------- | ------------- |
-| <img src="Screenshots/Regular%20Device/Folders_Page.png" width="100" height="200"/>  | <img src="Screenshots/Regular%20Device/8_oneplus-oneplus8pro-portrait.png" width="100" height="200"/>  |
+| <img src="Screenshots/Regular%20Device/6_Folders_Screen.png" width="100" height="200"/>  | <img src="Screenshots/Regular%20Device/8_Settings_Screen.png" width="100" height="200"/>  |
 
 ## Features
 
