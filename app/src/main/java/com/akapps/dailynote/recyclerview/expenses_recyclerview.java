@@ -65,7 +65,7 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
             if(holder.subExpensesRecyclerview.getVisibility() == View.VISIBLE){
                 holder.subExpensesRecyclerview.animate()
                         .alpha(0.0f)
-                        .setDuration(500)
+                        .setDuration(200)
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {

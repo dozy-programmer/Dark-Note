@@ -16,15 +16,12 @@
         android:orientation="vertical"
         android:weightSum="100">
 
-        <com.airbnb.lottie.LottieAnimationView
+        <ImageView
             android:id="@+id/lock_icon"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_colorFilter="@color/cornflower_blue"
-            app:lottie_rawRes="@raw/lock_loading"
-            app:lottie_speed="0.7"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/lock_icon"
+            app:tint="@color/blue"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

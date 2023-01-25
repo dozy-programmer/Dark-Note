@@ -20,6 +20,7 @@
             android:layout_width="50dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
+            app:tint="@color/blue"
             android:src="@drawable/lock_icon"
             android:layout_marginVertical="20dp">
         </ImageView>

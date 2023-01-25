@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -835,6 +836,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         RealmResults<CheckListItem> results = currentNote.getChecklist()
                 .sort("positionInList", Sort.ASCENDING);
 
+        if(currentSort == -1){
+            realm.beginTransaction();
+            currentNote.setSort(5);
+            realm.commitTransaction();
+        }
+
         if (currentSort == 1)
             results = results.sort("text", Sort.ASCENDING);
         else if (currentSort == 2)
@@ -1035,7 +1042,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         // insert data to database
         realm.beginTransaction();
-        CheckListItem currentItem = new CheckListItem(itemText, false, currentNote.getNoteId(), initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime()));
+        CheckListItem currentItem = new CheckListItem(itemText.trim(), false, currentNote.getNoteId(), initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime()));
         currentNote.getChecklist().add(currentItem);
         currentNote.setChecked(false);
         realm.commitTransaction();
@@ -1063,7 +1070,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         int initialPosition = checkListItem.getSubChecklist().size();
         // insert data to database
         realm.beginTransaction();
-        checkListItem.getSubChecklist().add(new SubCheckListItem(itemText, false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
+        checkListItem.getSubChecklist().add(new SubCheckListItem(itemText.trim(), false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
         currentNote.setEnableSublist(true);
         realm.commitTransaction();
         updateSaveDateEdited();

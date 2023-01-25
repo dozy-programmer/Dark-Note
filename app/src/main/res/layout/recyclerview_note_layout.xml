@@ -75,6 +75,7 @@
                         android:layout_weight="1"
                         android:visibility="gone"
                         android:src="@drawable/lock_icon"
+                        android:tint="@color/ultra_white"
                         android:layout_marginTop="10dp"
                         android:layout_marginHorizontal="5dp">
                     </ImageView>

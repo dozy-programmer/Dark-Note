@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.ColorFilter;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
@@ -31,7 +32,7 @@ public class NoteLockScreen extends AppCompatActivity {
     // layout
     private PinLockView lockView;
     private IndicatorDots indicatorDots;
-    private LottieAnimationView lockIcon;
+    private ImageView lockIcon;
     private LottieAnimationView pinEmpty;
     private TextView forgotPassword;
     private ImageView fingerprintIcon;
@@ -44,6 +45,7 @@ public class NoteLockScreen extends AppCompatActivity {
     private String noteTitle;
     private boolean fingerprint;
     private boolean isWidget;
+    private Context context;
 
     // biometric data
     private Executor executor;
@@ -57,7 +59,7 @@ public class NoteLockScreen extends AppCompatActivity {
 
         overridePendingTransition(R.anim.left_in, R.anim.stay);
 
-        Context context = this;
+        context = this;
 
         initializeLayout();
 
@@ -159,11 +161,8 @@ public class NoteLockScreen extends AppCompatActivity {
         });
     }
 
-    private void changeLottieAnimationColor(LottieAnimationView animation, int newColor){
-        SimpleColorFilter filter = new SimpleColorFilter(getColor(newColor));
-        KeyPath keyPath = new KeyPath("**");
-        LottieValueCallback<ColorFilter> callback = new LottieValueCallback<ColorFilter>(filter);
-        animation.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback);
+    private void changeLottieAnimationColor(ImageView icon, int newColor){
+        icon.setColorFilter(context.getResources().getColor(newColor));
     }
 
     // if pin is correct, note is opened

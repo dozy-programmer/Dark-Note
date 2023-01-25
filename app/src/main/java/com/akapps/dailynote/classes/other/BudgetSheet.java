@@ -116,9 +116,9 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
                 DecimalFormat df = new DecimalFormat("#,##0.00");
                 Double budgetNumber = Double.parseDouble(df.format(budget).replaceAll(",", ""));
                 if(budgetNumber % 2 == 0)
-                    budgetText.setText("$" + budgetNumber.intValue() + "\nTotal");
+                    budgetText.setText("$" + budgetNumber.intValue());
                 else
-                    budgetText.setText("$" + df.format(budget) + "\nTotal");
+                    budgetText.setText("$" + df.format(budget));
             }
         }
         else
