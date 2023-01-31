@@ -129,6 +129,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public RealmResults<Photo> allNotePhotos;
     private int noteId;
     private boolean isNewNote;
+    private int noteColorInt;
     private String oldTitle;
     private String oldNote;
     private boolean currentPin;
@@ -182,7 +183,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         isCheckList = getIntent().getBooleanExtra("isChecklist", false);
         isWidget = getIntent().getBooleanExtra("isWidget", false);
 
-        if(noteId<-1)
+        if(noteId < -1)
             noteId *=-1;
         else
             overridePendingTransition(R.anim.left_in, R.anim.stay);
@@ -243,7 +244,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     @Override
     public void onBackPressed() {
-        if(isSearchingNotes) {
+        if(isNewNote){
+            RealmHelper.deleteNote(currentNote.getNoteId());
+            finish();
+            overridePendingTransition(R.anim.stay, R.anim.right_out);
+        }
+        else if(isSearchingNotes) {
             hideSearchBar();
             note.clearFocus();
             title.clearFocus();
@@ -358,98 +364,100 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         // if it's not a new note and note position is not -1 (which means it is a new note)
         // then data and layout info is updated
         if ((noteId != -1 && !isNewNote)) {
-                photosNote.setVisibility(View.VISIBLE);
-                pinNoteIcon.setVisibility(View.VISIBLE);
-                pinNoteButton.setVisibility(View.VISIBLE);
-                noteColor.setVisibility(View.VISIBLE);
-                expandMenu.setVisibility(View.VISIBLE);
-                // current note
-                currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
-                if(null != currentNote.getChecklist())
-                    checkListItems = currentNote.getChecklist().sort("positionInList");
-                allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
-                populatePhotos();
-                oldTitle = currentNote.getTitle();
-                oldNote = currentNote.getNote();
-                title.setText(currentNote.getTitle());
-                note.setHtml(currentNote.getNote());
-                String textSize = Helper.getPreference(context, "size");
-                if(textSize==null)
-                    textSize = "20";
-                note.setEditorFontSize(Integer.parseInt(textSize));
-                note.setEditorFontColor(currentNote.getTextColor());
-                title.setTextColor(currentNote.getTitleColor());
-                category.setText(currentNote.getCategory());
-                category.setVisibility(View.VISIBLE);
-                folderText.setVisibility(View.VISIBLE);
-                category.setTextColor(context.getColor(R.color.orange));
-                searchLayout.setVisibility(View.VISIBLE);
-                saveNote.setVisibility(View.GONE);
+            photosNote.setVisibility(View.VISIBLE);
+            pinNoteIcon.setVisibility(View.VISIBLE);
+            pinNoteButton.setVisibility(View.VISIBLE);
+            noteColor.setVisibility(View.VISIBLE);
+            expandMenu.setVisibility(View.VISIBLE);
+            // current note
+            currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
+            if(null != currentNote.getChecklist())
+                checkListItems = currentNote.getChecklist().sort("positionInList");
+            allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
+            populatePhotos();
+            oldTitle = currentNote.getTitle();
+            oldNote = currentNote.getNote();
+            title.setText(currentNote.getTitle());
+            note.setHtml(currentNote.getNote());
+            String textSize = Helper.getPreference(context, "size");
+            if(textSize==null)
+                textSize = "20";
+            note.setEditorFontSize(Integer.parseInt(textSize));
+            note.setEditorFontColor(currentNote.getTextColor());
+            title.setTextColor(currentNote.getTitleColor());
+            category.setText(currentNote.getCategory());
+            category.setVisibility(View.VISIBLE);
+            folderText.setVisibility(View.VISIBLE);
+            category.setTextColor(context.getColor(R.color.orange));
+            searchLayout.setVisibility(View.VISIBLE);
+            saveNote.setVisibility(View.GONE);
 
-                if(currentNote.isCheckList())
-                    moreOptionsMenu.setVisibility(View.VISIBLE);
+            if(currentNote.isCheckList())
+                moreOptionsMenu.setVisibility(View.VISIBLE);
 
-                initializeEditor();
-                updateColors();
+            initializeEditor();
+            updateColors();
 
-                if (currentNote.isCheckList()) {
-                    sortChecklist();
-                    showCheckListLayout(true);
-                    searchLayout.setVisibility(View.GONE);
-                    formatMenu.setVisibility(View.GONE);
+            if (currentNote.isCheckList()) {
+                sortChecklist();
+                showCheckListLayout(true);
+                searchLayout.setVisibility(View.GONE);
+                formatMenu.setVisibility(View.GONE);
+            }
+            else {
+                formatMenu.setVisibility(View.VISIBLE);
+                sort.setVisibility(View.GONE);
+                info.setVisibility(View.GONE);
+            }
+
+            if(currentNote.isChecked())
+                title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            // sets background of color icon to whatever the current note color is
+            if (!isNewNote)
+                noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
+
+            if (savedInstanceState != null)
+                isShowingPhotos = savedInstanceState.getBoolean("photos");
+
+            if(currentNote.getNote().length()==0 && !isShowingPhotos) {
+                note.requestFocus();
+                title.clearFocus();
+            }
+
+            if(currentNote.isCheckList()) {
+                title.clearFocus();
+                checkListRecyclerview.requestFocus();
+            }
+
+            updateDateEdited();
+            if (!currentNote.getReminderDateTime().isEmpty()) {
+                updateReminderLayout(View.VISIBLE);
+                Date reminderDate = null;
+                try {
+                    reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                else {
-                    formatMenu.setVisibility(View.VISIBLE);
-                    sort.setVisibility(View.GONE);
-                    info.setVisibility(View.GONE);
+                Date now = new Date();
+                if (now.after(reminderDate)) {
+                    updateReminderDate("");
+                    updateReminderLayout(View.GONE);
+                    Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
+                    "so it was deleted", MotionToast.TOAST_SUCCESS);
                 }
-
-                if(currentNote.isChecked())
-                    title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
-                // sets background of color icon to whatever the current note color is
-                if (!isNewNote)
-                    noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
-
-                if (savedInstanceState != null)
-                    isShowingPhotos = savedInstanceState.getBoolean("photos");
-
-                if(currentNote.getNote().length()==0 && !isShowingPhotos) {
-                    note.requestFocus();
-                    title.clearFocus();
-                }
-
-                if(currentNote.isCheckList()) {
-                    title.clearFocus();
-                    checkListRecyclerview.requestFocus();
-                }
-
-                updateDateEdited();
-                if (!currentNote.getReminderDateTime().isEmpty()) {
-                    updateReminderLayout(View.VISIBLE);
-                    Date reminderDate = null;
-                    try {
-                        reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    Date now = new Date();
-                    if (now.after(reminderDate)) {
-                        updateReminderDate("");
-                        updateReminderLayout(View.GONE);
-                        Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
-                        "so it was deleted", MotionToast.TOAST_SUCCESS);
-                    }
-                }
-                if (currentNote.isPin())
-                    pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
+            }
+            if (currentNote.isPin())
+                pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
         }
         else {
+            addNote();
             isNewNote = true;
+            noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
             photosNote.setVisibility(View.GONE);
             pinNoteIcon.setVisibility(View.GONE);
             pinNoteButton.setVisibility(View.GONE);
-            noteColor.setVisibility(View.GONE);
+            noteColor.setVisibility(View.VISIBLE);
             expandMenu.setVisibility(View.GONE);
             sort.setVisibility(View.GONE);
             info.setVisibility(View.GONE);
@@ -559,7 +567,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if(currentNote!=null && !currentNote.getTitle().equals(s.toString())){
+                    if(currentNote != null && !currentNote.getTitle().equals(s.toString())){
                         realm.beginTransaction();
                         currentNote.setTitle(s.toString());
                         realm.commitTransaction();
@@ -571,7 +579,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 public void afterTextChanged(Editable s) { }
             });
 
-        if(currentNote!=null) {
+        if(currentNote != null) {
             note.setOnTextChangeListener(text -> {
                 oldTitle = currentNote.getTitle();
                 oldNote = note.getHtml().toString();
@@ -655,6 +663,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         closeNote.setOnClickListener(v -> {
+            if(isNewNote)
+                RealmHelper.deleteNote(currentNote.getNoteId());
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         });
@@ -715,14 +725,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         saveNote.setOnClickListener(v -> {
             // if a new note, then it adds it to database
-            if (checkInput() && isNewNote) {
-                addNote();
-                finish();
-                Intent refresh = new Intent(this, getClass());
-                refresh.putExtra("id", currentNote.getNoteId()*-1);
-                startActivity(refresh);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                checkListRecyclerview.requestFocus();
+            if (checkInput()) {
+                isNewNote = false;
+                if (!isCheckList)
+                    Helper.showMessage(this, "Added", "Note is added", MotionToast.TOAST_SUCCESS);
+                else
+                    Helper.showMessage(this, "Added", "Checklist is added", MotionToast.TOAST_SUCCESS);
+                // updates note to be editable
+                initializeLayout(savedInstanceState);
+                if(!currentNote.isCheckList()) {
+                    // move cursor to the end of text
+                    note.focusEditor();
+                }
             }
         });
     }
@@ -747,9 +761,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         searchEditText.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(0, 0, 100, 0);
+        params.setMargins(0, 0, 8, 0);
         searchEditText.setLayoutParams(params);
-        searchLayout.setPadding(100, 100, 100, 100);
+        searchLayout.setPadding(100, 100, 8, 100);
         searchClose.setVisibility(View.VISIBLE);
         searchEditText.requestFocusFromTouch();
 
@@ -791,7 +805,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         searchLayout.setLayoutParams(params);
-        params.setMargins(0, 0, vlp.rightMargin + 30, 0);
+        params.setMargins(0, 0, vlp.rightMargin, 0);
         searchLayout.setLayoutParams(params);
         searchEditText.setVisibility(View.GONE);
         searchEditText.setVisibility(View.GONE);
@@ -1001,27 +1015,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             newNote.setBackgroundColor(randomColor[randomInt]);
             newNote.setTitleColor(randomColor[randomInt]);
             newNote.setTextColor(getColor(R.color.ultra_white));
-            // ensures that no note exists with the same id
             // insert data to database
             realm.beginTransaction();
             realm.insert(newNote);
             realm.commitTransaction();
             // update status of note
-            isNewNote = false;
-            currentNote = newNote;
+            noteId = newNote.getNoteId();
+            currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
             oldTitle = currentNote.getTitle();
             oldNote = currentNote.getNote();
             noteId = currentNote.getNoteId();
-            // show user a message and hide the keyboard
-            if (!isCheckList)
-                Helper.showMessage(this, "Added", "Note is added", MotionToast.TOAST_SUCCESS);
-            else
-                Helper.showMessage(this, "Added", "Checklist is added", MotionToast.TOAST_SUCCESS);
-            allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
-            currentNote = newNote;
-            updateSaveDateEdited();
-            // updates note to be editable
-            initializeLayout(null);
         }
     }
 
@@ -1365,13 +1368,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         dateSelected.set(Calendar.MONTH, ++month);
         dateSelected.set(Calendar.DAY_OF_MONTH, day);
         currentDateTimeSelected = month + "-" + day + "-" + year + " ";
+        dateSelected.set(Calendar.MONTH, --month);
         timeDialog();
     }
 
     private void startAlarm(Calendar c) {
-        int month = c.get(Calendar.MONTH)-1;
-        c.set(Calendar.MONTH, month);
-
         if (c.after(Calendar.getInstance())) {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(this, AlertReceiver.class);
@@ -1612,6 +1613,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void updateDateEdited(){
+        if(isNewNote)
+            return;
+
         if(currentNote.isCheckList())
             isListEmpty(currentNote.getChecklist().size());
         handler = new Handler();

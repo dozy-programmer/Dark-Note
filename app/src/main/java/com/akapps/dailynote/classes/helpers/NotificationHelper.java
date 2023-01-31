@@ -98,7 +98,8 @@ public class NotificationHelper extends ContextWrapper {
                 .setAutoCancel(true)
                 .setOngoing(false)
                 .addAction(R.drawable.note_icon, buttonTitle, contentIntent)
-                .setContentIntent(contentIntent);
+                .setContentIntent(contentIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
         return builder;
     }
 }

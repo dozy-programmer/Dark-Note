@@ -19,7 +19,8 @@ public class RealmHelper {
         }
 
         // delete checklist, check list item photos, and sublists
-        deleteChecklist(currentNote);
+        if(currentNote.isCheckList())
+            deleteChecklist(currentNote);
 
         // deletes photos if they exist
         deleteNotePhotos(currentNote);
@@ -45,15 +46,15 @@ public class RealmHelper {
     }
 
     public static void deleteChecklist(Note currentNote){
-        for(CheckListItem checkListItem: currentNote.getChecklist()){
-            if(null != checkListItem.getItemImage())
-                if(!checkListItem.getItemImage().isEmpty())
+        for (CheckListItem checkListItem : currentNote.getChecklist()) {
+            if (null != checkListItem.getItemImage())
+                if (!checkListItem.getItemImage().isEmpty())
                     deleteImage(checkListItem.getItemImage());
 
             deleteSublist(checkListItem.getSubChecklist());
         }
 
-        try(Realm realm = Realm.getDefaultInstance()){
+        try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(tRealm -> {
                 currentNote.getChecklist().deleteAllFromRealm();
             });
