@@ -70,7 +70,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         // retrieves current photo object
         Folder currentFolder = allCategories.get(position);
 
-        holder.background.setBackgroundColor(isLightMode ? context.getColor(R.color.light_mode) : context.getColor(R.color.gray));
+        holder.background.setBackgroundColor(isLightMode ? context.getColor(R.color.darker_mode) : context.getColor(R.color.gray));
 
         int numberOfNotesInCategory =
                 realm.where(Note.class).equalTo("archived", false)

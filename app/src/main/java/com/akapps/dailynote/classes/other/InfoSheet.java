@@ -103,12 +103,12 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         TextInputEditText securityWord = view.findViewById(R.id.security_word);
         ImageView unlock = view.findViewById(R.id.unlock);
 
-        if (AppData.getAppData().isLightMode) {
-            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+        if (AppData.getAppData().isDarkerMode) {
+            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWord.setTextColor(getContext().getColor(R.color.gray));
-            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -117,7 +117,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Info");
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
-            info.setTypeface(null, Typeface.BOLD);
             info.setText("Lock screen will not show after clicking reminder notification " +
                     "since reminder was set before locking note. To fix this, just reset reminder ");
               info.setGravity(Gravity.CENTER);
@@ -127,7 +126,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
             info.setTextColor(getContext().getColor(R.color.pressed_blue));
-            info.setTypeface(null, Typeface.BOLD);
             info.setText("Change folder name/color/delete" +
                     " by clicking on edit icon on the top right and then select desired folder.\n\n" +
                     "2 ways to add notes to a folder:\n\n" +
@@ -141,7 +139,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Backup");
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
-            info.setTypeface(null, Typeface.BOLD);
             info.setText("Backup to Google Drive, OneDrive, and " +
                     "more.\nGoogle Drive is recommended\n\n" +
                     "**Photos will NOT backup**\n" +
@@ -152,7 +149,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             title.setText("Backup");
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
-            info.setTypeface(null, Typeface.BOLD);
             info.setText("Backup to Google Drive, OneDrive, and " +
                     "more.\nGoogle Drive is recommended\n\n" +
                     "Backup file name ends in .zip");
@@ -294,7 +290,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               backup.setVisibility(View.GONE);
               securityWord.setVisibility(View.GONE);
               info.setTextColor(getContext().getColor(R.color.pressed_blue));
-              info.setTypeface(null, Typeface.BOLD);
               info.setText(getContext().getString(R.string.try_out_budget));
           }
 
@@ -375,7 +370,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isDarkerMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

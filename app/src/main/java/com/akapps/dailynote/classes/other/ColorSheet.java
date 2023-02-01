@@ -46,7 +46,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
         View view = inflater.inflate(R.layout.bottom_sheet_color, container, false);
 
         if(isLightMode)
-            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
 

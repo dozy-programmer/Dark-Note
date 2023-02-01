@@ -65,6 +65,9 @@ public class notes extends Fragment{
     private FloatingActionButton addNote;
     private FloatingActionButton addCheckList;
     private FloatingActionMenu addMenu;
+    private FloatingActionButton addNoteTwo;
+    private FloatingActionButton addCheckListTwo;
+    private FloatingActionMenu addMenuLarge;
 
     // on-device database
     private Realm realm;
@@ -79,7 +82,7 @@ public class notes extends Fragment{
     private boolean isTrashSelected;
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
-    private boolean isLightMode;
+    private boolean isDarkerMode;
     private int lightColor;
 
     // dialog
@@ -159,13 +162,13 @@ public class notes extends Fragment{
         view = inflater.inflate(R.layout.fragment_notes, container, false);
 
         if(user.isModeSettings()) {
-            isLightMode = true;
-            lightColor = context.getColor(R.color.light_mode);
+            isDarkerMode = true;
+            lightColor = context.getColor(R.color.darker_mode);
             view.setBackgroundColor(lightColor);
-            getActivity().getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
+            getActivity().getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
         }
 
-        AppData.getAppData().setLightMode(isLightMode);
+        AppData.getAppData().setDarkerMode(isDarkerMode);
 
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
@@ -256,6 +259,9 @@ public class notes extends Fragment{
         addMenu = view.findViewById(R.id.menu);
         addNote = view.findViewById(R.id.add_note);
         addCheckList = view.findViewById(R.id.add_checklist);
+        addMenuLarge = view.findViewById(R.id.menu_2);
+        addNoteTwo = view.findViewById(R.id.add_note_2);
+        addCheckListTwo = view.findViewById(R.id.add_checklist_2);
     }
 
     private void showData(){
@@ -267,25 +273,51 @@ public class notes extends Fragment{
     private void initializeLayout(){
         setRecyclerviewLayout();
 
+        if(user.isIncreaseFabSize()){
+            addMenuLarge.setVisibility(View.VISIBLE);
+            addMenu.setVisibility(View.GONE);
+        }
+        else{
+            addMenuLarge.setVisibility(View.GONE);
+            addMenu.setVisibility(View.VISIBLE);
+        }
+
         searchEditText.setIconifiedByDefault(false);
         int searchPlateId = searchEditText.getContext().getResources()
                 .getIdentifier("android:id/search_plate", null, null);
         View searchPlateView = searchEditText.findViewById(searchPlateId);
         if (searchPlateView != null){
-            if(isLightMode){
-                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.light_mode));
+            if(isDarkerMode){
+                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.darker_mode));
                 int id = searchEditText.getContext()
                         .getResources()
                         .getIdentifier("android:id/search_src_text", null, null);
                 TextView textView = (TextView) searchEditText.findViewById(id);
                 textView.setTextColor(getActivity().getColor(R.color.black));
                 ((EditText) searchEditText.findViewById(id)).setHintTextColor(context.getColor(R.color.ultra_white));
+                ((EditText) searchEditText.findViewById(id)).setTextColor(context.getColor(R.color.ultra_white));
             }
             else
                 searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray));
         }
 
         settings.setOnClickListener(v -> openSettings());
+
+        addMenuLarge.setOnMenuButtonClickListener(v -> {
+            if(isSearchingNotes){
+                hideSearchBar();
+                closeMultipleNotesLayout();
+                showData();
+            }
+            else if(isNotesFiltered || isTrashSelected || enableSelectMultiple)
+                clearMultipleSelect();
+            else {
+                if(addMenuLarge.isOpened())
+                    addMenuLarge.close(true);
+                else
+                    addMenuLarge.open(true);
+            }
+        });
 
         addMenu.setOnMenuButtonClickListener(v -> {
             if(isSearchingNotes){
@@ -320,6 +352,7 @@ public class notes extends Fragment{
 
         search.setOnClickListener(v -> {
             addMenu.close(true);
+            addMenuLarge.close(true);
             if(deletingMultipleNotes){
                 isAllSelected = false;
                 deleteMultipleNotes();
@@ -345,6 +378,19 @@ public class notes extends Fragment{
             checklist.putExtra("isChecklist", true);
             startActivity(checklist);
             addMenu.close(true);
+        });
+
+        addNoteTwo.setOnClickListener(v -> {
+            Intent note = new Intent(getActivity(), NoteEdit.class);
+            startActivity(note);
+            addMenuLarge.close(true);
+        });
+
+        addCheckListTwo.setOnClickListener(v -> {
+            Intent checklist = new Intent(getActivity(), NoteEdit.class);
+            checklist.putExtra("isChecklist", true);
+            startActivity(checklist);
+            addMenuLarge.close(true);
         });
 
         searchEditText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -573,6 +619,8 @@ public class notes extends Fragment{
             filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
             addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+            addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+            addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         }
         else
             closeFilter();
@@ -596,6 +644,8 @@ public class notes extends Fragment{
             filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
             addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+            addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+            addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         }
         else
             closeFilter();
@@ -678,6 +728,8 @@ public class notes extends Fragment{
         categoryNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
     }
 
 
@@ -711,13 +763,15 @@ public class notes extends Fragment{
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
 
-        if(isLightMode){
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_mode));
-            searchEditText.setBackgroundColor(context.getColor(R.color.light_mode));
+        if(isDarkerMode){
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.darker_mode));
+            searchEditText.setBackgroundColor(context.getColor(R.color.darker_mode));
         }
 
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
+        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
         ((LottieAnimationView) view.findViewById(R.id.empty_view)).pauseAnimation();
     }
 
@@ -736,10 +790,8 @@ public class notes extends Fragment{
         categoryNotes.setVisibility(View.VISIBLE);
         searchEditText.clearFocus();
 
-        ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) filterNotes.getLayoutParams();
-
         LinearLayout.LayoutParams params = (new LinearLayout.LayoutParams(filterNotes.getWidth(), filterNotes.getHeight()));
-        params.setMargins(0, 0, 35, 0);
+        params.setMargins(0, 0, 24, 0);
         searchLayout.setLayoutParams(params);
         searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
         searchLayout.setPadding(filterNotes.getPaddingLeft(), filterNotes.getPaddingTop(), filterNotes.getPaddingRight(), filterNotes.getPaddingBottom());
@@ -748,12 +800,16 @@ public class notes extends Fragment{
         searchEditText.clearFocus();
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
+        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
+        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
     }
 
     public void deleteMultipleNotesLayout(){
         enableSelectMultiple = true;
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         search.setImageDrawable(context.getDrawable(R.drawable.delete_icon));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.select_all_icon));
         deletingMultipleNotes = true;
@@ -770,6 +826,8 @@ public class notes extends Fragment{
         fragmentTitle.setTextSize(28);
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
+        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
+        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
         search.setImageDrawable(context.getDrawable(R.drawable.search_icon));
         filterNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));

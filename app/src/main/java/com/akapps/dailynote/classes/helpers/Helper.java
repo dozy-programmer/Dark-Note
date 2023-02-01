@@ -283,7 +283,7 @@ public class Helper {
         }
         else{
             title.setTextSize(18);
-            title.setText("Avoid getting lost in the universe trying to remember information");
+            title.setText("Avoid getting lost in the universe trying to remember");
             subTitle.setText("Let me do it for you");
             subSubTitle.setText("Tap the bottom right button to create a note");
             subSubTitle.setTextColor(context.getColor(R.color.semi_gray));

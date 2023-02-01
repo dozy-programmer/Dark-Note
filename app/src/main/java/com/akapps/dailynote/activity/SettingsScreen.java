@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
@@ -88,13 +89,10 @@ public class SettingsScreen extends AppCompatActivity{
     private LinearLayout restoreBackupBeta;
     private LinearLayout appSettings;
     private LinearLayout syncLayout;
-    private MaterialCardView contact;
-    private MaterialCardView review;
     private TextView titleLines;
     private TextView previewLines;
     private LinearLayout titleLayout;
     private LinearLayout previewLayout;
-    private MaterialCardView accountLayout;
     private TextView accountText;
     private CustomPowerMenu linesMenu;
     private boolean isTitleSelected;
@@ -104,9 +102,7 @@ public class SettingsScreen extends AppCompatActivity{
     private SwitchCompat showFolderNotes;
     private SwitchCompat modeSetting;
     private SwitchCompat sublistMode;
-    private MaterialCardView grid;
-    private MaterialCardView row;
-    private MaterialCardView staggered;
+    private SwitchCompat fabButtonSizeMode;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -117,6 +113,22 @@ public class SettingsScreen extends AppCompatActivity{
     private Dialog progressDialog;
     private ImageView spaceOne;
     private ImageView spaceTwo;
+    private MaterialCardView grid;
+    private MaterialCardView row;
+    private MaterialCardView staggered;
+
+    private MaterialCardView buyMeCoffeeLayout;
+    private MaterialCardView accountLayout;
+    private MaterialCardView backupRestoreLayout;
+    private MaterialCardView notePreviewSettingsLayout;
+    private MaterialCardView listTypeLayout;
+    private MaterialCardView folderSettingsLayout;
+    private MaterialCardView subListLayout;
+    private MaterialCardView appSettingsLayout;
+    private MaterialCardView fabSizeLayout;
+    private MaterialCardView contact;
+    private MaterialCardView review;
+    private MaterialCardView aboutInfoLayout;
 
     // variables
     private boolean betaBackup  = false;
@@ -193,6 +205,7 @@ public class SettingsScreen extends AppCompatActivity{
         showFolderNotes = findViewById(R.id.show_folder_switch);
         modeSetting = findViewById(R.id.mode_setting);
         sublistMode = findViewById(R.id.sublists_switch);
+        fabButtonSizeMode = findViewById(R.id.fab_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -209,6 +222,16 @@ public class SettingsScreen extends AppCompatActivity{
         spaceTwo = findViewById(R.id.space_two);
         accountLayout = findViewById(R.id.account_layout);
         accountText = findViewById(R.id.account_settings);
+        buyMeCoffeeLayout = findViewById(R.id.buy_me_coffee_layout);
+        accountLayout = findViewById(R.id.account_layout);
+        backupRestoreLayout = findViewById(R.id.materialCardView);
+        notePreviewSettingsLayout = findViewById(R.id.materialCardView5);
+        listTypeLayout = findViewById(R.id.view_layout);
+        folderSettingsLayout = findViewById(R.id.materialCardView3);
+        subListLayout = findViewById(R.id.materialCardView99);
+        appSettingsLayout = findViewById(R.id.materialCardView2);
+        fabSizeLayout = findViewById(R.id.fab_setting);
+        aboutInfoLayout = findViewById(R.id.about_info);
 
         if(!Helper.isTablet(context)) {
             MaterialCardView coffee = findViewById(R.id.coffee_button);
@@ -425,6 +448,13 @@ public class SettingsScreen extends AppCompatActivity{
             realm.commitTransaction();
         });
 
+        fabButtonSizeMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setIncreaseFabSize(isChecked);
+            realm.commitTransaction();
+        });
+
         about.setOnClickListener(v -> {
             upgradeToProCounter++;
             if(upgradeToProCounter == 1) {
@@ -463,27 +493,44 @@ public class SettingsScreen extends AppCompatActivity{
 
     private void checkModeSettings(){
         if(currentUser.isModeSettings()) {
-            modeSetting.setText("Light Mode  ");
+            modeSetting.setText("Darker Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
-            AppData.getAppData().isLightMode = true;
+            AppData.getAppData().isDarkerMode = true;
             updateGapLayoutColor();
-            getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
-            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.light_mode));
+            getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
+            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
+            changeBackgroundColors(context.getColor(R.color.gray));
         }
         else {
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
-            AppData.getAppData().isLightMode = false;
+            AppData.getAppData().isDarkerMode = false;
             getWindow().setStatusBarColor(context.getColor(R.color.gray));
             updateGapLayoutColor();
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
+            changeBackgroundColors(context.getColor(R.color.light_gray_2));
         }
+    }
+
+    private void changeBackgroundColors(int color){
+        buyMeCoffeeLayout.setCardBackgroundColor(color);
+        accountLayout.setCardBackgroundColor(color);
+        backupRestoreLayout.setCardBackgroundColor(color);
+        notePreviewSettingsLayout.setCardBackgroundColor(color);
+        listTypeLayout.setCardBackgroundColor(color);
+        folderSettingsLayout.setCardBackgroundColor(color);
+        subListLayout.setCardBackgroundColor(color);
+        appSettingsLayout.setCardBackgroundColor(color);
+        aboutInfoLayout.setCardBackgroundColor(color);
+        contact.setCardBackgroundColor(color);
+        review.setCardBackgroundColor(color);
+        fabSizeLayout.setCardBackgroundColor(color);
     }
 
     private void updateGapLayoutColor(){
         int gapColor = 0;
-        if(AppData.getAppData().isLightMode)
-            gapColor = context.getColor(R.color.light_mode);
+        if(AppData.getAppData().isDarkerMode)
+            gapColor = context.getColor(R.color.darker_mode);
         else
             gapColor = context.getColor(R.color.gray);
 
@@ -505,6 +552,7 @@ public class SettingsScreen extends AppCompatActivity{
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
         modeSetting.setChecked(currentUser.isModeSettings());
         sublistMode.setChecked(currentUser.isEnableSublists());
+        fabButtonSizeMode.setChecked(currentUser.isIncreaseFabSize());
         checkModeSettings();
 
         if(currentUser.getLayoutSelected().equals("row"))
@@ -516,7 +564,7 @@ public class SettingsScreen extends AppCompatActivity{
     }
 
     public void openBackUpRestoreDialog(){
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT != Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         }
         else

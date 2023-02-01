@@ -131,11 +131,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         itemName.requestFocusFromTouch();
 
-        if (AppData.getAppData().isLightMode) {
-            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
-            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
-            itemName.setTextColor(getContext().getColor(R.color.gray));
-            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        if (AppData.getAppData().isDarkerMode) {
+            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
+            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
+            itemName.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
+            itemNameLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
+            itemName.setTextColor(getContext().getColor(R.color.ultra_white));
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -428,7 +430,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isDarkerMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

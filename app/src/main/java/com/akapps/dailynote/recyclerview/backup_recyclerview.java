@@ -107,7 +107,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
             return false;
         });
 
-        holder.background.setCardBackgroundColor(isLightMode ? context.getColor(R.color.light_mode) : context.getColor(R.color.gray));
+        holder.background.setCardBackgroundColor(isLightMode ? context.getColor(R.color.darker_mode) : context.getColor(R.color.gray));
     }
 
     @Override

@@ -40,16 +40,16 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
         SwitchCompat fingerprint = view.findViewById(R.id.fingerprint);
         TextView title = view.findViewById(R.id.title);
 
-        if (AppData.getAppData().isLightMode) {
-            pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
-            pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
-            pinLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
-            pin.setTextColor(getContext().getColor(R.color.gray));
-            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
-            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
-            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
-            securityWord.setTextColor(getContext().getColor(R.color.gray));
-            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        if (AppData.getAppData().isDarkerMode) {
+            pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
+            pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
+            pinLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
+            pin.setTextColor(getContext().getColor(R.color.ultra_white));
+            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
+            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
+            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
+            securityWord.setTextColor(getContext().getColor(R.color.ultra_white));
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -101,7 +101,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isDarkerMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

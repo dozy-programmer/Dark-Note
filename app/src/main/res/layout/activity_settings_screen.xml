@@ -47,12 +47,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:paddingHorizontal="10sp"
-            android:layout_marginTop="5dp"
             app:cardBackgroundColor="@color/light_gray"
             app:cardCornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/light_mode_message">
+            app:layout_constraintTop_toBottomOf="@+id/mode_setting">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -100,22 +99,6 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:id="@+id/light_mode_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:text="Dark Mode is recommended for battery and UI optimizations"
-            android:textColor="@color/gray"
-            android:layout_marginTop="-15dp"
-            android:textSize="11sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mode_setting" />
-
 
         <TextView
             android:id="@+id/account_settings"
@@ -710,7 +693,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="33"
                     android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/gray"
+                    app:cardBackgroundColor="@color/light_gray"
                     app:cardCornerRadius="15dp">
 
                     <ImageView
@@ -729,7 +712,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_weight="33"
-                    app:cardBackgroundColor="@color/gray"
+                    app:cardBackgroundColor="@color/light_gray"
                     app:cardCornerRadius="15dp">
 
                     <ImageView
@@ -748,7 +731,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="33"
                     android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/gray"
+                    app:cardBackgroundColor="@color/light_gray"
                     app:cardCornerRadius="15dp">
 
                     <ImageView
@@ -927,7 +910,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView2"
+            android:id="@+id/fab_setting"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
@@ -937,6 +920,50 @@
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/materialCardView99">
+
+            <LinearLayout
+                android:id="@+id/fab_button_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="90"
+                    android:gravity="center_vertical"
+                    android:text="Add Note Button (Make bigger)"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"></TextView>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/fab_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="10"
+                    android:theme="@style/ThemeOverlay.MySwitchCompat"
+                    android:layout_marginRight="5dp"
+                    android:checked="false">
+                </androidx.appcompat.widget.SwitchCompat>
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fab_setting">
 
             <LinearLayout
                 android:id="@+id/app_settings"

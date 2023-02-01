@@ -73,16 +73,16 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         passwordInput = view.findViewById(R.id.insert_password);
         loginButton = view.findViewById(R.id.login);
 
-        if (AppData.getAppData().isLightMode) {
-            emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+        if (AppData.getAppData().isDarkerMode) {
+            emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
             emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
             emailInput.setTextColor(getContext().getColor(R.color.gray));
-            passwordLayout.setBoxBackgroundColor(getContext().getColor(R.color.light_mode));
+            passwordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             passwordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
             passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
             passwordInput.setTextColor(getContext().getColor(R.color.gray));
-            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -215,7 +215,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isDarkerMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

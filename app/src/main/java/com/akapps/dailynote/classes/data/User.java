@@ -30,12 +30,14 @@ public class User extends RealmObject {
     private String backupReminderDate;
 
     private boolean enableSublists;
+    private boolean increaseFabSize;
 
     public User() {}
 
     public User(int userId) {
         this.userId = userId;
-        ultimateUser = proUser = openFoldersOnStart = showFolderNotes = modeSettings = false;
+        ultimateUser = proUser = openFoldersOnStart =
+                showFolderNotes = modeSettings = increaseFabSize = false;
         textSize = backupReminderOccurrence = 0;
         layoutSelected = "stag";
         showPreview = showPreviewNoteInfo = enableSublists = true;
@@ -177,5 +179,13 @@ public class User extends RealmObject {
 
     public void setUltimateUser(boolean ultimateUser) {
         this.ultimateUser = ultimateUser;
+    }
+
+    public boolean isIncreaseFabSize() {
+        return increaseFabSize;
+    }
+
+    public void setIncreaseFabSize(boolean increaseFabSize) {
+        this.increaseFabSize = increaseFabSize;
     }
 }

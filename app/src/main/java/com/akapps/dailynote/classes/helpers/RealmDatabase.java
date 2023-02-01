@@ -126,6 +126,9 @@ public class RealmDatabase {
 
             if(!schema.get("Backup").hasField("upLoadTime"))
                 schema.get("Backup").removeField("upLoadTime").addField("upLoadTime", Date.class);
+
+            if(!schema.get("User").hasField("increaseFabSize"))
+                schema.get("User").addField("increaseFabSize", boolean.class);
         }
     }
 }

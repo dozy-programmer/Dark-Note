@@ -29,7 +29,7 @@
     </style>
     <style name="BottomSheetLight" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">@color/light_mode</item>
+        <item name="android:backgroundTint">@color/darker_mode</item>
     </style>
 
     <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
@@ -54,7 +54,7 @@
 
     <style name="ThemeOverlay.Mode" parent="">
         <item name="colorControlActivated">@color/ultra_white</item>
-        <item name="colorSwitchThumbNormal">@color/black</item>
+        <item name="colorSwitchThumbNormal">@color/light_light_gray</item>
         <item name="android:colorForeground">@color/light_light_gray</item>
     </style>
 

@@ -25,7 +25,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,7 +128,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public RealmResults<Photo> allNotePhotos;
     private int noteId;
     private boolean isNewNote;
-    private int noteColorInt;
     private String oldTitle;
     private String oldNote;
     private boolean currentPin;
@@ -147,7 +145,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isWidget;
     private Handler handler;
     public boolean sortEnable;
-    private boolean isLightMode;
+    private boolean isDarkerMode;
     // dialog
     // dialog
     private AlertDialog colorPickerView;
@@ -185,6 +183,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if(noteId < -1)
             noteId *=-1;
+        else if(noteId == -1)
+            isNewNote = true;
         else
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
@@ -206,15 +206,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         user = realm.where(User.class).findFirst();
         assert user != null;
         if (user.isModeSettings()) {
-            getWindow().setStatusBarColor(context.getColor(R.color.light_mode));
-            isLightMode = true;
-            scrollView.setBackgroundColor(context.getColor(R.color.light_mode));
-            note.setBackgroundColor(context.getColor(R.color.light_mode));
-            searchEditText.setTextColor(context.getColor(R.color.light_gray));
-            if(noteId != -1 && !isNewNote)
-                if (currentNote.getTextColor() <= 0)
-                    note.setEditorFontColor(context.getColor(R.color.gray));
-            date.setTextColor(context.getColor(R.color.light_gray));
+            getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
+            isDarkerMode = true;
+            scrollView.setBackgroundColor(context.getColor(R.color.darker_mode));
+            note.setBackgroundColor(context.getColor(R.color.darker_mode));
+            searchEditText.setTextColor(context.getColor(R.color.ultra_white));
+            date.setTextColor(context.getColor(R.color.light_light_gray));
+            title.setHintTextColor(context.getColor(R.color.light_gray_2));
         }
         else {
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
@@ -244,7 +242,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     @Override
     public void onBackPressed() {
-        if(isNewNote){
+        if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0){
             RealmHelper.deleteNote(currentNote.getNoteId());
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
@@ -361,110 +359,90 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         photosScrollView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        // if it's not a new note and note position is not -1 (which means it is a new note)
-        // then data and layout info is updated
-        if ((noteId != -1 && !isNewNote)) {
-            photosNote.setVisibility(View.VISIBLE);
-            pinNoteIcon.setVisibility(View.VISIBLE);
-            pinNoteButton.setVisibility(View.VISIBLE);
-            noteColor.setVisibility(View.VISIBLE);
-            expandMenu.setVisibility(View.VISIBLE);
-            // current note
-            currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
-            if(null != currentNote.getChecklist())
-                checkListItems = currentNote.getChecklist().sort("positionInList");
-            allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
-            populatePhotos();
-            oldTitle = currentNote.getTitle();
-            oldNote = currentNote.getNote();
-            title.setText(currentNote.getTitle());
-            note.setHtml(currentNote.getNote());
-            String textSize = Helper.getPreference(context, "size");
-            if(textSize==null)
-                textSize = "20";
-            note.setEditorFontSize(Integer.parseInt(textSize));
-            note.setEditorFontColor(currentNote.getTextColor());
-            title.setTextColor(currentNote.getTitleColor());
-            category.setText(currentNote.getCategory());
-            category.setVisibility(View.VISIBLE);
-            folderText.setVisibility(View.VISIBLE);
-            category.setTextColor(context.getColor(R.color.orange));
-            searchLayout.setVisibility(View.VISIBLE);
-            saveNote.setVisibility(View.GONE);
+        // if it's a new note, create it
+        if(isNewNote || noteId == -1)
+            addNote();
 
-            if(currentNote.isCheckList())
-                moreOptionsMenu.setVisibility(View.VISIBLE);
+        photosNote.setVisibility(View.VISIBLE);
+        pinNoteIcon.setVisibility(View.VISIBLE);
+        pinNoteButton.setVisibility(View.VISIBLE);
+        noteColor.setVisibility(View.VISIBLE);
+        expandMenu.setVisibility(View.VISIBLE);
+        // current note
+        currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
+        if(null != currentNote.getChecklist())
+            checkListItems = currentNote.getChecklist().sort("positionInList");
+        allNotePhotos = realm.where(Photo.class).equalTo("noteId", noteId).findAll();
+        populatePhotos();
+        oldTitle = currentNote.getTitle();
+        oldNote = currentNote.getNote();
+        title.setText(currentNote.getTitle());
+        note.setHtml(currentNote.getNote());
+        String textSize = Helper.getPreference(context, "size");
+        if(textSize==null)
+            textSize = "20";
+        note.setEditorFontSize(Integer.parseInt(textSize));
+        note.setEditorFontColor(currentNote.getTextColor());
+        title.setTextColor(currentNote.getTitleColor());
+        category.setText(currentNote.getCategory());
+        category.setVisibility(View.VISIBLE);
+        folderText.setVisibility(View.VISIBLE);
+        category.setTextColor(context.getColor(R.color.orange));
+        searchLayout.setVisibility(View.VISIBLE);
+        saveNote.setVisibility(View.GONE);
 
-            initializeEditor();
-            updateColors();
+        if(currentNote.isCheckList())
+            moreOptionsMenu.setVisibility(View.VISIBLE);
 
-            if (currentNote.isCheckList()) {
-                sortChecklist();
-                showCheckListLayout(true);
-                searchLayout.setVisibility(View.GONE);
-                formatMenu.setVisibility(View.GONE);
-            }
-            else {
-                formatMenu.setVisibility(View.VISIBLE);
-                sort.setVisibility(View.GONE);
-                info.setVisibility(View.GONE);
-            }
+        initializeEditor();
+        updateColors();
 
-            if(currentNote.isChecked())
-                title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
-            // sets background of color icon to whatever the current note color is
-            if (!isNewNote)
-                noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
-
-            if (savedInstanceState != null)
-                isShowingPhotos = savedInstanceState.getBoolean("photos");
-
-            if(currentNote.getNote().length()==0 && !isShowingPhotos) {
-                note.requestFocus();
-                title.clearFocus();
-            }
-
-            if(currentNote.isCheckList()) {
-                title.clearFocus();
-                checkListRecyclerview.requestFocus();
-            }
-
-            updateDateEdited();
-            if (!currentNote.getReminderDateTime().isEmpty()) {
-                updateReminderLayout(View.VISIBLE);
-                Date reminderDate = null;
-                try {
-                    reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                Date now = new Date();
-                if (now.after(reminderDate)) {
-                    updateReminderDate("");
-                    updateReminderLayout(View.GONE);
-                    Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
-                    "so it was deleted", MotionToast.TOAST_SUCCESS);
-                }
-            }
-            if (currentNote.isPin())
-                pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
+        if (currentNote.isCheckList()) {
+            sortChecklist();
+            showCheckListLayout(true);
+            searchLayout.setVisibility(View.GONE);
+            formatMenu.setVisibility(View.GONE);
+            checkListRecyclerview.requestFocus();
         }
         else {
-            addNote();
-            isNewNote = true;
-            noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
-            photosNote.setVisibility(View.GONE);
-            pinNoteIcon.setVisibility(View.GONE);
-            pinNoteButton.setVisibility(View.GONE);
-            noteColor.setVisibility(View.VISIBLE);
-            expandMenu.setVisibility(View.GONE);
+            formatMenu.setVisibility(View.VISIBLE);
             sort.setVisibility(View.GONE);
             info.setVisibility(View.GONE);
-            if(isCheckList)
-                showCheckListLayout(false);
-            title.requestFocus();
+            if(isNewNote)
+                title.requestFocus();
+            else
+                note.focusEditor();
         }
+
+        if(currentNote.isChecked())
+            title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        // sets background of color icon to whatever the current note color is
+        if (!isNewNote)
+            noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
+
+        if (savedInstanceState != null)
+            isShowingPhotos = savedInstanceState.getBoolean("photos");
+
+        updateDateEdited();
+        if (!currentNote.getReminderDateTime().isEmpty()) {
+            updateReminderLayout(View.VISIBLE);
+            Date reminderDate = null;
+            try {
+                reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date now = new Date();
+            if (now.after(reminderDate)) {
+                updateReminderDate("");
+                updateReminderLayout(View.GONE);
+                Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
+                "so it was deleted", MotionToast.TOAST_SUCCESS);
+            }
+        }
+        if (currentNote.isPin())
+            pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
 
 
         // if orientation changes, then it updates note data
@@ -663,7 +641,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         closeNote.setOnClickListener(v -> {
-            if(isNewNote)
+            if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0)
                 RealmHelper.deleteNote(currentNote.getNoteId());
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
@@ -703,7 +681,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 openMenuDialog());
 
         noteColor.setOnClickListener(v -> {
-            ColorSheet colorSheet = new ColorSheet(isLightMode);
+            ColorSheet colorSheet = new ColorSheet(isDarkerMode);
             colorSheet.show(getSupportFragmentManager(), colorSheet.getTag());
         });
 
@@ -726,7 +704,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         saveNote.setOnClickListener(v -> {
             // if a new note, then it adds it to database
             if (checkInput()) {
-                isNewNote = false;
                 if (!isCheckList)
                     Helper.showMessage(this, "Added", "Note is added", MotionToast.TOAST_SUCCESS);
                 else
@@ -752,8 +729,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        if(isLightMode)
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_mode));
+        if(isDarkerMode)
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.darker_mode));
         else {
             searchEditText.setTextColor(context.getColor(R.color.ultra_white));
             searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
@@ -1024,7 +1001,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
             oldTitle = currentNote.getTitle();
             oldNote = currentNote.getNote();
-            noteId = currentNote.getNoteId();
+            isNewNote = false;
         }
     }
 
@@ -1625,13 +1602,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         handler.postDelayed(new Runnable() {
             public void run() {
                 if (!realm.isClosed()) {
-                    if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
-                        date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + currentNote.getDateEdited().replace("\n", " ") +
-                                "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
-                    } else {
-                        date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
+                    try {
+                        if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
+                            date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + currentNote.getDateEdited().replace("\n", " ") +
+                                    "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                        } else {
+                            date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
+                        }
+                        handler.postDelayed(this, 1000);
                     }
-                    handler.postDelayed(this, 1000);
+                    catch (Exception e){}
                 }
             }
         }, 0);

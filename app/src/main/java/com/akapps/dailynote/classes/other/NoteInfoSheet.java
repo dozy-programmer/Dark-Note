@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -22,10 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
-import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
-import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
@@ -34,9 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import org.jetbrains.annotations.NotNull;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import io.realm.RealmList;
+
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
@@ -45,6 +40,8 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     private Note currentNote;
     private RealmResults<Photo> allPhotos;
     boolean showOpenButton;
+
+    String noteTitle;
 
     public NoteInfoSheet(){}
 
@@ -59,8 +56,8 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_note_info, container, false);
 
-        if (AppData.getAppData().isLightMode) {
-            view.setBackgroundColor(getContext().getColor(R.color.light_mode));
+        if (AppData.getAppData().isDarkerMode) {
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -110,8 +107,13 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             if(!currentNote.isArchived())
                 archiveIcon.setVisibility(View.GONE);
 
+            if(currentNote.getTitle().isEmpty())
+                noteTitle = "~ No Title ~";
+            else
+                noteTitle = currentNote.getTitle();
+
             noteName.setText(Html.fromHtml(noteName.getText() + "<br>" +
-                            "<font color='#e65c00'>" + currentNote.getTitle() + "</font>",
+                            "<font color='#e65c00'>" + noteTitle + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
@@ -219,7 +221,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isLightMode)
+        if(AppData.getAppData().isDarkerMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;

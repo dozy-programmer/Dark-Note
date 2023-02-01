@@ -10,7 +10,7 @@ import io.realm.RealmResults;
 
 public class AppData{
     private static AppData appData;
-    public boolean isLightMode;
+    public boolean isDarkerMode;
     public static boolean isAppFirstStarted;
 
     private AppData() { }
@@ -104,7 +104,7 @@ public class AppData{
     }
 
 
-    public void setLightMode(boolean isLightMode){
-        this.isLightMode = isLightMode;
+    public void setDarkerMode(boolean isDarkerMode){
+        this.isDarkerMode = isDarkerMode;
     }
 }
