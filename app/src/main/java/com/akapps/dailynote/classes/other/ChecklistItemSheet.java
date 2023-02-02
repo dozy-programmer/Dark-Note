@@ -307,10 +307,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 else
                     for (String item : items) {
                         currentItem = ((NoteEdit) getActivity()).addCheckList(item.split("--")[0]);
-                        String[] currentSublistItems = item.split("--");
-                        for (String currentSublistItem : currentSublistItems) {
-                            if(!currentSublistItem.equals(currentItem.getText()))
-                                ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                        if(item.contains("--")) {
+                            String[] currentSublistItems = item.split("--");
+                            for (int i = 1 ; i < currentSublistItems.length; i++) {
+                                String currentSublistItem = currentSublistItems[i];
+                                if (!currentSublistItem.equals(currentItem.getText()))
+                                    ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                            }
                         }
                     }
             }
