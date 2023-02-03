@@ -55,6 +55,14 @@
                 android:layout_weight="1">
 
                 <ImageView
+                    android:id="@+id/delete_checklist_item"
+                    android:layout_width="28dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginHorizontal="5dp"
+                    android:src="@drawable/delete_icon"/>
+
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|center_horizontal"

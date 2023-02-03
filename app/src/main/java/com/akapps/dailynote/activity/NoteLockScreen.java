@@ -164,7 +164,6 @@ public class NoteLockScreen extends AppCompatActivity {
         Intent note;
         note = new Intent(this, NoteEdit.class);
         note.putExtra("id", noteId);
-        note.putExtra("isWidget", isWidget);
         startActivity(note);
         finish();
     }

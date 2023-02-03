@@ -119,16 +119,23 @@ public class RealmDatabase {
                 schema.create("Backup")
                         .addField("userId", int.class)
                         .addField("fileSize", int.class)
-                        .addField("fileName", String.class)
-                        .addField("upLoadTime", String.class)
-                        .removeField("upLoadTime")
-                        .addField("upLoadTime", Date.class);
-
-            if(!schema.get("Backup").hasField("upLoadTime"))
-                schema.get("Backup").removeField("upLoadTime").addField("upLoadTime", Date.class);
+                        .addField("fileName", String.class);
 
             if(!schema.get("User").hasField("increaseFabSize"))
                 schema.get("User").addField("increaseFabSize", boolean.class);
+
+            if(!schema.get("User").hasField("enableEmptyNote"))
+                schema.get("User").addField("enableEmptyNote", boolean.class);
+            if(!schema.get("User").hasField("itemsSeparator"))
+                schema.get("User").addField("itemsSeparator", String.class);
+            if(!schema.get("User").hasField("sublistSeparator"))
+                schema.get("User").addField("sublistSeparator", String.class);
+            if(!schema.get("User").hasField("budgetCharacter"))
+                schema.get("User").addField("budgetCharacter", String.class);
+            if(!schema.get("User").hasField("expenseCharacter"))
+                schema.get("User").addField("expenseCharacter", String.class);
+            if(!schema.get("User").hasField("enableDeleteIcon"))
+                schema.get("User").addField("enableDeleteIcon", boolean.class);
         }
     }
 }

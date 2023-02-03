@@ -19,6 +19,8 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
@@ -47,6 +49,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
         private final ImageView selectedIcon;
+        private final ImageView deleteIcon;
         private final LinearLayout checkItem;
         private final LinearLayout edit;
         private final RecyclerView subChecklist;
@@ -65,6 +68,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             subChecklist.setLayoutManager(new GridLayoutManager(v.getContext(), 1));
             itemImageLayout = v.findViewById(R.id.item_image_layout);
             itemImage = v.findViewById(R.id.item_image);
+            deleteIcon = v.findViewById(R.id.delete_checklist_item);
         }
     }
 
@@ -97,6 +101,11 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             checkListItem.setSubListId(rand.nextInt(100000) + 1);
             realm.commitTransaction();
         }
+
+        if(user.isEnableDeleteIcon())
+            holder.deleteIcon.setVisibility(View.VISIBLE);
+        else
+            holder.deleteIcon.setVisibility(View.GONE);
 
         holder.subChecklist.setAdapter(null);
         RecyclerView.Adapter subChecklistAdapter = null;
@@ -206,6 +215,15 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                     .withStartPosition(0)
                     .withTransitionFrom(holder.itemImage)
                     .show();
+        });
+
+        holder.deleteIcon.setOnClickListener(view -> {
+            RealmHelper.deleteChecklistItem(checkListItem);
+            realm.beginTransaction();
+            currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+            realm.commitTransaction();
+            ((NoteEdit)activity).updateDateEdited();
+            notifyDataSetChanged();
         });
 
     }

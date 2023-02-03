@@ -2,11 +2,15 @@
 
     <!-- App Data !-->
     <string name="app_name">Dark Note</string>
-    <string name="schema">27</string>
+    <string name="schema">29</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">Version 9.6</string>
-    <string name="app_version_int">9.6</string>
+    <string name="app_version">Version 9.7</string>
+    <string name="app_version_int">9.7</string>
+
+    <!-- App Shortcuts !-->
+    <string name="new_note_shortcut">New Note</string>
+    <string name="new_checklist_shortcut">New Checklist</string>
 
     <!-- Account Login Sheet !-->
     <string name="login_error_title">Wrong Login/Password</string>

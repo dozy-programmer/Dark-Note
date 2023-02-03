@@ -29,20 +29,31 @@ public class User extends RealmObject {
     private int backupReminderOccurrence;
     private String backupReminderDate;
 
+    // note settings
     private boolean enableSublists;
     private boolean increaseFabSize;
+    private boolean enableEmptyNote;
+    private boolean enableDeleteIcon;
+    private String itemsSeparator;
+    private String sublistSeparator;
+    private String budgetCharacter;
+    private String expenseCharacter;
 
     public User() {}
 
     public User(int userId) {
         this.userId = userId;
-        ultimateUser = proUser = openFoldersOnStart =
-                showFolderNotes = modeSettings = increaseFabSize = false;
+        ultimateUser = proUser = openFoldersOnStart = showFolderNotes =
+                modeSettings = increaseFabSize = enableEmptyNote = enableDeleteIcon= false;
         textSize = backupReminderOccurrence = 0;
         layoutSelected = "stag";
         showPreview = showPreviewNoteInfo = enableSublists = true;
         titleLines = contentLines = 3;
         lastUpload = backupReminderDate = email = "";
+        itemsSeparator = "newline";
+        sublistSeparator = "space";
+        budgetCharacter = "+$";
+        expenseCharacter = "$";
     }
 
     public int getUserId() {
@@ -187,5 +198,53 @@ public class User extends RealmObject {
 
     public void setIncreaseFabSize(boolean increaseFabSize) {
         this.increaseFabSize = increaseFabSize;
+    }
+
+    public boolean isEnableEmptyNote() {
+        return enableEmptyNote;
+    }
+
+    public void setEnableEmptyNote(boolean enableEmptyNote) {
+        this.enableEmptyNote = enableEmptyNote;
+    }
+
+    public String getItemsSeparator() {
+        return itemsSeparator;
+    }
+
+    public void setItemsSeparator(String itemsSeparator) {
+        this.itemsSeparator = itemsSeparator;
+    }
+
+    public String getSublistSeparator() {
+        return sublistSeparator;
+    }
+
+    public void setSublistSeparator(String sublistSeparator) {
+        this.sublistSeparator = sublistSeparator;
+    }
+
+    public String getBudgetCharacter() {
+        return budgetCharacter;
+    }
+
+    public void setBudgetCharacter(String budgetCharacter) {
+        this.budgetCharacter = budgetCharacter;
+    }
+
+    public String getExpenseCharacter() {
+        return expenseCharacter;
+    }
+
+    public void setExpenseCharacter(String expenseCharacter) {
+        this.expenseCharacter = expenseCharacter;
+    }
+
+    public boolean isEnableDeleteIcon() {
+        return enableDeleteIcon;
+    }
+
+    public void setEnableDeleteIcon(boolean enableDeleteIcon) {
+        this.enableDeleteIcon = enableDeleteIcon;
     }
 }

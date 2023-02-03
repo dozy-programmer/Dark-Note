@@ -46,6 +46,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
+import com.skydoves.powermenu.OnDismissedListener;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -55,6 +56,7 @@ import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import io.realm.Realm;
@@ -74,6 +76,10 @@ public class SettingsScreen extends AppCompatActivity{
 
     private User currentUser;
     public Realm realm;
+    private boolean isEditingChecklistSep;
+    private boolean isEditingSublistSep;
+    private boolean isEditingBudgetSymbol;
+    private boolean isEditingExpenseSymbol;
 
     // account authentication
     private FirebaseAuth mAuth;
@@ -91,8 +97,17 @@ public class SettingsScreen extends AppCompatActivity{
     private LinearLayout syncLayout;
     private TextView titleLines;
     private TextView previewLines;
+    private TextView checklistSeparator;
+    private TextView sublistSeparator;
+    private TextView budgetSymbol;
+    private TextView expenseSymbol;
     private LinearLayout titleLayout;
     private LinearLayout previewLayout;
+    private LinearLayout checklistSeparatorLayout;
+    private LinearLayout sublistSeparatorLayout;
+    private LinearLayout budgetSymbolLayout;
+    private LinearLayout expenseSymbolLayout;
+    private LinearLayout deleteIconLayout;
     private TextView accountText;
     private CustomPowerMenu linesMenu;
     private boolean isTitleSelected;
@@ -102,7 +117,9 @@ public class SettingsScreen extends AppCompatActivity{
     private SwitchCompat showFolderNotes;
     private SwitchCompat modeSetting;
     private SwitchCompat sublistMode;
+    private SwitchCompat emptyNoteMode;
     private SwitchCompat fabButtonSizeMode;
+    private SwitchCompat showDeleteIcon;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -123,7 +140,7 @@ public class SettingsScreen extends AppCompatActivity{
     private MaterialCardView notePreviewSettingsLayout;
     private MaterialCardView listTypeLayout;
     private MaterialCardView folderSettingsLayout;
-    private MaterialCardView subListLayout;
+    private MaterialCardView noteSettingLayout;
     private MaterialCardView appSettingsLayout;
     private MaterialCardView fabSizeLayout;
     private MaterialCardView contact;
@@ -197,15 +214,26 @@ public class SettingsScreen extends AppCompatActivity{
         about = findViewById(R.id.about);
         titleLines = findViewById(R.id.title_lines);
         previewLines = findViewById(R.id.preview_lines);
+        checklistSeparator = findViewById(R.id.item_separator);
+        sublistSeparator = findViewById(R.id.sublist_sep);
+        budgetSymbol = findViewById(R.id.budget_char);
+        expenseSymbol = findViewById(R.id.expense_char);
         titleLayout = findViewById(R.id.title_layout);
         previewLayout = findViewById(R.id.preview_layout);
+        checklistSeparatorLayout = findViewById(R.id.checklist_item_sep_layout);
+        sublistSeparatorLayout = findViewById(R.id.sublist_item_sep_layout);
+        budgetSymbolLayout = findViewById(R.id.budget_char_layout);
+        expenseSymbolLayout = findViewById(R.id.expense_char_layout);
+        deleteIconLayout = findViewById(R.id.add_delete_icon);
         showPreview = findViewById(R.id.show_preview_switch);
         showPreviewNoteInfo = findViewById(R.id.show_info_switch);
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
         showFolderNotes = findViewById(R.id.show_folder_switch);
         modeSetting = findViewById(R.id.mode_setting);
         sublistMode = findViewById(R.id.sublists_switch);
+        emptyNoteMode = findViewById(R.id.empty_note_switch);
         fabButtonSizeMode = findViewById(R.id.fab_switch);
+        showDeleteIcon = findViewById(R.id.add_delete_icon_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -228,7 +256,7 @@ public class SettingsScreen extends AppCompatActivity{
         notePreviewSettingsLayout = findViewById(R.id.materialCardView5);
         listTypeLayout = findViewById(R.id.view_layout);
         folderSettingsLayout = findViewById(R.id.materialCardView3);
-        subListLayout = findViewById(R.id.materialCardView99);
+        noteSettingLayout = findViewById(R.id.note_setting_layout);
         appSettingsLayout = findViewById(R.id.materialCardView2);
         fabSizeLayout = findViewById(R.id.fab_setting);
         aboutInfoLayout = findViewById(R.id.about_info);
@@ -286,11 +314,19 @@ public class SettingsScreen extends AppCompatActivity{
 
         String titleLinesNumber = String.valueOf(currentUser.getTitleLines());
         String previewLinesNumber = String.valueOf(currentUser.getContentLines());
+        String checklistSeparatorText = currentUser.getItemsSeparator();
+        String sublistSeparatorText = currentUser.getSublistSeparator();
+        String budgetSymbolText = currentUser.getBudgetCharacter();
+        String expenseSymbolText = currentUser.getExpenseCharacter();
 
         // sets the current select title lines and preview lines
         // by default it is 3
         titleLines.setText(titleLinesNumber);
         previewLines.setText(previewLinesNumber);
+        checklistSeparator.setText(checklistSeparatorText);
+        sublistSeparator.setText(sublistSeparatorText);
+        budgetSymbol.setText(budgetSymbolText);
+        expenseSymbol.setText(expenseSymbolText);
 
         // toolbar
         toolbar.setTitle("");
@@ -363,6 +399,40 @@ public class SettingsScreen extends AppCompatActivity{
             showLineNumberMenu(previewLines, null);
         });
 
+        checklistSeparatorLayout.setOnClickListener(v -> {
+            List<IconPowerMenuItem> options = new ArrayList<>();
+            options.add(new IconPowerMenuItem(null, ",,"));
+            options.add(new IconPowerMenuItem(null, "newline"));
+            realmStatus();
+            isEditingChecklistSep = true;
+            expandListMenu(options, checklistSeparator);
+        });
+
+        sublistSeparatorLayout.setOnClickListener(v -> {
+            List<IconPowerMenuItem> options = new ArrayList<>();
+            options.add(new IconPowerMenuItem(null, "--"));
+            options.add(new IconPowerMenuItem(null, "space"));
+            realmStatus();
+            isEditingSublistSep = true;
+            expandListMenu(options, sublistSeparator);
+        });
+
+        budgetSymbolLayout.setOnClickListener(v -> {
+            List<IconPowerMenuItem> options = new ArrayList<>();
+            options.add(new IconPowerMenuItem(null, "+$"));
+            realmStatus();
+            isEditingBudgetSymbol = true;
+            expandListMenu(options, budgetSymbol);
+        });
+
+        expenseSymbolLayout.setOnClickListener(v -> {
+            List<IconPowerMenuItem> options = new ArrayList<>();
+            options.add(new IconPowerMenuItem(null, "$"));
+            realmStatus();
+            isEditingExpenseSymbol = true;
+            expandListMenu(options, expenseSymbol);
+        });
+
         appSettings.setOnClickListener(v -> openAppInSettings());
 
         row.setOnClickListener(v -> {
@@ -432,6 +502,13 @@ public class SettingsScreen extends AppCompatActivity{
             realm.commitTransaction();
         });
 
+        showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setShowFolderNotes(isChecked);
+            realm.commitTransaction();
+        });
+
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
@@ -448,10 +525,24 @@ public class SettingsScreen extends AppCompatActivity{
             realm.commitTransaction();
         });
 
+        emptyNoteMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setEnableEmptyNote(isChecked);
+            realm.commitTransaction();
+        });
+
         fabButtonSizeMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
             currentUser.setIncreaseFabSize(isChecked);
+            realm.commitTransaction();
+        });
+
+        showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setEnableDeleteIcon(isChecked);
             realm.commitTransaction();
         });
 
@@ -493,7 +584,7 @@ public class SettingsScreen extends AppCompatActivity{
 
     private void checkModeSettings(){
         if(currentUser.isModeSettings()) {
-            modeSetting.setText("Darker Mode  ");
+            modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
             AppData.getAppData().isDarkerMode = true;
             updateGapLayoutColor();
@@ -502,7 +593,7 @@ public class SettingsScreen extends AppCompatActivity{
             changeBackgroundColors(context.getColor(R.color.gray));
         }
         else {
-            modeSetting.setText("Dark Mode  ");
+            modeSetting.setText("Gray Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
             AppData.getAppData().isDarkerMode = false;
             getWindow().setStatusBarColor(context.getColor(R.color.gray));
@@ -519,7 +610,7 @@ public class SettingsScreen extends AppCompatActivity{
         notePreviewSettingsLayout.setCardBackgroundColor(color);
         listTypeLayout.setCardBackgroundColor(color);
         folderSettingsLayout.setCardBackgroundColor(color);
-        subListLayout.setCardBackgroundColor(color);
+        noteSettingLayout.setCardBackgroundColor(color);
         appSettingsLayout.setCardBackgroundColor(color);
         aboutInfoLayout.setCardBackgroundColor(color);
         contact.setCardBackgroundColor(color);
@@ -543,6 +634,12 @@ public class SettingsScreen extends AppCompatActivity{
         findViewById(R.id.gap_five).setBackgroundColor(gapColor);
         findViewById(R.id.gap_six).setBackgroundColor(gapColor);
         findViewById(R.id.gap_seven).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_eight).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_nine).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_ten).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_eleven).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_twelve).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_thirteen).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings(){
@@ -552,7 +649,9 @@ public class SettingsScreen extends AppCompatActivity{
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
         modeSetting.setChecked(currentUser.isModeSettings());
         sublistMode.setChecked(currentUser.isEnableSublists());
+        emptyNoteMode.setChecked(currentUser.isEnableEmptyNote());
         fabButtonSizeMode.setChecked(currentUser.isIncreaseFabSize());
+        showDeleteIcon.setChecked(currentUser.isEnableDeleteIcon());
         checkModeSettings();
 
         if(currentUser.getLayoutSelected().equals("row"))
@@ -1060,13 +1159,66 @@ public class SettingsScreen extends AppCompatActivity{
         linesMenu.showAsDropDown(lines);
     }
 
+    private void expandListMenu(List<IconPowerMenuItem> list, TextView textView){
+        linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
+                .addItemList(list)
+                .setBackgroundColor(getColor(R.color.light_gray))
+                .setOnMenuItemClickListener(onIconMenuItemClickListener)
+                .setAnimation(MenuAnimation.SHOW_UP_CENTER)
+                .setWidth(300)
+                .setMenuRadius(15f)
+                .setMenuShadow(10f)
+                .setOnDismissListener(() -> clearEditingStatus())
+                .build();
+
+        linesMenu.showAsDropDown(textView);
+    }
+
     private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
         @Override
         public void onItemClick(int position, IconPowerMenuItem item) {
-            updateSelectedLines(position+1);
+            if(checkEditingStatus()){
+                realm.beginTransaction();
+                String text = item.getTitle();
+                if(isEditingChecklistSep) {
+                    currentUser.setItemsSeparator(text);
+                    checklistSeparator.setText(text);
+                }
+                else if(isEditingSublistSep) {
+                    if(text.equals("space")) {
+                        currentUser.setItemsSeparator("newline");
+                        checklistSeparator.setText("newline");
+                    }
+                    currentUser.setSublistSeparator(text);
+                    sublistSeparator.setText(text);
+                }
+                else if(isEditingBudgetSymbol) {
+                    currentUser.setBudgetCharacter(text);
+                    budgetSymbol.setText(text);
+                }
+                else if(isEditingExpenseSymbol) {
+                    currentUser.setExpenseCharacter(text);
+                    expenseSymbol.setText(text);
+                }
+                realm.commitTransaction();
+            }
+            else
+                updateSelectedLines(position+1);
             linesMenu.dismiss();
         }
     };
+
+    private void clearEditingStatus(){
+        isEditingChecklistSep = false;
+        isEditingSublistSep = false;
+        isEditingBudgetSymbol = false;
+        isEditingExpenseSymbol = false;
+    }
+
+    private boolean checkEditingStatus(){
+        return isEditingChecklistSep || isEditingSublistSep ||
+                isEditingBudgetSymbol || isEditingExpenseSymbol;
+    }
 
     private void updateSelectedLines(int position){
         if(isTitleSelected) {

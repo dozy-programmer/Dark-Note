@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.akapps.dailynote.R;
@@ -53,16 +54,27 @@ public class WidgetListView extends RemoteViewsService {
             String currentItem = checklist.get(position);
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.recyclerview_widget);
 
-            String preview = Html.fromHtml(currentItem, Html.FROM_HTML_MODE_COMPACT).toString();
-            preview = preview.replaceAll("(\\s{2,})", " ");
-
-            if(currentItem.contains("~~"))
-                remoteView.setInt(R.id.checklist_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
+            if(!currentItem.contains("-Note-")) {
+                remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);
+                if (currentItem.contains("~~")) {
+                    remoteView.setInt(R.id.checklist_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
+                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.light_light_gray));
+                    remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.checked_icon);
+                } else {
+                    remoteView.setInt(R.id.checklist_text, "setPaintFlags", 0);
+                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.ultra_white));
+                    remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.unchecked_icon);
+                }
+            }
             else
-                remoteView.setInt(R.id.checklist_text, "setPaintFlags", 0);
+                remoteView.setViewVisibility(R.id.widget_check_status, View.GONE);
 
-            String checklistItemText = preview.replace("~~", "");
-            remoteView.setTextViewText(R.id.checklist_text, checklistItemText);
+            String checklistItemText = currentItem.replace("~~", "").replace("-Note-", "");
+            remoteView.setTextViewText(R.id.checklist_text, Html.fromHtml(checklistItemText, Html.FROM_HTML_MODE_COMPACT));
+
+            Intent fillInIntent = new Intent();
+            // Make it possible to distinguish the individual on-click
+            remoteView.setOnClickFillInIntent(R.id.checklist_text, fillInIntent);
 
             return remoteView;
         }

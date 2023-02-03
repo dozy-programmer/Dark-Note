@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 public class AppWidget extends AppWidgetProvider {
 
+    private static Note currentNote;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
@@ -55,7 +57,7 @@ public class AppWidget extends AppWidgetProvider {
 
         ArrayList<Note> allNotes = AppData.getAllNotes(context);
 
-        Note currentNote = getCurrentNote(allNotes, (String) widgetText, noteId);
+        currentNote = getCurrentNote(allNotes, (String) widgetText, noteId);
 
         if(currentNote != null) {
             boolean isAllChecklistDone = isAllChecklistChecked(currentNote);
@@ -63,7 +65,7 @@ public class AppWidget extends AppWidgetProvider {
             // Construct the RemoteViews object
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
             views.setTextViewText(R.id.appwidget_text, noteId != -1 ? currentNote.getTitle() : (String) widgetText);
-            views.setInt(R.id.background, "setBackgroundColor", currentNote.getBackgroundColor());
+            views.setInt(R.id.widget_background, "setBackgroundColor", currentNote.getBackgroundColor());
             if (isAllChecklistDone)
                 views.setInt(R.id.appwidget_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
             else
@@ -99,7 +101,6 @@ public class AppWidget extends AppWidgetProvider {
                 intent = new Intent(context, NoteEdit.class);
                 intent.putExtra("id", currentNote.getNoteId());
                 intent.putExtra("isChecklist", currentNote.isCheckList());
-                intent.putExtra("isWidget", true);
             } else {
                 intent = new Intent(context, NoteLockScreen.class);
                 intent.putExtra("id", currentNote.getNoteId());
@@ -107,12 +108,13 @@ public class AppWidget extends AppWidgetProvider {
                 intent.putExtra("pin", currentNote.getPinNumber());
                 intent.putExtra("securityWord", currentNote.getSecurityWord());
                 intent.putExtra("fingerprint", currentNote.isFingerprint());
-                intent.putExtra("isWidget", true);
             }
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
-            views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent);
+            // if title or checklist is clicked, then open note
+            views.setOnClickPendingIntent(R.id.widget_background, pendingIntent);
+            views.setPendingIntentTemplate(R.id.preview_checklist, pendingIntent);
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -136,14 +138,13 @@ public class AppWidget extends AppWidgetProvider {
 
         return results.get(0);
     }
-
     private static boolean isAllChecklistChecked(Note currentNote){
         if(currentNote.isCheckList()){
             List<CheckListItem> results = currentNote.getChecklist().stream()
                     .filter(item -> item.isChecked() == true)
                     .collect(Collectors.toList());
 
-            if(results.size() == currentNote.getChecklist().size())
+            if(results.size() == currentNote.getChecklist().size() && results.size()!=0)
                 return true;
         }
         return false;

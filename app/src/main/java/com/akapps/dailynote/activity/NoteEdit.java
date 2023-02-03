@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -25,6 +26,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,17 +171,22 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private TextView subtitle;
     private TextView subSubTitle;
 
-    private User user;
+    public User user;
+
+    private final String ACTION_ADD_CHECKLIST ="android.intent.action.CREATE_SHORTCUT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
 
+        if (ACTION_ADD_CHECKLIST.equals(getIntent().getAction()))
+            isCheckList = true;
+        else
+            isCheckList = getIntent().getBooleanExtra("isChecklist", false);
+
         context = this;
         noteId = getIntent().getIntExtra("id", -1);
-        isCheckList = getIntent().getBooleanExtra("isChecklist", false);
-        isWidget = getIntent().getBooleanExtra("isWidget", false);
 
         if(noteId < -1)
             noteId *=-1;
@@ -222,6 +229,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 if (currentNote.getTextColor() <= 0)
                     note.setEditorFontColor(context.getColor(R.color.ultra_white));
         }
+        isWidget = currentNote.getWidgetId() > 0;
+        updateWidget();
     }
 
     // when orientation changes, then note data is saved
@@ -243,7 +252,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     public void onBackPressed() {
         if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0){
-            RealmHelper.deleteNote(currentNote.getNoteId());
+            if(!user.isEnableEmptyNote())
+                RealmHelper.deleteNote(currentNote.getNoteId());
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
@@ -266,13 +276,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onPause() {
         super.onPause();
-        try {
-            if (isWidget && null != currentNote && currentNote.getWidgetId() > 0) {
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
-                appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
-            }
-        }catch (Exception e){}
+        updateWidget();
     }
 
     @Override
@@ -641,8 +645,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         closeNote.setOnClickListener(v -> {
-            if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0)
-                RealmHelper.deleteNote(currentNote.getNoteId());
+            if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0) {
+                if(!user.isEnableEmptyNote())
+                    RealmHelper.deleteNote(currentNote.getNoteId());
+            }
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         });
@@ -716,6 +722,24 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 }
             }
         });
+    }
+
+    private void updateWidget(){
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(currentNote.getWidgetId());
+        if(info != null) {
+            try {
+                if (isWidget && currentNote.getWidgetId() > 0) {
+                    AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
+                    appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
+                }
+            } catch (Exception e) {}
+        }
+        else {
+            realm.beginTransaction();
+            currentNote.setWidgetId(-1);
+            realm.commitTransaction();
+        }
     }
 
     private void showSearchBar(){

@@ -123,6 +123,14 @@ public class notes extends Fragment{
                 user.setContentLines(3);
                 realm.commitTransaction();
             }
+            if(user.getItemsSeparator() == null){
+                realm.beginTransaction();
+                user.setItemsSeparator("newline");
+                user.setSublistSeparator("space");
+                user.setBudgetCharacter("+$");
+                user.setExpenseCharacter("$");
+                realm.commitTransaction();
+            }
         }
 
         // before getting all notes, make sure all their date and millisecond parameters match

@@ -275,6 +275,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.note_preview.setPaintFlags(0);
         }
 
+        if(currentNote.getTitle().isEmpty())
+            holder.note_title.setVisibility(View.GONE);
+        else
+            holder.note_title.setVisibility(View.VISIBLE);
+
         // if preview is empty and it is note locked, then the note will show a sad emoji instead
         if(noteText.isEmpty() && !isNoteLocked) {
             if(!currentNote.isCheckList()){

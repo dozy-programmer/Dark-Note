@@ -2,7 +2,6 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray">
@@ -792,7 +791,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Open Folders on App Start"
+                        android:text="Show Folders on Launch"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>
@@ -830,7 +829,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Put Notes In Folders"
+                        android:text="Place Notes in Folders"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>
@@ -852,6 +851,349 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:id="@+id/note_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Note Settings"
+            android:textColor="@color/orange"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"></TextView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/note_setting_layout"
+            android:layout_width="match_parent"
+            android:layout_height="362dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="5dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/note_setting">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="106">
+
+                <LinearLayout
+                    android:id="@+id/checklist_item_sep_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="25"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Checklist Separator"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/item_separator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:gravity="center|right"
+                        android:text="Default"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_down">
+                    </ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gap_eight"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"/>
+
+                <LinearLayout
+                    android:id="@+id/sublist_item_sep_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="25"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Sublist Separator"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/sublist_sep"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:gravity="center|right"
+                        android:text="Default"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_down">
+                    </ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gap_nine"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"/>
+
+                <LinearLayout
+                    android:id="@+id/budget_char_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="25"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Budget Symbol"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/budget_char"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:gravity="center|right"
+                        android:text="Default"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"
+                        android:textStyle="bold">
+                    </TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/arrow_down">
+                    </ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gap_ten"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"/>
+
+                <LinearLayout
+                    android:id="@+id/expense_char_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="25"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Expense Symbol"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <TextView
+                        android:id="@+id/expense_char"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        android:gravity="center|right"
+                        android:text="Default"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"></TextView>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:src="@drawable/arrow_down"></ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gap_eleven"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/checklist_sublist"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="25"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Enable Sub-Lists for Checklist"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/sublists_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="10"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="5dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gap_twelve"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"/>
+
+                <LinearLayout
+                    android:id="@+id/empty_note_setting_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="25"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Allow Blank Title &amp; Note"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/empty_note_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="10"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="5dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gap_thirteen"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/add_delete_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="25"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Show Delete Icon in Checklist"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/add_delete_icon_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="10"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="5dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
             android:id="@+id/other_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -864,50 +1206,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"></TextView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView99"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginHorizontal="20dp"
-            app:cardBackgroundColor="@color/light_gray"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="@+id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/other_settings">
-
-            <LinearLayout
-                android:id="@+id/checklist_sublist"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:weightSum="100">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="90"
-                    android:gravity="center_vertical"
-                    android:text="Sub-Lists for Checklists"
-                    android:textColor="@color/ultra_white"
-                    android:textSize="16sp"
-                    android:textStyle="bold"></TextView>
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/sublists_switch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_weight="10"
-                    android:theme="@style/ThemeOverlay.MySwitchCompat"
-                    android:layout_marginRight="5dp"
-                    android:checked="false">
-                </androidx.appcompat.widget.SwitchCompat>
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintTop_toBottomOf="@+id/note_setting_layout"></TextView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/fab_setting"
@@ -919,7 +1218,7 @@
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView99">
+            app:layout_constraintTop_toBottomOf="@+id/other_settings">
 
             <LinearLayout
                 android:id="@+id/fab_button_size"
@@ -934,7 +1233,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="90"
                     android:gravity="center_vertical"
-                    android:text="Add Note Button (Make bigger)"
+                    android:text="New Note Button (Enlarge)"
                     android:textColor="@color/ultra_white"
                     android:textSize="16sp"
                     android:textStyle="bold"></TextView>

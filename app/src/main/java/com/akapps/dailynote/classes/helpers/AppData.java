@@ -1,6 +1,8 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
@@ -37,10 +39,11 @@ public class AppData{
 
     public static ArrayList getAllNotes(Context context){
         Realm realm = getRealm(context);
-        RealmResults<Note> allNotes = realm.where(Note.class).findAll();
+        RealmResults<Note> allNotes = realm.where(Note.class).equalTo("trash", false).findAll();
         ArrayList<Note> noteArrayList = new ArrayList<>();
 
         noteArrayList.addAll(realm.copyFromRealm(allNotes));
+        Log.d("Here", "size of list -> " + noteArrayList.size());
 
         if(realm != null)
             realm.close();
@@ -63,7 +66,7 @@ public class AppData{
                 if(currentNote.getNote().isEmpty())
                     allArraylistChecklist.add("Empty");
                 else
-                    allArraylistChecklist.add(currentNote.getNote());
+                    allArraylistChecklist.add(currentNote.getNote() + "-Note-");
             }
             else {
                 noteArrayList.addAll(realm.copyFromRealm(currentNote.getChecklist()));

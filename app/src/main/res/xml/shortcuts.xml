@@ -1,0 +1,33 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="new_note"
+        android:enabled="true"
+        android:icon="@drawable/note_icon"
+        android:shortcutShortLabel="@string/new_note_shortcut"
+        android:shortcutLongLabel="@string/new_note_shortcut">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.akapps.dailynote"
+            android:targetClass="com.akapps.dailynote.activity.NoteEdit" />
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="new_checklist"
+        android:enabled="true"
+        android:icon="@drawable/checklist_icon"
+        android:shortcutShortLabel="@string/new_checklist_shortcut"
+        android:shortcutLongLabel="@string/new_checklist_shortcut">
+        <intent
+            android:action="android.intent.action.CREATE_SHORTCUT"
+            android:targetPackage="com.akapps.dailynote"
+            android:targetClass="com.akapps.dailynote.activity.NoteEdit">
+            <parameter
+                android:name="isChecklist"
+                android:key="true"/>
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+</shortcuts>

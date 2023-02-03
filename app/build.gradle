@@ -12,7 +12,7 @@ android {
         applicationId "com.akapps.dailynote"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 87
+        versionCode 88
         versionName "@string/app_version_int"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true

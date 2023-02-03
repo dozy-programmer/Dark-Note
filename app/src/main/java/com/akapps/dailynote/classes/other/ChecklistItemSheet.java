@@ -25,6 +25,7 @@ import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -57,6 +58,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private int position;
 
     private Realm realm;
+    private User user;
 
     private TextInputEditText itemName;
 
@@ -113,6 +115,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         currentNote = ((NoteEdit)getActivity()).currentNote;
         realm = ((NoteEdit)getActivity()).realm;
+        user = ((NoteEdit)getActivity()).user;
 
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
@@ -145,18 +148,37 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         if(isSubChecklist || isAdding)
             itemImageLayout.setVisibility(View.GONE);
 
+        String multipleItemsMessage = "";
+        String newlineSeparatorMessage  = "Add Multiple items using newline\n\n";
+        String commaSeparatorMessage  = "Add Multiple items using \",,\" (2 commas)\n\n";
+        String spaceSeparatorMessage  = "Add Sublist Items: Start with a space after newline\n";
+        String newLineDashSeparatorMessage  = "Add Sublist Items: On the same line, add \"--\" (2 dashes)\n";
+        String commaDashSeparatorMessage  = "Add Sublist Items: After item add \"--\" (2 dashes)\n";
+
+        if (user.getItemsSeparator().equals("newline"))
+            multipleItemsMessage = newlineSeparatorMessage;
+        else
+            multipleItemsMessage = commaSeparatorMessage;
+
+        if(!isSubChecklist && currentNote.isEnableSublist()) {
+            if (user.getSublistSeparator().equals("space"))
+                multipleItemsMessage += spaceSeparatorMessage;
+            else {
+                if(!user.getItemsSeparator().equals("newline"))
+                    multipleItemsMessage += commaDashSeparatorMessage;
+                else
+                    multipleItemsMessage += newLineDashSeparatorMessage;
+            }
+        }
+
         if(isAdding){
             info.setVisibility(View.VISIBLE);
             dropDownMenu.setVisibility(View.GONE);
-            if(isSubChecklist) {
+            if(isSubChecklist)
                 title.setText("Adding Sub-Item to\n" + parentNode);
-                info.setText(info.getText());
-            }
-            else {
+            else
                 title.setText("Adding");
-                if(currentNote.isEnableSublist())
-                    info.setText(info.getText() + "\nAdd sublist item(s) using \"--\" (2 dashes) after item\n");
-            }
+            info.setText(multipleItemsMessage);
             delete.setVisibility(View.GONE);
         }
         else{
@@ -297,25 +319,52 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
 
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout){
+        String checklistItemsSeparator = user.getItemsSeparator();
+        if(checklistItemsSeparator.equals("newline"))
+            checklistItemsSeparator = "\n";
+        String sublistItemsSeparator = user.getSublistSeparator();
+        String initialSublistItemsSeparator = sublistItemsSeparator;
+        if(sublistItemsSeparator.equals("space"))
+            sublistItemsSeparator = "\n";
+
         if(!itemName.getText().toString().isEmpty()){
             if(isAdding) {
                 String text = itemName.getText().toString().trim().replaceAll("<br>", "\n").replaceAll(" +", " ");
-                String[] items = text.replaceAll("\n+", "\n").replaceAll(" +, +", ",,").split(",,");
+                String[] items = text.replaceAll("\n+", "\n").replaceAll(" +, +", ",,").split(checklistItemsSeparator);
                 if(isSubChecklist)
                     for (String subItem : items)
                         ((NoteEdit) getActivity()).addSubCheckList(checkListItem, subItem);
-                else
+                else {
                     for (String item : items) {
-                        currentItem = ((NoteEdit) getActivity()).addCheckList(item.split("--")[0]);
-                        if(item.contains("--")) {
-                            String[] currentSublistItems = item.split("--");
-                            for (int i = 1 ; i < currentSublistItems.length; i++) {
-                                String currentSublistItem = currentSublistItems[i];
-                                if (!currentSublistItem.equals(currentItem.getText()))
-                                    ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                        if (!item.startsWith(" ") && checklistItemsSeparator.equals("\n")) {
+                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0]);
+                            if (sublistItemsSeparator.equals("--")) {
+                                String[] currentSublistItems = item.split(sublistItemsSeparator);
+                                for (int i = 1; i < currentSublistItems.length; i++) {
+                                    String currentSublistItem = currentSublistItems[i];
+                                    if (!currentSublistItem.equals(currentItem.getText()))
+                                        ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                                }
+                            }
+                        }
+                        else if (item.startsWith(" ") && sublistItemsSeparator.equals("\n")) {
+                            if (currentItem == null)
+                                currentItem = ((NoteEdit) getActivity()).addCheckList("");
+                            ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), item);
+                        }
+                        else {
+                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0]);
+                            if (item.contains(sublistItemsSeparator)) {
+                                String[] currentSublistItems = item.split(sublistItemsSeparator);
+                                for (int i = 1; i < currentSublistItems.length; i++) {
+                                    String currentSublistItem = currentSublistItems[i];
+                                    if (!currentSublistItem.equals(currentItem.getText()))
+                                        ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                                }
                             }
                         }
                     }
+                }
             }
             else {
                 if(isSubChecklist)
