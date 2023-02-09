@@ -21,6 +21,7 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
     // project data
     private ArrayList<SubExpense> expenses;
     private double totalBudget;
+    private String expenseKey;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView expenseName;
@@ -39,9 +40,10 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
         }
     }
 
-    public sub_expenses_recyclerview(ArrayList<SubExpense> expenses, double totalBudget) {
+    public sub_expenses_recyclerview(ArrayList<SubExpense> expenses, double totalBudget, String expenseKey) {
         this.expenses = expenses;
         this.totalBudget = totalBudget;
+        this.expenseKey = expenseKey;
     }
 
     @Override
@@ -55,9 +57,11 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         SubExpense currentExpense = expenses.get(position);
 
-        holder.expenseName.setText(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName()));
+        holder.expenseName.setText(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
         holder.expenseAmount.setText(formatMoney(currentExpense.getTotalExpenseAmount()));
         holder.expensePercentage.setText(formatPercentage(currentExpense.getTotalExpenseAmount() / totalBudget));
+
+
 
         if(currentExpense.getExpenseName().toLowerCase().contains("total"))
             holder.background.setStrokeColor(holder.view.getContext().getColor(R.color.pressed_blue));
@@ -69,8 +73,8 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
     }
 
     private String formatMoney(double number){
-        DecimalFormat df = new DecimalFormat("$#,##0.00");
-        return String.format("%s", df.format(number));
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+        return expenseKey + String.format("%s", df.format(number));
     }
 
     private String formatPercentage(double number){

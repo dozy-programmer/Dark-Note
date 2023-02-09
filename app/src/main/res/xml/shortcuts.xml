@@ -2,7 +2,7 @@
     <shortcut
         android:shortcutId="new_note"
         android:enabled="true"
-        android:icon="@drawable/note_icon"
+        android:icon="@drawable/note_icon_2"
         android:shortcutShortLabel="@string/new_note_shortcut"
         android:shortcutLongLabel="@string/new_note_shortcut">
         <intent
@@ -16,7 +16,7 @@
     <shortcut
         android:shortcutId="new_checklist"
         android:enabled="true"
-        android:icon="@drawable/checklist_icon"
+        android:icon="@drawable/checklist_icon_2"
         android:shortcutShortLabel="@string/new_checklist_shortcut"
         android:shortcutLongLabel="@string/new_checklist_shortcut">
         <intent

@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
 import com.stfalcon.imageviewer.StfalconImageViewer;
@@ -32,17 +35,20 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         private final ImageView delete;
         private final ImageView share;
         private final View view;
+        private final CardView background;
 
         public MyViewHolder(View v) {
             super(v);
             image = v.findViewById(R.id.image);
             delete = v.findViewById(R.id.delete);
             share = v.findViewById(R.id.share);
+            background = v.findViewById(R.id.background);
             view = v;
         }
     }
 
-    public photos_recyclerview(RealmResults<Photo> allPhotos, FragmentActivity activity, Context context, boolean showDelete) {
+    public photos_recyclerview(RealmResults<Photo> allPhotos, FragmentActivity activity,
+                               Context context, boolean showDelete) {
         this.allPhotos = allPhotos;
         this.activity = activity;
         this.context = context;
@@ -65,6 +71,9 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
             holder.delete.setVisibility(View.GONE);
             holder.share.setVisibility(View.GONE);
         }
+
+        if(AppData.getAppData().isDarkerMode)
+            holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
 
         // populates photo into the recyclerview
         Glide.with(context).load(currentPhoto.getPhotoLocation())

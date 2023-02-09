@@ -156,8 +156,6 @@ public class notes extends Fragment{
                     showData();
                     isListEmpty(allNotes.size(), false);
                 }
-                else
-                    getActivity().finish();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -182,6 +180,8 @@ public class notes extends Fragment{
         initializeUi();
         initializeLayout();
         showData();
+
+        updateToolbarColors();
 
         if(user.isOpenFoldersOnStart() && AppData.isAppFirstStarted){
             AppData.isAppFirstStarted = false;
@@ -226,6 +226,23 @@ public class notes extends Fragment{
             customSheet.dismiss();
 
         Helper.deleteCache(context);
+    }
+
+    private void updateToolbarColors(){
+        if(user.isModeSettings()) {
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
+            filterNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
+            settings.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
+            restoreNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
+            categoryNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
+        }
+        else{
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
+            filterNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
+            settings.setCardBackgroundColor(context.getColor(R.color.light_gray));
+            restoreNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
+            categoryNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        }
     }
 
     private void setRecyclerviewLayout(){
@@ -781,6 +798,7 @@ public class notes extends Fragment{
         addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
         ((LottieAnimationView) view.findViewById(R.id.empty_view)).pauseAnimation();
+        updateToolbarColors();
     }
 
     private void hideSearchBar(){
@@ -841,6 +859,7 @@ public class notes extends Fragment{
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));
         categoryNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
         settings.setVisibility(View.VISIBLE);
+        updateToolbarColors();
     }
 
     public void deleteMultipleNotes(){

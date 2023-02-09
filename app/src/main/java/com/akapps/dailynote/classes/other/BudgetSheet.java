@@ -51,10 +51,15 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
     private TextView budgetText;
     private RecyclerView expensesRecyclerview;
 
+    private String budgetKey;
+    private String expenseKey;
+
     public BudgetSheet(){}
 
-    public BudgetSheet(Note currentNote){
+    public BudgetSheet(Note currentNote, String budgetKey, String expenseKey){
         this.currentNote = currentNote;
+        this.budgetKey = budgetKey;
+        this.expenseKey = expenseKey;
     }
 
     @SuppressLint("SetTextI18n")
@@ -91,15 +96,15 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
             expensesList.sort(Comparator.comparing(Expense::getExpenseAmountPercentage, Comparator.reverseOrder()));
             if(expensesListGraph != null) {
                 budgetProgress.submitData(expensesListGraph);
-                RecyclerView.Adapter expensesAdapter = new expenses_recyclerview(expensesList, budget);
+                RecyclerView.Adapter expensesAdapter = new expenses_recyclerview(expensesList, budget, expenseKey);
                 expensesRecyclerview.setAdapter(expensesAdapter);
                 expensesRecyclerview.setNestedScrollingEnabled(false);
                 DecimalFormat df = new DecimalFormat("#,##0.00");
                 Double budgetNumber = Double.parseDouble(df.format(budget).replaceAll(",", ""));
                 if(budgetNumber % 2 == 0)
-                    budgetText.setText("$" + budgetNumber.intValue());
+                    budgetText.setText(expenseKey + budgetNumber.intValue());
                 else
-                    budgetText.setText("$" + df.format(budget));
+                    budgetText.setText(expenseKey + df.format(budget));
             }
         }
         else
@@ -137,21 +142,20 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
 
             String checklistString = currentItem.getText();
 
-            if(checklistString.contains("$")) {
+            if(checklistString.contains(expenseKey)) {
                 String[] checklistStringTokens = getTokenArray(checklistString);
                 double currentSubExpenseTotal = 0;
 
                 for (String currentToken : checklistStringTokens) {
-                    if (currentToken.contains("$") && !currentToken.contains("+$")) {
-                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1)
-                                .trim().replaceAll("[$]+", "\\$")
-                                .replaceAll(",", "");
+                    if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
+                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey) + 1)
+                                .trim().replaceAll(",", "");
                         try {
                             Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
                             currentExpenseAmount += currentTokenDouble;
                             currentSubExpenseTotal += currentTokenDouble;
                         } catch (Exception e) {
-                            wrongFormatList.add("$" + currentTokenTrimmed);
+                            wrongFormatList.add(expenseKey + currentTokenTrimmed);
                         }
                     }
                 }
@@ -162,19 +166,19 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
                 String sublistString = sublistItem.getText();
                 double currentSubExpenseTotal = 0;
 
-                if (sublistString.contains("$")) {
+                if (sublistString.contains(expenseKey)) {
                     String[] sublistStringTokens = getTokenArray(sublistString);
 
                     for (String currentToken : sublistStringTokens) {
-                        if (currentToken.contains("$") && !currentToken.contains("+$")) {
-                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf("$") + 1).trim()
+                        if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
+                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey) + 1).trim()
                                     .replaceAll(",", "");
                             try {
                                 Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
                                 currentExpenseAmount += currentTokenDouble;
                                 currentSubExpenseTotal += currentTokenDouble;
                             } catch (Exception e) {
-                                wrongFormatList.add("$" + currentTokenTrimmed);
+                                wrongFormatList.add(expenseKey + currentTokenTrimmed);
                             }
                         }
                     }
@@ -225,7 +229,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
         for (CheckListItem currentItem: noteChecklist){
             String checklistString = currentItem.getText();
 
-            if(checklistString.contains("$")) {
+            if(checklistString.contains(expenseKey)) {
                 String[] checklistStringTokens = getTokenArray(checklistString);
 
                 for (String currentToken : checklistStringTokens) {
@@ -238,7 +242,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
             for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
                 String sublistString = sublistItem.getText();
 
-                if (sublistString.contains("$")) {
+                if (sublistString.contains(expenseKey)) {
                     String[] sublistStringTokens = getTokenArray(sublistString);
 
                     for (String currentToken : sublistStringTokens) {
@@ -256,17 +260,16 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
     private String[] getTokenArray(String word){
        return word.replaceAll("\n", " ")
                 .replaceAll(",", "")
-                .replaceAll("\\$+", "\\$")
                 .split(" ");
     }
 
     private double findBudget(String currentToken, double budget){
         String wrongFormatMessage = "";
 
-        if (currentToken.contains("+$")) {
+        if (currentToken.contains(budgetKey)) {
             try {
                 budget = Double.parseDouble(currentToken.replaceAll(",", "")
-                        .replace("+$", ""));
+                        .replace(budgetKey, ""));
             } catch (Exception e) {
                 wrongFormatMessage = "\nFormat errors found: " + currentToken + "\n";
                 errorMessage.setText(wrongFormatMessage);

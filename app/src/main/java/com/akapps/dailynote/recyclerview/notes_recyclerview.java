@@ -148,6 +148,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
         }
 
+        if(((notes) noteFragment).user.isModeSettings())
+            holder.note_info.setBackgroundColor(activity.getColor(R.color.black));
+        else
+            holder.note_info.setBackgroundColor(activity.getColor(R.color.not_too_dark_gray));
+
         // changes the number of lines title and preview occupy depending on user setting
         int titleLines = ((notes) noteFragment).user.getTitleLines();
         int contentLines = ((notes) noteFragment).user.getContentLines();
@@ -524,7 +529,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     // Checks to see if note is locked, if it is then user is sent to lock screen activity
     // where they need to enter a pin. If not locked, it opens note
     private void openNoteActivity(Note currentNote){
-        if(currentNote.getPinNumber()==0){
+        if(currentNote.getPinNumber() == 0){
             Intent note = new Intent(activity, NoteEdit.class);
             note.putExtra("id", currentNote.getNoteId());
             note.putExtra("isChecklist", currentNote.isCheckList());

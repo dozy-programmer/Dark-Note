@@ -136,6 +136,13 @@ public class RealmDatabase {
                 schema.get("User").addField("expenseCharacter", String.class);
             if(!schema.get("User").hasField("enableDeleteIcon"))
                 schema.get("User").addField("enableDeleteIcon", boolean.class);
+
+            if(!schema.get("User").hasField("securityWord"))
+                schema.get("User").addField("securityWord", String.class);
+            if(!schema.get("User").hasField("fingerprint"))
+                schema.get("User").addField("fingerprint", boolean.class);
+            if(!schema.get("User").hasField("pinNumber"))
+                schema.get("User").addField("pinNumber", int.class);
         }
     }
 }

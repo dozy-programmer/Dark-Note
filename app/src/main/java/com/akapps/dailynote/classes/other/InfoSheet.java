@@ -59,6 +59,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
     public RecyclerView.Adapter backupAdapter;
 
     private String userSecurityWord;
+    boolean isAppLocked;
     private int attempts;
 
     public InfoSheet(){
@@ -73,12 +74,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         this.position = position;
     }
 
-    public InfoSheet(int message, String userSecurityWord){
+    public InfoSheet(int message, String userSecurityWord, boolean isAppLocked){
         this.message = message;
         this.userSecurityWord = userSecurityWord;
+        this.isAppLocked = isAppLocked;
     }
 
-    public InfoSheet(int message,boolean deleteAllChecklists){
+    public InfoSheet(int message, boolean deleteAllChecklists){
         this.message = message;
         this.deleteAllChecklists = deleteAllChecklists;
     }
@@ -199,7 +201,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             unlock.setVisibility(View.VISIBLE);
             title.setText("Unlock");
             backup.setVisibility(View.GONE);
-            info.setText("Enter Security word used to lock note");
+            info.setText("Enter Security Word to Unlock " + (isAppLocked ? "App" : "Note"));
             info.setGravity(Gravity.CENTER);
         }
         else if(message == 6){
@@ -286,11 +288,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               info.setGravity(Gravity.CENTER);
        }
         else if(message == 10){
-              title.setText("Budget $ Guide");
-              backup.setVisibility(View.GONE);
-              securityWord.setVisibility(View.GONE);
-              info.setTextColor(getContext().getColor(R.color.pressed_blue));
-              info.setText(getContext().getString(R.string.try_out_budget));
+            String budgetChar = ((NoteEdit) getActivity()).user.getBudgetCharacter();
+            String expenseChar = ((NoteEdit) getActivity()).user.getExpenseCharacter();
+            title.setText("Budget $ Guide");
+            backup.setVisibility(View.GONE);
+            securityWord.setVisibility(View.GONE);
+            info.setTextColor(getContext().getColor(R.color.pressed_blue));
+            info.setText(getContext().getString(R.string.try_out_budget)
+                    .replaceAll("\\$", expenseChar)
+                    .replaceAll("\\+" + expenseChar, budgetChar));
           }
 
 

@@ -36,11 +36,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_checklist_filter, container, false);
 
-        if (AppData.getAppData().isDarkerMode)
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        else
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-
+        MaterialCardView background = view.findViewById(R.id.background);
         MaterialCardView aZ = view.findViewById(R.id.a_z);
         MaterialCardView zA = view.findViewById(R.id.z_a);
         MaterialCardView checkedBottom = view.findViewById(R.id.checked_bottom);
@@ -49,6 +45,15 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         MaterialCardView addedTop = view.findViewById(R.id.add_top);
         MaterialButton clearFilter = view.findViewById(R.id.clear_filter);
         CheckBox applyAll = view.findViewById(R.id.apply_all);
+
+        if (AppData.getAppData().isDarkerMode) {
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            background.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+            background.setStrokeColor(getContext().getColor(R.color.gray));
+            background.setStrokeWidth(8);
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         int sort = 0;
         try {

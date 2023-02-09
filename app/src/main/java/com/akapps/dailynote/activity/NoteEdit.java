@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -130,6 +131,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public RealmResults<Photo> allNotePhotos;
     private int noteId;
     private boolean isNewNote;
+    private boolean isNewNoteCopy;
     private String oldTitle;
     private String oldNote;
     private boolean currentPin;
@@ -190,8 +192,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if(noteId < -1)
             noteId *=-1;
-        else if(noteId == -1)
+        else if(noteId == -1) {
             isNewNote = true;
+            isNewNoteCopy = true;
+        }
         else
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
@@ -220,6 +224,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             searchEditText.setTextColor(context.getColor(R.color.ultra_white));
             date.setTextColor(context.getColor(R.color.light_light_gray));
             title.setHintTextColor(context.getColor(R.color.light_gray_2));
+            closeNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
+            photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
+            pinNoteButton.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
+            saveNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
+            expandMenu.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
+            searchLayout.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
+            palleteIconColor.setColorFilter(getColor(R.color.ultra_white));
         }
         else {
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
@@ -458,6 +469,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isShowingPhotos = savedInstanceState.getBoolean("photos");
             isSearchingNotes = savedInstanceState.getBoolean("search");
 
+            isNewNoteCopy = isNewNote;
+
             if(isSearchingNotes)
                 showSearchBar();
 
@@ -516,7 +529,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         budget.setOnClickListener(v -> {
-            BudgetSheet budget = new BudgetSheet(currentNote);
+            BudgetSheet budget = new BudgetSheet(currentNote, user.getBudgetCharacter(), user.getExpenseCharacter());
             budget.show(this.getSupportFragmentManager(), budget.getTag());
             moreOptionsMenu.close(true);
         });
@@ -725,21 +738,23 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void updateWidget(){
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(currentNote.getWidgetId());
-        if(info != null) {
-            try {
+        try {
+            if(currentNote == null) return;
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(currentNote.getWidgetId());
+            if(info != null) {
                 if (isWidget && currentNote.getWidgetId() > 0) {
                     AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
                     appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
                 }
-            } catch (Exception e) {}
-        }
-        else {
-            realm.beginTransaction();
-            currentNote.setWidgetId(-1);
-            realm.commitTransaction();
-        }
+            }
+            else {
+                realm.beginTransaction();
+                currentNote.setWidgetId(-1);
+                realm.commitTransaction();
+            }
+        } catch (Exception e) {}
     }
 
     private void showSearchBar(){
@@ -800,7 +815,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         pinNoteButton.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
 
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        if(isDarkerMode)
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
+        else
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
 
         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) photosNote.getLayoutParams();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1127,20 +1145,28 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if(currentNote.getPinNumber()!=0)
             lockStatus +="ed";
 
+        int backgroundColor = R.color.light_gray;
+        if(user.isModeSettings())
+            backgroundColor = R.color.darker_mode;
+
+        IconPowerMenuItem reminderItem = new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder");
 
         noteMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.archive_icon), archivedStatus))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.send_icon), "Send"))
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder"))
+                .addItem(reminderItem)
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.format_size_icon), "Text Size"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
-                .setBackgroundColor(getColor(R.color.light_gray))
+                .setBackgroundColor(getColor(backgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.SHOW_UP_CENTER)
                 .setMenuRadius(15f)
                 .setMenuShadow(10f)
                 .build();
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            noteMenu.removeItem(reminderItem);
 
         if(currentNote.isCheckList()){
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
@@ -1184,7 +1210,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 openDialog();
             }
             else if(item.getTitle().equals("Lock")){
-                LockSheet lockSheet = new LockSheet();
+                LockSheet lockSheet = new LockSheet(false);
                 lockSheet.show(getSupportFragmentManager(), lockSheet.getTag());
             }
             else if(item.getTitle().equals("Locked")){
@@ -1348,18 +1374,22 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void showDatePickerDialog() {
-        Calendar now = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                this,
-                now.get(Calendar.YEAR), // Initial year selection
-                now.get(Calendar.MONTH), // Initial month selection
-                now.get(Calendar.DAY_OF_MONTH) // Inital day selection
-        );
-        datePickerDialog.setThemeDark(true);
-        datePickerDialog.setAccentColor(getColor(R.color.light_gray_2));
-        datePickerDialog.setOkColor(getColor(R.color.blue));
-        datePickerDialog.setCancelColor(getColor(R.color.light_gray_2));
-        datePickerDialog.show(getSupportFragmentManager(), "Datepickerdialog");
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Calendar now = Calendar.getInstance();
+            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                    this,
+                    now.get(Calendar.YEAR), // Initial year selection
+                    now.get(Calendar.MONTH), // Initial month selection
+                    now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+            );
+            datePickerDialog.setThemeDark(true);
+            datePickerDialog.setAccentColor(getColor(R.color.light_gray_2));
+            datePickerDialog.setOkColor(getColor(R.color.blue));
+            datePickerDialog.setCancelColor(getColor(R.color.light_gray_2));
+            datePickerDialog.show(getSupportFragmentManager(), "Datepickerdialog");
+        }
+        else
+            Helper.showMessage(this, "Reminder Issue", "Reminders do not work on Android 7 devices", MotionToast.TOAST_ERROR);
     }
 
     @Override
@@ -1614,8 +1644,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void updateDateEdited(){
-        if(isNewNote)
+        if(isNewNoteCopy) {
+            date.setVisibility(View.GONE);
             return;
+        }
 
         if(currentNote.isCheckList())
             isListEmpty(currentNote.getChecklist().size());
@@ -1623,22 +1655,24 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         date.setVisibility(View.VISIBLE);
 
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                if (!realm.isClosed()) {
-                    try {
-                        if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
-                            date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + currentNote.getDateEdited().replace("\n", " ") +
-                                    "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
-                        } else {
-                            date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    if (!realm.isClosed()) {
+                        try {
+                            if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
+                                date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + currentNote.getDateEdited().replace("\n", " ") +
+                                        "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                            } else {
+                                date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
+                            }
+                            handler.postDelayed(this, 1000);
+                        } catch (Exception e) {
                         }
-                        handler.postDelayed(this, 1000);
                     }
-                    catch (Exception e){}
                 }
-            }
-        }, 0);
+            }, 0);
+        }
     }
 
     public void updateSaveDateEdited(){

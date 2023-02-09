@@ -38,7 +38,7 @@ public class NoteLockScreen extends AppCompatActivity {
     private String securityWord;
     private String noteTitle;
     private boolean fingerprint;
-    private boolean isWidget;
+    private boolean isAppLocked;
     private Context context;
 
     // biometric data
@@ -60,15 +60,16 @@ public class NoteLockScreen extends AppCompatActivity {
         if(AppData.getAppData().isDarkerMode) {
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.darker_mode));
-            lockView.setTextColor(context.getColor(R.color.gray));
-            ((TextView) findViewById(R.id.instruction)).setTextColor(context.getColor(R.color.gray));
+            lockView.setBackgroundColor(getColor(R.color.black));
         }
     }
 
     @Override
     public void onBackPressed() {
-        finish();
-        overridePendingTransition(R.anim.stay, R.anim.right_out);
+        if(!isAppLocked) {
+            finish();
+            overridePendingTransition(R.anim.stay, R.anim.right_out);
+        }
     }
 
     private void initializeLayout(){
@@ -77,7 +78,7 @@ public class NoteLockScreen extends AppCompatActivity {
         securityWord = getIntent().getStringExtra("securityWord");
         noteTitle = getIntent().getStringExtra("title");
         fingerprint = getIntent().getBooleanExtra("fingerprint", false);
-        isWidget = getIntent().getBooleanExtra("isWidget", false);
+        isAppLocked = getIntent().getBooleanExtra("isAppLocked", false);
 
         executor = ContextCompat.getMainExecutor(this);
 
@@ -161,16 +162,24 @@ public class NoteLockScreen extends AppCompatActivity {
 
     // if pin is correct, note is opened
     public void openNote(){
-        Intent note;
-        note = new Intent(this, NoteEdit.class);
-        note.putExtra("id", noteId);
-        startActivity(note);
+        if(isAppLocked){
+            Intent homepage;
+            homepage = new Intent(this, Homepage.class);
+            homepage.putExtra("openApp", true);
+            startActivity(homepage);
+        }
+        else {
+            Intent note;
+            note = new Intent(this, NoteEdit.class);
+            note.putExtra("id", noteId);
+            startActivity(note);
+        }
         finish();
     }
 
     // shows a dialog for user to get their note pin
     private void forgotPasswordDialog(){
-        InfoSheet info = new InfoSheet(5, securityWord);
+        InfoSheet info = new InfoSheet(5, securityWord, isAppLocked);
         info.show(getSupportFragmentManager(), info.getTag());
     }
 

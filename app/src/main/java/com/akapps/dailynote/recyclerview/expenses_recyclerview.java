@@ -21,6 +21,7 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
     // project data
     private ArrayList<Expense> expenses;
     private double totalBudget;
+    private String expenseKey;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final MaterialCardView expenseColor;
@@ -41,9 +42,10 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         }
     }
 
-    public expenses_recyclerview(ArrayList<Expense> expenses, double totalBudget) {
+    public expenses_recyclerview(ArrayList<Expense> expenses, double totalBudget, String expenseKey) {
         this.expenses = expenses;
         this.totalBudget = totalBudget;
+        this.expenseKey = expenseKey;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         Expense currentExpense = expenses.get(position);
 
         holder.expenseColor.setCardBackgroundColor(currentExpense.getColor());
-        holder.expenseName.setText(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName()));
+        holder.expenseName.setText(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
         holder.expensePercentage.setText(formatDouble(currentExpense.getExpenseAmountPercentage()));
 
         holder.dropDown.setOnClickListener(view -> {
@@ -77,7 +79,8 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
             }
             else {
                 holder.subExpensesRecyclerview.setLayoutManager(new LinearLayoutManager(holder.view.getContext()));
-                RecyclerView.Adapter expensesAdapter = new sub_expenses_recyclerview(currentExpense.getSubExpensesList(), totalBudget);
+                RecyclerView.Adapter expensesAdapter = new sub_expenses_recyclerview(currentExpense.getSubExpensesList(),
+                        totalBudget, expenseKey);
                 holder.subExpensesRecyclerview.setAdapter(expensesAdapter);
                 holder.subExpensesRecyclerview.animate()
                         .alpha(1.0f)

@@ -14,6 +14,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.biometric.BiometricManager;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -26,7 +27,13 @@ import www.sanju.motiontoast.MotionToast;
 
 public class LockSheet extends RoundedBottomSheetDialogFragment{
 
+    private boolean isAppLock;
+
     public LockSheet(){}
+
+    public LockSheet(boolean isAppLock){
+        this.isAppLock = isAppLock;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,6 +46,11 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
         TextInputEditText securityWord = view.findViewById(R.id.security_word);
         SwitchCompat fingerprint = view.findViewById(R.id.fingerprint);
         TextView title = view.findViewById(R.id.title);
+
+        if(isAppLock)
+            title.setText("Lock App");
+        else
+            title.setText("Lock Note");
 
         if (AppData.getAppData().isDarkerMode) {
             pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
@@ -71,7 +83,10 @@ public class LockSheet extends RoundedBottomSheetDialogFragment{
 
             if(pinText.length()>=4 && pinText.length()<=10){
                 if(securityWordText.length()>0){
-                   ((NoteEdit) getActivity()).lockNote(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                    if(isAppLock)
+                        ((SettingsScreen) getActivity()).lockNote(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                    else
+                        ((NoteEdit) getActivity()).lockNote(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
                     this.dismiss();
                 }
                 else

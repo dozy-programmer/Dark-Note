@@ -358,9 +358,9 @@
             android:id="@+id/add_checklist_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/checklist_icon"
-            fab:fab_colorNormal="@color/golden_rod"
-            fab:fab_colorPressed="@color/gold"
+            android:src="@drawable/checklist_icon_2"
+            fab:fab_colorNormal="@color/gray"
+            fab:fab_colorPressed="@color/tan_hide"
             fab:fab_label="Check List"
             fab:fab_size="mini" />
 
@@ -368,9 +368,9 @@
             android:id="@+id/add_note_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/note_icon"
-            fab:fab_colorNormal="@color/orange"
-            fab:fab_colorPressed="@color/orange_red"
+            android:src="@drawable/note_icon_2"
+            fab:fab_colorNormal="@color/gray"
+            fab:fab_colorPressed="@color/blue"
             fab:fab_label="Note"
             fab:fab_size="mini" />
 

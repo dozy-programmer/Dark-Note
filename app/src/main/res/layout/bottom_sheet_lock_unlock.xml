@@ -70,8 +70,6 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_weight="50"
                 android:hint="Pin"
-                app:counterEnabled="true"
-                app:counterMaxLength="10"
                 android:textColorHint="@color/white"
                 android:theme="@style/TextInputLayout"
                 app:boxBackgroundColor="@color/gray"

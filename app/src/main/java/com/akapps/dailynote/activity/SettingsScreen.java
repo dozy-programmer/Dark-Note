@@ -38,6 +38,7 @@ import com.akapps.dailynote.classes.other.AccountSheet;
 import com.akapps.dailynote.classes.other.CreditsSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
+import com.akapps.dailynote.classes.other.LockSheet;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,6 +88,7 @@ public class SettingsScreen extends AppCompatActivity{
     // Toolbar
     private Toolbar toolbar;
     private ImageView close;
+    private ImageView lockApp;
 
     // layout
     private LinearLayout backup;
@@ -157,6 +159,7 @@ public class SettingsScreen extends AppCompatActivity{
         setContentView(R.layout.activity_settings_screen);
 
         context = this;
+
         mAuth = FirebaseAuth.getInstance();
         all_Notes = getIntent().getIntExtra("size", 0);
         boolean backingUp = getIntent().getBooleanExtra("backup", false);
@@ -206,6 +209,7 @@ public class SettingsScreen extends AppCompatActivity{
     private void initializeLayout(){
         toolbar = findViewById(R.id.toolbar);
         close = findViewById(R.id.close_activity);
+        lockApp = findViewById(R.id.lock_app);
         backup = findViewById(R.id.backup);
         restoreBackup = findViewById(R.id.restore_backup);
         appSettings = findViewById(R.id.app_settings);
@@ -420,6 +424,10 @@ public class SettingsScreen extends AppCompatActivity{
         budgetSymbolLayout.setOnClickListener(v -> {
             List<IconPowerMenuItem> options = new ArrayList<>();
             options.add(new IconPowerMenuItem(null, "+$"));
+            options.add(new IconPowerMenuItem(null, "+₹"));
+            options.add(new IconPowerMenuItem(null, "+£"));
+            options.add(new IconPowerMenuItem(null, "+€"));
+            options.add(new IconPowerMenuItem(null, "+¥"));
             realmStatus();
             isEditingBudgetSymbol = true;
             expandListMenu(options, budgetSymbol);
@@ -428,6 +436,10 @@ public class SettingsScreen extends AppCompatActivity{
         expenseSymbolLayout.setOnClickListener(v -> {
             List<IconPowerMenuItem> options = new ArrayList<>();
             options.add(new IconPowerMenuItem(null, "$"));
+            options.add(new IconPowerMenuItem(null, "₹"));
+            options.add(new IconPowerMenuItem(null, "£"));
+            options.add(new IconPowerMenuItem(null, "€"));
+            options.add(new IconPowerMenuItem(null, "¥"));
             realmStatus();
             isEditingExpenseSymbol = true;
             expandListMenu(options, expenseSymbol);
@@ -440,9 +452,10 @@ public class SettingsScreen extends AppCompatActivity{
             realm.beginTransaction();
             currentUser.setLayoutSelected("row");
             realm.commitTransaction();
+            int otherColor = context.getColor(AppData.getAppData().isDarkerMode ? R.color.darker_mode : R.color.gray);
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            grid.setCardBackgroundColor(context.getColor(R.color.gray));
-            staggered.setCardBackgroundColor(context.getColor(R.color.gray));
+            grid.setCardBackgroundColor(otherColor);
+            staggered.setCardBackgroundColor(otherColor);
         });
 
         grid.setOnClickListener(v -> {
@@ -450,9 +463,10 @@ public class SettingsScreen extends AppCompatActivity{
             realm.beginTransaction();
             currentUser.setLayoutSelected("grid");
             realm.commitTransaction();
+            int otherColor = context.getColor(AppData.getAppData().isDarkerMode ? R.color.darker_mode : R.color.gray);
             grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            row.setCardBackgroundColor(context.getColor(R.color.gray));
-            staggered.setCardBackgroundColor(context.getColor(R.color.gray));
+            row.setCardBackgroundColor(otherColor);
+            staggered.setCardBackgroundColor(otherColor);
         });
 
         staggered.setOnClickListener(v -> {
@@ -461,9 +475,10 @@ public class SettingsScreen extends AppCompatActivity{
                 realm.beginTransaction();
                 currentUser.setLayoutSelected("stag");
                 realm.commitTransaction();
+                int otherColor = context.getColor(AppData.getAppData().isDarkerMode ? R.color.darker_mode : R.color.gray);
                 staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-                grid.setCardBackgroundColor(context.getColor(R.color.gray));
-                row.setCardBackgroundColor(context.getColor(R.color.gray));
+                grid.setCardBackgroundColor(otherColor);
+                row.setCardBackgroundColor(otherColor);
             }
         });
 
@@ -472,6 +487,16 @@ public class SettingsScreen extends AppCompatActivity{
         review.setOnClickListener(v -> openAppInPlayStore());
 
         close.setOnClickListener(v -> close());
+
+        lockApp.setOnClickListener(view -> {
+            realmStatus();
+            if(currentUser.getPinNumber() == 0) {
+                LockSheet lockSheet = new LockSheet(true);
+                lockSheet.show(getSupportFragmentManager(), lockSheet.getTag());
+            }
+            else
+                unLockNote();
+        });
 
         showPreview.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
@@ -515,6 +540,7 @@ public class SettingsScreen extends AppCompatActivity{
             currentUser.setModeSettings(isChecked);
             realm.commitTransaction();
             checkModeSettings();
+            updateCurrentLayout();
         });
 
         sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -587,44 +613,83 @@ public class SettingsScreen extends AppCompatActivity{
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
             AppData.getAppData().isDarkerMode = true;
-            updateGapLayoutColor();
+            updateGapLayoutColor(context.getColor(R.color.gray));
+            changeBackgroundColors(R.color.darker_mode, R.color.gray, 6);
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
-            changeBackgroundColors(context.getColor(R.color.gray));
         }
         else {
             modeSetting.setText("Gray Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
             AppData.getAppData().isDarkerMode = false;
             getWindow().setStatusBarColor(context.getColor(R.color.gray));
-            updateGapLayoutColor();
+            updateGapLayoutColor(context.getColor(R.color.gray));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
-            changeBackgroundColors(context.getColor(R.color.light_gray_2));
+            changeBackgroundColors(R.color.light_gray, R.color.light_gray, 0);
         }
     }
 
-    private void changeBackgroundColors(int color){
-        buyMeCoffeeLayout.setCardBackgroundColor(color);
-        accountLayout.setCardBackgroundColor(color);
-        backupRestoreLayout.setCardBackgroundColor(color);
-        notePreviewSettingsLayout.setCardBackgroundColor(color);
-        listTypeLayout.setCardBackgroundColor(color);
-        folderSettingsLayout.setCardBackgroundColor(color);
-        noteSettingLayout.setCardBackgroundColor(color);
-        appSettingsLayout.setCardBackgroundColor(color);
-        aboutInfoLayout.setCardBackgroundColor(color);
-        contact.setCardBackgroundColor(color);
-        review.setCardBackgroundColor(color);
-        fabSizeLayout.setCardBackgroundColor(color);
+    private void changeBackgroundColors(int color, int strokeColor, int width){
+        buyMeCoffeeLayout.setCardBackgroundColor(context.getColor(color));
+        buyMeCoffeeLayout.setStrokeColor(context.getColor(strokeColor));
+        buyMeCoffeeLayout.setStrokeWidth(width);
+        accountLayout.setCardBackgroundColor(context.getColor(color));
+        accountLayout.setStrokeColor(context.getColor(strokeColor));
+        accountLayout.setStrokeWidth(width);
+        backupRestoreLayout.setCardBackgroundColor(context.getColor(color));
+        backupRestoreLayout.setStrokeColor(context.getColor(strokeColor));
+        backupRestoreLayout.setStrokeWidth(width);
+        notePreviewSettingsLayout.setCardBackgroundColor(context.getColor(color));
+        notePreviewSettingsLayout.setStrokeColor(context.getColor(strokeColor));
+        notePreviewSettingsLayout.setStrokeWidth(width);
+        listTypeLayout.setCardBackgroundColor(context.getColor(color));
+        listTypeLayout.setStrokeColor(context.getColor(strokeColor));
+        listTypeLayout.setStrokeWidth(width);
+        folderSettingsLayout.setCardBackgroundColor(context.getColor(color));
+        folderSettingsLayout.setStrokeColor(context.getColor(strokeColor));
+        folderSettingsLayout.setStrokeWidth(width);
+        noteSettingLayout.setCardBackgroundColor(context.getColor(color));
+        noteSettingLayout.setStrokeColor(context.getColor(strokeColor));
+        noteSettingLayout.setStrokeWidth(width);
+        appSettingsLayout.setCardBackgroundColor(context.getColor(color));
+        appSettingsLayout.setStrokeColor(context.getColor(strokeColor));
+        appSettingsLayout.setStrokeWidth(width);
+        aboutInfoLayout.setCardBackgroundColor(context.getColor(color));
+        aboutInfoLayout.setStrokeColor(context.getColor(strokeColor));
+        aboutInfoLayout.setStrokeWidth(width);
+        contact.setCardBackgroundColor(context.getColor(color));
+        contact.setStrokeColor(context.getColor(strokeColor));
+        contact.setStrokeWidth(width);
+        review.setCardBackgroundColor(context.getColor(color));
+        review.setStrokeColor(context.getColor(strokeColor));
+        review.setStrokeWidth(width);
+        fabSizeLayout.setCardBackgroundColor(context.getColor(color));
+        fabSizeLayout.setStrokeColor(context.getColor(strokeColor));
+        fabSizeLayout.setStrokeWidth(width);
+
+        if(AppData.getAppData().isDarkerMode){
+            grid.setCardBackgroundColor(context.getColor(color));
+            row.setCardBackgroundColor(context.getColor(color));
+            staggered.setCardBackgroundColor(context.getColor(color));
+            grid.setStrokeColor(context.getColor(strokeColor));
+            grid.setStrokeWidth(width);
+            row.setStrokeColor(context.getColor(strokeColor));
+            row.setStrokeWidth(width);
+            staggered.setStrokeColor(context.getColor(strokeColor));
+            staggered.setStrokeWidth(width);
+        }
+        else {
+            color = R.color.gray;
+            grid.setCardBackgroundColor(context.getColor(color));
+            row.setCardBackgroundColor(context.getColor(color));
+            staggered.setCardBackgroundColor(context.getColor(color));
+            grid.setStrokeWidth(width);
+            row.setStrokeWidth(width);
+            staggered.setStrokeWidth(width);
+        }
     }
 
-    private void updateGapLayoutColor(){
-        int gapColor = 0;
-        if(AppData.getAppData().isDarkerMode)
-            gapColor = context.getColor(R.color.darker_mode);
-        else
-            gapColor = context.getColor(R.color.gray);
-
+    private void updateGapLayoutColor(int gapColor){
         findViewById(R.id.space_one).setBackgroundColor(gapColor);
         findViewById(R.id.space_two).setBackgroundColor(gapColor);
         findViewById(R.id.gap_one).setBackgroundColor(gapColor);
@@ -652,8 +717,18 @@ public class SettingsScreen extends AppCompatActivity{
         emptyNoteMode.setChecked(currentUser.isEnableEmptyNote());
         fabButtonSizeMode.setChecked(currentUser.isIncreaseFabSize());
         showDeleteIcon.setChecked(currentUser.isEnableDeleteIcon());
+        if(currentUser.getPinNumber() > 0) {
+            lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
+            lockApp.setColorFilter(getColor(R.color.blue));
+        }
+        else
+            lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
         checkModeSettings();
 
+        updateCurrentLayout();
+    }
+
+    private void updateCurrentLayout(){
         if(currentUser.getLayoutSelected().equals("row"))
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         else if(currentUser.getLayoutSelected().equals("grid"))
@@ -680,6 +755,30 @@ public class SettingsScreen extends AppCompatActivity{
                 Helper.showMessage(this, "Accept Permission", "You need " +
                         "to accept permissions to backup", MotionToast.TOAST_ERROR);
         }
+    }
+
+    public void lockNote(int pin, String securityWord, boolean fingerprint){
+        realm.beginTransaction();
+        currentUser.setPinNumber(pin);
+        currentUser.setSecurityWord(securityWord);
+        currentUser.setFingerprint(fingerprint);
+        realm.commitTransaction();
+        Helper.showMessage(this, "App Locked", "App has been " +
+                "locked" , MotionToast.TOAST_SUCCESS);
+        lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
+        lockApp.setColorFilter(getColor(R.color.blue));
+    }
+
+    public void unLockNote(){
+        realm.beginTransaction();
+        currentUser.setPinNumber(0);
+        currentUser.setSecurityWord("");
+        currentUser.setFingerprint(false);
+        realm.commitTransaction();
+        Helper.showMessage(this, "App un-Locked", "App has been " +
+                "un-locked" , MotionToast.TOAST_SUCCESS);
+        lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
+        lockApp.setColorFilter(getColor(R.color.ultra_white));
     }
 
     public void restart(){

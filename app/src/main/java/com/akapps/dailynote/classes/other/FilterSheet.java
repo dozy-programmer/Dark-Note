@@ -46,21 +46,29 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_filter, container, false);
 
-        if (AppData.getAppData().isDarkerMode)
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        else
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-
         ImageView resetFilter = view.findViewById(R.id.reset_filter);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         SwitchCompat saveSort = view.findViewById(R.id.save_sort);
-
+        MaterialCardView sortByDate = view.findViewById(R.id.sort_by_date);
+        MaterialCardView sortByAlphabetical = view.findViewById(R.id.alphabetical_sort);
         MaterialCardView createdDateButton = view.findViewById(R.id.created_date);
         MaterialCardView editedDateButton = view.findViewById(R.id.edited_date);
         MaterialCardView oldToNewButton = view.findViewById(R.id.old_new);
         MaterialCardView newToOldButton = view.findViewById(R.id.new_old);
         MaterialCardView aToZButton = view.findViewById(R.id.a_z);
         MaterialCardView zToAButton = view.findViewById(R.id.z_a);
+
+        if (AppData.getAppData().isDarkerMode) {
+            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            sortByDate.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+            sortByDate.setStrokeColor(getContext().getColor(R.color.light_gray_2));
+            sortByDate.setStrokeWidth(8);
+            sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+            sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.light_gray_2));
+            sortByAlphabetical.setStrokeWidth(8);
+        }
+        else
+            view.setBackgroundColor(getContext().getColor(R.color.gray));
 
         // set current filter
         String dateType = Helper.getPreference(getContext(), "_dateType");

@@ -39,17 +39,23 @@ public class User extends RealmObject {
     private String budgetCharacter;
     private String expenseCharacter;
 
+    // note security and retrieval of password
+    private String securityWord;
+    private int pinNumber;
+    private boolean fingerprint;
+
     public User() {}
 
     public User(int userId) {
         this.userId = userId;
-        ultimateUser = proUser = openFoldersOnStart = showFolderNotes =
-                modeSettings = increaseFabSize = enableEmptyNote = enableDeleteIcon= false;
-        textSize = backupReminderOccurrence = 0;
+        ultimateUser = proUser = openFoldersOnStart = showFolderNotes
+                = increaseFabSize = enableEmptyNote =
+                        enableDeleteIcon = fingerprint = false;
+        textSize = backupReminderOccurrence = pinNumber = 0;
         layoutSelected = "stag";
-        showPreview = showPreviewNoteInfo = enableSublists = true;
+        showPreview = showPreviewNoteInfo = modeSettings = enableSublists = true;
         titleLines = contentLines = 3;
-        lastUpload = backupReminderDate = email = "";
+        lastUpload = backupReminderDate = email = securityWord = "";
         itemsSeparator = "newline";
         sublistSeparator = "space";
         budgetCharacter = "+$";
@@ -246,5 +252,29 @@ public class User extends RealmObject {
 
     public void setEnableDeleteIcon(boolean enableDeleteIcon) {
         this.enableDeleteIcon = enableDeleteIcon;
+    }
+
+    public String getSecurityWord() {
+        return securityWord;
+    }
+
+    public void setSecurityWord(String securityWord) {
+        this.securityWord = securityWord;
+    }
+
+    public int getPinNumber() {
+        return pinNumber;
+    }
+
+    public void setPinNumber(int pinNumber) {
+        this.pinNumber = pinNumber;
+    }
+
+    public boolean isFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(boolean fingerprint) {
+        this.fingerprint = fingerprint;
     }
 }

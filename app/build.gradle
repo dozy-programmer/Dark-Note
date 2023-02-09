@@ -10,9 +10,9 @@ android {
 
     defaultConfig {
         applicationId "com.akapps.dailynote"
-        minSdkVersion 26
+        minSdkVersion 24
         targetSdkVersion 33
-        versionCode 88
+        versionCode 90
         versionName "@string/app_version_int"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
@@ -52,7 +52,7 @@ android {
 dependencies {
     // base
     implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
 

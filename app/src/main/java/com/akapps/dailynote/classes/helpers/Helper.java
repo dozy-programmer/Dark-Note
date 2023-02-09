@@ -132,72 +132,76 @@ public class Helper {
     }
 
     public static String getTimeDifference(Calendar calendar, boolean before){
-        try {
-            String timeDifference = "";
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime dateSelected = LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
-            long secs, mins, hours, days, months, years;
-            if (before) {
-                years = ChronoUnit.YEARS.between(now, dateSelected);
-                months = ChronoUnit.MONTHS.between(now, dateSelected);
-                secs = ChronoUnit.SECONDS.between(now, dateSelected);
-                mins = ChronoUnit.MINUTES.between(now, dateSelected);
-                hours = ChronoUnit.HOURS.between(now, dateSelected);
-                days = ChronoUnit.DAYS.between(now, dateSelected);
-            } else {
-                years = ChronoUnit.YEARS.between(dateSelected, now);
-                months = ChronoUnit.MONTHS.between(dateSelected, now);
-                secs = ChronoUnit.SECONDS.between(dateSelected, now);
-                mins = ChronoUnit.MINUTES.between(dateSelected, now);
-                hours = ChronoUnit.HOURS.between(dateSelected, now);
-                days = ChronoUnit.DAYS.between(dateSelected, now);
-            }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            try {
+                String timeDifference = "";
+                LocalDateTime now = LocalDateTime.now();
 
-            if (years > 0) {
-                timeDifference += years + " year";
-                if (years > 1)
-                    timeDifference += "s ";
-                else
-                    timeDifference += " ";
+                LocalDateTime dateSelected = LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault());
+                long secs, mins, hours, days, months, years;
+                if (before) {
+                    years = ChronoUnit.YEARS.between(now, dateSelected);
+                    months = ChronoUnit.MONTHS.between(now, dateSelected);
+                    secs = ChronoUnit.SECONDS.between(now, dateSelected);
+                    mins = ChronoUnit.MINUTES.between(now, dateSelected);
+                    hours = ChronoUnit.HOURS.between(now, dateSelected);
+                    days = ChronoUnit.DAYS.between(now, dateSelected);
+                } else {
+                    years = ChronoUnit.YEARS.between(dateSelected, now);
+                    months = ChronoUnit.MONTHS.between(dateSelected, now);
+                    secs = ChronoUnit.SECONDS.between(dateSelected, now);
+                    mins = ChronoUnit.MINUTES.between(dateSelected, now);
+                    hours = ChronoUnit.HOURS.between(dateSelected, now);
+                    days = ChronoUnit.DAYS.between(dateSelected, now);
+                }
+
+                if (years > 0) {
+                    timeDifference += years + " year";
+                    if (years > 1)
+                        timeDifference += "s ";
+                    else
+                        timeDifference += " ";
+                }
+                if (months % 12 > 0) {
+                    timeDifference += months % 12 + " month";
+                    if (months % 12 > 1)
+                        timeDifference += "s ";
+                    else
+                        timeDifference += " ";
+                }
+                if (days % 30 > 0) {
+                    timeDifference += days % 30 + " day";
+                    if (days % 30 > 1)
+                        timeDifference += "s ";
+                    else
+                        timeDifference += " ";
+                }
+                if (hours % 24 > 0) {
+                    timeDifference += hours % 24 + " hour";
+                    if ((hours % 24) > 1)
+                        timeDifference += "s ";
+                    else
+                        timeDifference += " ";
+                }
+                if (mins % 60 > 0) {
+                    timeDifference += mins % 60 + " min";
+                    if ((mins % 60) > 1)
+                        timeDifference += "s ";
+                    else
+                        timeDifference += " ";
+                }
+                if (secs % 60 > 0) {
+                    timeDifference += secs % 60 + " sec";
+                    if ((secs % 60) > 1)
+                        timeDifference += "s";
+                }
+                return timeDifference;
+            } catch (Exception e) {
+                return "";
             }
-            if (months % 12 > 0) {
-                timeDifference += months % 12 + " month";
-                if (months % 12 > 1)
-                    timeDifference += "s ";
-                else
-                    timeDifference += " ";
-            }
-            if (days % 30 > 0) {
-                timeDifference += days % 30 + " day";
-                if (days % 30 > 1)
-                    timeDifference += "s ";
-                else
-                    timeDifference += " ";
-            }
-            if (hours % 24 > 0) {
-                timeDifference += hours % 24 + " hour";
-                if ((hours % 24) > 1)
-                    timeDifference += "s ";
-                else
-                    timeDifference += " ";
-            }
-            if (mins % 60 > 0) {
-                timeDifference += mins % 60 + " min";
-                if ((mins % 60) > 1)
-                    timeDifference += "s ";
-                else
-                    timeDifference += " ";
-            }
-            if (secs % 60 > 0) {
-                timeDifference += secs % 60 + " sec";
-                if ((secs % 60) > 1)
-                    timeDifference += "s";
-            }
-            return timeDifference;
         }
-        catch (Exception e){
+        else
             return "";
-        }
     }
 
     public static void startAlarm(Activity activity, Note currentNote, Realm realm) {
@@ -444,15 +448,14 @@ public class Helper {
         }catch (Exception e){}
     }
 
-    public static String removeAllMoneyAmounts(String text){
+    public static String removeAllMoneyAmounts(String text, String expenseKey){
         String newText = "";
         String[] tokens = text.replaceAll("\n", " ")
                 .replaceAll(",", "")
-                .replaceAll("\\$+", "\\$")
                 .split(" ");
 
         for(int i = 0; i < tokens.length; i++){
-            if(!tokens[i].contains("$"))
+            if(!tokens[i].contains(expenseKey))
                 newText += tokens[i] + " ";
         }
         return newText.trim();

@@ -38,6 +38,16 @@
                 android:layout_gravity="center">
             </TextView>
 
+            <ImageView
+                android:id="@+id/lock_app"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/unlock_icon"
+                app:tint="@color/ultra_white">
+            </ImageView>
+
         </androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.card.MaterialCardView

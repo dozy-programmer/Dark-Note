@@ -82,7 +82,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         folderColor = view.findViewById(R.id.folder_color);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
-        ImageView delete = view.findViewById(R.id.delete);
+        MaterialButton delete = view.findViewById(R.id.delete);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         TextInputEditText itemName = view.findViewById(R.id.item_name);
@@ -96,8 +96,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
             itemName.setTextColor(getContext().getColor(R.color.ultra_white));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         }
-        else
+        else {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+            delete.setBackgroundColor(getContext().getColor(R.color.light_gray));
+        }
 
         if(isAdding){
             title.setText("Adding");
