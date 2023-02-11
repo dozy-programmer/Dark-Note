@@ -17,6 +17,8 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
+import com.google.android.material.card.MaterialCardView;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import io.realm.Realm;
@@ -30,12 +32,14 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     private Context context;
     private FragmentActivity activity;
     private final Realm realm;
+    private boolean isNightMode;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
         private final ImageView selectedIcon;
         private final LinearLayout checkItem;
         private final LinearLayout edit;
+        private final MaterialCardView background;
 
         public MyViewHolder(View v) {
             super(v);
@@ -43,14 +47,17 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             selectedIcon = v.findViewById(R.id.check_status);
             checkItem = v.findViewById(R.id.checkItem);
             edit = v.findViewById(R.id.edit);
+            background = v.findViewById(R.id.background);
         }
     }
 
-    public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
+    public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote,
+                                      Realm realm, FragmentActivity activity, boolean isNightMode) {
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
+        this.isNightMode = isNightMode;
     }
 
     @Override
@@ -76,11 +83,17 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
+        if(isNightMode){
+            holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
+            holder.background.setStrokeColor(activity.getColor(R.color.gray));
+            holder.background.setStrokeWidth(5);
+        }
+
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
         if(isSelected) {
             holder.checklistText.setPaintFlags(holder.checklistText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.checklistText.setTextColor(context.getColor(R.color.light_gray_2));
+            holder.checklistText.setTextColor(context.getColor(R.color.gray));
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
         }
         else {

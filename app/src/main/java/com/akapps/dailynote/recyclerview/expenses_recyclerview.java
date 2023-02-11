@@ -59,8 +59,10 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         Expense currentExpense = expenses.get(position);
 
+        String expenseName = Helper.capitalize(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
+
         holder.expenseColor.setCardBackgroundColor(currentExpense.getColor());
-        holder.expenseName.setText(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
+        holder.expenseName.setText(expenseName);
         holder.expensePercentage.setText(formatDouble(currentExpense.getExpenseAmountPercentage()));
 
         holder.dropDown.setOnClickListener(view -> {

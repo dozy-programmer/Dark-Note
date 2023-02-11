@@ -109,7 +109,6 @@ public class SettingsScreen extends AppCompatActivity{
     private LinearLayout sublistSeparatorLayout;
     private LinearLayout budgetSymbolLayout;
     private LinearLayout expenseSymbolLayout;
-    private LinearLayout deleteIconLayout;
     private TextView accountText;
     private CustomPowerMenu linesMenu;
     private boolean isTitleSelected;
@@ -122,6 +121,7 @@ public class SettingsScreen extends AppCompatActivity{
     private SwitchCompat emptyNoteMode;
     private SwitchCompat fabButtonSizeMode;
     private SwitchCompat showDeleteIcon;
+    private SwitchCompat hideRichTextEditor;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -228,7 +228,6 @@ public class SettingsScreen extends AppCompatActivity{
         sublistSeparatorLayout = findViewById(R.id.sublist_item_sep_layout);
         budgetSymbolLayout = findViewById(R.id.budget_char_layout);
         expenseSymbolLayout = findViewById(R.id.expense_char_layout);
-        deleteIconLayout = findViewById(R.id.add_delete_icon);
         showPreview = findViewById(R.id.show_preview_switch);
         showPreviewNoteInfo = findViewById(R.id.show_info_switch);
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
@@ -238,6 +237,7 @@ public class SettingsScreen extends AppCompatActivity{
         emptyNoteMode = findViewById(R.id.empty_note_switch);
         fabButtonSizeMode = findViewById(R.id.fab_switch);
         showDeleteIcon = findViewById(R.id.add_delete_icon_switch);
+        hideRichTextEditor = findViewById(R.id.rich_text_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -527,10 +527,10 @@ public class SettingsScreen extends AppCompatActivity{
             realm.commitTransaction();
         });
 
-        showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        hideRichTextEditor.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
-            currentUser.setShowFolderNotes(isChecked);
+            currentUser.setHideRichTextEditor(isChecked);
             realm.commitTransaction();
         });
 
@@ -610,6 +610,7 @@ public class SettingsScreen extends AppCompatActivity{
 
     private void checkModeSettings(){
         if(currentUser.isModeSettings()) {
+            AppData.getAppData().isDarkerMode = true;
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
             AppData.getAppData().isDarkerMode = true;
@@ -705,6 +706,7 @@ public class SettingsScreen extends AppCompatActivity{
         findViewById(R.id.gap_eleven).setBackgroundColor(gapColor);
         findViewById(R.id.gap_twelve).setBackgroundColor(gapColor);
         findViewById(R.id.gap_thirteen).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_fourteen).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings(){
@@ -717,6 +719,7 @@ public class SettingsScreen extends AppCompatActivity{
         emptyNoteMode.setChecked(currentUser.isEnableEmptyNote());
         fabButtonSizeMode.setChecked(currentUser.isIncreaseFabSize());
         showDeleteIcon.setChecked(currentUser.isEnableDeleteIcon());
+        hideRichTextEditor.setChecked(currentUser.isHideRichTextEditor());
         if(currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));

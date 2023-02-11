@@ -9,6 +9,7 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class AppData{
     private static AppData appData;
@@ -39,11 +40,19 @@ public class AppData{
 
     public static ArrayList getAllNotes(Context context){
         Realm realm = getRealm(context);
-        RealmResults<Note> allNotes = realm.where(Note.class).equalTo("trash", false).findAll();
+        RealmResults<Note> allNotes = realm.where(Note.class)
+                .equalTo("archived", false)
+                .equalTo("trash", false)
+                .sort("dateEdited", Sort.DESCENDING).findAll();
         ArrayList<Note> noteArrayList = new ArrayList<>();
 
         noteArrayList.addAll(realm.copyFromRealm(allNotes));
-        Log.d("Here", "size of list -> " + noteArrayList.size());
+
+        for(int i= 0; i< noteArrayList.size(); i++) {
+            Note currentNote = noteArrayList.get(i);
+            if (currentNote.getTitle().isEmpty())
+                noteArrayList.get(i).setTitle("- No Title -");
+        }
 
         if(realm != null)
             realm.close();

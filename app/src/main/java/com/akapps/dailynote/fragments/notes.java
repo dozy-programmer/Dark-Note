@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +105,27 @@ public class notes extends Fragment{
         super.onCreate(savedInstanceState);
 
         context = getContext();
+
+        Intent intent = getActivity().getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if (type != null && "text/plain".equals(type)) {
+                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                String sharedTitle = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                Intent note = new Intent(getActivity(), NoteEdit.class);
+                if (sharedText != null)
+                    note.putExtra("otherAppNote", sharedText);
+                else
+                    note.putExtra("otherAppNote", "");
+                if (sharedTitle != null)
+                    note.putExtra("otherAppTitle", sharedTitle);
+                else
+                    note.putExtra("otherAppTitle", "");
+                getActivity().startActivity(note);
+            }
+        }
 
         // initialize database and get data
         try {
@@ -230,6 +252,7 @@ public class notes extends Fragment{
 
     private void updateToolbarColors(){
         if(user.isModeSettings()) {
+            AppData.getAppData().isDarkerMode = true;
             searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             filterNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             settings.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));

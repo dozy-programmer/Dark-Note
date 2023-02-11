@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.OptIn;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
@@ -17,6 +19,8 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -37,7 +41,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         private final TextView item_category;
         private final ImageView folder_icon;
         private View view;
-        private LinearLayout background;
+        private ConstraintLayout background;
 
         public MyViewHolder(View v) {
             super(v);
@@ -78,7 +82,9 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                         .equalTo("category", currentFolder.getName())
                         .findAll().size();
 
-        holder.item_category.setText(currentFolder.getName() + " (" + numberOfNotesInCategory +")");
+        holder.item_category.setText(currentFolder.getName());
+        Helper.addNotificationNumber(activity, holder.folder_icon, numberOfNotesInCategory,
+                10, 25, R.color.blue, R.color.ultra_white);
 
         if(currentFolder.getColor()!=0)
             holder.folder_icon.setColorFilter(currentFolder.getColor());

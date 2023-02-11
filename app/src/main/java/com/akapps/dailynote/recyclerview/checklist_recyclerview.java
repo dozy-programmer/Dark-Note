@@ -56,6 +56,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final FloatingActionButton addSubChecklist;
         private final MaterialCardView itemImageLayout;
         private final ImageView itemImage;
+        private final MaterialCardView background;
 
         public MyViewHolder(View v) {
             super(v);
@@ -69,6 +70,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             itemImageLayout = v.findViewById(R.id.item_image_layout);
             itemImage = v.findViewById(R.id.item_image);
             deleteIcon = v.findViewById(R.id.delete_checklist_item);
+            background = v.findViewById(R.id.background);
         }
     }
 
@@ -107,6 +109,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         else
             holder.deleteIcon.setVisibility(View.GONE);
 
+        if(user.isModeSettings()){
+            holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
+            holder.background.setStrokeColor(activity.getColor(R.color.light_gray));
+            holder.background.setStrokeWidth(5);
+        }
+
         holder.subChecklist.setAdapter(null);
         RecyclerView.Adapter subChecklistAdapter = null;
         if(user.isEnableSublists() && currentNote.isEnableSublist()) {
@@ -122,7 +130,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                     holder.subChecklist.setVisibility(View.VISIBLE);
                     subChecklistAdapter = new sub_checklist_recyclerview(realm.where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
-                            .sort("positionInList").findAll(), currentNote, realm, activity);
+                            .sort("positionInList").findAll(), currentNote, realm, activity, user.isModeSettings());
                     holder.subChecklist.setAdapter(subChecklistAdapter);
                     subChecklistAdapter.notifyItemChanged(position);
                 }
@@ -166,7 +174,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // to be filled and changes text color to gray
         if(isSelected) {
             holder.checklistText.setPaintFlags(holder.checklistText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.checklistText.setTextColor(context.getColor(R.color.gray));
+            holder.checklistText.setTextColor(context.getColor(R.color.light_gray));
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
         }
         else {

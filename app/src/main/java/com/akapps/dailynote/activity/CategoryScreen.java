@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
@@ -77,6 +78,7 @@ public class CategoryScreen extends AppCompatActivity {
     private boolean isNotesSelected;
     public boolean isEditing;
     private String titleBefore;
+    boolean isDarkMode;
 
     // category empty view
     private TextView showEmptyMessage;
@@ -88,6 +90,7 @@ public class CategoryScreen extends AppCompatActivity {
         overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
         context = this;
+        isDarkMode = AppData.getAppData().isDarkerMode;
 
         // if orientation changes, retrieve these values
         if (savedInstanceState != null) {
@@ -133,12 +136,10 @@ public class CategoryScreen extends AppCompatActivity {
 
         initializeLayout();
 
-        User user = realm.where(User.class).findFirst();
-        assert user != null;
-        if (user.isModeSettings()) {
+
+        if (isDarkMode) {
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
-            reminder.setBackgroundColor(context.getColor(R.color.light_gray));
         }
         else
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
@@ -193,11 +194,13 @@ public class CategoryScreen extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        archived.setText(archived.getText() + " (" + archivedAllNotes.size() + ")");
-        pinned.setText(pinned.getText() + " [" + pinnedAllNotes.size() + "]");
-        trash.setText(trash.getText() + " (" + trashAllNotes.size() + ")");
-        locked.setText(locked.getText() + " [" + lockedAllNotes.size() + "]");
-        reminder.setText(reminder.getText() + " [" + reminderAllNotes.size() + "]");
+        // text
+        archived.setText(archived.getText());
+        trash.setText(trash.getText());
+        // buttons
+        locked.setText(locked.getText());
+        reminder.setText(reminder.getText());
+        pinned.setText(pinned.getText());
 
         if(editingRegularNote){
             allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
@@ -222,9 +225,9 @@ public class CategoryScreen extends AppCompatActivity {
             noCategoryNotesSize += uncategorizedNotes.size();
             allSelected += allSelectedNotes.size();
 
-            showAllNotes.setText("All Notes (" + allNotesSize+ ")");
+            showAllNotes.setText("All Notes");
 
-            noCategory.setText("Uncategorized notes (" + noCategoryNotesSize + ")");
+            noCategory.setText("Uncategorized notes");
 
             if(allSelected == 0)
                 unselectCategories.setVisibility(View.GONE);
@@ -253,6 +256,44 @@ public class CategoryScreen extends AppCompatActivity {
 
                 reminder.setVisibility(View.INVISIBLE);
                 locked.setVisibility(View.GONE);
+            }
+            else{
+                // text
+                Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
+                        45, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                Helper.addNotificationNumber(this, showAllNotes, allNotesSize, 0,
+                        40, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                Helper.addNotificationNumber(this, archived, archivedAllNotes.size(), 0,
+                        40, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                Helper.addNotificationNumber(this, trash, trashAllNotes.size(), 0,
+                        45, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                // buttons
+                Helper.addNotificationNumber(this, locked, lockedAllNotes.size(), 75,
+                        65, R.color.transparent, isDarkMode ? R.color.blue : R.color.ultra_white);
+                Helper.addNotificationNumber(this, reminder, reminderAllNotes.size(), 75,
+                        65, R.color.transparent, R.color.green);
+                Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
+                        65, R.color.transparent, isDarkMode ? R.color.golden_rod : R.color.gray);
+
+                if(AppData.getAppData().isDarkerMode){
+                    pinned.setBackgroundColor(getColor(R.color.darker_mode));
+                    pinned.setStrokeColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
+                    pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
+                    pinned.setIconTintResource(R.color.golden_rod);
+                    pinned.setTextColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
+                    pinned.setStrokeWidth(3);
+
+                    reminder.setBackgroundColor(getColor(R.color.darker_mode));
+                    reminder.setStrokeColor(ColorStateList.valueOf(getColor(R.color.green)));
+                    reminder.setStrokeWidth(3);
+
+                    locked.setBackgroundColor(getColor(R.color.darker_mode));
+                    locked.setStrokeColor(ColorStateList.valueOf(getColor(R.color.blue)));
+                    locked.setTextColor(ColorStateList.valueOf(getColor(R.color.blue)));
+                    locked.setIcon(getDrawable(R.drawable.lock_icon));
+                    locked.setIconTintResource(R.color.blue);
+                    locked.setStrokeWidth(3);
+                }
             }
         }
 

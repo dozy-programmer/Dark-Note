@@ -56,6 +56,14 @@ public class WidgetListView extends RemoteViewsService {
 
             if(!currentItem.contains("-Note-")) {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);
+
+                if(currentItem.contains("⤷")) {
+                    currentItem = currentItem.replace("⤷", "");
+                    remoteView.setViewVisibility(R.id.sublist_spacing, View.VISIBLE);
+                }
+                else
+                    remoteView.setViewVisibility(R.id.sublist_spacing, View.GONE);
+
                 if (currentItem.contains("~~")) {
                     remoteView.setInt(R.id.checklist_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
                     remoteView.setTextColor(R.id.checklist_text, getColor(R.color.light_light_gray));

@@ -2,13 +2,19 @@ package com.akapps.dailynote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.fragment.app.FragmentActivity;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.fragments.notes;
 import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class Homepage extends FragmentActivity{
 
@@ -33,6 +39,11 @@ public class Homepage extends FragmentActivity{
             }
 
             user = realm.where(User.class).findFirst();
+
+            RealmResults<Note> notesWithWidgets = realm.where(Note.class)
+                    .greaterThan("widgetId", 0).findAll();
+            for(Note currentNote: notesWithWidgets)
+                Helper.updateWidget(currentNote, this, realm);
 
             if(user != null) {
                 if (user.isModeSettings())

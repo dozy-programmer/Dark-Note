@@ -143,6 +143,8 @@ public class RealmDatabase {
                 schema.get("User").addField("fingerprint", boolean.class);
             if(!schema.get("User").hasField("pinNumber"))
                 schema.get("User").addField("pinNumber", int.class);
+            if(!schema.get("User").hasField("hideRichTextEditor"))
+                schema.get("User").addField("hideRichTextEditor", boolean.class);
         }
     }
 }

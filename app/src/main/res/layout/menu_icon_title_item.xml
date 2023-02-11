@@ -7,7 +7,8 @@
     <ImageView
         android:id="@+id/item_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:padding="10dp"
         android:src="@drawable/home_icon">
     </ImageView>

@@ -57,11 +57,11 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         SubExpense currentExpense = expenses.get(position);
 
-        holder.expenseName.setText(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
+        String expenseName = Helper.capitalize(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
+
+        holder.expenseName.setText(expenseName);
         holder.expenseAmount.setText(formatMoney(currentExpense.getTotalExpenseAmount()));
         holder.expensePercentage.setText(formatPercentage(currentExpense.getTotalExpenseAmount() / totalBudget));
-
-
 
         if(currentExpense.getExpenseName().toLowerCase().contains("total"))
             holder.background.setStrokeColor(holder.view.getContext().getColor(R.color.pressed_blue));

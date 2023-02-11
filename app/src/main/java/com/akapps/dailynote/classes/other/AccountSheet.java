@@ -75,13 +75,13 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
         if (AppData.getAppData().isDarkerMode) {
             emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
-            emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
-            emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
-            emailInput.setTextColor(getContext().getColor(R.color.gray));
+            emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
+            emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
+            emailInput.setTextColor(getContext().getColor(R.color.light_light_gray));
             passwordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
-            passwordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
-            passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray)));
-            passwordInput.setTextColor(getContext().getColor(R.color.gray));
+            passwordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
+            passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
+            passwordInput.setTextColor(getContext().getColor(R.color.light_light_gray));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
         }
         else

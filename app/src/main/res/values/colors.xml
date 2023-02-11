@@ -22,6 +22,7 @@
     <color name="darker_mode">#000000</color>
     <color name="dark_gold">#eebc1d</color>
     <color name="not_too_dark_gray">#323334</color>
+    <color name="transparent">#00000000</color>
 
     <!-- Override TextInputLayout Box Stroke Color !-->
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/darker_blue</color>

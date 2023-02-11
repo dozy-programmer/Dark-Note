@@ -38,6 +38,7 @@ public class User extends RealmObject {
     private String sublistSeparator;
     private String budgetCharacter;
     private String expenseCharacter;
+    private boolean hideRichTextEditor;
 
     // note security and retrieval of password
     private String securityWord;
@@ -49,7 +50,7 @@ public class User extends RealmObject {
     public User(int userId) {
         this.userId = userId;
         ultimateUser = proUser = openFoldersOnStart = showFolderNotes
-                = increaseFabSize = enableEmptyNote =
+                = increaseFabSize = enableEmptyNote = hideRichTextEditor =
                         enableDeleteIcon = fingerprint = false;
         textSize = backupReminderOccurrence = pinNumber = 0;
         layoutSelected = "stag";
@@ -276,5 +277,13 @@ public class User extends RealmObject {
 
     public void setFingerprint(boolean fingerprint) {
         this.fingerprint = fingerprint;
+    }
+
+    public boolean isHideRichTextEditor() {
+        return hideRichTextEditor;
+    }
+
+    public void setHideRichTextEditor(boolean hideRichTextEditor) {
+        this.hideRichTextEditor = hideRichTextEditor;
     }
 }

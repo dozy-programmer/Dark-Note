@@ -16,7 +16,7 @@
         android:maxLines="2"
         android:text="Loading..."
         android:textColor="@color/ultra_white"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <ListView

@@ -64,57 +64,61 @@
 
         <TextView
             android:id="@+id/all_notes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:fontFamily="sans-serif"
-            android:paddingVertical="5dp"
+            android:paddingVertical="2dp"
+            android:paddingRight="15dp"
             android:text="All Notes"
             android:textColor="@color/ultra_white"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/no_category"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:paddingVertical="5dp"
+            android:paddingVertical="2dp"
+            android:paddingRight="15dp"
             android:text="Uncategorized Notes"
             android:textColor="@color/ultra_white"
             android:textSize="18sp"></TextView>
 
         <TextView
             android:id="@+id/trash"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
+            android:paddingRight="15dp"
             android:drawableLeft="@drawable/delete_icon"
             android:drawablePadding="10dp"
-            android:paddingVertical="5dp"
+            android:paddingVertical="2dp"
             android:text="Trash"
             android:textColor="@color/red"
             android:textSize="20sp"></TextView>
 
         <TextView
             android:id="@+id/archived"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
+            android:paddingRight="15dp"
             android:drawableLeft="@drawable/archive_icon"
             android:drawablePadding="10dp"
             android:drawableTint="@color/cornflower_blue"
-            android:paddingVertical="5dp"
+            android:paddingVertical="2dp"
             android:text="Archived"
             android:textColor="@color/cornflower_blue"
             android:textSize="18sp"></TextView>
 
         <TextView
             android:id="@+id/un_pinned"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_marginHorizontal="12dp"
-            android:paddingVertical="5dp"
+            android:paddingVertical="2dp"
             android:text="Un-Pin"
             android:textColor="@color/gold"
             android:textSize="18sp"></TextView>
@@ -124,7 +128,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="2dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -150,7 +154,7 @@
                 app:cornerRadius="15dp"
                 android:layout_marginLeft="5dp"
                 android:backgroundTint="@color/black"
-                android:paddingVertical="5dp"
+                android:paddingVertical="2dp"
                 android:text="Reminders"
                 android:layout_weight="1"
                 android:textColor="#0AFF19"
@@ -167,7 +171,7 @@
             app:cornerRadius="15dp"
             android:layout_marginHorizontal="12dp"
             android:backgroundTint="@color/blue"
-            android:paddingVertical="5dp"
+            android:paddingVertical="2dp"
             android:text="Locked"
             android:layout_weight="1"
             android:textColor="@color/ultra_white"
@@ -178,7 +182,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:paddingVertical="5dp"
+            android:paddingVertical="2dp"
             android:text="Unselect Category"
             android:textColor="@color/ultra_white"
             android:textSize="18sp"></TextView>
@@ -190,7 +194,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="20dp"
         android:paddingBottom="70dp"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"

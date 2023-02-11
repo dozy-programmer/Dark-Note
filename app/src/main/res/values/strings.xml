@@ -2,11 +2,11 @@
 
     <!-- App Data !-->
     <string name="app_name">Dark Note</string>
-    <string name="schema">30</string>
+    <string name="schema">31</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">Version 9.9</string>
-    <string name="app_version_int">9.9</string>
+    <string name="app_version">Version 10.0</string>
+    <string name="app_version_int">10.0</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>

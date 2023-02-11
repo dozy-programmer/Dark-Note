@@ -13,12 +13,21 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/sublist_spacing"
+            android:layout_width="1dp"
+            android:layout_height="10dp"
+            android:visibility="gone"
+            android:layout_gravity="center_vertical"
+            android:layout_marginVertical="5dp"
+            android:layout_marginLeft="5dp"></ImageView>
+
+        <ImageView
             android:id="@+id/widget_check_status"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_gravity="center_vertical"
             android:layout_marginVertical="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="2dp"
             android:src="@drawable/unchecked_icon"></ImageView>
 
         <TextView
@@ -27,6 +36,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:text="Item"
+            android:textSize="10sp"
             android:background="@drawable/round_corner"
             android:paddingVertical="8dp"
             android:paddingLeft="5dp"

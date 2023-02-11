@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,15 +19,22 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.OptIn;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.other.AppWidget;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -459,5 +468,54 @@ public class Helper {
                 newText += tokens[i] + " ";
         }
         return newText.trim();
+    }
+
+    public static void updateWidget(Note currentNote, Context context, Realm realm){
+        try {
+            if(currentNote == null) return;
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(currentNote.getWidgetId());
+            if(info != null) {
+                if (currentNote.getWidgetId() > 0) {
+                    AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
+                    appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
+                }
+            }
+            else {
+                if(realm != null && !realm.isClosed())
+                realm.beginTransaction();
+                currentNote.setWidgetId(-1);
+                realm.commitTransaction();
+            }
+        } catch (Exception e) {}
+    }
+
+    public static String capitalize(String word){
+        if(!word.isEmpty())
+            word = word.substring(0, 1).toUpperCase() + word.substring(1);
+
+        return word;
+    }
+
+    public static void addNotificationNumber(Activity activity, View view, int number, int hOffset,
+                                             int vOffset, int badgeColor, int badgeTextColor){
+        // add size of folder via notification indicator
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            @OptIn(markerClass = com.google.android.material.badge.ExperimentalBadgeUtils.class)
+            public void onGlobalLayout() {
+                BadgeDrawable badgeDrawable = BadgeDrawable.create(activity);
+                badgeDrawable.setNumber(number);
+                // change position of Badge
+                badgeDrawable.setHorizontalOffset(hOffset);
+                badgeDrawable.setVerticalOffset(vOffset);
+                badgeDrawable.setBackgroundColor(activity.getColor(badgeColor));
+                badgeDrawable.setBadgeTextColor(activity.getColor(badgeTextColor));
+
+                BadgeUtils.attachBadgeDrawable(badgeDrawable, view, null);
+                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 }
