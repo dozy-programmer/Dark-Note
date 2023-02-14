@@ -1,6 +1,7 @@
 package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -99,7 +100,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         else {
             holder.checklistText.setPaintFlags(0);
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.unchecked_icon));
-            holder.checklistText.setTextColor(currentNote.getTextColor());
+            holder.checklistText.setTextColor(darkenColor(currentNote.getTextColor()));
         }
 
         // if checklist item is clicked, then it updates the status of the item
@@ -112,6 +113,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             openEditDialog(checkListItem, position);
         });
 
+    }
+
+    int darkenColor(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] *= 0.7f;
+        return Color.HSVToColor(hsv);
     }
 
     @Override

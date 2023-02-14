@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -75,6 +78,14 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         // retrieves current photo object
         Backup currentBackup = allBackups.get(position);
 
+        if(AppData.getAppData().isDarkerMode){
+            holder.background.setCardBackgroundColor(context.getColor(R.color.darker_mode));
+            holder.background.setStrokeColor(context.getColor(R.color.light_gray));
+            holder.background.setStrokeWidth(5);
+        }
+        else
+            holder.background.setCardBackgroundColor(context.getColor(R.color.light_gray));
+
         String fileName = currentBackup.getFileName().replace("_backup.zip", "");
 
         double fileSize = 0;
@@ -106,8 +117,6 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
             deleteBackupFile(currentBackup);
             return false;
         });
-
-        holder.background.setCardBackgroundColor(isLightMode ? context.getColor(R.color.darker_mode) : context.getColor(R.color.gray));
     }
 
     @Override

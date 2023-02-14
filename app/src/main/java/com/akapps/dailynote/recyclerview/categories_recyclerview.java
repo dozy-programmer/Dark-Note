@@ -84,7 +84,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
 
         holder.item_category.setText(currentFolder.getName());
         Helper.addNotificationNumber(activity, holder.folder_icon, numberOfNotesInCategory,
-                10, 25, R.color.blue, R.color.ultra_white);
+                20, false, R.color.blue, R.color.ultra_white);
 
         if(currentFolder.getColor()!=0)
             holder.folder_icon.setColorFilter(currentFolder.getColor());

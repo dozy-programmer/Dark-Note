@@ -38,6 +38,8 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -216,7 +218,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               else{
                   // initialize layout
                   title.setText("Upload");
-                  info.setText("Max Uploads of 12 has been reached. Please delete a backup by pressing sync button.");
+                  info.setText("Max Uploads of 20 has been reached. Please delete a backup by pressing sync button.");
                   info.setGravity(Gravity.CENTER);
                   securityWord.setVisibility(View.GONE);
               }
@@ -295,8 +297,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             securityWord.setVisibility(View.GONE);
             info.setTextColor(getContext().getColor(R.color.pressed_blue));
             info.setText(getContext().getString(R.string.try_out_budget)
-                    .replaceAll("\\$", expenseChar)
-                    .replaceAll("\\+" + expenseChar, budgetChar));
+                    .replaceAll("\\$", Matcher.quoteReplacement(expenseChar))
+                    .replaceAll("\\+" + expenseChar, Matcher.quoteReplacement(budgetChar)));
           }
 
 

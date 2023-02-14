@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.akapps.dailynote.R;
@@ -43,7 +45,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         MaterialCardView checkedTop = view.findViewById(R.id.checked_top);
         MaterialCardView addedBottom = view.findViewById(R.id.add_bottom);
         MaterialCardView addedTop = view.findViewById(R.id.add_top);
-        MaterialButton clearFilter = view.findViewById(R.id.clear_filter);
+        ImageView clearFilter = view.findViewById(R.id.clear_filter);
         CheckBox applyAll = view.findViewById(R.id.apply_all);
 
         if (AppData.getAppData().isDarkerMode) {
@@ -51,6 +53,13 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
             background.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             background.setStrokeColor(getContext().getColor(R.color.gray));
             background.setStrokeWidth(8);
+
+            darkModeItemLayout(aZ);
+            darkModeItemLayout(zA);
+            darkModeItemLayout(checkedBottom);
+            darkModeItemLayout(checkedTop);
+            darkModeItemLayout(addedBottom);
+            darkModeItemLayout(addedTop);
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
@@ -62,18 +71,30 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
             this.dismiss();
         }
 
-        if (sort == 1)
+        if (sort == 1) {
             aZ.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-        else if (sort == 2)
+            aZ.setStrokeColor(getContext().getColor(R.color.havelock_blue));
+        }
+        else if (sort == 2) {
             zA.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-        else if (sort == 4)
+            zA.setStrokeColor(getContext().getColor(R.color.havelock_blue));
+        }
+        else if (sort == 4) {
             checkedBottom.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-        else if (sort == 3)
+            checkedBottom.setStrokeColor(getContext().getColor(R.color.havelock_blue));
+        }
+        else if (sort == 3) {
             checkedTop.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-        else if (sort == 5)
+            checkedTop.setStrokeColor(getContext().getColor(R.color.havelock_blue));
+        }
+        else if (sort == 5) {
             addedBottom.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
-        else if (sort == 6)
+            addedBottom.setStrokeColor(getContext().getColor(R.color.havelock_blue));
+        }
+        else if (sort == 6) {
             addedTop.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
+            addedTop.setStrokeColor(getContext().getColor(R.color.havelock_blue));
+        }
 
         /** sorting
          if no sort or cleared, then it is -1
@@ -198,6 +219,12 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         return view;
+    }
+
+    private void darkModeItemLayout(MaterialCardView view){
+        view.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+        view.setStrokeColor(getContext().getColor(R.color.gray));
+        view.setStrokeWidth(8);
     }
 
     @Override

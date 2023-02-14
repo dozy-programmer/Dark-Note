@@ -43,6 +43,8 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
+
 import io.realm.Realm;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
@@ -239,7 +241,7 @@ public class Helper {
                     pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
                             PendingIntent.FLAG_ONE_SHOT);
 
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                         dateToCal(currentNote.getReminderDateTime()).getTimeInMillis(),
                         pendingIntent);
             }
@@ -414,7 +416,7 @@ public class Helper {
                     }, 3000);
                 }, 3000);
             }, 3000);
-        }, 2000);
+        }, 3000);
     }
 
     // deletes cache directory to ensure app size does not get too big
@@ -499,7 +501,7 @@ public class Helper {
     }
 
     public static void addNotificationNumber(Activity activity, View view, int number, int hOffset,
-                                             int vOffset, int badgeColor, int badgeTextColor){
+                                             boolean center, int badgeColor, int badgeTextColor){
         // add size of folder via notification indicator
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -509,7 +511,7 @@ public class Helper {
                 badgeDrawable.setNumber(number);
                 // change position of Badge
                 badgeDrawable.setHorizontalOffset(hOffset);
-                badgeDrawable.setVerticalOffset(vOffset);
+                badgeDrawable.setVerticalOffset(center ? view.getHeight() / 2 : 25);
                 badgeDrawable.setBackgroundColor(activity.getColor(badgeColor));
                 badgeDrawable.setBadgeTextColor(activity.getColor(badgeTextColor));
 
@@ -517,5 +519,11 @@ public class Helper {
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
+    }
+
+    public static int getRandomColor(){
+        Random rnd = new Random();
+        int randomColorGenerated = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+        return !isColorDark(randomColorGenerated) ? randomColorGenerated : getRandomColor();
     }
 }

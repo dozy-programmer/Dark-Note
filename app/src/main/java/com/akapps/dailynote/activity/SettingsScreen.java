@@ -278,7 +278,7 @@ public class SettingsScreen extends AppCompatActivity{
             });
         }
 
-        Helper.moveBee(findViewById(R.id.version_icon), 200f);
+        Helper.moveBee(findViewById(R.id.version_icon), 300f);
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
         if(null == currentUser.getEmail()){

@@ -1,18 +1,23 @@
 package com.akapps.dailynote.classes.helpers;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.Settings;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.activity.SettingsScreen;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class NotificationHelper extends ContextWrapper {
     public String channelID = "channelID";
     public String channelName = "Channel Name";
@@ -43,6 +48,7 @@ public class NotificationHelper extends ContextWrapper {
 
     private void createChannel() {
         NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         getManager().createNotificationChannel(channel);
     }
 
@@ -78,6 +84,7 @@ public class NotificationHelper extends ContextWrapper {
                 activityIntent.putExtra("id", noteId);
                 activityIntent.putExtra("isChecklist", isCheckList);
             }
+            activityIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
 
         PendingIntent contentIntent;
@@ -97,9 +104,12 @@ public class NotificationHelper extends ContextWrapper {
                 .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
                 .setAutoCancel(true)
                 .setOngoing(false)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .addAction(R.drawable.note_icon, buttonTitle, contentIntent)
                 .setContentIntent(contentIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setFullScreenIntent(contentIntent, true);
+
         return builder;
     }
 }

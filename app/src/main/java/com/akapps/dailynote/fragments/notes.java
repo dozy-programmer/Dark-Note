@@ -165,6 +165,7 @@ public class notes extends Fragment{
 
         if(user.isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
+        allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
         updateDateEditedMilli();
         unSelectAllNotes();
@@ -707,6 +708,7 @@ public class notes extends Fragment{
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
         if(user.isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
+        allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
         populateAdapter(allNotes);
         isListEmpty(allNotes.size(), false);
     }
@@ -730,6 +732,7 @@ public class notes extends Fragment{
 
                 if(user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
+                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             }
             else if (newestToOldest) {
                 allNotes =  realm.where(Note.class)
@@ -739,6 +742,7 @@ public class notes extends Fragment{
 
                 if(user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
+                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             }
             else if (aToZ) {
                 allNotes =  realm.where(Note.class)
@@ -748,6 +752,7 @@ public class notes extends Fragment{
 
                 if(user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
+                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             }
             else if (zToA) {
                 allNotes =  realm.where(Note.class)
@@ -757,6 +762,7 @@ public class notes extends Fragment{
 
                 if(user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
+                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             }
         }
         populateAdapter(allNotes);

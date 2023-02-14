@@ -33,6 +33,7 @@
             android:gravity="center"
             android:text="Adding New Item"
             android:maxLines="2"
+            android:ellipsize="end"
             android:layout_marginTop="10dp"
             android:padding="5dp"
             android:fontFamily="@font/baloo_bhai"

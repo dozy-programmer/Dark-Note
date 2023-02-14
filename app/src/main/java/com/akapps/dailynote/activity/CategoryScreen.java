@@ -260,20 +260,20 @@ public class CategoryScreen extends AppCompatActivity {
             else{
                 // text
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
-                        45, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
                 Helper.addNotificationNumber(this, showAllNotes, allNotesSize, 0,
-                        40, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
                 Helper.addNotificationNumber(this, archived, archivedAllNotes.size(), 0,
-                        40, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
                 Helper.addNotificationNumber(this, trash, trashAllNotes.size(), 0,
-                        45, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
                 // buttons
                 Helper.addNotificationNumber(this, locked, lockedAllNotes.size(), 75,
-                        65, R.color.transparent, isDarkMode ? R.color.blue : R.color.ultra_white);
+                        true, R.color.transparent, isDarkMode ? R.color.blue : R.color.ultra_white);
                 Helper.addNotificationNumber(this, reminder, reminderAllNotes.size(), 75,
-                        65, R.color.transparent, R.color.green);
+                        true, R.color.transparent, R.color.green);
                 Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
-                        65, R.color.transparent, isDarkMode ? R.color.golden_rod : R.color.gray);
+                        true, R.color.transparent, isDarkMode ? R.color.golden_rod : R.color.gray);
 
                 if(AppData.getAppData().isDarkerMode){
                     pinned.setBackgroundColor(getColor(R.color.darker_mode));
@@ -281,18 +281,18 @@ public class CategoryScreen extends AppCompatActivity {
                     pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
                     pinned.setIconTintResource(R.color.golden_rod);
                     pinned.setTextColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
-                    pinned.setStrokeWidth(3);
+                    pinned.setStrokeWidth(5);
 
                     reminder.setBackgroundColor(getColor(R.color.darker_mode));
                     reminder.setStrokeColor(ColorStateList.valueOf(getColor(R.color.green)));
-                    reminder.setStrokeWidth(3);
+                    reminder.setStrokeWidth(5);
 
                     locked.setBackgroundColor(getColor(R.color.darker_mode));
                     locked.setStrokeColor(ColorStateList.valueOf(getColor(R.color.blue)));
                     locked.setTextColor(ColorStateList.valueOf(getColor(R.color.blue)));
                     locked.setIcon(getDrawable(R.drawable.lock_icon));
                     locked.setIconTintResource(R.color.blue);
-                    locked.setStrokeWidth(3);
+                    locked.setStrokeWidth(5);
                 }
             }
         }

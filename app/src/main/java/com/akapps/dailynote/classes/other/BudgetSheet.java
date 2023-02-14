@@ -2,6 +2,7 @@ package com.akapps.dailynote.classes.other;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.recyclerview.expenses_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -33,6 +35,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
@@ -133,8 +136,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
         String wrongFormatMessage = "";
         double totalExpenses = 0, leftOver = 0;
         String leftOverText = "";
-        int colorCounter = 0;
-        int[] randomColor = getContext().getResources().getIntArray(R.array.budgetColors);
+
+        int randomColorGenerated = 0;
 
         for (CheckListItem currentItem: noteChecklist){
             double currentExpenseAmount = 0;
@@ -187,14 +190,12 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
             }
 
             if(currentExpenseAmount > 0) {
+                randomColorGenerated = Helper.getRandomColor();
                 totalExpenses += currentExpenseAmount;
-                currentExpensesList.add(new DonutSection(currentItem.getText().trim(), randomColor[colorCounter], (float) currentExpenseAmount));
+                currentExpensesList.add(new DonutSection(currentItem.getText().trim(), randomColorGenerated, (float) currentExpenseAmount));
                 currentExpenseSubList.add(new SubExpense("Total", currentExpenseAmount));
-                expensesList.add(new Expense(randomColor[colorCounter++], currentItem.getText().trim(),
+                expensesList.add(new Expense(randomColorGenerated, currentItem.getText().trim(),
                         currentExpenseAmount / budget, currentExpenseAmount, currentExpenseSubList));
-
-                if(colorCounter > getContext().getResources().getIntArray(R.array.budgetColors).length)
-                    colorCounter = 0;
             }
         }
 
@@ -215,8 +216,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
             }
             currentExpenseSubList.add(new SubExpense(leftOverText, leftOver));
 
-            currentExpensesList.add(new DonutSection(leftOverText, randomColor[colorCounter], (float) leftOver));
-            expensesList.add(new Expense(randomColor[colorCounter], leftOverText,
+            currentExpensesList.add(new DonutSection(leftOverText, randomColorGenerated, (float) leftOver));
+            expensesList.add(new Expense(randomColorGenerated, leftOverText,
                     leftOver/budget, leftOver, currentExpenseSubList));
         }
 

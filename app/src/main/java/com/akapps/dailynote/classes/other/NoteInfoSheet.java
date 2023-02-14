@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
+import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -40,15 +45,16 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     private Note currentNote;
     private RealmResults<Photo> allPhotos;
     boolean showOpenButton;
-
+    private User user;
     String noteTitle;
 
     public NoteInfoSheet(){}
 
-    public NoteInfoSheet(Note currentNote, RealmResults<Photo> allPhotos, boolean showOpenButton){
+    public NoteInfoSheet(User user, Note currentNote, RealmResults<Photo> allPhotos, boolean showOpenButton){
         this.currentNote = currentNote;
         this.allPhotos = allPhotos;
         this.showOpenButton = showOpenButton;
+        this.user = user;
     }
 
     @SuppressLint("SetTextI18n")
@@ -79,9 +85,6 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
         if(!showOpenButton)
             open.setVisibility(View.GONE);
-
-        if(currentNote.isCheckList())
-            copyIcon.setVisibility(View.GONE);
 
         photosScrollView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         RecyclerView.Adapter scrollAdapter = new photos_recyclerview(allPhotos, getActivity(), getContext(), false);
@@ -173,11 +176,10 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
         copyIcon.setOnClickListener(view14 -> {
             // copy text
-            ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("Code", copyWord(currentNote.getNote()));
-            clipboard.setPrimaryClip(clip);
-            Helper.showMessage(getActivity(), "Success!",
-                    "Copied successfully", MotionToast.TOAST_SUCCESS);
+            if(currentNote.isCheckList())
+                copyToClipboard(copyChecklist(currentNote));
+            else
+                copyToClipboard(copyWord(currentNote.getNote()));
         });
 
         return view;
@@ -185,10 +187,10 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     private void copyToClipboard(String wordToCopy){
         ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Code", wordToCopy);
+        ClipData clip = ClipData.newPlainText("text", wordToCopy);
         clipboard.setPrimaryClip(clip);
-        Helper.showMessage(getActivity(), "Total $",
-                "Copied successfully, now you can share", MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(getActivity(), "Success!",
+                "Copied successfully", MotionToast.TOAST_SUCCESS);
     }
 
     private String sanitizeWord(String word){
@@ -196,9 +198,23 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                 .replaceAll("\\s+", " ").trim();
     }
 
+    private String copyChecklist(Note currentNote){
+        String checklistString = "";
+        String checklistSeparator = user.getItemsSeparator().equals("newline") ? "\n" : user.getItemsSeparator();
+        String sublistSeparator = user.getSublistSeparator().equals("space") ? "\n " : user.getSublistSeparator();
+
+        for(CheckListItem checkListItem: currentNote.getChecklist()){
+            checklistString += checkListItem.getText();
+            for (SubCheckListItem subCheckListItem: checkListItem.getSubChecklist()){
+                checklistString += sublistSeparator + subCheckListItem.getText();
+            }
+            checklistString += checklistSeparator;
+        }
+        return checklistString;
+    }
+
     private String copyWord(String word){
-        return word.replaceAll("<br>", "\n").replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ")
-                .replaceAll("\\s+", " ").trim();
+        return word.replaceAll("<br>", "\n").replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ");
     }
 
     private void openNoteActivity(Note currentNote){

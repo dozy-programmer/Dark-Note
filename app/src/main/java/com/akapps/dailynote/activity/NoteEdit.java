@@ -5,11 +5,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -19,6 +22,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
@@ -45,6 +49,7 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -224,6 +229,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (user.isModeSettings()) {
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             isDarkerMode = true;
+            AppData.getAppData().isDarkerMode = true;
             scrollView.setBackgroundColor(context.getColor(R.color.darker_mode));
             note.setBackgroundColor(context.getColor(R.color.darker_mode));
             searchEditText.setTextColor(context.getColor(R.color.ultra_white));
@@ -547,7 +553,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         info.setOnClickListener(view -> {
-            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allNotePhotos, false);
+            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(user, currentNote, allNotePhotos, false);
             noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             moreOptionsMenu.close(true);
         });
@@ -1000,9 +1006,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     // adds note
     private void addNote() {
-
         String[] currentItems = new String[0];
         if(noteFromOtherApp != null && !noteFromOtherApp.isEmpty()){
+            // [V] for ColorNote, idk they changed it to V instead of x
+            noteFromOtherApp = noteFromOtherApp.replaceAll("\\[V\\]", "[x]");
+            noteFromOtherApp = noteFromOtherApp.replaceAll("○", "[]");
+            noteFromOtherApp = noteFromOtherApp.replaceAll("●", "[x]");
             if(noteFromOtherApp.contains("[ ]") || noteFromOtherApp.contains("[x]")) {
                 isCheckList = true;
                 noteFromOtherApp = noteFromOtherApp.replaceAll("\\[x\\]", "n~~n~~~");
@@ -1259,8 +1268,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     Helper.showMessage(NoteEdit.this, "Alarm Exists",
                             "Delete Reminder to add another one", MotionToast.TOAST_ERROR);
                 }
-                else
-                    showDatePickerDialog();
+                else {
+                    checkNotificationPermission();
+                }
             }
             else if (item.getTitle().equals("Delete")) {
                 dismissDialog = true;
@@ -1311,7 +1321,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 increaseTextSize.setAlpha(new Float(1.0));
             }
             else if(item.getTitle().equals("Info")){
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allNotePhotos, false);
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(user, currentNote, allNotePhotos, false);
                 noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             }
             else if(item.getTitle().contains("Sublist"))
@@ -1320,6 +1330,26 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.dismiss();
         }
     };
+
+    public void checkNotificationPermission(){
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 2);
+        }
+        else
+            showDatePickerDialog();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                showDatePickerDialog();
+            else
+                Helper.showMessage(this, "Reminder Permission", "Accept permission " +
+                        "to send yourself a reminder", MotionToast.TOAST_ERROR);
+        }
+    }
 
     public void deleteChecklist(){
         RealmHelper.deleteChecklist(currentNote);
@@ -1500,7 +1530,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
                         PendingIntent.FLAG_ONE_SHOT);
 
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
         }
         else
             showMessage("Reminder not set", "Reminder cannot be in the past", true);

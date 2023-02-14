@@ -171,13 +171,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         // if note has a category, then it shows it
         if(currentNote.getCategory().equals("none"))
-            holder.category.setVisibility(View.GONE);
+            holder.category_background.setVisibility(View.GONE);
         else {
             Folder folderColor = realm.where(Folder.class)
                     .equalTo("name", currentNote.getCategory())
                     .findFirst();
 
-            holder.category.setVisibility(View.VISIBLE);
+            holder.category_background.setVisibility(View.VISIBLE);
             holder.category.setText(currentNote.getCategory());
             holder.category.setTextColor(folderColor.getColor() == 0 ?
                     activity.getColor(R.color.orange) : folderColor.getColor());
@@ -214,7 +214,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             currentNote.setChecklistConvertedToString(checkListString.toString());
             realm.commitTransaction();
             holder.note_preview.setText(checkListString.toString());
-            holder.note_preview.setTextSize(15);
+            holder.note_preview.setTextSize(13);
             holder.note_preview.setGravity(Gravity.LEFT);
         }
         else
@@ -295,7 +295,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
         else {
             holder.note_preview.setGravity(Gravity.LEFT);
-            holder.note_preview.setTextSize(15);
+            holder.note_preview.setTextSize(13);
         }
 
         if(showPreview && !isNoteLocked){
@@ -496,7 +496,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         });
 
         holder.note_info.setOnClickListener(view -> {
-            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, allPhotos, true);
+            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(((notes) noteFragment).user, currentNote, allPhotos, true);
             noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
         });
     }
