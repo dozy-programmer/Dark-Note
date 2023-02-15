@@ -11,11 +11,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -28,6 +30,8 @@ import android.widget.Toast;
 import androidx.annotation.OptIn;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.ColorUtils;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
@@ -435,6 +439,17 @@ public class Helper {
         }catch (Exception e){}
     }
 
+    public static void deleteFile(String path){
+        File file = new File(path);
+        if (file.exists())
+            file.delete();
+    }
+
+    public static boolean isFileEmpty(String path){
+        File file = new File(path);
+        return Integer.parseInt(String.valueOf(file.length() / 1024)) == 0;
+    }
+
     public static void deleteZipFile(Context context){
         try {
             // delete backup folder
@@ -493,6 +508,10 @@ public class Helper {
         } catch (Exception e) {}
     }
 
+    public static int darkenColor(int color, int percentage) {
+        return ColorUtils.setAlphaComponent(color, percentage);
+    }
+
     public static String capitalize(String word){
         if(!word.isEmpty())
             word = word.substring(0, 1).toUpperCase() + word.substring(1);
@@ -525,5 +544,42 @@ public class Helper {
         Random rnd = new Random();
         int randomColorGenerated = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         return !isColorDark(randomColorGenerated) ? randomColorGenerated : getRandomColor();
+    }
+
+    public static void startTimer(Handler handler, int startTime){
+        AppData.timerDuration = startTime;
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                AppData.timerDuration++;
+                handler.postDelayed(this, 1000);
+            }
+        }, 0);
+    }
+
+    public static String secondsToDurationText(int totalSecs){
+        int hours = totalSecs / 3600;
+        int minutes = (totalSecs % 3600) / 60;
+        int seconds = totalSecs % 60;
+        String timeElapsed = "";
+
+        if(totalSecs == 0)
+            return "0:00";
+
+        if (hours > 0)
+            timeElapsed += hours + ":" + (minutes == 0 ? "00" : "");
+        if (minutes > 0)
+            timeElapsed += minutes + ":" + (seconds == 0 ? "00" : "");
+        if (seconds > 0) {
+            if(minutes == 0)
+                timeElapsed += "0:";
+            timeElapsed += seconds > 9 ? seconds : "0" + seconds;
+        }
+
+        return timeElapsed;
+    }
+
+    public static boolean deviceMicExists(Activity activity){
+        PackageManager pm = activity.getPackageManager();
+        return pm.hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
     }
 }

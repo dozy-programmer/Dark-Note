@@ -145,6 +145,11 @@ public class RealmDatabase {
                 schema.get("User").addField("pinNumber", int.class);
             if(!schema.get("User").hasField("hideRichTextEditor"))
                 schema.get("User").addField("hideRichTextEditor", boolean.class);
+
+            if(!schema.get("CheckListItem").hasField("audioDuration"))
+                schema.get("CheckListItem").addField("audioDuration", int.class);
+            if(!schema.get("CheckListItem").hasField("audioPath"))
+                schema.get("CheckListItem").addField("audioPath", String.class);
         }
     }
 }

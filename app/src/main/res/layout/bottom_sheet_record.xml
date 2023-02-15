@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbarSize="2dp"
+    android:scrollbars="vertical"
+    android:background="@android:color/transparent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardBackgroundColor="@color/light_gray_2"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="Voice Note"
+            android:textColor="@color/orange"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
+
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/recording_animation"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            app:layout_constraintBottom_toBottomOf="@+id/timer"
+            app:layout_constraintEnd_toEndOf="@+id/timer"
+            app:layout_constraintStart_toStartOf="@+id/timer"
+            app:layout_constraintTop_toTopOf="@+id/timer"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/record_pulses"
+            app:lottie_speed="0.9" />
+
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="0:00"
+            android:elevation="2dp"
+            android:textColor="@color/ultra_white"
+            android:textSize="40sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_recording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/orange"
+            android:text="Cancel"
+            android:textColor="@color/ultra_white"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pause_play_button"
+            app:layout_constraintEnd_toStartOf="@+id/pause_play_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pause_play_button"></com.google.android.material.button.MaterialButton>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/done_recording"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginStart="117dp"
+            android:backgroundTint="@color/pressed_blue"
+            android:text="Done"
+            android:textColor="@color/ultra_white"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pause_play_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/pause_play_button"
+            app:layout_constraintTop_toTopOf="@+id/pause_play_button"></com.google.android.material.button.MaterialButton>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/pause_play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/mic_icon"
+            app:backgroundTint="@color/red"
+            app:fabCustomSize="80dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timer"
+            app:maxImageSize="36dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -16,6 +16,10 @@ public class CheckListItem extends RealmObject {
     private RealmList<SubCheckListItem> subChecklist;
     private String itemImage;
 
+    // audio recording data
+    private String audioPath;
+    private int audioDuration;
+
     public CheckListItem(){}
 
     public CheckListItem(String text, boolean checked, int id, int positionInList, int subListId, String dateCreated) {
@@ -25,9 +29,10 @@ public class CheckListItem extends RealmObject {
         this.positionInList = positionInList;
         this.lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
         this.subListId = subListId;
-        this.itemImage = "";
+        this.itemImage = audioPath = "";
         this.dateCreated = dateCreated;
         this.subChecklist = new RealmList<>();
+        audioDuration = 0;
     }
 
     public String getText() {
@@ -100,5 +105,21 @@ public class CheckListItem extends RealmObject {
 
     public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public String getAudioPath() {
+        return audioPath;
+    }
+
+    public void setAudioPath(String audioPath) {
+        this.audioPath = audioPath;
+    }
+
+    public int getAudioDuration() {
+        return audioDuration;
+    }
+
+    public void setAudioDuration(int audioDuration) {
+        this.audioDuration = audioDuration;
     }
 }

@@ -16,6 +16,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.card.MaterialCardView;
@@ -53,12 +54,12 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     }
 
     public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote,
-                                      Realm realm, FragmentActivity activity, boolean isNightMode) {
+                                      Realm realm, FragmentActivity activity) {
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
-        this.isNightMode = isNightMode;
+        isNightMode = AppData.getAppData().isDarkerMode;
     }
 
     @Override
@@ -94,13 +95,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         // to be filled and changes text color to gray
         if(isSelected) {
             holder.checklistText.setPaintFlags(holder.checklistText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.checklistText.setTextColor(context.getColor(R.color.gray));
+            holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
         }
         else {
             holder.checklistText.setPaintFlags(0);
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.unchecked_icon));
-            holder.checklistText.setTextColor(darkenColor(currentNote.getTextColor()));
+            holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 175));
         }
 
         // if checklist item is clicked, then it updates the status of the item
@@ -113,13 +114,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             openEditDialog(checkListItem, position);
         });
 
-    }
-
-    int darkenColor(int color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        hsv[2] *= 0.7f;
-        return Color.HSVToColor(hsv);
     }
 
     @Override

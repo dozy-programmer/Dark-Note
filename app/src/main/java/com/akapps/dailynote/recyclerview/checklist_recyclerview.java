@@ -130,7 +130,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                     holder.subChecklist.setVisibility(View.VISIBLE);
                     subChecklistAdapter = new sub_checklist_recyclerview(realm.where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
-                            .sort("positionInList").findAll(), currentNote, realm, activity, user.isModeSettings());
+                            .sort("positionInList").findAll(), currentNote, realm, activity);
                     holder.subChecklist.setAdapter(subChecklistAdapter);
                     subChecklistAdapter.notifyItemChanged(position);
                 }
@@ -174,7 +174,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // to be filled and changes text color to gray
         if(isSelected) {
             holder.checklistText.setPaintFlags(holder.checklistText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.checklistText.setTextColor(context.getColor(R.color.light_gray));
+            holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
         }
         else {

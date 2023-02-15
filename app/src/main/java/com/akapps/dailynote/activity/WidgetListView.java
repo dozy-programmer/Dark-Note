@@ -9,6 +9,8 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,13 +59,6 @@ public class WidgetListView extends RemoteViewsService {
             if(!currentItem.contains("-Note-")) {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);
 
-                if(currentItem.contains("⤷")) {
-                    currentItem = currentItem.replace("⤷", "");
-                    remoteView.setViewVisibility(R.id.sublist_spacing, View.VISIBLE);
-                }
-                else
-                    remoteView.setViewVisibility(R.id.sublist_spacing, View.GONE);
-
                 if (currentItem.contains("~~")) {
                     remoteView.setInt(R.id.checklist_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
                     remoteView.setTextColor(R.id.checklist_text, getColor(R.color.light_light_gray));
@@ -73,6 +68,14 @@ public class WidgetListView extends RemoteViewsService {
                     remoteView.setTextColor(R.id.checklist_text, getColor(R.color.ultra_white));
                     remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.unchecked_icon);
                 }
+
+                if(currentItem.contains("⤷")) {
+                    currentItem = currentItem.replace("⤷", "");
+                    remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(R.color.ultra_white), 0));
+                    remoteView.setViewVisibility(R.id.sublist_spacing, View.VISIBLE);
+                }
+                else
+                    remoteView.setViewVisibility(R.id.sublist_spacing, View.GONE);
             }
             else
                 remoteView.setViewVisibility(R.id.widget_check_status, View.GONE);

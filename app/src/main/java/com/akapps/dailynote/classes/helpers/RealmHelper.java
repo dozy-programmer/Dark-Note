@@ -1,5 +1,7 @@
 package com.akapps.dailynote.classes.helpers;
 
+import android.util.Log;
+
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
@@ -50,7 +52,7 @@ public class RealmHelper {
             if (null != checkListItem.getItemImage())
                 if (!checkListItem.getItemImage().isEmpty())
                     deleteImage(checkListItem.getItemImage());
-
+            deleteRecording(checkListItem);
             deleteSublist(checkListItem.getSubChecklist());
         }
 
@@ -61,7 +63,15 @@ public class RealmHelper {
         }
     }
 
+    public static void deleteRecording(CheckListItem item){
+        Log.d("Here", "path " + item.getAudioPath());
+        String path = item.getAudioPath();
+        if(null != path && !path.isEmpty())
+            Helper.deleteFile(path);
+    }
+
     public static void deleteChecklistItem(CheckListItem item){
+        deleteRecording(item);
         if(null != item.getSubChecklist()) {
             if(item.getSubChecklist().size() > 0)
                 deleteSublist(item.getSubChecklist());

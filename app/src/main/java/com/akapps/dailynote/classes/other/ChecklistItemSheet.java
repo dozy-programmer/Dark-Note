@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -303,6 +304,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         realm.commitTransaction();
         ((NoteEdit)getActivity()).updateDateEdited();
         adapter.notifyDataSetChanged();
+        ((NoteEdit)getActivity()).isListEmpty(currentNote.getChecklist().size(), true);
     }
 
     // updates select status of sub-note in database

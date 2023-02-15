@@ -65,6 +65,7 @@ import com.akapps.dailynote.classes.helpers.RepeatListener;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
+import com.akapps.dailynote.classes.other.RecordAudioSheet;
 import com.akapps.dailynote.recyclerview.checklist_recyclerview;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
@@ -680,6 +681,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 showCameraDialog();
         });
 
+        addCheckListItem.setOnLongClickListener(view -> {
+            if(Helper.deviceMicExists(this))
+               checkMicrophonePermission();
+            else
+                Helper.showMessage(NoteEdit.this, "Mic Error",
+                        "No mic detected on device", MotionToast.TOAST_ERROR);
+            return false;
+        });
+
         photosNote.setOnClickListener(v -> {
             if (isShowingPhotos) {
                 showPhotos(View.GONE);
@@ -1124,6 +1134,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         return currentItem;
     }
 
+    public CheckListItem addCheckList(int subListId, String path, int duration){
+        CheckListItem newItem = realm.where(CheckListItem.class).equalTo("subListId", subListId).findFirst();
+        realm.beginTransaction();
+        newItem.setAudioPath(path);
+        newItem.setAudioDuration(duration);
+        realm.commitTransaction();
+        return newItem;
+    }
+
     public void onlyAddChecklist(String itemText, boolean isChecked){
         int initialPosition = -1;
 
@@ -1332,11 +1351,19 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     };
 
     public void checkNotificationPermission(){
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 2);
         }
         else
             showDatePickerDialog();
+    }
+
+    public void checkMicrophonePermission(){
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 3);
+        }
+        else
+            openRecordingSheet();
     }
 
     @Override
@@ -1349,6 +1376,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Helper.showMessage(this, "Reminder Permission", "Accept permission " +
                         "to send yourself a reminder", MotionToast.TOAST_ERROR);
         }
+        else if(requestCode == 3){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                openRecordingSheet();
+            else
+                Helper.showMessage(this, "Microphone Permission", "Accept permission " +
+                        "to record voice notes", MotionToast.TOAST_ERROR);
+        }
+    }
+
+    public void openRecordingSheet(){
+        RecordAudioSheet recordAudioSheet = new RecordAudioSheet();
+        recordAudioSheet.show(getSupportFragmentManager(), recordAudioSheet.getTag());
     }
 
     public void deleteChecklist(){
