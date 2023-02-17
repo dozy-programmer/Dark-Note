@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
 import com.stfalcon.imageviewer.StfalconImageViewer;
@@ -105,30 +106,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
             deleteDialog(position);
         });
 
-        holder.share.setOnClickListener(view -> sharePhoto(currentPhoto.getPhotoLocation()));
-    }
-
-    private void sharePhoto(String photoLocation) {
-        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        emailIntent.setType("text/plain");
-
-        // attaching to intent to send folders
-        ArrayList<Uri> uris = new ArrayList<>();
-
-        // only attaches to email if there are project photos
-        File file = new File(photoLocation);
-        if(file.exists()) {
-            uris.add(FileProvider.getUriForFile(
-                    context,
-                    "com.akapps.dailynote.fileprovider",
-                    file));
-        }
-
-        // adds email subject and email body to intent
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Sharing Photo");
-        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-
-        context.startActivity(Intent.createChooser(emailIntent, "Share Photo"));
+        holder.share.setOnClickListener(view -> Helper.sharePhoto(context, currentPhoto.getPhotoLocation()));
     }
 
     @Override

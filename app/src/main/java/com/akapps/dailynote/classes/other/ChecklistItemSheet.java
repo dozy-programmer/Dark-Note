@@ -298,7 +298,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     // updates select status of note in database
     private void deleteItem(CheckListItem checkListItem){
-        RealmHelper.deleteChecklistItem(checkListItem);
+        RealmHelper.deleteChecklistItem(checkListItem, false);
         realm.beginTransaction();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();

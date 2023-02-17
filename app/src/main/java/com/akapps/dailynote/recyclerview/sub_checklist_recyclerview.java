@@ -101,7 +101,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         else {
             holder.checklistText.setPaintFlags(0);
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.unchecked_icon));
-            holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 175));
+            holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 200));
         }
 
         // if checklist item is clicked, then it updates the status of the item

@@ -75,4 +75,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="slider" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">@color/light_light_gray</item>
+        <item name="android:progressTint">@color/light_gray</item>
+        <item name="android:thumbTint">@color/ultra_white</item>
+    </style>
+
 </resources>

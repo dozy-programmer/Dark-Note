@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbarSize="2dp"
+    android:scrollbars="vertical"
+    android:background="@android:color/transparent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardBackgroundColor="@color/light_gray_2"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_recording"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            app:backgroundTint="@color/light_gray"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/delete_icon"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="28dp"
+            app:iconTint="@color/red"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/info_recording"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            app:backgroundTint="@color/light_gray"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/info_icon"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="28dp"
+            app:iconTint="@color/ultra_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/rewind_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/replay_icon"
+            app:backgroundTint="@color/darker_blue"
+            app:fabCustomSize="35dp"
+            android:alpha="0.9"
+            android:layout_marginRight="30dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pause_play_button"
+            app:layout_constraintEnd_toStartOf="@+id/pause_play_button"
+            app:layout_constraintTop_toTopOf="@+id/pause_play_button"
+            app:maxImageSize="20dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/pause_play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/play_icon"
+            app:backgroundTint="@color/darker_blue"
+            app:fabCustomSize="60dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8"
+            app:maxImageSize="36dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/forward_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/forward_icon"
+            app:backgroundTint="@color/darker_blue"
+            app:fabCustomSize="35dp"
+            android:alpha="0.9"
+            android:layout_marginLeft="30dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pause_play_button"
+            app:layout_constraintStart_toEndOf="@+id/pause_play_button"
+            app:layout_constraintTop_toTopOf="@+id/pause_play_button"
+            app:maxImageSize="20dp" />
+
+        <SeekBar
+            android:id="@+id/audio_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:theme="@style/slider"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/forward_audio"
+            app:layout_constraintStart_toStartOf="@+id/rewind_audio"
+            app:layout_constraintTop_toBottomOf="@+id/pause_play_button" />
+
+        <TextView
+            android:id="@+id/current_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="0:00"
+            android:textColor="@color/light_light_gray"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/audio_seekbar"
+            app:layout_constraintTop_toBottomOf="@+id/audio_seekbar"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/total_audio_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:text="0:00"
+            android:textColor="@color/light_light_gray"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/audio_seekbar"
+            app:layout_constraintTop_toBottomOf="@+id/audio_seekbar"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

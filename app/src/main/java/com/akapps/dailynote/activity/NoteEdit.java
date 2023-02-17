@@ -11,15 +11,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,7 +28,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +49,6 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
-import com.akapps.dailynote.classes.other.AppWidget;
 import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
@@ -163,6 +158,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean hideRichTextStatus;
     private String titleFromOtherApp;
     private String noteFromOtherApp;
+    private ArrayList<String> importedImages;
 
     // Change Text Size Layout
     private LinearLayout textSizeLayout;
@@ -200,6 +196,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         noteId = getIntent().getIntExtra("id", -1);
         noteFromOtherApp = getIntent().getStringExtra("otherAppNote");
         titleFromOtherApp = getIntent().getStringExtra("otherAppTitle");
+        importedImages = getIntent().getStringArrayListExtra("images");
 
         if(noteId < -1)
             noteId *=-1;
@@ -1078,6 +1075,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             oldTitle = currentNote.getTitle();
             oldNote = currentNote.getNote();
             isNewNote = false;
+
+            if(importedImages != null && importedImages.size() > 0){
+                for(String image: importedImages) {
+                    realm.beginTransaction();
+                    realm.insert(new Photo(noteId, image));
+                    realm.commitTransaction();
+                }
+            }
             
             if(currentItems.length > 0){
                 for(String currentItem: currentItems){

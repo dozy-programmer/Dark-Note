@@ -47,14 +47,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
-import com.skydoves.powermenu.OnDismissedListener;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -821,14 +819,24 @@ public class SettingsScreen extends AppCompatActivity{
 
     private String backUpZip(){
         RealmResults<Note> checklistPhotos = realm.where(Note.class).findAll();
-        ArrayList<String> allPhotos = getAllFilePaths(realm.where(Photo.class).findAll(), checklistPhotos);
+        ArrayList<String> allFiles = new ArrayList<>();
+        ArrayList<String> allPhotos = getAllFilePaths(realm.where(Photo.class)
+                .not().isNull("photoLocation").or().equalTo("photoLocation", "")
+                .findAll(), checklistPhotos);
+        ArrayList<String> allRecordings = getAllRecordingsPaths(realm.where(CheckListItem.class).not()
+                .isNull("audioPath").or().equalTo("audioPath", "").findAll());
         realm.close();
         RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
         realmBackupRestore.update(this, context);
         File exportedFilePath = realmBackupRestore.backup_Share();
-        allPhotos.add(exportedFilePath.getAbsolutePath());
+        // add all photos paths
+        allFiles.addAll(allPhotos);
+        // add realm path (this contains all the note data)
+        allFiles.add(exportedFilePath.getAbsolutePath());
+        // add all recording paths
+        allFiles.addAll(allRecordings);
         realmStatus();
-        return zipPhotos(allPhotos);
+        return zipPhotos(allFiles);
     }
 
     private ArrayList<String> getAllFilePaths(RealmResults<Photo> allNotePhotos, RealmResults<Note> allNotes){
@@ -848,6 +856,14 @@ public class SettingsScreen extends AppCompatActivity{
         }
 
         return allPhotos;
+    }
+
+    private ArrayList<String> getAllRecordingsPaths(RealmResults<CheckListItem> allChecklistRecordings){
+        ArrayList<String> allRecordings = new ArrayList<>();
+        for(int i = 0; i < allChecklistRecordings.size(); i++)
+            allRecordings.add(allChecklistRecordings.get(i).getAudioPath());
+
+        return allRecordings;
     }
 
     // creates a zip folder
@@ -905,28 +921,28 @@ public class SettingsScreen extends AppCompatActivity{
         File backupFile = new File(backUpZip());
         Uri file = Uri.fromFile(backupFile);
         // file info
-        double fileSizeInMB = backupFile.length() / (Math.pow(1024, 2));
-        fileSizeInMB = Double.parseDouble(new DecimalFormat("#.##").format(fileSizeInMB));
+        String fileSize = Helper.getFormattedFileSize(context, backupFile.length());
 
-        progressDialog = Helper.showLoading("Uploading...\n" + fileSizeInMB + " MB",
-                progressDialog, context, true);
-
-        if(fileSizeInMB > 100){
+        if(!fileSize.toLowerCase().contains("b") && !fileSize.toLowerCase().contains("kb")
+                && !fileSize.toLowerCase().contains("mb")){
             Helper.showMessage(this, "Upload Failed", "File size is too big, backup locally",
                     MotionToast.TOAST_ERROR);
             return;
         }
 
-        String fileSizeString;
-        if(fileSizeInMB < 1) {
-            fileSizeInMB = backupFile.length() / 1024;
-            fileSizeInMB = Double.valueOf(new DecimalFormat("#.##").format(fileSizeInMB));
-            fileSizeString = fileSizeInMB + "_KB";
+        if(fileSize.toLowerCase().contains("mb")){
+            int fileSizeNumber = Integer.valueOf(fileSize.toLowerCase().replace("mb", "").trim());
+            if(fileSizeNumber > 100) {
+                Helper.showMessage(this, "Upload Failed", "File size is too big, backup locally",
+                        MotionToast.TOAST_ERROR);
+                return;
+            }
         }
-        else
-            fileSizeString = fileSizeInMB + "_MB";
 
-        String currentDate = Helper.getBackupDate(fileSizeString);
+        progressDialog = Helper.showLoading("Uploading...\n" + fileSize,
+                progressDialog, context, true);
+
+        String currentDate = Helper.getBackupDate(fileSize);
         String fileName = currentDate + "_backup.zip";
 
         // check if file exists
@@ -943,10 +959,9 @@ public class SettingsScreen extends AppCompatActivity{
                     .child(fileName);
             UploadTask uploadTask = storageRef.putFile(file);
 
-            double finalFileSizeInMB = fileSizeInMB;
             uploadTask.addOnProgressListener(snapshot -> {
-                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("##.##").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
-                progressDialog = Helper.showLoading("Uploading...\n" + fileSizeInMBTransferred + " MB / " + finalFileSizeInMB + " MB",
+                String bytesTransferredFormatted = Helper.getFormattedFileSize(context, snapshot.getBytesTransferred());
+                progressDialog = Helper.showLoading("Uploading...\n" + bytesTransferredFormatted + " / " + fileSize,
                         progressDialog, context, true);
             }).addOnFailureListener(exception -> {
                 progressDialog.cancel();
@@ -955,14 +970,14 @@ public class SettingsScreen extends AppCompatActivity{
                         MotionToast.TOAST_ERROR);
                 restart();
             }).addOnSuccessListener(taskSnapshot -> {
-                double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("##.##").format(taskSnapshot.getBytesTransferred() / (Math.pow(1024, 2))));
-                if(fileSizeInMBTransferred == finalFileSizeInMB){
+                String bytesTransferredFormatted = Helper.getFormattedFileSize(context, taskSnapshot.getBytesTransferred());
+                if(bytesTransferredFormatted.equals(fileSize)){
                     realm.beginTransaction();
                     realm.insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
                     currentUser.setLastUpload(Helper.getCurrentDate());
+                    realm.commitTransaction();
                     lastUploadDate.setVisibility(View.VISIBLE);
                     lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload().replaceAll("\n", " "));
-                    realm.commitTransaction();
                     progressDialog.cancel();
                     Helper.showMessage(SettingsScreen.this, "Upload Success",
                             "Data Uploaded",
@@ -974,7 +989,7 @@ public class SettingsScreen extends AppCompatActivity{
                             .addOnFailureListener(exception -> {});
                     progressDialog.cancel();
                     Helper.showMessage(SettingsScreen.this, "Upload Error",
-                            "Files missing, please upload again!",
+                            "Files lost in transfer, please upload again!",
                             MotionToast.TOAST_ERROR);
                 }
             });
@@ -1018,7 +1033,7 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    public void restoreFromDatabase(String fileName, double fileSize){
+    public void restoreFromDatabase(String fileName, String fileSize){
         progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
         String userEmail = mAuth.getCurrentUser().getEmail();
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -1033,11 +1048,10 @@ public class SettingsScreen extends AppCompatActivity{
         }
 
         File localFile = new File(storageDir,"backup.zip");
-
         storageRef.getFile(localFile)
                 .addOnProgressListener(snapshot -> {
-                    double fileSizeInMBTransferred = Double.parseDouble(new DecimalFormat("###.#").format(snapshot.getBytesTransferred() / (Math.pow(1024, 2))));
-                    progressDialog = Helper.showLoading("Syncing...\n" + fileSizeInMBTransferred + " MB / " + fileSize + " MB",
+                    String bytesTransferredFormatted = Helper.getFormattedFileSize(context, snapshot.getBytesTransferred());
+                    progressDialog = Helper.showLoading("Syncing...\n" + bytesTransferredFormatted + " / " + fileSize,
                             progressDialog, context, true);
                 }).addOnSuccessListener(taskSnapshot -> {
             restoreFromDatabase(Uri.fromFile(localFile));
@@ -1063,6 +1077,7 @@ public class SettingsScreen extends AppCompatActivity{
             Helper.showLoading("", progressDialog, context, false);
 
             ArrayList<String> images = realmBackupRestore.getImagesPath();
+            ArrayList<String> recordings = realmBackupRestore.getRecordingsPath();
             realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
 
             Helper.showMessage(this, "Restored", "" + "Notes have been restored",
@@ -1074,6 +1089,7 @@ public class SettingsScreen extends AppCompatActivity{
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
             updateImages(images);
+            updateRecordings(recordings);
 
             // delete all zip files
             Helper.deleteZipFile(context);
@@ -1111,6 +1127,7 @@ public class SettingsScreen extends AppCompatActivity{
                     realmBackupRestore.restore(uri, "backup.zip", true);
 
                     ArrayList<String> images = realmBackupRestore.getImagesPath();
+                    ArrayList<String> recordings = realmBackupRestore.getRecordingsPath();
                     realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
 
                     // update image paths from restored database so it knows where the images are
@@ -1124,6 +1141,7 @@ public class SettingsScreen extends AppCompatActivity{
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
                     updateImages(images);
+                    updateRecordings(recordings);
 
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
@@ -1235,6 +1253,21 @@ public class SettingsScreen extends AppCompatActivity{
                         currentPhoto.setPhotoLocation(imagePaths.get(i));
                         realm.commitTransaction();
                     }
+                }
+            }
+        }
+    }
+
+    private void updateRecordings(ArrayList<String> recordingsPath){
+        if(recordingsPath.size() != 0) {
+            for (int i = 0; i < recordingsPath.size(); i++) {
+                String fullRecordingPath = recordingsPath.get(i);
+                String recordingPath = fullRecordingPath.substring(fullRecordingPath.lastIndexOf("/") + 1);
+                CheckListItem checkListItem = realm.where(CheckListItem.class).contains("audioPath", recordingPath).findFirst();
+                if(checkListItem != null) {
+                    realm.beginTransaction();
+                    checkListItem.setAudioPath(fullRecordingPath);
+                    realm.commitTransaction();
                 }
             }
         }

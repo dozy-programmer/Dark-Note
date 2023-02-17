@@ -48,14 +48,12 @@ public class RealmHelper {
     }
 
     public static void deleteChecklist(Note currentNote){
-        for (CheckListItem checkListItem : currentNote.getChecklist()) {
-            if (null != checkListItem.getItemImage())
-                if (!checkListItem.getItemImage().isEmpty())
-                    deleteImage(checkListItem.getItemImage());
-            deleteRecording(checkListItem);
-            deleteSublist(checkListItem.getSubChecklist());
-        }
+        // delete each checklist item and all its associated data
+        // like image, recording, and sublist (if they exist)
+        for (CheckListItem checkListItem : currentNote.getChecklist())
+            deleteChecklistItem(checkListItem, true);
 
+        // make sure all checklist items are deleted
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(tRealm -> {
                 currentNote.getChecklist().deleteAllFromRealm();
@@ -64,14 +62,20 @@ public class RealmHelper {
     }
 
     public static void deleteRecording(CheckListItem item){
-        Log.d("Here", "path " + item.getAudioPath());
-        String path = item.getAudioPath();
-        if(null != path && !path.isEmpty())
-            Helper.deleteFile(path);
+        try(Realm realm = Realm.getDefaultInstance()){
+            realm.executeTransaction(tRealm -> {
+                Helper.deleteFile(item.getAudioPath());
+                item.setAudioPath("");
+                item.setAudioDuration(0);
+            });
+        }
     }
 
-    public static void deleteChecklistItem(CheckListItem item){
-        deleteRecording(item);
+    public static void deleteChecklistItem(CheckListItem item, boolean deleteOnlyContents){
+        // delete recording if it exists
+        if(item.getAudioPath() != null && !item.getAudioPath().isEmpty())
+            deleteRecording(item);
+        // delete sublist if it exits
         if(null != item.getSubChecklist()) {
             if(item.getSubChecklist().size() > 0)
                 deleteSublist(item.getSubChecklist());
@@ -79,9 +83,13 @@ public class RealmHelper {
 
         try(Realm realm = Realm.getDefaultInstance()){
                 realm.executeTransaction(tRealm -> {
-                    if(!item.getItemImage().isEmpty())
+                    // delete image if it exists
+                    if(item.getItemImage() != null && !item.getItemImage().isEmpty())
                         deleteImage(item.getItemImage());
-                    item.deleteFromRealm();
+                    if(!deleteOnlyContents) {
+                        // delete item
+                        item.deleteFromRealm();
+                    }
                 });
         }
     }

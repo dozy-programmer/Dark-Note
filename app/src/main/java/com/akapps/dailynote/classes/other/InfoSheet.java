@@ -63,8 +63,14 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
     private String userSecurityWord;
     boolean isAppLocked;
     private int attempts;
+    private String messageText;
 
     public InfoSheet(){
+    }
+
+    public InfoSheet(String messageText, int message){
+        this.messageText = messageText;
+        this.message = message;
     }
 
     public InfoSheet(int message){
@@ -300,7 +306,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                     .replaceAll("\\$", Matcher.quoteReplacement(expenseChar))
                     .replaceAll("\\+" + expenseChar, Matcher.quoteReplacement(budgetChar)));
           }
-
+        else if(message == 11){
+              title.setText("Audio Info");
+              backup.setBackgroundColor(getContext().getColor(R.color.red));
+              securityWord.setVisibility(View.GONE);
+              info.setText(messageText);
+              info.setGravity(Gravity.LEFT);
+          }
 
         unlock.setOnClickListener(v -> {
             attempts++;

@@ -2,6 +2,7 @@ package com.akapps.dailynote.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
@@ -9,7 +10,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,10 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+
+import java.io.File;
+import java.util.ArrayList;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -106,26 +111,55 @@ public class notes extends Fragment{
 
         context = getContext();
 
-        Intent intent = getActivity().getIntent();
-        String action = intent.getAction();
-        String type = intent.getType();
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Intent intent = getActivity().getIntent();
+                String action = intent.getAction();
+                String type = intent.getType();
 
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
-            if (type != null && "text/plain".equals(type)) {
-                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                String sharedTitle = intent.getStringExtra(Intent.EXTRA_SUBJECT);
-                Intent note = new Intent(getActivity(), NoteEdit.class);
-                if (sharedText != null)
-                    note.putExtra("otherAppNote", sharedText);
-                else
-                    note.putExtra("otherAppNote", "");
-                if (sharedTitle != null)
-                    note.putExtra("otherAppTitle", sharedTitle);
-                else
-                    note.putExtra("otherAppTitle", "");
-                getActivity().startActivity(note);
+                if ((Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action))
+                        && type != null) {
+                    String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                    String sharedTitle = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                    Intent note = new Intent(getActivity(), NoteEdit.class);
+                    if (sharedText != null)
+                        note.putExtra("otherAppNote", sharedText);
+                    else
+                        note.putExtra("otherAppNote", "");
+                    if (sharedTitle != null)
+                        note.putExtra("otherAppTitle", sharedTitle);
+                    else
+                        note.putExtra("otherAppTitle", "");
+
+                    Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                    ArrayList<String> images = new ArrayList<>();
+                    if (imageUri != null) {
+                        File newFile = Helper.createFile(getActivity(), "image", ".png");
+                        String filePath = Helper.createFile(context, imageUri, newFile).getAbsolutePath();
+                        images.add(filePath);
+                    }
+
+                    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                    if (imageUris != null) {
+                        for(Uri image: imageUris){
+                            File newFile = Helper.createFile(getActivity(), "image", ".png");
+                            String filePath = Helper.createFile(context, image, newFile).getAbsolutePath();
+                            images.add(filePath);
+                        }
+                    }
+
+                    if(images.size() > 0)
+                        note.putStringArrayListExtra("images", images);
+
+                    getActivity().startActivity(note);
+                }
+
+                Helper.deleteCache(context);
+                Helper.deleteUnneededFiles(getActivity());
             }
-        }
+        };
+        thread.start();
 
         // initialize database and get data
         try {
@@ -157,6 +191,8 @@ public class notes extends Fragment{
 
         // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli();
+        updateDateEditedMilli();
+        unSelectAllNotes();
 
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
@@ -166,9 +202,6 @@ public class notes extends Fragment{
         if(user.isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-
-        updateDateEditedMilli();
-        unSelectAllNotes();
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
@@ -182,8 +215,6 @@ public class notes extends Fragment{
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
-
-        Helper.deleteCache(context);
     }
 
     @Override

@@ -19,13 +19,15 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
+import com.akapps.dailynote.classes.other.PlayAudioSheet;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final LinearLayout edit;
         private final RecyclerView subChecklist;
         private final FloatingActionButton addSubChecklist;
+        private final FloatingActionButton audio;
         private final MaterialCardView itemImageLayout;
         private final ImageView itemImage;
         private final MaterialCardView background;
@@ -66,6 +69,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             edit = v.findViewById(R.id.edit);
             subChecklist = v.findViewById(R.id.subchecklist);
             addSubChecklist = v.findViewById(R.id.add_subchecklist);
+            audio = v.findViewById(R.id.audio);
             subChecklist.setLayoutManager(new GridLayoutManager(v.getContext(), 1));
             itemImageLayout = v.findViewById(R.id.item_image_layout);
             itemImage = v.findViewById(R.id.item_image);
@@ -102,6 +106,26 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             realm.beginTransaction();
             checkListItem.setSubListId(rand.nextInt(100000) + 1);
             realm.commitTransaction();
+        }
+
+        boolean recordingExists = false;
+        if(checkListItem.getAudioPath() != null)
+            recordingExists = new File(checkListItem.getAudioPath()).length() > 0;
+
+        if(null != checkListItem.getAudioPath() && !checkListItem.getAudioPath().isEmpty() && recordingExists) {
+            holder.audio.setVisibility(View.VISIBLE);
+            holder.selectedIcon.setVisibility(View.GONE);
+        }
+        else {
+            holder.audio.setVisibility(View.GONE);
+            holder.selectedIcon.setVisibility(View.VISIBLE);
+
+            if(null != checkListItem.getAudioPath() && !checkListItem.getAudioPath().isEmpty()){
+                realm.beginTransaction();
+                checkListItem.setAudioPath("");
+                checkListItem.setAudioDuration(0);
+                realm.commitTransaction();
+            }
         }
 
         if(user.isEnableDeleteIcon())
@@ -191,6 +215,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         else
             holder.itemImageLayout.setVisibility(View.GONE);
 
+        holder.audio.setOnClickListener(view -> {
+            if(holder.audio.getVisibility() == View.VISIBLE) {
+                PlayAudioSheet playAudioSheet = new PlayAudioSheet(checkListItem);
+                playAudioSheet.show(activity.getSupportFragmentManager(), playAudioSheet.getTag());
+            }
+        });
+
         RecyclerView.Adapter finalSubChecklistAdapter = subChecklistAdapter;
         holder.addSubChecklist.setOnClickListener(view -> {
             ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, checkListText, true, finalSubChecklistAdapter);
@@ -226,7 +257,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         });
 
         holder.deleteIcon.setOnClickListener(view -> {
-            RealmHelper.deleteChecklistItem(checkListItem);
+            RealmHelper.deleteChecklistItem(checkListItem, false);
             realm.beginTransaction();
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
             realm.commitTransaction();

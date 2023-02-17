@@ -5,7 +5,6 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,7 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
-import com.akapps.dailynote.classes.helpers.RecordAudio;
+import com.akapps.dailynote.classes.helpers.AudioManager;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -29,11 +27,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
-import www.sanju.motiontoast.MotionToast;
-
 public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
 
-    private RecordAudio recordAudio;
+    private AudioManager audioManager;
     private String recordToFilePath;
     private Handler handlerTimer = new Handler();
     private Handler handlerTimerText = new Handler();
@@ -44,7 +40,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet_record, container, false);
+        View view = inflater.inflate(R.layout.bottom_sheet_record_audio, container, false);
 
         // generate random file name
         String randomString = UUID.randomUUID().toString();
@@ -52,7 +48,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
                 "/recording_" + randomString.substring(0, randomString.length() / 3)
                 .replaceAll("-", "_") + ".mp4";
 
-        recordAudio = new RecordAudio(recordToFilePath);
+        audioManager = new AudioManager(recordToFilePath);
 
         if (AppData.getAppData().isDarkerMode) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
@@ -69,24 +65,24 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
         recordingAnimation.pauseAnimation();
 
         pauseOrPlayButton.setOnClickListener(view12 -> {
-            if(recordAudio.isRecording()) {
+            if(audioManager.isRecording()) {
                 handlerTimer.removeCallbacksAndMessages(null);
-                recordAudio.pauseRecording(true);
+                audioManager.pauseRecording(true);
                 recordingAnimation.pauseAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.mic_icon));
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
                         .getColor(R.color.red)));
             }
-            else if(recordAudio.isPaused()) {
+            else if(audioManager.isPaused()) {
                 Helper.startTimer(handlerTimer, AppData.timerDuration);
-                recordAudio.pauseRecording(false);
+                audioManager.pauseRecording(false);
                 recordingAnimation.playAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.pause_icon));
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
                         .getColor(R.color.ocean_green)));
             }
             else {
-                recordAudio.startRecording();
+                audioManager.startRecording();
                 Helper.startTimer(handlerTimer, 0);
                 updateRecordingDuration(recordingDuration);
                 recordingAnimation.playAnimation();
@@ -97,20 +93,18 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
         });
 
         close.setOnClickListener(view13 -> {
-            if(recordAudio != null && recordAudio.isRecording())
-                recordAudio.stopRecording();
+            if(audioManager != null && audioManager.isRecording())
+                audioManager.stopRecording();
             Helper.deleteFile(recordToFilePath);
             dismiss();
         });
 
         done.setOnClickListener(view1 -> {
-            if(recordAudio != null && recordAudio.isRecording())
-                recordAudio.stopRecording();
+            if(audioManager != null && audioManager.isRecording())
+                audioManager.stopRecording();
             if(!Helper.isFileEmpty(recordToFilePath)){
-                CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("\uD83C\uDFA4");
+                CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("");
                 voiceItem = ((NoteEdit) getActivity()).addCheckList(voiceItem.getSubListId(), recordToFilePath, AppData.timerDuration);
-
-                Log.d("Here", "Saved path " + voiceItem.getAudioPath());
             }
             dismiss();
         });

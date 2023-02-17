@@ -16,6 +16,7 @@ public class AppData{
     public boolean isDarkerMode;
     public static boolean isAppFirstStarted;
     public static int timerDuration;
+
     private AppData() { }
 
     public static AppData getAppData() {

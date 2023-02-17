@@ -13,12 +13,17 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.OpenableColumns;
 import android.text.Html;
+import android.text.format.Formatter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -29,6 +34,7 @@ import android.widget.Toast;
 
 import androidx.annotation.OptIn;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 
@@ -40,14 +46,20 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 import io.realm.Realm;
 import kotlin.io.FilesKt;
@@ -500,10 +512,11 @@ public class Helper {
                 }
             }
             else {
-                if(realm != null && !realm.isClosed())
-                realm.beginTransaction();
-                currentNote.setWidgetId(-1);
-                realm.commitTransaction();
+                if(realm != null && !realm.isClosed()) {
+                    realm.beginTransaction();
+                    currentNote.setWidgetId(-1);
+                    realm.commitTransaction();
+                }
             }
         } catch (Exception e) {}
     }
@@ -582,4 +595,77 @@ public class Helper {
         PackageManager pm = activity.getPackageManager();
         return pm.hasSystemFeature(PackageManager.FEATURE_MICROPHONE);
     }
+
+    public static String getFormattedFileSize(Context context, long sizeInBytes){
+        return Formatter.formatFileSize(context, sizeInBytes);
+    }
+
+    public static File createFile(Context context, Uri uri, File destinationFilename) {
+        try (InputStream ins = context.getContentResolver().openInputStream(uri)) {
+            createFileFromStream(ins, destinationFilename);
+        } catch (Exception ex) {
+            Log.e("Save File", ex.getMessage());
+            ex.printStackTrace();
+        }
+        return destinationFilename;
+    }
+
+    public static void createFileFromStream(InputStream ins, File destination) {
+        try (OutputStream os = new FileOutputStream(destination)) {
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = ins.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+            os.flush();
+        } catch (Exception ex) {
+            Log.e("Save File", ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public static File getInternalFileDir(Activity activity){
+        return activity.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+    }
+
+    public static File createFile(Activity activity, String fileType, String fileExtension){
+        String randomString = UUID.randomUUID().toString();
+        String file = getInternalFileDir(activity) + File.separator +
+                fileType + randomString.substring(0, randomString.length() / 3).replaceAll("-", "_") +
+                fileExtension;
+        return new File(file);
+    }
+
+    public static void sharePhoto(Context context, String photoLocation) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("image/*");
+        Uri uri = null;
+
+        // only attaches to email if there are project photos
+        File file = new File(photoLocation);
+        if(file.exists()) {
+            uri = FileProvider.getUriForFile(
+                    context,
+                    "com.akapps.dailynote.fileprovider",
+                    file);
+        }
+
+        // adds email subject and email body to intent
+        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+
+        context.startActivity(Intent.createChooser(emailIntent, "Share Photo"));
+    }
+
+    public static void deleteUnneededFiles(Activity activity){
+        String path = activity.getApplicationContext().getExternalFilesDir("") + "";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if(files[i].getName().contains(".zip")) {
+                FilesKt.deleteRecursively(files[i]);
+                break;
+            }
+        }
+    }
+
 }

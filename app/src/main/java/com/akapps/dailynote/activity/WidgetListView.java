@@ -71,7 +71,7 @@ public class WidgetListView extends RemoteViewsService {
 
                 if(currentItem.contains("⤷")) {
                     currentItem = currentItem.replace("⤷", "");
-                    remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(R.color.ultra_white), 0));
+                    remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(R.color.ultra_white), 200));
                     remoteView.setViewVisibility(R.id.sublist_spacing, View.VISIBLE);
                 }
                 else

@@ -177,7 +177,7 @@ public class RealmBackupRestore {
         }
     }
 
-    private ArrayList<String> findPaths(){
+    private ArrayList<String> findImageAndBackupPaths(){
         ArrayList<String> images = new ArrayList<>();
         String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "";
         File directory = new File(path);
@@ -185,15 +185,30 @@ public class RealmBackupRestore {
         for (int i = 0; i < files.length; i++) {
             if(files[i].getName().contains(".png"))
                 images.add(files[i].getPath());
-            else if(files[i].getName().contains(".realm")) {
+            else if(files[i].getName().contains(".realm"))
                 backupPath = files[i].getPath();
-            }
         }
         return images;
     }
 
+    private ArrayList<String> findRecordingPaths(){
+        ArrayList<String> recordings = new ArrayList<>();
+        String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if(files[i].getName().contains(".mp4"))
+                recordings.add(files[i].getPath());
+        }
+        return recordings;
+    }
+
+    public ArrayList<String> getRecordingsPath(){
+        return findRecordingPaths();
+    }
+
     public ArrayList<String> getImagesPath(){
-        return findPaths();
+        return findImageAndBackupPaths();
     }
 
     public String getBackupPath(){
