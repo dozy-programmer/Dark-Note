@@ -121,7 +121,7 @@ public class AudioManager {
     public void resumePlaying() {
         if(AppData.timerDuration >= audioDuration) {
             AppData.timerDuration = 0;
-            player.seekTo(AppData.timerDuration);
+            player.seekTo(AppData.timerDuration * 1000);
         }
         player.start();
         isPlaying = true;
@@ -146,7 +146,7 @@ public class AudioManager {
         currentDuration.setText(Helper.secondsToDurationText(AppData.timerDuration));
         audioSeekbar.setProgress(AppData.timerDuration);
         if (player != null)
-            player.seekTo(audioSeekbar.getProgress());
+            player.seekTo(audioSeekbar.getProgress() * 1000);
     }
 
     private void updateTextDuration(TextView playingDuration, SeekBar audioSeekbar){
@@ -172,25 +172,17 @@ public class AudioManager {
     private void initSeekBar(){
         audioSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-            }
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {}
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 AppData.timerDuration = seekBar.getProgress();
                 currentDuration.setText(Helper.secondsToDurationText(AppData.timerDuration));
                 if(player != null)
-                    player.seekTo(seekBar.getProgress());
-                if(isPlaying()) {
-                    Log.d("Here", "on stop of seekbar");
-                    pausePlaying();
-                }
+                    player.seekTo(seekBar.getProgress() * 1000);
             }
         });
     }

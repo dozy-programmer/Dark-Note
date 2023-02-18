@@ -171,6 +171,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private RecyclerView checkListRecyclerview;
     public RecyclerView.Adapter checklistAdapter;
     private com.google.android.material.floatingactionbutton.FloatingActionButton addCheckListItem;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton addAudioItem;
 
     // empty list layout
     private ScrollView empty_Layout;
@@ -253,6 +254,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         hideRichTextStatus = user.isHideRichTextEditor();
         if(user.isHideRichTextEditor())
             formatMenu.setVisibility(View.GONE);
+        if(!user.isShowAudioButton())
+            addAudioItem.setVisibility(View.VISIBLE);
 
         isWidget = currentNote.getWidgetId() > 0;
         Helper.updateWidget(currentNote, context, realm);
@@ -355,6 +358,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         decreaseTextSize = findViewById(R.id.decrease_textsize);
         closeTextLayout = findViewById(R.id.close_Layout);
         addCheckListItem = findViewById(R.id.add_checklist_item);
+        addAudioItem = findViewById(R.id.add_audio_note);
         checkListRecyclerview = findViewById(R.id.checklist);
         empty_Layout = findViewById(R.id.empty_Layout);
         empty_title = findViewById(R.id.empty_title);
@@ -685,6 +689,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Helper.showMessage(NoteEdit.this, "Mic Error",
                         "No mic detected on device", MotionToast.TOAST_ERROR);
             return false;
+        });
+
+        addAudioItem.setOnClickListener(view -> {
+            if(Helper.deviceMicExists(this))
+                checkMicrophonePermission();
+            else
+                Helper.showMessage(NoteEdit.this, "Mic Error",
+                        "No mic detected on device", MotionToast.TOAST_ERROR);
         });
 
         photosNote.setOnClickListener(v -> {

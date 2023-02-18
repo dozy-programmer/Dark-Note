@@ -636,13 +636,13 @@ public class Helper {
         return new File(file);
     }
 
-    public static void sharePhoto(Context context, String photoLocation) {
+    public static void shareFile(Context context, String fileType, String filePath) {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("image/*");
+        emailIntent.setType(fileType + "/*");
         Uri uri = null;
 
         // only attaches to email if there are project photos
-        File file = new File(photoLocation);
+        File file = new File(filePath);
         if(file.exists()) {
             uri = FileProvider.getUriForFile(
                     context,

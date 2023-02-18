@@ -150,6 +150,9 @@ public class RealmDatabase {
                 schema.get("CheckListItem").addField("audioDuration", int.class);
             if(!schema.get("CheckListItem").hasField("audioPath"))
                 schema.get("CheckListItem").addField("audioPath", String.class);
+
+            if(!schema.get("User").hasField("showAudioButton"))
+                schema.get("User").addField("showAudioButton", boolean.class);
         }
     }
 }

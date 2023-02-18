@@ -58,10 +58,6 @@
         <item name="android:colorForeground">@color/light_light_gray</item>
     </style>
 
-    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="colorPrimary">@color/orange</item>
-    </style>
-
     <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar" >
         <item name="android:textSize">@dimen/dimen_16</item>
         <item name="searchHintIcon">@null</item>

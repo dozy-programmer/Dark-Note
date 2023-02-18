@@ -28,20 +28,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/delete_recording"
-            android:layout_width="50dp"
-            android:layout_height="60dp"
-            android:layout_margin="5dp"
-            app:backgroundTint="@color/light_gray"
-            app:cornerRadius="15dp"
-            app:icon="@drawable/delete_icon"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconSize="28dp"
-            app:iconTint="@color/red"
+        <ImageView
+            android:id="@+id/dropdown_menu"
+            android:layout_width="40dp"
+            android:layout_height="0dp"
+            android:padding="5dp"
+            android:src="@drawable/more_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/info_recording"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/info_recording"
+            app:tint="@color/light_gray" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/info_recording"
@@ -105,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:theme="@style/slider"
-            android:layout_marginHorizontal="40dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="25dp"
             app:layout_constraintBottom_toBottomOf="parent"

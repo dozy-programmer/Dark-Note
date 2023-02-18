@@ -70,7 +70,11 @@ public class AppWidget extends AppWidgetProvider {
                 views.setInt(R.id.appwidget_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
             else
                 views.setInt(R.id.appwidget_text, "setPaintFlags", 0);
-            views.setTextColor(R.id.appwidget_text, currentNote.getTextColor());
+
+            if(currentNote.getTitleColor() != currentNote.getBackgroundColor())
+                views.setTextColor(R.id.appwidget_text, currentNote.getTitleColor());
+            else
+                views.setTextColor(R.id.appwidget_text, context.getColor(R.color.ultra_white));
 
             ArrayList<String> list = new ArrayList<>();
             if (currentNote.isCheckList()) {

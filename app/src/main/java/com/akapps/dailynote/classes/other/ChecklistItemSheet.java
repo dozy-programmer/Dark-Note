@@ -325,7 +325,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         if(checklistItemsSeparator.equals("newline"))
             checklistItemsSeparator = "\n";
         String sublistItemsSeparator = user.getSublistSeparator();
-        String initialSublistItemsSeparator = sublistItemsSeparator;
         if(sublistItemsSeparator.equals("space"))
             sublistItemsSeparator = "\n";
 

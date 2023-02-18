@@ -64,7 +64,6 @@
             android:layout_margin="10dp"
             android:hint="Folder name"
             android:textColorHint="@color/white"
-            android:theme="@style/TextInputLayout"
             app:boxBackgroundColor="@color/gray"
             app:boxStrokeColor="@color/havelock_blue"
             app:boxStrokeErrorColor="@color/red"

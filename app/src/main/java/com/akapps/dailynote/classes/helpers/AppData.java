@@ -2,6 +2,7 @@ package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
@@ -41,10 +42,7 @@ public class AppData{
 
     public static ArrayList getAllNotes(Context context){
         Realm realm = getRealm(context);
-        RealmResults<Note> allNotes = realm.where(Note.class)
-                .equalTo("archived", false)
-                .equalTo("trash", false)
-                .sort("dateEdited", Sort.DESCENDING).findAll();
+        RealmResults<Note> allNotes = getCurrentNoteSort(realm);
         ArrayList<Note> noteArrayList = new ArrayList<>();
 
         noteArrayList.addAll(realm.copyFromRealm(allNotes));
@@ -61,7 +59,7 @@ public class AppData{
         return noteArrayList;
     }
 
-    public static ArrayList getNoteChecklist(int noteId, Context context){
+    public static ArrayList<String> getNoteChecklist(int noteId, Context context){
         Realm realm = getRealm(context);
         Note currentNote = realm.where(Note.class)
                 .equalTo("noteId", noteId).findFirst();
@@ -69,7 +67,7 @@ public class AppData{
         ArrayList<CheckListItem> noteArrayList = new ArrayList<>();
         ArrayList<String> allArraylistChecklist = new ArrayList<>();
 
-        if(currentNote.getPinNumber() != 0)
+        if(currentNote != null && currentNote.getPinNumber() != 0)
             allArraylistChecklist.add("*Note is Locked*");
         else {
             if(!currentNote.isCheckList()){
@@ -81,10 +79,11 @@ public class AppData{
             else {
                 noteArrayList.addAll(realm.copyFromRealm(currentNote.getChecklist()));
                 for (CheckListItem current : noteArrayList) {
-                    if(current.getSubChecklist().size() == 0)
-                        allArraylistChecklist.add(current.isChecked() ? current.getText() + "~~" : current.getText());
-                    else{
-                        allArraylistChecklist.add(current.isChecked() ? current.getText() + "~~" : current.getText());
+                    boolean containsAudio = current.getAudioPath() != null &&
+                            !current.getAudioPath().isEmpty();
+                    String text = current.getText() + (containsAudio ? "♬" : "");
+                    allArraylistChecklist.add(current.isChecked() ?  text + "~~": text);
+                    if(current.getSubChecklist().size() != 0){
                         for(SubCheckListItem subCheckListItem: current.getSubChecklist())
                             allArraylistChecklist.add(subCheckListItem.isChecked() ? "⤷️  " + subCheckListItem.getText() + "~~" :
                                     "⤷️  " + subCheckListItem.getText());
@@ -119,5 +118,15 @@ public class AppData{
 
     public void setDarkerMode(boolean isDarkerMode){
         this.isDarkerMode = isDarkerMode;
+    }
+
+    public static RealmResults<Note> getCurrentNoteSort(Realm realm){
+        RealmResults<Note> allNotes = realm.where(Note.class)
+                .equalTo("archived", false)
+                .equalTo("trash", false)
+                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+        allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
+
+        return allNotes;
     }
 }

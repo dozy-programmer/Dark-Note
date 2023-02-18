@@ -120,6 +120,7 @@ public class SettingsScreen extends AppCompatActivity{
     private SwitchCompat fabButtonSizeMode;
     private SwitchCompat showDeleteIcon;
     private SwitchCompat hideRichTextEditor;
+    private SwitchCompat showAudioButton;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -236,6 +237,7 @@ public class SettingsScreen extends AppCompatActivity{
         fabButtonSizeMode = findViewById(R.id.fab_switch);
         showDeleteIcon = findViewById(R.id.add_delete_icon_switch);
         hideRichTextEditor = findViewById(R.id.rich_text_switch);
+        showAudioButton = findViewById(R.id.audio_button_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -532,6 +534,13 @@ public class SettingsScreen extends AppCompatActivity{
             realm.commitTransaction();
         });
 
+        showAudioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setShowAudioButton(isChecked);
+            realm.commitTransaction();
+        });
+
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
@@ -718,6 +727,7 @@ public class SettingsScreen extends AppCompatActivity{
         fabButtonSizeMode.setChecked(currentUser.isIncreaseFabSize());
         showDeleteIcon.setChecked(currentUser.isEnableDeleteIcon());
         hideRichTextEditor.setChecked(currentUser.isHideRichTextEditor());
+        showAudioButton.setChecked(currentUser.isShowAudioButton());
         if(currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));

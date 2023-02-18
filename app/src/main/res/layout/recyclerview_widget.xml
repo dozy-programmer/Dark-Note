@@ -22,6 +22,15 @@
             android:layout_marginLeft="5dp"></ImageView>
 
         <ImageView
+            android:id="@+id/audio"
+            android:layout_width="14dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/mic_icon"
+            android:layout_marginLeft="2dp"
+            app:tint="@color/golden_rod"
+            android:tint="@color/golden_rod"/>
+
+        <ImageView
             android:id="@+id/widget_check_status"
             android:layout_width="10dp"
             android:layout_height="10dp"

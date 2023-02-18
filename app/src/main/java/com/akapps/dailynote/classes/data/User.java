@@ -39,6 +39,7 @@ public class User extends RealmObject {
     private String budgetCharacter;
     private String expenseCharacter;
     private boolean hideRichTextEditor;
+    private boolean showAudioButton;
 
     // note security and retrieval of password
     private String securityWord;
@@ -54,7 +55,7 @@ public class User extends RealmObject {
                         enableDeleteIcon = fingerprint = false;
         textSize = backupReminderOccurrence = pinNumber = 0;
         layoutSelected = "stag";
-        showPreview = showPreviewNoteInfo = modeSettings = enableSublists = true;
+        showPreview = showPreviewNoteInfo = modeSettings = enableSublists = showAudioButton = true;
         titleLines = contentLines = 3;
         lastUpload = backupReminderDate = email = securityWord = "";
         itemsSeparator = "newline";
@@ -285,5 +286,13 @@ public class User extends RealmObject {
 
     public void setHideRichTextEditor(boolean hideRichTextEditor) {
         this.hideRichTextEditor = hideRichTextEditor;
+    }
+
+    public boolean isShowAudioButton() {
+        return showAudioButton;
+    }
+
+    public void setShowAudioButton(boolean showAudioButton) {
+        this.showAudioButton = showAudioButton;
     }
 }

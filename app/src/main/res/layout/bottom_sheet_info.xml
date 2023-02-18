@@ -132,7 +132,6 @@
             android:layout_weight="50"
             android:hint="Security Word"
             android:textColorHint="@color/white"
-            android:theme="@style/TextInputLayout"
             android:visibility="gone"
             app:boxBackgroundColor="@color/gray"
             app:boxStrokeColor="@color/havelock_blue"

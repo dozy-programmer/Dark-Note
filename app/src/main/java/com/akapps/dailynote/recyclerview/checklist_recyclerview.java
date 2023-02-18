@@ -187,7 +187,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         boolean isSelected = checkListItem.isChecked();
 
         // populates note into the recyclerview
-        holder.checklistText.setText(checkListText);
+        holder.checklistText.setText(recordingExists && checkListItem.getText().isEmpty() ? "[Audio]" : checkListText);
 
         String textSize = Helper.getPreference(context, "size");
         if(textSize==null)

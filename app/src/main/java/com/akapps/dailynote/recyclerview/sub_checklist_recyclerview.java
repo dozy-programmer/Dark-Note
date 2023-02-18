@@ -90,6 +90,9 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             holder.background.setStrokeColor(activity.getColor(R.color.gray));
             holder.background.setStrokeWidth(5);
         }
+        else{
+            holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
+        }
 
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray

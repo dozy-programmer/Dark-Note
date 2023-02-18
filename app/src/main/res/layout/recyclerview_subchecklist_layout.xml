@@ -31,7 +31,7 @@
 
                 <ImageView
                     android:id="@+id/check_status"
-                    android:layout_width="wrap_content"
+                    android:layout_width="15dp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/unchecked_icon"
                     android:layout_gravity="center_vertical"

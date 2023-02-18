@@ -36,15 +36,17 @@
                     android:layout_gravity="center"
                     android:src="@drawable/mic_icon"
                     app:backgroundTint="@color/golden_rod"
-                    app:maxImageSize="20dp"
-                    app:fabCustomSize="30dp" />
+                    app:maxImageSize="18dp"
+                    app:fabCustomSize="25dp" />
 
                 <ImageView
                     android:id="@+id/check_status"
-                    android:layout_width="wrap_content"
+                    android:layout_width="15dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_margin="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
                     android:src="@drawable/unchecked_icon"></ImageView>
 
                 <TextView
@@ -71,14 +73,14 @@
                     android:layout_width="28dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginRight="5dp"
                     android:src="@drawable/delete_icon"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginRight="5dp"
                     android:src="@drawable/edit_icon"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton

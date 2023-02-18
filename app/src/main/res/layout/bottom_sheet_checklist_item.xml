@@ -72,7 +72,6 @@
             android:layout_marginHorizontal="5dp"
             android:hint="Item name"
             android:textColorHint="@color/white"
-            android:theme="@style/TextInputLayout"
             app:boxBackgroundColor="@color/gray"
             app:boxStrokeColor="@color/havelock_blue"
             app:boxStrokeErrorColor="@color/red"
