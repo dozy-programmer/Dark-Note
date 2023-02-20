@@ -40,13 +40,17 @@ import androidx.core.graphics.ColorUtils;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.other.AppWidget;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -62,6 +66,8 @@ import java.util.Random;
 import java.util.UUID;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 import static android.content.Context.MODE_PRIVATE;
@@ -636,7 +642,7 @@ public class Helper {
         return new File(file);
     }
 
-    public static void shareFile(Context context, String fileType, String filePath) {
+    public static void shareFile(Context context, String fileType, String filePath, String bodyText) {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType(fileType + "/*");
         Uri uri = null;
@@ -650,10 +656,107 @@ public class Helper {
                     file);
         }
 
+        if(!bodyText.isEmpty())
+            emailIntent.putExtra(Intent.EXTRA_TEXT, bodyText);
         // adds email subject and email body to intent
         emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
         context.startActivity(Intent.createChooser(emailIntent, "Share Photo"));
+    }
+
+    public static void shareFile(Activity activity, String text) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, text);
+        activity.startActivity(Intent.createChooser(emailIntent, "Share Text"));
+    }
+
+    private static void shareFiles(Context context, ArrayList<File> files) {
+        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        emailIntent.setType("text/*");
+
+        // attaching to intent to send folders
+        ArrayList<Uri> uris = new ArrayList<>();
+
+        for(File file: files){
+            if(file.exists()) {
+                uris.add(FileProvider.getUriForFile(
+                        context,
+                        "com.akapps.dailynote.fileprovider",
+                        file));
+            }
+        }
+
+        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        context.startActivity(Intent.createChooser(emailIntent, "Export Files"));
+    }
+
+    public static void shareNote(Activity activity, int noteId, Realm realm){
+        Note currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
+        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        emailIntent.setType("text/plain");
+
+        // attaching to intent to send folders
+        ArrayList<Uri> uris = new ArrayList<>();
+
+        // need to get all photos (for note and checklist)
+        RealmResults<Photo> allNotePhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
+        RealmResults<CheckListItem> checkListItems = realm.where(CheckListItem.class).equalTo("id",
+                currentNote.getNoteId()).not().isEmpty("itemImage").findAll();
+        // need to get all audio files
+        RealmResults<CheckListItem> audioPaths = realm.where(CheckListItem.class).equalTo("id",
+                currentNote.getNoteId()).not().isEmpty("audioPath").findAll();
+
+        for (int i = 0; i < allNotePhotos.size(); i++) {
+            assert allNotePhotos.get(i) != null;
+            File file = new File(allNotePhotos.get(i).getPhotoLocation());
+            if(file.exists()) {
+                uris.add(FileProvider.getUriForFile(
+                        activity,
+                        "com.akapps.dailynote.fileprovider",
+                        file));
+            }
+        }
+
+        for (int i = 0; i < checkListItems.size(); i++) {
+            assert checkListItems.get(i) != null;
+            File file = new File(checkListItems.get(i).getItemImage());
+            if(file.exists()) {
+                uris.add(FileProvider.getUriForFile(
+                        activity,
+                        "com.akapps.dailynote.fileprovider",
+                        file));
+            }
+        }
+
+        for (int i = 0; i < audioPaths.size(); i++) {
+            assert audioPaths.get(i) != null;
+            if(audioPaths.get(i).getAudioPath() != null) {
+                File file = new File(audioPaths.get(i).getAudioPath());
+                if (file.exists()) {
+                    uris.add(FileProvider.getUriForFile(
+                            activity,
+                            "com.akapps.dailynote.fileprovider",
+                            file));
+                }
+            }
+        }
+
+        String noteString = "";
+        if(currentNote.isCheckList())
+            noteString = getNoteString(currentNote, realm);
+        else
+            noteString = Html.fromHtml(currentNote.getNote(),
+                    Html.FROM_HTML_MODE_COMPACT).toString().replaceAll("(\\s{2,})", " ");
+
+        // adds email subject and email body to intent
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, currentNote.getTitle());
+        emailIntent.putExtra(Intent.EXTRA_TEXT, noteString);
+
+        if(uris.size() > 0)
+            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+
+        activity.startActivity(Intent.createChooser(emailIntent, "Share Note"));
     }
 
     public static void deleteUnneededFiles(Activity activity){
@@ -666,6 +769,113 @@ public class Helper {
                 break;
             }
         }
+    }
+
+    public static RealmResults<CheckListItem> sortChecklist(Note currentNote, Realm realm){
+        int currentSort = currentNote.getSort();
+
+        RealmResults<CheckListItem> results = currentNote.getChecklist()
+                .sort("positionInList", Sort.ASCENDING);
+
+        if(currentSort == -1){
+            realm.beginTransaction();
+            currentNote.setSort(5);
+            realm.commitTransaction();
+        }
+
+        if (currentSort == 1)
+            results = results.sort("text", Sort.ASCENDING);
+        else if (currentSort == 2)
+            results = results.sort("text", Sort.DESCENDING);
+        else if (currentSort == 4)
+            results = results.sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.ASCENDING);
+        else if (currentSort == 3)
+            results = results.sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.DESCENDING);
+        else if (currentSort == 5 || currentSort == 6)
+            results = results.sort("positionInList");
+        else {
+            results = results.sort("positionInList");
+        }
+
+        return results;
+    }
+
+    public static RealmResults<Note> getSelectedNotes(Realm realm, Activity activity){
+        RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
+        RealmResults<Note> lockedNotes = realm.where(Note.class).equalTo("isSelected", true)
+                .greaterThan("pinNumber", 0)
+                .findAll();
+
+        if(lockedNotes.size() > 0){
+            Helper.showMessage(activity, "Locked Notes", "Locked notes " +
+                    "can only be exported individually", MotionToast.TOAST_ERROR);
+        }
+        else {
+            if (selectedNotes.size() == 0) {
+                Helper.showMessage(activity, "Not Deleted", "Nothing was selected " +
+                        "and thus not exported", MotionToast.TOAST_ERROR);
+            }
+        }
+        return selectedNotes;
+    }
+
+    public static File createTempExportFile(Activity activity, String text, String ext){
+        String uniqueFileNumber = UUID.randomUUID().toString();
+        String filename = "export_" + uniqueFileNumber.substring(0, uniqueFileNumber.length() / 5).replaceAll("-", "_");
+        File outputFile = new File(activity.getCacheDir(), filename + ext);
+
+        try {
+            FileWriter out = new FileWriter(outputFile);
+            out.write(text);
+            out.close();
+        } catch (IOException e) {
+            Log.d("Here", "Error writing to export file");
+        }
+
+        return outputFile;
+    }
+
+    public static String getNoteString(Note currentNote, Realm realm){
+        RealmResults<CheckListItem> results = Helper.sortChecklist(currentNote, realm);
+        StringBuilder formattedString = new StringBuilder();
+
+        if(currentNote.isCheckList()) {
+            for (CheckListItem item : results) {
+                formattedString.append(item.isChecked() ? "[x] " : "[ ] ").append(item.getText().trim()).append("\n");
+                for (SubCheckListItem subCheckListItem : item.getSubChecklist()) {
+                    formattedString.append(item.isChecked() ? "\t[x] " : "[ ] ").append(subCheckListItem.getText().trim()).append("\n");
+                }
+            }
+        }
+
+        return formattedString.toString();
+    }
+
+    public static void exportFiles(String extension, Activity activity,
+                                   RealmResults<Note> selectedNotes, Realm realm){
+
+        if(selectedNotes.size() == 0)
+            return;
+
+        ArrayList<File> exportFiles= new ArrayList<>();
+
+        for(Note selectedNote: selectedNotes){
+            if(extension.equals(".md"))
+                exportFiles.add(createTempExportFile(activity, selectedNote.isCheckList() ?
+                        getNoteString(selectedNote, realm) : selectedNote.getNote(), extension));
+            else if(extension.equals(".txt")){
+                String unformattedNoteString = selectedNote.isCheckList() ?
+                        getNoteString(selectedNote, realm) :
+                        Html.fromHtml(selectedNote.getNote(),
+                                Html.FROM_HTML_MODE_COMPACT).toString().replaceAll("(\\s{2,})", " ");
+                exportFiles.add(createTempExportFile(activity, unformattedNoteString, extension));
+            }
+        }
+
+        if(exportFiles.size() > 0)
+            shareFiles(activity, exportFiles);
     }
 
 }

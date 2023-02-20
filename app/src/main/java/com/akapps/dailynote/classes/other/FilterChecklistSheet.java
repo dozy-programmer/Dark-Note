@@ -117,7 +117,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
                 currentNote.setSort(1);
                 realm.commitTransaction();
             }
-            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
@@ -133,7 +132,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
                 currentNote.setSort(2);
                 realm.commitTransaction();
             }
-            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
@@ -149,7 +147,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
                 currentNote.setSort(4);
                 realm.commitTransaction();
             }
-            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
@@ -165,7 +162,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
                 currentNote.setSort(3);
                 realm.commitTransaction();
             }
-            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
@@ -181,7 +177,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
                 currentNote.setSort(5);
                 realm.commitTransaction();
             }
-            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
@@ -197,7 +192,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
                 currentNote.setSort(6);
                 realm.commitTransaction();
             }
-            ((NoteEdit) getActivity()).sortEnable = false;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });
@@ -213,7 +207,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
                 currentNote.setSort(5);
                 realm.commitTransaction();
             }
-            ((NoteEdit) getActivity()).sortEnable = true;
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
         });

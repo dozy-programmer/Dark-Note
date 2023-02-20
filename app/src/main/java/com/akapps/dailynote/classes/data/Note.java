@@ -51,8 +51,10 @@ public class Note extends RealmObject {
     // sorting
     private int sort;
 
+    // show sublist
     private boolean enableSublist;
 
+    // note widget
     private int widgetId;
 
     public Note(){}

@@ -2,6 +2,7 @@ package com.akapps.dailynote.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ColorFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,8 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.other.ChecklistItemSheet;
+import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -66,6 +70,7 @@ public class notes extends Fragment{
     private SearchView searchEditText;
     private ImageView search;
     private ImageView filterIcon;
+    private ImageView settingsIcon;
     private RecyclerView recyclerViewNotes;
     private RecyclerView.Adapter adapterNotes;
     private FloatingActionButton addNote;
@@ -76,7 +81,7 @@ public class notes extends Fragment{
     private FloatingActionMenu addMenuLarge;
 
     // on-device database
-    private Realm realm;
+    public Realm realm;
     private RealmResults<Note> allNotes;
     private RealmResults<Note> filteredNotes;
     public User user;
@@ -336,6 +341,7 @@ public class notes extends Fragment{
         subtitle = view.findViewById(R.id.empty_subtitle);
         subSubTitle = view.findViewById(R.id.empty_sub_subtitle);
         filterIcon = view.findViewById(R.id.filter_icon);
+        settingsIcon = view.findViewById(R.id.settings_icon);
         addMenu = view.findViewById(R.id.menu);
         addNote = view.findViewById(R.id.add_note);
         addCheckList = view.findViewById(R.id.add_checklist);
@@ -381,7 +387,15 @@ public class notes extends Fragment{
                 searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray));
         }
 
-        settings.setOnClickListener(v -> openSettings());
+        settings.setOnClickListener(v -> {
+            if(enableSelectMultiple){
+                int numSelectedNotes = Integer.parseInt(fragmentTitle.getText().toString().replace(" Selected", ""));
+                ExportNotesSheet exportNotesSheet = new ExportNotesSheet(numSelectedNotes, this, false);
+                exportNotesSheet.show(getActivity().getSupportFragmentManager(), exportNotesSheet.getTag());
+            }
+            else
+                openSettings();
+        });
 
         addMenuLarge.setOnMenuButtonClickListener(v -> {
             if(isSearchingNotes){
@@ -898,6 +912,8 @@ public class notes extends Fragment{
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         search.setImageDrawable(context.getDrawable(R.drawable.delete_icon));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.select_all_icon));
+        settingsIcon.setImageDrawable(context.getDrawable(R.drawable.export_icon));
+        settingsIcon.setColorFilter(context.getColor(R.color.ultra_white));
         deletingMultipleNotes = true;
     }
 
@@ -917,6 +933,7 @@ public class notes extends Fragment{
         search.setImageDrawable(context.getDrawable(R.drawable.search_icon));
         filterNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));
+        settingsIcon.setImageDrawable(context.getDrawable(R.drawable.settings_icon));
         categoryNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
         settings.setVisibility(View.VISIBLE);
         updateToolbarColors();
@@ -928,8 +945,8 @@ public class notes extends Fragment{
                 .greaterThan("pinNumber", 0)
                 .findAll();
 
-        if(lockedNotes.size()>0){
-            Helper.showMessage(getActivity(), "Locked Noted", "Locked notes " +
+        if(lockedNotes.size() > 0){
+            Helper.showMessage(getActivity(), "Locked Notes", "Locked notes " +
                     "cannot be deleted", MotionToast.TOAST_ERROR);
         }
         else {

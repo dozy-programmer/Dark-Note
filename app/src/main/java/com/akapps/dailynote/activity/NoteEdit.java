@@ -52,6 +52,7 @@ import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
+import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterChecklistSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.data.Note;
@@ -149,7 +150,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isChanged;
     private boolean isWidget;
     private Handler handler;
-    public boolean sortEnable;
     private boolean isDarkerMode;
     // dialog
     // dialog
@@ -251,10 +251,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 if (currentNote.getTextColor() <= 0)
                     note.setEditorFontColor(context.getColor(R.color.ultra_white));
         }
+
         hideRichTextStatus = user.isHideRichTextEditor();
         if(user.isHideRichTextEditor())
             formatMenu.setVisibility(View.GONE);
-        if(!user.isShowAudioButton())
+        if(!user.isShowAudioButton() && currentNote.isCheckList())
             addAudioItem.setVisibility(View.VISIBLE);
 
         isWidget = currentNote.getWidgetId() > 0;
@@ -881,34 +882,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void sortChecklist(){
-        int currentSort = currentNote.getSort();
-
-        RealmResults<CheckListItem> results = currentNote.getChecklist()
-                .sort("positionInList", Sort.ASCENDING);
-
-        if(currentSort == -1){
-            realm.beginTransaction();
-            currentNote.setSort(5);
-            realm.commitTransaction();
-        }
-
-        if (currentSort == 1)
-            results = results.sort("text", Sort.ASCENDING);
-        else if (currentSort == 2)
-            results = results.sort("text", Sort.DESCENDING);
-        else if (currentSort == 4)
-            results = results.sort("lastCheckedDate", Sort.ASCENDING)
-                    .sort("checked", Sort.ASCENDING);
-        else if (currentSort == 3)
-            results = results.sort("lastCheckedDate", Sort.ASCENDING)
-                    .sort("checked", Sort.DESCENDING);
-        else if (currentSort == 5 || currentSort == 6)
-            results = results.sort("positionInList");
-        else {
-            sortEnable = true;
-            results = results.sort("positionInList");
-        }
-
+        RealmResults<CheckListItem> results = Helper.sortChecklist(currentNote, realm);
         populateChecklist(results);
     }
 
@@ -1296,9 +1270,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (item.getTitle().contains("Archive")) {
                 updateArchivedStatus();
             } else if (item.getTitle().equals("Send")) {
-                if (!isNewNote) {
-                    sendProject();
-                }
+                ExportNotesSheet exportNotesSheet = new ExportNotesSheet(noteId, realm,
+                        true, currentNote.isCheckList() ?
+                        Helper.getNoteString(currentNote, realm) : currentNote.getNote());
+                exportNotesSheet.show(getSupportFragmentManager(), exportNotesSheet.getTag());
             } else if (item.getTitle().equals("Reminder")) {
                 if(!currentNote.getReminderDateTime().isEmpty()){
                     Helper.showMessage(NoteEdit.this, "Alarm Exists",
@@ -1662,72 +1637,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             return false;
         }
         return true;
-    }
-
-    private void sendProject() {
-        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        emailIntent.setType("text/plain");
-
-        // attaching to intent to send folders
-        ArrayList<Uri> uris = new ArrayList<>();
-
-
-        // only attaches to email if there are project photos
-        for (int i = 0; i < allNotePhotos.size(); i++) {
-            File file = new File(allNotePhotos.get(i).getPhotoLocation());
-            if(file.exists()) {
-                uris.add(FileProvider.getUriForFile(
-                        this,
-                        "com.akapps.dailynote.fileprovider",
-                        file));
-            }
-        }
-
-        String note = "Note: " + "\n" + Html.fromHtml(currentNote.getNote(),
-                Html.FROM_HTML_MODE_COMPACT).toString().replaceAll("(\\s{2,})", " ");
-        if (currentNote.getNote().isEmpty() && !currentNote.isCheckList())
-            note += "--note is empty--";
-        else if(currentNote.isCheckList())
-            note = "";
-
-        StringBuilder checklist = new StringBuilder("Checklist: \n");
-        if(checkListItems!=null && checkListItems.size()!=0) {
-            for (int i = 0; i < checkListItems.size(); i++) {
-                // adds checklist text and it's current status (checked or unchecked)
-                checklist.append(checkListItems.get(i).getText())
-                        .append("  " + (checkListItems.get(i).isChecked() ? "✔" : "✖")).append("\n");
-                if(checkListItems.get(i).getSubChecklist().size() > 0) {
-                    // if checklist item has subchecklists, then print them out and their status
-                    for (int j = 0; j < checkListItems.get(i).getSubChecklist().size(); j++) {
-                        String currentSubList = checkListItems.get(i).getSubChecklist().get(j).getText();
-                        boolean isSublistChecked = checkListItems.get(i).getSubChecklist().get(j).isChecked();
-                        checklist.append("     " + currentSubList).append("  " + (isSublistChecked ? "✔" : "✖")).append("\n");
-                    }
-                }
-                checklist.append("\n");
-            }
-        }
-        else if(currentNote.isCheckList())
-            checklist.append("--checklist is empty--");
-        else
-            checklist = new StringBuilder("");
-
-        // creates a formatted body of project data
-        String emailBody = "Title: " + currentNote.getTitle() + "\n\n"
-                + "Date Created: " + currentNote.getDateCreated().replace("\n", " ") + "\n\n"
-                + "Date Edited: " + currentNote.getDateEdited().replace("\n", " ") + "\n\n"
-                + note
-                + checklist;
-
-        // adds email subject and email body to intent
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Sending Note: " + currentNote.getTitle());
-
-        emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
-
-        if(uris.size() > 0)
-            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-
-        startActivity(Intent.createChooser(emailIntent, "Share Note"));
     }
 
     private void showCameraDialog(){

@@ -100,7 +100,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/pause_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/pause_play_button"
-            app:layout_constraintTop_toTopOf="@+id/pause_play_button"></com.google.android.material.button.MaterialButton>
+            app:layout_constraintTop_toTopOf="@+id/pause_play_button"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/pause_play_button"

@@ -941,12 +941,14 @@ public class SettingsScreen extends AppCompatActivity{
         }
 
         if(fileSize.toLowerCase().contains("mb")){
-            int fileSizeNumber = Integer.valueOf(fileSize.toLowerCase().replace("mb", "").trim());
-            if(fileSizeNumber > 100) {
-                Helper.showMessage(this, "Upload Failed", "File size is too big, backup locally",
-                        MotionToast.TOAST_ERROR);
-                return;
-            }
+            try {
+                double fileSizeNumber = Double.parseDouble(fileSize.toLowerCase().replace("mb", "").trim());
+                if (fileSizeNumber > 100.0) {
+                    Helper.showMessage(this, "Upload Failed", "File size is too big, backup locally",
+                            MotionToast.TOAST_ERROR);
+                    return;
+                }
+            }catch (Exception e){}
         }
 
         progressDialog = Helper.showLoading("Uploading...\n" + fileSize,
@@ -1053,9 +1055,8 @@ public class SettingsScreen extends AppCompatActivity{
         File storageDir = new File(context
                 .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
 
-        if (!storageDir.exists()) {
+        if (!storageDir.exists())
             storageDir.mkdirs();
-        }
 
         File localFile = new File(storageDir,"backup.zip");
         storageRef.getFile(localFile)
@@ -1100,6 +1101,7 @@ public class SettingsScreen extends AppCompatActivity{
                     .equalTo("trash", false).findAll());
             updateImages(images);
             updateRecordings(recordings);
+            resetWidgets();
 
             // delete all zip files
             Helper.deleteZipFile(context);
@@ -1152,6 +1154,7 @@ public class SettingsScreen extends AppCompatActivity{
                             .equalTo("trash", false).findAll());
                     updateImages(images);
                     updateRecordings(recordings);
+                    resetWidgets();
 
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
@@ -1242,6 +1245,12 @@ public class SettingsScreen extends AppCompatActivity{
             if(null != currentNote.getReminderDateTime() && !currentNote.getReminderDateTime().isEmpty())
                 Helper.startAlarm(this, currentNote, realm);
         }
+    }
+
+    private void resetWidgets(){
+        realm.beginTransaction();
+        realm.where(Note.class).not().equalTo("widgetId", 0).findAll().setInt("widgetId", 0);
+        realm.commitTransaction();
     }
 
     private void updateImages(ArrayList<String> imagePaths){

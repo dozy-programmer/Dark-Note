@@ -479,6 +479,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         // if note is long clicked, then the ability to select multiple notes is enabled
         holder.view.setOnLongClickListener(v -> {
+            enableSelectMultiple = ((notes) noteFragment).enableSelectMultiple;
             // prevent opening of images when multi-selecting
             if(!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
@@ -489,9 +490,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
             }
-            else
-                Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
-                        "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
             return true;
         });
 

@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
     private String recordToFilePath;
     private Handler handlerTimer = new Handler();
     private Handler handlerTimerText = new Handler();
+
+    private BottomSheetDialog dialog;
 
     public RecordAudioSheet(){
         AppData.timerDuration = 0;
@@ -82,6 +85,8 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
                         .getColor(R.color.ocean_green)));
             }
             else {
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
                 audioManager.startRecording();
                 Helper.startTimer(handlerTimer, 0);
                 updateRecordingDuration(recordingDuration);
@@ -104,7 +109,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
                 audioManager.stopRecording();
             if(!Helper.isFileEmpty(recordToFilePath)){
                 CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("");
-                voiceItem = ((NoteEdit) getActivity()).addCheckList(voiceItem.getSubListId(), recordToFilePath, AppData.timerDuration);
+                ((NoteEdit) getActivity()).addCheckList(voiceItem.getSubListId(), recordToFilePath, AppData.timerDuration);
             }
             dismiss();
         });
@@ -113,13 +118,12 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
     }
 
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        if(handlerTimerText != null)
+    public void onStop() {
+        if (handlerTimerText != null)
             handlerTimerText.removeCallbacksAndMessages(null);
-        if(handlerTimer != null)
+        if (handlerTimer != null)
             handlerTimer.removeCallbacksAndMessages(null);
-
-        super.onDismiss(dialog);
+        super.onStop();
     }
 
     private void updateRecordingDuration(TextView recordingDuration){
@@ -145,10 +149,8 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog =(BottomSheetDialog) getDialog ();
+                    dialog = (BottomSheetDialog) getDialog ();
                     if (dialog != null) {
-                        dialog.setCancelable(false);
-                        dialog.setCanceledOnTouchOutside(false);
                         FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
                             BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);

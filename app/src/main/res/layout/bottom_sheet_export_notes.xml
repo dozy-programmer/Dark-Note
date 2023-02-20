@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:scrollbarSize="2dp"
+    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbars="vertical">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardBackgroundColor="@color/light_gray_2"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text="Export Notes"
+            android:textColor="@color/orange"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/export_info"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            app:backgroundTint="@color/light_gray"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/info_icon"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="28dp"
+            app:iconTint="@color/ultra_white"
+            app:layout_constraintEnd_toEndOf="@+id/export_markdown"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/export_markdown"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="@color/orange"
+            android:text="Markdown File"
+            android:textColor="@color/ultra_white"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/export_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/export_text"
+            app:layout_constraintTop_toTopOf="@+id/export_text" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/export_text"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/pressed_blue"
+            android:text="Text File"
+            android:textColor="@color/ultra_white"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/export_markdown"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/export_text_string"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="@color/dark_gold"
+            android:text="Text"
+            android:textColor="@color/ultra_white"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/export_text_string_formatted"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/export_text" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/export_text_string_formatted"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="@color/gumbo"
+            android:text="Text (Formatted)"
+            android:textColor="@color/ultra_white"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="@+id/export_text_string"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/export_text_string"
+            app:layout_constraintTop_toTopOf="@+id/export_text_string" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/export_note"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginVertical="10dp"
+            android:backgroundTint="@color/money_green"
+            android:text="Export Note"
+            android:textColor="@color/ultra_white"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/export_text_string_formatted"
+            app:layout_constraintStart_toStartOf="@+id/export_text_string"
+            app:layout_constraintTop_toBottomOf="@+id/export_text_string" />
+
+        <TextView
+            android:id="@+id/number_of_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/ultra_white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/export_markdown"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

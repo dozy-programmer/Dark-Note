@@ -31,6 +31,7 @@ public class AudioManager {
 
     public AudioManager(String fileName){
         this.fileName = fileName;
+        isStopped = true;
     }
 
     public AudioManager(String fileName, TextView currentDuration, SeekBar audioSeekbar,
