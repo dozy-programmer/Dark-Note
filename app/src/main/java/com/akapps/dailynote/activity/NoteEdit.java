@@ -1223,10 +1223,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         IconPowerMenuItem reminderItem = new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder");
         noteMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.archive_icon), archivedStatus))
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.send_icon), "Send"))
                 .addItem(reminderItem)
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.format_size_icon), "Text Size"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.export_icon), "Export"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
                 .setBackgroundColor(getColor(backgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
@@ -1269,7 +1269,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         public void onItemClick(int position, IconPowerMenuItem item) {
             if (item.getTitle().contains("Archive")) {
                 updateArchivedStatus();
-            } else if (item.getTitle().equals("Send")) {
+            } else if (item.getTitle().equals("Export")) {
                 ExportNotesSheet exportNotesSheet = new ExportNotesSheet(noteId, realm,
                         true, currentNote.isCheckList() ?
                         Helper.getNoteString(currentNote, realm) : currentNote.getNote());
@@ -1449,7 +1449,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             photosNote.setCardBackgroundColor(getColor(R.color.blue));
         } else {
             isShowingPhotos = false;
-            photosNote.setCardBackgroundColor(getColor(R.color.light_gray));
+            if(isDarkerMode)
+                photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
+            else
+                photosNote.setCardBackgroundColor(getColor(R.color.light_gray));
         }
 
         photosScrollView.setVisibility(visibility);

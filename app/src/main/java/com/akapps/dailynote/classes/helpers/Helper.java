@@ -843,9 +843,14 @@ public class Helper {
 
         if(currentNote.isCheckList()) {
             for (CheckListItem item : results) {
-                formattedString.append(item.isChecked() ? "[x] " : "[ ] ").append(item.getText().trim()).append("\n");
+                String itemString = "";
+                if(item.getText().isEmpty() && item.getAudioPath() != null && !item.getAudioPath().isEmpty())
+                    itemString = "[Audio]";
+                else
+                    itemString = item.getText().trim();
+                formattedString.append(item.isChecked() ? "[x] " : "[ ] ").append(itemString).append("\n");
                 for (SubCheckListItem subCheckListItem : item.getSubChecklist()) {
-                    formattedString.append(item.isChecked() ? "\t[x] " : "[ ] ").append(subCheckListItem.getText().trim()).append("\n");
+                    formattedString.append(item.isChecked() ? "    [x] " : "[ ] ").append(subCheckListItem.getText().trim()).append("\n");
                 }
             }
         }

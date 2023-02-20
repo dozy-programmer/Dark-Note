@@ -87,8 +87,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
 
         budget = getBudgetAmount(currentNote.getChecklist());
         if(budget == 0){
-            errorMessageString = "\nNo budget found\n";
-            updateErrorMessage(errorMessageString);
+            errorMessageString = getContext().getString(R.string.try_out_budget_message);
+            updateErrorMessage("\n" + errorMessageString);
         }
         else if(budget > 0){
             errorMessage.setVisibility(View.GONE);

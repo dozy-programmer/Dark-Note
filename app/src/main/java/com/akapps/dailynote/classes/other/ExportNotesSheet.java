@@ -73,6 +73,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
             exportTextString.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             exportTextStringFormatted.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             exportNote.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            info.setBackgroundColor(getContext().getColor(R.color.not_too_dark_gray));
             exportText.setStrokeWidth(5);
             exportMarkdown.setStrokeWidth(5);
             exportTextString.setStrokeWidth(5);
@@ -128,6 +129,25 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
         exportNote.setOnClickListener(view15 -> {
             Helper.shareNote(getActivity(), numNotesSelected, realm);
             dismiss();
+        });
+
+        info.setOnClickListener(view16 -> {
+
+            String exportInfo = "" +
+                    "• Text file\n" +
+                    "  - export note as text file\n\n" +
+                    "• Markdown file\n" +
+                    "  - export note as markdown file\n\n" +
+                    "• Text\n" +
+                    "  - export note as text (unformatted)\n\n" +
+                    "• Text (formatted)\n" +
+                    "  - export note as text (keep note formatting)\n\n" +
+                    "• Export Note\n" +
+                    "  - exports note as text (unformatted)\n" +
+                    "  - exports all images and audio files";
+
+            InfoSheet info1 = new InfoSheet(exportInfo, 12);
+            info1.show(getActivity().getSupportFragmentManager(), info1.getTag());
         });
 
         return view;

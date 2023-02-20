@@ -294,25 +294,32 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               backup.setText("REMOVE");
               info.setText("Are you sure?");
               info.setGravity(Gravity.CENTER);
-       }
-        else if(message == 10){
-            String budgetChar = ((NoteEdit) getActivity()).user.getBudgetCharacter();
-            String expenseChar = ((NoteEdit) getActivity()).user.getExpenseCharacter();
-            title.setText("Budget $ Guide");
-            backup.setVisibility(View.GONE);
-            securityWord.setVisibility(View.GONE);
-            info.setTextColor(getContext().getColor(R.color.pressed_blue));
-            info.setText(getContext().getString(R.string.try_out_budget)
-                    .replaceAll("\\$", Matcher.quoteReplacement(expenseChar))
-                    .replaceAll("\\+" + expenseChar, Matcher.quoteReplacement(budgetChar)));
-          }
+        }
+        else if(message == 10) {
+              String budgetChar = ((NoteEdit) getActivity()).user.getBudgetCharacter();
+              String expenseChar = ((NoteEdit) getActivity()).user.getExpenseCharacter();
+              title.setText("Budget $ Guide");
+              backup.setVisibility(View.GONE);
+              securityWord.setVisibility(View.GONE);
+              info.setTextColor(getContext().getColor(R.color.pressed_blue));
+              info.setText(getContext().getString(R.string.try_out_budget)
+                      .replaceAll("\\$", Matcher.quoteReplacement(expenseChar))
+                      .replaceAll("\\+" + expenseChar, Matcher.quoteReplacement(budgetChar)));
+        }
         else if(message == 11){
               title.setText("Audio Info");
               backup.setBackgroundColor(getContext().getColor(R.color.red));
               securityWord.setVisibility(View.GONE);
               info.setText(messageText);
               info.setGravity(Gravity.LEFT);
-          }
+        }
+        else if(message == 12){
+              title.setText("Export Info");
+              backup.setBackgroundColor(getContext().getColor(R.color.red));
+              securityWord.setVisibility(View.GONE);
+              info.setText(messageText);
+              info.setGravity(Gravity.LEFT);
+        }
 
         unlock.setOnClickListener(v -> {
             attempts++;
