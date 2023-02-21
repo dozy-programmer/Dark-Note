@@ -105,6 +105,7 @@ public class AppData{
         Note currentNote = realm.where(Note.class)
                 .equalTo("noteId", noteId).findFirst();
 
+        assert currentNote != null;
         if(currentNote.getWidgetId() != widgetId){
             realm.beginTransaction();
             currentNote.setWidgetId(widgetId);

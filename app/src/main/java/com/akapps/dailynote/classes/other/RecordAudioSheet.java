@@ -17,6 +17,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.AudioManager;
@@ -108,7 +109,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
             if(audioManager != null && audioManager.isRecording())
                 audioManager.stopRecording();
             if(!Helper.isFileEmpty(recordToFilePath)){
-                CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("");
+                CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("", new Place());
                 ((NoteEdit) getActivity()).addCheckList(voiceItem.getSubListId(), recordToFilePath, AppData.timerDuration);
             }
             dismiss();

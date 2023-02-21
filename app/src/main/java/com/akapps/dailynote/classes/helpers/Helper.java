@@ -43,6 +43,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.other.AppWidget;
 import com.google.android.material.badge.BadgeDrawable;
@@ -809,6 +810,7 @@ public class Helper {
                 .findAll();
 
         if(lockedNotes.size() > 0){
+            selectedNotes = null;
             Helper.showMessage(activity, "Locked Notes", "Locked notes " +
                     "can only be exported individually", MotionToast.TOAST_ERROR);
         }
@@ -881,6 +883,20 @@ public class Helper {
 
         if(exportFiles.size() > 0)
             shareFiles(activity, exportFiles);
+    }
+
+    public static void openMapView(Activity activity, Place place){
+        Uri gmmIntentUri = Uri.parse(
+                "https://www.google.com/maps/search/?api=1&query=qwerty&query_place_id="
+                        + place.getPlaceId());
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivity(mapIntent);
+        }
+        else
+            Helper.showMessage(activity, "Opening Map Error",
+                    "Google Maps not found on device", MotionToast.TOAST_ERROR);
     }
 
 }

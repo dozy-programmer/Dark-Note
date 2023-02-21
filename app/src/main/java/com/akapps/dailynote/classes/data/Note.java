@@ -71,6 +71,7 @@ public class Note extends RealmObject {
         sort = 5;
         enableSublist = false;
         widgetId = -1;
+        pinNumber = 0;
     }
 
     public int getNoteId(){

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -78,6 +79,9 @@ dependencies {
     implementation 'com.github.yash786agg:AnimatedLoadingIndicator:v1.3'       // loading screen
     implementation "com.airbnb.android:lottie:5.0.3"                           // lottie animation
     implementation("app.futured.donut:donut:2.2.2")                            // graph
+
+    // google maps
+    implementation 'com.google.android.libraries.places:places:3.0.0'
 
     // image loader
     implementation 'com.github.bumptech.glide:glide:4.12.0'

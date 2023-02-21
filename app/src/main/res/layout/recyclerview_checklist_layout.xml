@@ -125,6 +125,37 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginBottom="5dp"/>
 
+        <LinearLayout
+            android:id="@+id/location_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="-5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="10dp">
+
+            <TextView
+                android:id="@+id/place_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="place_info"
+                android:fontFamily="@font/baloo_bhai"
+                android:textColor="@color/blue"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="@color/mdtp_transparent_black"
+                android:src="@drawable/location_icon"
+                android:tint="@color/tan_hide"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

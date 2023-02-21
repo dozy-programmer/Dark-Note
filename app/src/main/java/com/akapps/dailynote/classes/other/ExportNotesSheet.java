@@ -154,9 +154,11 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
     }
 
     private void exportNotes(String extension){
-        Helper.exportFiles(extension, getActivity(), Helper.getSelectedNotes(((notes) fragment).realm,
-                getActivity()), ((notes) fragment).realm);
-        ((notes) fragment).closeMultipleNotesLayout();
+        RealmResults<Note> results = Helper.getSelectedNotes(((notes) fragment).realm,
+                getActivity());
+        if(results != null && results.size()!=0)
+            Helper.exportFiles(extension, getActivity(), results , ((notes) fragment).realm);
+        ((notes) fragment).clearMultipleSelect();
         dismiss();
     }
 

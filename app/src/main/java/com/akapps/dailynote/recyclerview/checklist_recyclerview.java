@@ -2,6 +2,7 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,10 +51,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
+        private final TextView placeAttached;
         private final ImageView selectedIcon;
         private final ImageView deleteIcon;
         private final LinearLayout checkItem;
         private final LinearLayout edit;
+        private final LinearLayout locationLayout;
         private final RecyclerView subChecklist;
         private final FloatingActionButton addSubChecklist;
         private final FloatingActionButton audio;
@@ -64,6 +67,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         public MyViewHolder(View v) {
             super(v);
             checklistText = v.findViewById(R.id.note_Textview);
+            placeAttached = v.findViewById(R.id.place_info);
+            locationLayout = v.findViewById(R.id.location_layout);
             selectedIcon = v.findViewById(R.id.check_status);
             checkItem = v.findViewById(R.id.checkItem);
             edit = v.findViewById(R.id.edit);
@@ -107,6 +112,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             checkListItem.setSubListId(rand.nextInt(100000) + 1);
             realm.commitTransaction();
         }
+
+        if(checkListItem.getPlace() != null && !checkListItem.getPlace().getPlaceName().isEmpty()){
+            holder.locationLayout.setVisibility(View.VISIBLE);
+            holder.placeAttached.setText(checkListItem.getPlace().getPlaceName());
+        }
+        else
+            holder.locationLayout.setVisibility(View.GONE);
 
         boolean recordingExists = false;
         if(checkListItem.getAudioPath() != null)
@@ -261,10 +273,11 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             realm.beginTransaction();
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
             realm.commitTransaction();
-            ((NoteEdit)activity).updateDateEdited();
+            ((NoteEdit) activity).updateDateEdited();
             notifyDataSetChanged();
         });
 
+        holder.locationLayout.setOnClickListener(view -> Helper.openMapView(activity, checkListItem.getPlace()));
     }
 
     @Override

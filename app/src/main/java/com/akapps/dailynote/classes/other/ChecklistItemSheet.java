@@ -1,6 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
-import android.app.Activity;
+import static android.app.Activity.RESULT_OK;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -15,16 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import com.akapps.dailynote.BuildConfig;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
@@ -33,6 +36,12 @@ import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -46,7 +55,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
 
@@ -60,6 +71,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     private Realm realm;
     private User user;
+    private Place selectedPlace;
 
     private TextInputEditText itemName;
 
@@ -74,6 +86,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private ImageView itemImage;
     private TextView photo_info;
     private TextView dateCreated;
+
+    private LinearLayout locationLayout;
+    private TextView placeLocation;
 
     // adding
     public ChecklistItemSheet(){
@@ -118,13 +133,19 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         realm = ((NoteEdit)getActivity()).realm;
         user = ((NoteEdit)getActivity()).user;
 
+        // Initialize the SDK
+        if (!Places.isInitialized())
+            Places.initialize(getContext(), BuildConfig.MAPS_API_KEY);
+
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
-        MaterialButton next = view.findViewById(R.id.next_confirm);
+        MaterialButton addLocation = view.findViewById(R.id.add_location);
         ImageView delete = view.findViewById(R.id.delete);
         dropDownMenu = view.findViewById(R.id.dropdown_menu);
         TextView info = view.findViewById(R.id.checklist_info);
         dateCreated = view.findViewById(R.id.date_created);
         photo_info = view.findViewById(R.id.photo_info);
+        locationLayout = view.findViewById(R.id.location_layout);
+        placeLocation = view.findViewById(R.id.place_info);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
@@ -206,6 +227,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                         dateCreated.setGravity(Gravity.LEFT);
                     }
 
+                    if(currentItem.getPlace() != null && !currentItem.getPlace().getPlaceName().isEmpty()){
+                        locationLayout.setVisibility(View.VISIBLE);
+                        placeLocation.setText(currentItem.getPlace().getPlaceName());
+                    }
+
                     if(currentItem.getDateCreated() != null)
                         if (!currentItem.getDateCreated().isEmpty()) {
                             dateCreated.setText("Created: " + currentItem.getDateCreated());
@@ -214,7 +240,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 }
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
-                next.setVisibility(View.GONE);
+                addLocation.setVisibility(View.GONE);
             }
             catch (Exception e){
                 this.dismiss();
@@ -244,17 +270,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 this.dismiss();
         });
 
-        next.setOnClickListener(v -> {
-            if(confirmEntry(itemName, itemNameLayout)){
-                this.dismiss();
-                ChecklistItemSheet checklistItemSheet;
-                if(isSubChecklist)
-                    checklistItemSheet = new ChecklistItemSheet(checkListItem, parentNode, true, adapter);
-                else
-                    checklistItemSheet = new ChecklistItemSheet();
-                checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
-            }
+        addLocation.setOnClickListener(v -> {
+            startLocationSearch();
         });
+
+        locationLayout.setOnClickListener(view15 -> startLocationSearch());
 
         itemImageLayout.setOnClickListener(view12 -> {
             showCameraDialog();
@@ -266,7 +286,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             realm.commitTransaction();
 
             Glide.with(getContext()).load(getContext().getDrawable(R.drawable.icon_image)).into(itemImage);
-            photo_info.setVisibility(View.INVISIBLE);
+            photo_info.setVisibility(View.GONE);
             adapter.notifyItemChanged(position);
             return true;
         });
@@ -279,6 +299,18 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         // save status to database
         realm.beginTransaction();
         checkListItem.setText(text);
+        currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        realm.commitTransaction();
+        ((NoteEdit)getActivity()).updateDateEdited();
+        adapter.notifyItemChanged(position);
+    }
+
+    // updates place of checklist item in database
+    private void updateItem(CheckListItem checkListItem, Place place){
+        // save status to database
+        realm.beginTransaction();
+        Place newPlace = realm.copyToRealm(place);
+        checkListItem.setPlace(newPlace);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         realm.commitTransaction();
         ((NoteEdit)getActivity()).updateDateEdited();
@@ -338,7 +370,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 else {
                     for (String item : items) {
                         if (!item.startsWith(" ") && checklistItemsSeparator.equals("\n")) {
-                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0]);
+                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0], selectedPlace);
+                            selectedPlace = new Place();
                             if (sublistItemsSeparator.equals("--")) {
                                 String[] currentSublistItems = item.split(sublistItemsSeparator);
                                 for (int i = 1; i < currentSublistItems.length; i++) {
@@ -350,11 +383,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                         }
                         else if (item.startsWith(" ") && sublistItemsSeparator.equals("\n")) {
                             if (currentItem == null)
-                                currentItem = ((NoteEdit) getActivity()).addCheckList("");
+                                currentItem = ((NoteEdit) getActivity()).addCheckList("", new Place());
                             ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), item);
                         }
                         else {
-                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0]);
+                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0], selectedPlace);
+                            selectedPlace = new Place();
                             if (item.contains(sublistItemsSeparator)) {
                                 String[] currentSublistItems = item.split(sublistItemsSeparator);
                                 for (int i = 1; i < currentSublistItems.length; i++) {
@@ -392,7 +426,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == 1) {
+        if (resultCode == RESULT_OK && requestCode == 1) {
             Uri uri = data.getData();
 
             File file = new File(uri.getPath());
@@ -416,6 +450,23 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             adapter.notifyItemChanged(position);
         }
         else if (resultCode== ImagePicker.RESULT_ERROR) {}
+        else if (requestCode == 5) {
+            if (resultCode == RESULT_OK) {
+                com.google.android.libraries.places.api.model.Place place = Autocomplete.getPlaceFromIntent(data);
+                selectedPlace = new Place(place.getName(), place.getAddress(), place.getId());
+                Log.i("Here", "Place: " + place.getName() + ", " + place.getId());
+
+                if(!isAdding)
+                    updateItem(currentItem, selectedPlace);
+
+                locationLayout.setVisibility(View.VISIBLE);
+                placeLocation.setText(currentItem.getPlace().getPlaceName());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i("Here", status.getStatusMessage());
+            }
+            return;
+        }
     }
 
     private void openMenuDialog() {
@@ -472,6 +523,19 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             noteMenu.dismiss();
         }
     };
+
+    private void startLocationSearch(){
+        // Set the fields to specify which types of place data to
+        // return after the user has made a selection.
+        List<com.google.android.libraries.places.api.model.Place.Field> fields =
+                Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID,
+                        com.google.android.libraries.places.api.model.Place.Field.NAME);
+
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .build(getContext());
+        startActivityForResult(intent, 5);
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

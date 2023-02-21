@@ -351,8 +351,6 @@ public class notes extends Fragment{
     }
 
     private void showData(){
-        populateAdapter(allNotes);
-        isListEmpty(allNotes.size(), false);
         getSortDataAndSort();
     }
 
@@ -540,7 +538,7 @@ public class notes extends Fragment{
             updateDateEditedMilli();
     }
 
-    private void clearMultipleSelect(){
+    public void clearMultipleSelect(){
         numMultiSelect = -1;
         unSelectAllNotes();
         enableSelectMultiple = isNotesFiltered = false;

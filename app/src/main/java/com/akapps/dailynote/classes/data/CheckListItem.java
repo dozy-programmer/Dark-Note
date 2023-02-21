@@ -20,9 +20,12 @@ public class CheckListItem extends RealmObject {
     private String audioPath;
     private int audioDuration;
 
+    private Place place;
+
     public CheckListItem(){}
 
-    public CheckListItem(String text, boolean checked, int id, int positionInList, int subListId, String dateCreated) {
+    public CheckListItem(String text, boolean checked, int id, int positionInList, int subListId,
+                         String dateCreated, Place place) {
         this.text = text;
         this.checked = checked;
         this.id = id;
@@ -33,6 +36,7 @@ public class CheckListItem extends RealmObject {
         this.dateCreated = dateCreated;
         this.subChecklist = new RealmList<>();
         audioDuration = 0;
+        this.place = place;
     }
 
     public String getText() {
@@ -121,5 +125,13 @@ public class CheckListItem extends RealmObject {
 
     public void setAudioDuration(int audioDuration) {
         this.audioDuration = audioDuration;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 }

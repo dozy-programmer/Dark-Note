@@ -2,6 +2,9 @@ package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.Place;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Date;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
@@ -153,6 +156,17 @@ public class RealmDatabase {
 
             if(!schema.get("User").hasField("showAudioButton"))
                 schema.get("User").addField("showAudioButton", boolean.class);
+
+            // added place class
+            if(!schema.contains("Place"))
+                schema.create("Place")
+                        .addField("placeName", String.class)
+                        .addField("addressString", String.class)
+                        .addField("placeId", String.class);
+
+            // add place to checklist item
+            if(!schema.get("CheckListItem").hasField("place"))
+                schema.get("CheckListItem").addRealmObjectField("place", schema.get("Place"));
         }
     }
 }

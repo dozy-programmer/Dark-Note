@@ -35,12 +35,14 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
+import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
@@ -116,6 +118,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private FloatingActionButton budget;
     private FloatingActionButton sort;
     private FloatingActionButton info;
+    private HorizontalScrollView richtextEditorScrollView;
     // search
     private EditText searchEditText;
     private ImageView searchClose;
@@ -230,6 +233,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isDarkerMode = true;
             AppData.getAppData().isDarkerMode = true;
             scrollView.setBackgroundColor(context.getColor(R.color.darker_mode));
+            richtextEditorScrollView.setBackgroundColor(getColor(R.color.darker_mode));
             note.setBackgroundColor(context.getColor(R.color.darker_mode));
             searchEditText.setTextColor(context.getColor(R.color.ultra_white));
             date.setTextColor(context.getColor(R.color.light_light_gray));
@@ -242,10 +246,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             searchLayout.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             palleteIconColor.setColorFilter(getColor(R.color.ultra_white));
             moreOptionsMenu.setMenuButtonColorNormal(getColor(R.color.not_too_dark_gray));
+            formatMenu.setBackgroundColor(getColor(R.color.not_too_dark_gray));
         }
         else {
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
             searchEditText.setTextColor(context.getColor(R.color.light_gray));
+            richtextEditorScrollView.setBackgroundColor(getColor(R.color.gray));
 
             if(noteId != -1 && !isNewNote)
                 if (currentNote.getTextColor() <= 0)
@@ -367,6 +373,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         moreOptionsMenu = findViewById(R.id.more_options_menu);
         sort = findViewById(R.id.sort);
         info = findViewById(R.id.info);
+        richtextEditorScrollView = findViewById(R.id.horizontalScrollView);
         subtitle = findViewById(R.id.empty_subtitle);
         subSubTitle = findViewById(R.id.empty_sub_subtitle);
         category = findViewById(R.id.category);
@@ -1086,7 +1093,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     // adds note
-    public CheckListItem addCheckList(String itemText) {
+    public CheckListItem addCheckList(String itemText, Place place) {
         int initialPosition = -1;
 
         if(currentNote.getChecklist().size() != 0) {
@@ -1102,7 +1109,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         // insert data to database
         realm.beginTransaction();
-        CheckListItem currentItem = new CheckListItem(itemText.trim(), false, currentNote.getNoteId(), initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime()));
+        CheckListItem currentItem = new CheckListItem(itemText.trim(), false, currentNote.getNoteId(),
+                initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
+                .format(Calendar.getInstance().getTime()), place);
         currentNote.getChecklist().add(currentItem);
         currentNote.setChecked(false);
         realm.commitTransaction();
@@ -1150,7 +1159,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         // insert data to database
         realm.beginTransaction();
-        CheckListItem currentItem = new CheckListItem(itemText.trim(), isChecked, currentNote.getNoteId(), initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime()));
+        CheckListItem currentItem = new CheckListItem(itemText.trim(), isChecked, currentNote.getNoteId(),
+                initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
+                .format(Calendar.getInstance().getTime()), new Place("", "", ""));
         currentNote.getChecklist().add(currentItem);
         currentNote.setChecked(false);
         realm.commitTransaction();
