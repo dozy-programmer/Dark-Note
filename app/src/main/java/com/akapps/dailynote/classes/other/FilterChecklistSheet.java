@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.akapps.dailynote.R;
@@ -17,7 +16,6 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import org.jetbrains.annotations.NotNull;
 import io.realm.Realm;

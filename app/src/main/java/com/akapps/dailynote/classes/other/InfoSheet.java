@@ -1,7 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -39,7 +38,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;

@@ -2,8 +2,6 @@ package com.akapps.dailynote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
 import androidx.fragment.app.FragmentActivity;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
@@ -14,7 +12,6 @@ import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.fragments.notes;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 public class Homepage extends FragmentActivity{
 

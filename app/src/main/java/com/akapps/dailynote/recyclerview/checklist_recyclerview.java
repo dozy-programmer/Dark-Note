@@ -2,7 +2,6 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +26,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stfalcon.imageviewer.StfalconImageViewer;
-
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

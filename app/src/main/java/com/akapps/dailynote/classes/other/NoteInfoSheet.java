@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +28,12 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import org.jetbrains.annotations.NotNull;
-
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 

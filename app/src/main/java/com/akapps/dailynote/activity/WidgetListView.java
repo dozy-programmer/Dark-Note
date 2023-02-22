@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-
 import java.util.ArrayList;
 import java.util.List;
 

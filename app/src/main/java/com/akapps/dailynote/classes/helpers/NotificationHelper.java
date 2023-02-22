@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
-import android.provider.Settings;
-
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.akapps.dailynote.R;

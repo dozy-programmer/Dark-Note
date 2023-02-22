@@ -1,9 +1,6 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
-
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;

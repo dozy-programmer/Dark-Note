@@ -13,17 +13,14 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.OpenableColumns;
 import android.text.Html;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -31,13 +28,11 @@ import android.view.Window;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.OptIn;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.CheckListItem;
@@ -48,7 +43,6 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.other.AppWidget;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -65,7 +59,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -610,10 +603,7 @@ public class Helper {
     public static File createFile(Context context, Uri uri, File destinationFilename) {
         try (InputStream ins = context.getContentResolver().openInputStream(uri)) {
             createFileFromStream(ins, destinationFilename);
-        } catch (Exception ex) {
-            Log.e("Save File", ex.getMessage());
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) {}
         return destinationFilename;
     }
 
@@ -625,10 +615,7 @@ public class Helper {
                 os.write(buffer, 0, length);
             }
             os.flush();
-        } catch (Exception ex) {
-            Log.e("Save File", ex.getMessage());
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) {}
     }
 
     public static File getInternalFileDir(Activity activity){
@@ -832,9 +819,7 @@ public class Helper {
             FileWriter out = new FileWriter(outputFile);
             out.write(text);
             out.close();
-        } catch (IOException e) {
-            Log.d("Here", "Error writing to export file");
-        }
+        } catch (IOException e) {}
 
         return outputFile;
     }

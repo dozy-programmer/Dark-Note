@@ -4,15 +4,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.google.android.material.card.MaterialCardView;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 

@@ -1,7 +1,5 @@
 package com.akapps.dailynote.classes.other;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Environment;

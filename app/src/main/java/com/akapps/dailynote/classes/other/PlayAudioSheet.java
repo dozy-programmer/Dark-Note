@@ -1,11 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +11,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
@@ -34,11 +27,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
-import java.util.ArrayList;
-
 import www.sanju.motiontoast.MotionToast;
 
 public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{

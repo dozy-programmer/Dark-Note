@@ -36,7 +36,6 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
-import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
@@ -45,10 +44,8 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-
 import java.io.File;
 import java.util.ArrayList;
-
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;

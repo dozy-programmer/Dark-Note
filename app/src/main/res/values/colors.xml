@@ -72,38 +72,6 @@
         <item>@color/ocean_green</item>
     </array>
 
-    <array name="budgetColors">
-        <item>@color/cornflower_blue</item>
-        <item>@color/golden_rod</item>
-        <item>@color/mint_tulip</item>
-        <item>@color/emerald</item>
-        <item>@color/cavern_pink</item>
-        <item>@color/flamingo</item>
-        <item>@color/tan_hide</item>
-        <item>@color/de_york</item>
-        <item>@color/saffron</item>
-        <item>@color/we_peep</item>
-        <item>@color/sandy_brown</item>
-        <item>@color/gumbo</item>
-        <item>@color/neptune</item>
-        <item>@color/tiara</item>
-        <item>@color/silver_tree</item>
-        <item>@color/chardonnay</item>
-        <item>@color/amaranth</item>
-        <item>@color/horizon</item>
-        <item>@color/casper</item>
-        <item>@color/mauve</item>
-        <item>@color/keppel</item>
-        <item>@color/riptide</item>
-        <item>@color/rob_roy</item>
-        <item>@color/cupid</item>
-        <item>@color/rajah</item>
-        <item>@color/spray</item>
-        <item>@color/wistful</item>
-        <item>@color/ocean_green</item>
-    </array>
-
-
     <color name="havelock_blue">#4792D8</color>
     <color name="gold">#FFDF00</color>
     <color name="cornflower_blue">#619eea</color>

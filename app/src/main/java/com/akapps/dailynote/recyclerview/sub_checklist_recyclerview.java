@@ -1,7 +1,6 @@
 package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -20,9 +19,6 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.card.MaterialCardView;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import io.realm.Realm;
 import io.realm.RealmResults;
 

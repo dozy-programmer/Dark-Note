@@ -6,7 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -86,7 +85,6 @@ import java.util.Date;
 import java.util.Random;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 import jp.wasabeef.richeditor.RichEditor;
 import www.sanju.motiontoast.MotionToast;
 

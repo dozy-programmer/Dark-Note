@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +37,6 @@ import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -458,17 +456,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             if (resultCode == RESULT_OK) {
                 com.google.android.libraries.places.api.model.Place place = Autocomplete.getPlaceFromIntent(data);
                 selectedPlace = new Place(place.getName(), place.getAddress(), place.getId());
-                Log.i("Here", "Place: " + place.getName() + ", " + place.getId());
 
                 if(!isAdding)
                     updateItem(currentItem, selectedPlace);
 
                 locationLayout.setVisibility(View.VISIBLE);
                 placeLocation.setText(selectedPlace.getPlaceName());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                Status status = Autocomplete.getStatusFromIntent(data);
-                Log.i("Here", status.getStatusMessage());
-            }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {}
             return;
         }
     }
