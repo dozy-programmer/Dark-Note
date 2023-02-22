@@ -146,6 +146,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         photo_info = view.findViewById(R.id.photo_info);
         locationLayout = view.findViewById(R.id.location_layout);
         placeLocation = view.findViewById(R.id.place_info);
+        ImageView editLocation = view.findViewById(R.id.edit_location);
+        ImageView deleteLocation = view.findViewById(R.id.delete_location);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
@@ -274,7 +276,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             startLocationSearch();
         });
 
-        locationLayout.setOnClickListener(view15 -> startLocationSearch());
+        editLocation.setOnClickListener(view15 -> startLocationSearch());
+
+        deleteLocation.setOnClickListener(view15 -> deleteLocation());
 
         itemImageLayout.setOnClickListener(view12 -> {
             showCameraDialog();
@@ -460,7 +464,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                     updateItem(currentItem, selectedPlace);
 
                 locationLayout.setVisibility(View.VISIBLE);
-                placeLocation.setText(currentItem.getPlace().getPlaceName());
+                placeLocation.setText(selectedPlace.getPlaceName());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.i("Here", status.getStatusMessage());
@@ -535,6 +539,18 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                 .build(getContext());
         startActivityForResult(intent, 5);
+    }
+
+    private void deleteLocation(){
+        if(isAdding)
+            selectedPlace = new Place();
+        else {
+            realm.beginTransaction();
+            currentItem.setPlace(realm.copyToRealm(new Place()));
+            realm.commitTransaction();
+            adapter.notifyItemChanged(position);
+        }
+        locationLayout.setVisibility(View.GONE);
     }
 
     @Override

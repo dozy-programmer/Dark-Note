@@ -48,6 +48,10 @@ public class NotificationHelper extends ContextWrapper {
 
     private void createChannel() {
         NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+        channel.enableVibration(true);
+//        channel.setVibrationPattern(new long[]{500, 500, 500, 500});
+        channel.setLightColor(getColor(R.color.orange));
+//        channel.setImportance(NotificationManager.IMPORTANCE_HIGH);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         getManager().createNotificationChannel(channel);
     }
@@ -87,14 +91,8 @@ public class NotificationHelper extends ContextWrapper {
             activityIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
 
-        PendingIntent contentIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            contentIntent = PendingIntent.getActivity(this,
-                    noteId, activityIntent, PendingIntent.FLAG_IMMUTABLE);
-        }
-        else
-            contentIntent = PendingIntent.getActivity(this,
-                    noteId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                    noteId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle(title)
@@ -103,13 +101,14 @@ public class NotificationHelper extends ContextWrapper {
                 .setColor(getApplicationContext().getColor(R.color.orange))
                 .setAutoCancel(true)
                 .setOngoing(false)
-                .setVibrate(new long[] {1000 , 1000 , 1000 , 1000 , 1000})
-                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
-                .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                .addAction(R.drawable.note_icon, buttonTitle, contentIntent)
-                .setContentIntent(contentIntent)
+//                .setVibrate(new long[]{500, 500, 500, 500})
+//                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+                .setDefaults(-1)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setFullScreenIntent(contentIntent, true);
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setFullScreenIntent(contentIntent, true)
+                .addAction(R.drawable.note_icon, buttonTitle, contentIntent)
+                .setContentIntent(contentIntent);
 
         return builder;
     }

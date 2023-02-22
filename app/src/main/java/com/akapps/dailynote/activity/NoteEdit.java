@@ -1236,8 +1236,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.archive_icon), archivedStatus))
                 .addItem(reminderItem)
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.format_size_icon), "Text Size"))
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.export_icon), "Export"))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
                 .setBackgroundColor(getColor(backgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
@@ -1250,16 +1250,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.removeItem(reminderItem);
 
         if(currentNote.isCheckList()){
-            noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
-            noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
-            noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
+            noteMenu.addItem(1,  new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
+            noteMenu.addItem(2, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
+            noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
             if( realm.where(User.class).findFirst().isEnableSublists()) {
                 String sublistStatus = "";
                 if(currentNote.isEnableSublist())
                     sublistStatus = sublistStatus + "Disable Sublist";
                 else
                     sublistStatus = sublistStatus + "Enable Sublist";
-                noteMenu.addItem(6, new IconPowerMenuItem(getDrawable(R.drawable.sublist_icon), sublistStatus));
+                noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.sublist_icon), sublistStatus));
             }
         }
         else {
