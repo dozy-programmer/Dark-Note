@@ -163,6 +163,12 @@ public class RealmDatabase {
             // add place to checklist item
             if(!schema.get("CheckListItem").hasField("place"))
                 schema.get("CheckListItem").addRealmObjectField("place", schema.get("Place"));
+
+            if(!schema.get("Place").hasField("latitude"))
+                schema.get("Place").addField("latitude", double.class);
+
+            if(!schema.get("Place").hasField("longitude"))
+                schema.get("Place").addField("longitude", double.class);
         }
     }
 }

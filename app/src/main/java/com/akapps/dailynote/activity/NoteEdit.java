@@ -1159,7 +1159,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         realm.beginTransaction();
         CheckListItem currentItem = new CheckListItem(itemText.trim(), isChecked, currentNote.getNoteId(),
                 initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
-                .format(Calendar.getInstance().getTime()), new Place("", "", ""));
+                .format(Calendar.getInstance().getTime()), new Place("", "", "", 0, 0));
         currentNote.getChecklist().add(currentItem);
         currentNote.setChecked(false);
         realm.commitTransaction();

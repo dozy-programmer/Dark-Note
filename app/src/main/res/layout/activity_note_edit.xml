@@ -231,24 +231,24 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginRight="5dp"
                     android:src="@drawable/cancel"></ImageView>
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="5dp"
-                    android:src="@drawable/reminder_icon"></ImageView>
 
                 <TextView
                     android:id="@+id/reminderDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="20dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:gravity="right"
+                    android:layout_marginHorizontal="10dp"
                     android:text="Notification"
                     android:textColor="@color/horizon"
-                    android:textSize="12sp"></TextView>
+                    android:textSize="14sp"></TextView>
+
+                <ImageView
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/reminder_icon"></ImageView>
 
             </LinearLayout>
 

@@ -455,8 +455,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         else if (requestCode == 5) {
             if (resultCode == RESULT_OK) {
                 com.google.android.libraries.places.api.model.Place place = Autocomplete.getPlaceFromIntent(data);
-                selectedPlace = new Place(place.getName(), place.getAddress(), place.getId());
-
+                selectedPlace = new Place(place.getName(), place.getAddress(), place.getId(),
+                        place.getLatLng().latitude, place.getLatLng().longitude);
                 if(!isAdding)
                     updateItem(currentItem, selectedPlace);
 
@@ -527,7 +527,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         // return after the user has made a selection.
         List<com.google.android.libraries.places.api.model.Place.Field> fields =
                 Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.ID,
-                        com.google.android.libraries.places.api.model.Place.Field.NAME);
+                        com.google.android.libraries.places.api.model.Place.Field.NAME,
+                        com.google.android.libraries.places.api.model.Place.Field.LAT_LNG);
 
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)

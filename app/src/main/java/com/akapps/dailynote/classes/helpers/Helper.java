@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.text.Html;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -871,17 +872,11 @@ public class Helper {
     }
 
     public static void openMapView(Activity activity, Place place){
-        Uri gmmIntentUri = Uri.parse(
-                "https://www.google.com/maps/search/?api=1&query=qwerty&query_place_id="
-                        + place.getPlaceId());
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(activity.getPackageManager()) != null) {
-            activity.startActivity(mapIntent);
-        }
-        else
-            Helper.showMessage(activity, "Opening Map Error",
-                    "Google Maps not found on device", MotionToast.TOAST_ERROR);
+        String mapTo = "https://www.google.com/maps/search/?api=1&query=" + place.getLatitude()
+                + "," + place.getLongitude() + "&query_place_id=" + place.getPlaceId();
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapTo));
+        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+        activity.startActivity(intent);
     }
 
 }

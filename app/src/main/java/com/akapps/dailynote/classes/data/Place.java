@@ -9,17 +9,23 @@ public class Place extends RealmObject {
     private String placeName;
     private String addressString;
     private String placeId;
+    private double latitude;
+    private double longitude;
 
     public Place(){
         placeName = "";
         addressString = "";
         placeId = "";
+        longitude = 0;
+        latitude = 0;
     }
 
-    public Place(String placeName, String addressString, String placeId) {
+    public Place(String placeName, String addressString, String placeId, double latitude, double longitude) {
         this.placeName = placeName;
         this.addressString = addressString;
         this.placeId = placeId;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getPlaceName() {
@@ -44,5 +50,21 @@ public class Place extends RealmObject {
 
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }
