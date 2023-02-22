@@ -250,17 +250,13 @@ public class Helper {
                 intent.putExtra("securityWord", currentNote.getSecurityWord());
                 intent.putExtra("fingerprint", currentNote.isFingerprint());
                 intent.putExtra("checklist", currentNote.isCheckList());
-                PendingIntent pendingIntent;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-                    pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
-                            PendingIntent.FLAG_IMMUTABLE);
-                else
-                    pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
-                            PendingIntent.FLAG_ONE_SHOT);
 
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                        dateToCal(currentNote.getReminderDateTime()).getTimeInMillis(),
-                        pendingIntent);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
+                            PendingIntent.FLAG_IMMUTABLE |  PendingIntent.FLAG_ONE_SHOT);
+
+                AlarmManager.AlarmClockInfo clock = new AlarmManager.AlarmClockInfo(
+                        dateToCal(currentNote.getReminderDateTime()).getTimeInMillis(), pendingIntent);
+                alarmManager.setAlarmClock(clock, pendingIntent);
             }
             else {
                 if(!realm.isClosed()){

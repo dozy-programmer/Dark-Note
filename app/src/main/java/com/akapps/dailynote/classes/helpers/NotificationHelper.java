@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
+import android.provider.Settings;
+
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import com.akapps.dailynote.R;
@@ -46,11 +48,8 @@ public class NotificationHelper extends ContextWrapper {
 
     private void createChannel() {
         NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
-        channel.enableVibration(true);
-        channel.setVibrationPattern(new long[]{500, 500, 500, 500});
         channel.setLightColor(getColor(R.color.orange));
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-        channel.setImportance(NotificationManager.IMPORTANCE_HIGH);
         getManager().createNotificationChannel(channel);
     }
 
@@ -96,12 +95,10 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentTitle(title)
                 .setContentText(content)
                 .setSmallIcon(R.drawable.note_icon)
-                .setColor(getApplicationContext().getColor(R.color.orange))
                 .setAutoCancel(true)
                 .setOngoing(false)
-//                .setVibrate(new long[]{500, 500, 500, 500})
-//                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
-                .setDefaults(-1)
+                .setColor(getApplicationContext().getColor(R.color.orange))
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setFullScreenIntent(contentIntent, true)

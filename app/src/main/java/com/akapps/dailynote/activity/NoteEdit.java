@@ -100,7 +100,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public CardView photosNote;
     private ImageView pinNoteIcon;
     private CardView pinNoteButton;
-    public CardView saveNote;
     private CardView noteColor;
     private CardView expandMenu;
     private LinearLayout formatMenu;
@@ -239,7 +238,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             closeNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             pinNoteButton.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            saveNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             expandMenu.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             searchLayout.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             palleteIconColor.setColorFilter(getColor(R.color.ultra_white));
@@ -351,7 +349,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         pinNoteButton = findViewById(R.id.pinButton);
         pinNoteIcon = findViewById(R.id.pinIcon);
         palleteIconColor = findViewById(R.id.pallete_icon);
-        saveNote = findViewById(R.id.save);
         noteColor = findViewById(R.id.noteColor);
         expandMenu = findViewById(R.id.menu);
         photosScrollView = findViewById(R.id.note_photos);
@@ -424,7 +421,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         folderText.setVisibility(View.VISIBLE);
         category.setTextColor(context.getColor(R.color.orange));
         searchLayout.setVisibility(View.VISIBLE);
-        saveNote.setVisibility(View.GONE);
 
         if(currentNote.isCheckList())
             moreOptionsMenu.setVisibility(View.VISIBLE);
@@ -750,22 +746,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             else
                 pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
 
-        });
-
-        saveNote.setOnClickListener(v -> {
-            // if a new note, then it adds it to database
-            if (checkInput()) {
-                if (!isCheckList)
-                    Helper.showMessage(this, "Added", "Note is added", MotionToast.TOAST_SUCCESS);
-                else
-                    Helper.showMessage(this, "Added", "Checklist is added", MotionToast.TOAST_SUCCESS);
-                // updates note to be editable
-                initializeLayout(savedInstanceState);
-                if(!currentNote.isCheckList()) {
-                    // move cursor to the end of text
-                    note.focusEditor();
-                }
-            }
         });
     }
 
@@ -1573,7 +1553,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
                         PendingIntent.FLAG_ONE_SHOT);
 
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            AlarmManager.AlarmClockInfo clock = new AlarmManager.AlarmClockInfo(c.getTimeInMillis(), pendingIntent);
+            alarmManager.setAlarmClock(clock, pendingIntent);
         }
         else
             showMessage("Reminder not set", "Reminder cannot be in the past", true);

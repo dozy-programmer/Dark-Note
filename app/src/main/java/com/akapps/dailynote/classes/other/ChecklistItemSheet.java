@@ -473,17 +473,23 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.send_icon), "Send"))
                 .setBackgroundColor(getContext().getColor(R.color.light_gray))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
-                .setAnimation(MenuAnimation.SHOW_UP_CENTER)
+                .setAnimation(MenuAnimation.DROP_DOWN)
                 .setMenuRadius(15f)
                 .setMenuShadow(10f)
                 .build();
-        noteMenu.showAsDropDown(dropDownMenu);
+
+        if((currentItem != null && currentItem.getPlace() == null) || currentItem.getPlace().getPlaceName().isEmpty())
+            noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location), "Location"));
+
+        noteMenu.showAsAnchorLeftTop(dropDownMenu);
     }
 
     private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
         @Override
         public void onItemClick(int position, IconPowerMenuItem item) {
-            if (position == 0) {
+            if(item.getTitle().equals("Location"))
+                startLocationSearch();
+            else if (item.getTitle().equals("Copy")) {
                 // copy text
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip;
@@ -495,7 +501,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 Helper.showMessage(getActivity(), "Success!",
                         "Copied successfully", MotionToast.TOAST_SUCCESS);
             }
-            else if(position == 1){
+            else if(item.getTitle().equals("Send")){
                 Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                 emailIntent.setType("*/*");
 

@@ -50,12 +50,12 @@ public class User extends RealmObject {
 
     public User(int userId) {
         this.userId = userId;
-        ultimateUser = proUser = openFoldersOnStart = showFolderNotes
-                = increaseFabSize = enableEmptyNote = hideRichTextEditor =
-                        enableDeleteIcon = fingerprint = false;
+        ultimateUser = proUser = openFoldersOnStart = showFolderNotes =
+                enableEmptyNote = hideRichTextEditor = enableDeleteIcon = fingerprint = false;
         textSize = backupReminderOccurrence = pinNumber = 0;
         layoutSelected = "stag";
-        showPreview = showPreviewNoteInfo = modeSettings = enableSublists = showAudioButton = true;
+        showPreview = showPreviewNoteInfo = increaseFabSize =
+                modeSettings = enableSublists = showAudioButton = true;
         titleLines = contentLines = 3;
         lastUpload = backupReminderDate = email = securityWord = "";
         itemsSeparator = "newline";
