@@ -226,7 +226,8 @@
                 android:fontFamily="@font/baloo_bhai"
                 android:text="place_info"
                 android:textColor="@color/blue"
-                android:textSize="12sp" />
+                android:textSize="14sp"
+                android:layout_marginTop="3dp"/>
 
             <ImageView
                 android:id="@+id/edit_location"

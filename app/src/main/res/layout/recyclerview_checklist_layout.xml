@@ -127,26 +127,26 @@
 
         <LinearLayout
             android:id="@+id/location_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="right"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="-5dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginHorizontal="10dp">
+            android:layout_marginTop="-10dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="13dp">
 
             <TextView
                 android:id="@+id/place_info"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="place_info"
                 android:fontFamily="@font/baloo_bhai"
                 android:textColor="@color/blue"
-                android:textSize="13sp" />
+                android:textSize="10sp"
+                android:layout_marginTop="1dp"/>
 
             <ImageView
-                android:layout_width="15dp"
+                android:layout_width="10dp"
                 android:layout_height="15dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
