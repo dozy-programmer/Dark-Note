@@ -264,7 +264,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (now.after(reminderDate))
                 holder.reminder_icon.setColorFilter(activity.getColor(R.color.red));
             else
-                holder.reminder_icon.setColorFilter(activity.getColor(R.color.green));
+                holder.reminder_icon.setColorFilter(activity.getColor(R.color.ocean_green));
         }
         else
             holder.reminder_icon.setVisibility(View.GONE);

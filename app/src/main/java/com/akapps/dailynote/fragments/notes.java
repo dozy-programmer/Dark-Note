@@ -949,7 +949,7 @@ public class notes extends Fragment{
                 int number = selectedNotes.size();
                 if (isTrashSelected) {
                     for(Note deleteCurrentNote: selectedNotes)
-                        RealmHelper.deleteNote(deleteCurrentNote.getNoteId());
+                        RealmHelper.deleteNote(getContext(), deleteCurrentNote.getNoteId());
                     isListEmpty(allNotes.size(), false);
                     numberSelected(0, 0, 0);
                     Helper.showMessage(getActivity(), "Deleted", number + " selected " +

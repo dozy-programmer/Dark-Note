@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
@@ -82,6 +84,7 @@ public class CategoryScreen extends AppCompatActivity {
 
     // category empty view
     private TextView showEmptyMessage;
+    private LottieAnimationView emptyAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +191,7 @@ public class CategoryScreen extends AppCompatActivity {
         info = findViewById(R.id.info);
         edit = findViewById(R.id.edit);
         showEmptyMessage = findViewById(R.id.empty_category);
+        emptyAnimation = findViewById(R.id.empty_category_animation);
         selections = findViewById(R.id.top_layout);
 
         // toolbar
@@ -519,6 +523,7 @@ public class CategoryScreen extends AppCompatActivity {
 
     private void checkEmpty() {
         showEmptyMessage.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        emptyAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private void unSelectAllNotes(){

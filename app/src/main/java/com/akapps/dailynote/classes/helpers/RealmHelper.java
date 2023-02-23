@@ -1,5 +1,7 @@
 package com.akapps.dailynote.classes.helpers;
 
+import android.content.Context;
+
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
@@ -11,7 +13,18 @@ import io.realm.RealmResults;
 
 public class RealmHelper {
 
-    public static void deleteNote(int noteID){
+    public static Realm getRealm(Context context){
+        Realm realm;
+        try {
+            realm = Realm.getDefaultInstance();
+        }
+        catch (Exception e){
+            realm = RealmDatabase.setUpDatabase(context);
+        }
+        return realm;
+    }
+
+    public static void deleteNote(Context context, int noteID){
         // get a note
         Note currentNote;
         try(Realm realm = Realm.getDefaultInstance()) {
@@ -24,6 +37,9 @@ public class RealmHelper {
 
         // deletes photos if they exist
         deleteNotePhotos(currentNote);
+
+        if(!currentNote.getReminderDateTime().isEmpty())
+            Helper.cancelNotification(context, currentNote.getNoteId());
 
         // deletes note
         try(Realm realm = Realm.getDefaultInstance()) {
@@ -150,6 +166,14 @@ public class RealmHelper {
                         continue;
                     }
             }
+        }
+    }
+
+    public static void updateNoteReminder(Context context, int noteID){
+        try(Realm realm = getRealm(context)) {
+            Note currentNote = realm.where(Note.class).equalTo("noteId", noteID).findFirst();
+            assert currentNote != null;
+            realm.executeTransaction(realm1 -> currentNote.setReminderDateTime(""));
         }
     }
 }

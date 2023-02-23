@@ -151,6 +151,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isWidget;
     private Handler handler;
     private boolean isDarkerMode;
+    private boolean dismissNotification;
     // dialog
     // dialog
     private AlertDialog colorPickerView;
@@ -198,6 +199,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         noteFromOtherApp = getIntent().getStringExtra("otherAppNote");
         titleFromOtherApp = getIntent().getStringExtra("otherAppTitle");
         importedImages = getIntent().getStringArrayListExtra("images");
+        dismissNotification = getIntent().getBooleanExtra("dismissNotification", false);
 
         if(noteId < -1)
             noteId *=-1;
@@ -209,12 +211,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
         // initializes database and retrieves all notes
-        try {
-            realm = Realm.getDefaultInstance();
-        }
-        catch (Exception e){
-            realm = RealmDatabase.setUpDatabase(context);
-        }
+        realm = RealmHelper.getRealm(context);
         allNotes = realm.where(Note.class).findAll();
 
         // if orientation changes, then position is updated
@@ -262,6 +259,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         isWidget = currentNote.getWidgetId() > 0;
         Helper.updateWidget(currentNote, context, realm);
+
+        if(dismissNotification)
+            Helper.cancelNotification(context, noteId);
     }
 
     // when orientation changes, then note data is saved
@@ -752,7 +752,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void closeAndDeleteNote(){
         if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0){
             if(!user.isEnableEmptyNote()) {
-                RealmHelper.deleteNote(currentNote.getNoteId());
+                RealmHelper.deleteNote(context, currentNote.getNoteId());
                 Helper.showMessage(this, "Deleted", "Note has been deleted, change in settings", MotionToast.TOAST_WARNING);
             }
         }
@@ -1217,6 +1217,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.export_icon), "Export"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.info_icon), "Info"))
                 .setBackgroundColor(getColor(backgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.SHOW_UP_CENTER)
@@ -1228,16 +1229,19 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.removeItem(reminderItem);
 
         if(currentNote.isCheckList()){
-            noteMenu.addItem(1,  new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
-            noteMenu.addItem(2, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
-            noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
+            noteMenu.addItem(2,  new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
+            noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
+            noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
             if( realm.where(User.class).findFirst().isEnableSublists()) {
                 String sublistStatus = "";
-                if(currentNote.isEnableSublist())
-                    sublistStatus = sublistStatus + "Disable Sublist";
-                else
-                    sublistStatus = sublistStatus + "Enable Sublist";
-                noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.sublist_icon), sublistStatus));
+                if(currentNote.isEnableSublist()) {
+                    sublistStatus = sublistStatus + "Sub-List";
+                    noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.not_visible_icon), sublistStatus));
+                }
+                else {
+                    sublistStatus = sublistStatus + "Sub-List";
+                    noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.visible_icon), sublistStatus));
+                }
             }
         }
         else {
@@ -1246,7 +1250,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 IconPowerMenuItem formatIcon = new IconPowerMenuItem(getDrawable(R.drawable.text_format_icon), formatStatus);
                 noteMenu.addItem(3, formatIcon);
             }
-            noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.info_icon), "Info"));
         }
 
 
@@ -1324,7 +1327,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 NoteInfoSheet noteInfoSheet = new NoteInfoSheet(user, currentNote, allNotePhotos, false);
                 noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             }
-            else if(item.getTitle().contains("Sublist"))
+            else if(item.getTitle().contains("Sub-List"))
                 updateSublistEnabledStatus();
 
             noteMenu.dismiss();
@@ -1535,7 +1538,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             updateReminderLayout(View.VISIBLE);
             Helper.showMessage(this, "Reminder set", "Will Remind you " +
                     "in " + Helper.getTimeDifference(c, true), MotionToast.TOAST_SUCCESS);
-            PendingIntent pendingIntent;
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 if(alarmManager.canScheduleExactAlarms()){
@@ -1546,12 +1550,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     Intent intent2 = new Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
                     startActivity(intent2);
                 }
-                pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
-                        PendingIntent.FLAG_IMMUTABLE);
             }
-            else
-                pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
-                        PendingIntent.FLAG_ONE_SHOT);
 
             AlarmManager.AlarmClockInfo clock = new AlarmManager.AlarmClockInfo(c.getTimeInMillis(), pendingIntent);
             alarmManager.setAlarmClock(clock, pendingIntent);
@@ -1571,13 +1570,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         updateReminderDate("");
-        PendingIntent pendingIntent;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
-            pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
-                    PendingIntent.FLAG_IMMUTABLE);
-        else
-            pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         alarmManager.cancel(pendingIntent);
     }
 
@@ -1674,7 +1668,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if(currentNote.isTrash() || deleteNote){
             String noteTitle = currentNote.getTitle();
-            RealmHelper.deleteNote(currentNote.getNoteId());
+            RealmHelper.deleteNote(context, currentNote.getNoteId());
             Helper.showMessage(NoteEdit.this, "Deleted", noteTitle, MotionToast.TOAST_SUCCESS);
         }
         else {

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.os.Build;
 import android.provider.Settings;
 
@@ -20,7 +21,7 @@ import com.akapps.dailynote.activity.SettingsScreen;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class NotificationHelper extends ContextWrapper {
     public String channelID = "channelID";
-    public String channelName = "Channel Name";
+    public String channelName = "Note Reminders";
     private NotificationManager mManager;
 
     private int noteId;
@@ -48,8 +49,14 @@ public class NotificationHelper extends ContextWrapper {
 
     private void createChannel() {
         NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+        channel.enableLights(true);
+        channel.enableVibration(true);
         channel.setLightColor(getColor(R.color.orange));
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setSound(Settings.System.DEFAULT_NOTIFICATION_URI, new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build());
         getManager().createNotificationChannel(channel);
     }
 
@@ -72,7 +79,7 @@ public class NotificationHelper extends ContextWrapper {
         }
         else {
             title = "Dark Note Reminder";
-            content = "Reminder for " + noteTitle;
+            content = "Reminder for " + (noteTitle.isEmpty() ? "Note" : noteTitle);
             buttonTitle = "OPEN";
             if (notePinNumber > 0) {
                 activityIntent = new Intent(this, NoteLockScreen.class);
@@ -80,10 +87,12 @@ public class NotificationHelper extends ContextWrapper {
                 activityIntent.putExtra("title", noteTitle);
                 activityIntent.putExtra("pin", notePinNumber);
                 activityIntent.putExtra("fingerprint", fingerprint);
+                activityIntent.putExtra("dismissNotification", true);
             } else {
                 activityIntent = new Intent(this, NoteEdit.class);
                 activityIntent.putExtra("id", noteId);
                 activityIntent.putExtra("isChecklist", isCheckList);
+                activityIntent.putExtra("dismissNotification", true);
             }
             activityIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
@@ -91,17 +100,21 @@ public class NotificationHelper extends ContextWrapper {
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                     noteId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        //Create an Intent for the BroadcastReceiver
+        Intent dIntent = new Intent(this, AlertDismissReceiver.class);
+        dIntent.putExtra("notificationId", noteId);
+        // Create the PendingIntent
+        PendingIntent dismissIntent = PendingIntent.getBroadcast(this, noteId, dIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle(title)
                 .setContentText(content)
                 .setSmallIcon(R.drawable.note_icon)
-                .setAutoCancel(true)
-                .setOngoing(false)
-                .setColor(getApplicationContext().getColor(R.color.orange))
-                .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setFullScreenIntent(contentIntent, true)
+                .addAction(R.drawable.cancel, "DISMISS", dismissIntent)
                 .addAction(R.drawable.note_icon, buttonTitle, contentIntent)
                 .setContentIntent(contentIntent);
 

@@ -35,7 +35,6 @@ import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -469,7 +468,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
     private void openMenuDialog() {
         noteMenu = new CustomPowerMenu.Builder<>(getContext(), new IconMenuAdapter(false))
-                .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.copy_icon), "Copy"))
+                .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.copy_icon), "Copy Text"))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.send_icon), "Send"))
                 .setBackgroundColor(getContext().getColor(R.color.light_gray))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
@@ -489,7 +488,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         public void onItemClick(int position, IconPowerMenuItem item) {
             if(item.getTitle().equals("Location"))
                 startLocationSearch();
-            else if (item.getTitle().equals("Copy")) {
+            else if (item.getTitle().equals("Copy Text")) {
                 // copy text
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip;
@@ -516,6 +515,16 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                                 file));
                         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                     }
+                    if(currentItem.getAudioPath() != null && !currentItem.getAudioPath().isEmpty()) {
+                        file = new File(currentItem.getAudioPath());
+                        if (file.exists()) {
+                            uris.add(FileProvider.getUriForFile(
+                                    getContext(),
+                                    "com.akapps.dailynote.fileprovider",
+                                    file));
+                        }
+                    }
+                    emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                     emailIntent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
                 }
                 else

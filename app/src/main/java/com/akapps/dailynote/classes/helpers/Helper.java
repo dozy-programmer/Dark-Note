@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -407,29 +408,29 @@ public class Helper {
     public static void moveBee(LottieAnimationView bee, float max) {
         new Handler().postDelayed(() -> {
             ObjectAnimator animator = ObjectAnimator.ofFloat(bee, "translationX", max);
-            animator.setDuration(4000);
+            animator.setDuration(6000);
             animator.start();
             new Handler().postDelayed(() -> {
                 bee.setRotationY(180);
                 ObjectAnimator animator2 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
-                animator2.setDuration(4000);
+                animator2.setDuration(6000);
                 animator2.start();
                 new Handler().postDelayed(() -> {
                     ObjectAnimator animator3 = ObjectAnimator.ofFloat(bee, "translationX", -1 * max);
-                    animator3.setDuration(4000);
+                    animator3.setDuration(6000);
                     animator3.start();
                     new Handler().postDelayed(() -> {
                         bee.setRotationY(0);
                         ObjectAnimator animator4 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
-                        animator4.setDuration(4000);
+                        animator4.setDuration(6000);
                         animator4.start();
                         new Handler().postDelayed(() -> {
                             moveBee(bee, max);
-                        }, 3000);
-                    }, 3000);
-                }, 3000);
-            }, 3000);
-        }, 3000);
+                        }, 0);
+                    }, 5000);
+                }, 0);
+            }, 5000);
+        }, 0);
     }
 
     // deletes cache directory to ensure app size does not get too big
@@ -873,6 +874,11 @@ public class Helper {
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapTo));
         intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
         activity.startActivity(intent);
+    }
+
+    public static void cancelNotification(Context context, int notificationId){
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(notificationId);
     }
 
 }

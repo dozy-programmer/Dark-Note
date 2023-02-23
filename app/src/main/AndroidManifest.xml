@@ -34,6 +34,9 @@
         <receiver android:name=".classes.helpers.AlertReceiver"
             android:exported="false"/>
 
+        <receiver android:name=".classes.helpers.AlertDismissReceiver"
+            android:exported="false"/>
+
         <receiver android:name=".classes.other.AppWidget"
             android:exported="false">
             <intent-filter>

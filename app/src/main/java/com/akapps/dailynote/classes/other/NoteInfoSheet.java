@@ -104,6 +104,11 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             if(!currentNote.isTrash())
                 trashIcon.setVisibility(View.GONE);
 
+            if(!currentNote.getReminderDateTime().isEmpty() && !currentNote.isTrash()){
+                trashIcon.setVisibility(View.VISIBLE);
+                trashIcon.setImageDrawable(getContext().getDrawable(R.drawable.reminder_icon));
+            }
+
             if(!currentNote.isArchived())
                 archiveIcon.setVisibility(View.GONE);
 

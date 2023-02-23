@@ -201,20 +201,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_layout" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/empty_category_animation"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="@+id/empty_category"
+        app:layout_constraintStart_toStartOf="@+id/empty_category"
+        app:layout_constraintTop_toBottomOf="@+id/top_layout"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/spaceman_dj"
+        app:lottie_speed="1.0" />
+
     <TextView
         android:id="@+id/empty_category"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:gravity="center"
-        android:text="Tap the bottom right to add a folder"
+        android:text="Don't mind me, just passing some time...\n\nIn the meantime, press the add button to add a folder"
         android:textColor="@color/blue"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/add_category"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/empty_category_animation" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_category"
