@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <!-- Needed for cloud backup and attaching locations to checklist items !-->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -32,10 +31,13 @@
         android:extractNativeLibs="false">
 
         <receiver android:name=".classes.helpers.AlertReceiver"
-            android:exported="false"/>
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:exported="false"
+            tools:targetApi="o_mr1" />
 
         <receiver android:name=".classes.helpers.AlertDismissReceiver"
-            android:exported="false"/>
+            android:exported="false" />
 
         <receiver android:name=".classes.other.AppWidget"
             android:exported="false">

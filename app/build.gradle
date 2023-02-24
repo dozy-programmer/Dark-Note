@@ -56,6 +56,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation "androidx.biometric:biometric:1.1.0"
 
     // firebase
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
@@ -71,7 +72,6 @@ dependencies {
     implementation 'com.github.dhaval2404:imagepicker:2.1'                     // image picker / camera
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'                 // time/date picker
     implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'              // lock screen
-    implementation "androidx.biometric:biometric:1.1.0"                        // fingerprint authentication
     implementation 'com.github.Deishelon:RoundedBottomSheet:1.0.1'             // bottom sheet
     implementation 'jp.wasabeef:richeditor-android:2.0.0'                      // notes styling
     implementation 'com.github.clans:fab:1.6.4'                                // floating action button

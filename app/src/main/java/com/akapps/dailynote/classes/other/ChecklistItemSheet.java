@@ -1,6 +1,8 @@
 package com.akapps.dailynote.classes.other;
 
 import static android.app.Activity.RESULT_OK;
+
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -8,6 +10,9 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,6 +74,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
     private Realm realm;
     private User user;
     private Place selectedPlace;
+    private boolean isTextPastedDetected;
+    private boolean isTextPasted;
 
     private TextInputEditText itemName;
 
@@ -154,6 +161,26 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         itemImage = view.findViewById(R.id.item_image);
 
         itemName.requestFocusFromTouch();
+
+        itemName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onTextChanged(CharSequence charSequence, int current, int before, int count) {
+                if(!isTextPastedDetected) {
+                    if (count - before > 1) {
+                        info.setText(info.getText().toString().split("\n")[0] + "\n\nPaste detected, if you want to want this to " +
+                                "only be one item, click here.\n");
+                        isTextPastedDetected = true;
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
 
         if (AppData.getAppData().isDarkerMode) {
             itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
@@ -292,6 +319,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             return true;
         });
 
+        info.setOnClickListener(view16 -> {
+            if(isTextPastedDetected)
+                isTextPasted = true;
+            info.setText(info.getText().toString().split("\n")[0] + "\n");
+        });
+
         return view;
     }
 
@@ -362,7 +395,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             sublistItemsSeparator = "\n";
 
         if(!itemName.getText().toString().isEmpty()){
-            if(isAdding) {
+            if(isAdding && !isTextPasted) {
                 String text = itemName.getText().toString().trim().replaceAll("<br>", "\n").replaceAll(" +", " ");
                 String[] items = text.replaceAll("\n+", "\n").replaceAll(" +, +", ",,").split(checklistItemsSeparator);
                 if(isSubChecklist)
@@ -402,6 +435,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                     }
                 }
             }
+            else if(isAdding)
+                ((NoteEdit) getActivity()).addCheckList(itemName.getText().toString(), selectedPlace);
             else {
                 if(isSubChecklist)
                     updateItem(currentSubItem, itemName.getText().toString());

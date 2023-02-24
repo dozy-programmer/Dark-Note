@@ -109,8 +109,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
         });
 
         exportTextString.setOnClickListener(view14 -> {
-            String removeFormatting =  Html.fromHtml(noteText,
-                    Html.FROM_HTML_MODE_COMPACT).toString().replaceAll("(\\s{2,})", " ");
+            String removeFormatting =  Helper.removeMarkdownFormatting(noteText);
             Helper.shareFile(getActivity(), removeFormatting);
             dismiss();
         });
@@ -133,11 +132,11 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
                     "• Markdown file\n" +
                     "  - export note as markdown file\n\n" +
                     "• Text\n" +
-                    "  - export note as text (unformatted)\n\n" +
+                    "  - export note as text \n\n" +
                     "• Text (formatted)\n" +
-                    "  - export note as text (keep note formatting)\n\n" +
+                    "  - export note as markdown text\n\n" +
                     "• Export Note\n" +
-                    "  - exports note as text (unformatted)\n" +
+                    "  - exports note as text\n" +
                     "  - exports all images and audio files";
 
             InfoSheet info1 = new InfoSheet(exportInfo, 12);

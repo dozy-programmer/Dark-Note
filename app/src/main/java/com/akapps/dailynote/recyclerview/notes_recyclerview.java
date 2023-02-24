@@ -166,7 +166,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         // format note to remove all new line characters and any spaces more than a length of 1
         String preview = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
-        preview = preview.replaceAll("(\\s{2,})", " ");
+        preview = preview.replaceAll("\n+", "\n");
         holder.note_preview.setText(preview);
 
         // if note has a category, then it shows it

@@ -408,8 +408,9 @@
                 android:id="@+id/searchEdittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="6dp"
-                android:layout_marginTop="-2dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="-4dp"
                 android:backgroundTint="@android:color/transparent"
                 android:gravity="top|start"
                 android:hint="Type something..."
@@ -421,7 +422,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/category_layout"
+                app:layout_constraintTop_toTopOf="@+id/note"
                 app:layout_constraintVertical_bias="0.0" />
 
             <androidx.recyclerview.widget.RecyclerView

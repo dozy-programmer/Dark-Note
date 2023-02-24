@@ -48,7 +48,6 @@ import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
@@ -189,17 +188,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
 
-        if (ACTION_ADD_CHECKLIST.equals(getIntent().getAction()))
-            isCheckList = true;
-        else
-            isCheckList = getIntent().getBooleanExtra("isChecklist", false);
-
         context = this;
         noteId = getIntent().getIntExtra("id", -1);
         noteFromOtherApp = getIntent().getStringExtra("otherAppNote");
         titleFromOtherApp = getIntent().getStringExtra("otherAppTitle");
         importedImages = getIntent().getStringArrayListExtra("images");
         dismissNotification = getIntent().getBooleanExtra("dismissNotification", false);
+        if (ACTION_ADD_CHECKLIST.equals(getIntent().getAction()))
+            isCheckList = true;
+        else
+            isCheckList = getIntent().getBooleanExtra("isChecklist", false);
 
         if(noteId < -1)
             noteId *=-1;
@@ -530,7 +528,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         findText(s.toString().toLowerCase());
                     else {
                         wordOccurences = new ArrayList();
-                        noteSearching.setText(Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString());
+                        noteSearching.setText(Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT));
                     }
                 }
             }
@@ -704,7 +702,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         photosNote.setOnClickListener(v -> {
             if (isShowingPhotos) {
                 showPhotos(View.GONE);
-                if(!isCheckList)
+                if(!currentNote.isCheckList())
                     addCheckListItem.setVisibility(View.GONE);
                 addCheckListItem.setImageDrawable(getDrawable(R.drawable.add_icon));
                 if(isChangingTextSize)
@@ -802,7 +800,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         note.setVisibility(View.GONE);
         noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(textSize));
         noteSearching.setVisibility(View.VISIBLE);
-        noteSearching.setText(Html.fromHtml(note.getHtml(), Html.FROM_HTML_MODE_COMPACT).toString());
+        noteSearching.setText(Html.fromHtml(note.getHtml(), Html.FROM_HTML_MODE_COMPACT));
 
         showButtons();
     }
@@ -889,10 +887,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if(!currentNote.isCheckList()) {
 
             String originalString = Html.fromHtml(note.getHtml(),
-                    Html.FROM_HTML_MODE_COMPACT).toString()
-                    .replaceAll("<.*?>", "")
-                    .replaceAll("\n", "<br>");
-
+                    Html.FROM_HTML_MODE_COMPACT).toString();
 
             if (originalString.toLowerCase().contains(target.toLowerCase())) {
                 this.target = target;
@@ -1533,7 +1528,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             intent.putExtra("pin", currentNote.getPinNumber());
             intent.putExtra("securityWord", currentNote.getSecurityWord());
             intent.putExtra("fingerprint", currentNote.isFingerprint());
-            intent.putExtra("checklist", currentNote.isCheckList());
             updateReminderDate(currentDateTimeSelected);
             updateReminderLayout(View.VISIBLE);
             Helper.showMessage(this, "Reminder set", "Will Remind you " +
@@ -1567,12 +1561,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void cancelAlarm(int noteId) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlertReceiver.class);
         updateReminderDate("");
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
-                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
-        alarmManager.cancel(pendingIntent);
+        Helper.cancelNotification(context, noteId);
     }
 
     private void updateArchivedStatus() {
@@ -1628,7 +1618,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     private void showCameraDialog(){
         ImagePicker.with(this)
-                .maxResultSize(814, 814)
+                .maxResultSize(512, 512)
                 .compress(1024)
                 .saveDir(getExternalFilesDir("/Documents"))
                 .start(0);
@@ -1640,8 +1630,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (resultCode == Activity.RESULT_OK && requestCode == 0) {
             Uri uri = data.getData();
 
-            Photo currentPhoto;
-            currentPhoto = new Photo(noteId, uri.getPath());
+            Photo currentPhoto = new Photo(noteId, uri.getPath());
             realm.beginTransaction();
             realm.insert(currentPhoto);
             realm.commitTransaction();

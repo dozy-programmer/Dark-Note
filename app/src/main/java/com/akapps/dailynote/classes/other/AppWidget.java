@@ -18,6 +18,8 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,7 +92,7 @@ public class AppWidget extends AppWidgetProvider {
                 }
             } else {
                 String preview = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
-                preview = preview.replaceAll("(\\s{2,})", " ");
+                preview = Helper.removeMarkdownFormatting(preview);
                 list.add(preview);
             }
 

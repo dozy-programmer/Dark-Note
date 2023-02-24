@@ -225,6 +225,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             note.putExtra("id", currentNote.getNoteId());
             note.putExtra("isChecklist", currentNote.isCheckList());
             getActivity().startActivity(note);
+            dismiss();
         }
         else {
             Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
@@ -234,6 +235,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             lockScreen.putExtra("securityWord", currentNote.getSecurityWord());
             lockScreen.putExtra("fingerprint", currentNote.isFingerprint());
             getActivity().startActivity(lockScreen);
+            dismiss();
         }
     }
 

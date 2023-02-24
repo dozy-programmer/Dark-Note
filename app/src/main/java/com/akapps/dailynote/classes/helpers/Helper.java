@@ -22,7 +22,6 @@ import android.os.Handler;
 import android.text.Html;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -250,7 +249,6 @@ public class Helper {
                 intent.putExtra("pin", currentNote.getPinNumber());
                 intent.putExtra("securityWord", currentNote.getSecurityWord());
                 intent.putExtra("fingerprint", currentNote.isFingerprint());
-                intent.putExtra("checklist", currentNote.isCheckList());
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, currentNote.getNoteId(), intent,
                             PendingIntent.FLAG_IMMUTABLE |  PendingIntent.FLAG_ONE_SHOT);
@@ -728,12 +726,8 @@ public class Helper {
             }
         }
 
-        String noteString = "";
-        if(currentNote.isCheckList())
-            noteString = getNoteString(currentNote, realm);
-        else
-            noteString = Html.fromHtml(currentNote.getNote(),
-                    Html.FROM_HTML_MODE_COMPACT).toString().replaceAll("(\\s{2,})", " ");
+        String noteString = currentNote.isCheckList() ? getNoteString(currentNote, realm)
+                : Helper.removeMarkdownFormatting(currentNote.getNote());
 
         // adds email subject and email body to intent
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, currentNote.getTitle());
@@ -856,16 +850,21 @@ public class Helper {
                 exportFiles.add(createTempExportFile(activity, selectedNote.isCheckList() ?
                         getNoteString(selectedNote, realm) : selectedNote.getNote(), extension));
             else if(extension.equals(".txt")){
-                String unformattedNoteString = selectedNote.isCheckList() ?
+                String text = selectedNote.isCheckList() ?
                         getNoteString(selectedNote, realm) :
-                        Html.fromHtml(selectedNote.getNote(),
-                                Html.FROM_HTML_MODE_COMPACT).toString().replaceAll("(\\s{2,})", " ");
-                exportFiles.add(createTempExportFile(activity, unformattedNoteString, extension));
+                        Helper.removeMarkdownFormatting(selectedNote.getNote());
+                exportFiles.add(createTempExportFile(activity, text, extension));
             }
         }
 
         if(exportFiles.size() > 0)
             shareFiles(activity, exportFiles);
+    }
+
+    public static String removeMarkdownFormatting(String text){
+        return Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT).toString()
+                .replaceAll("&nbsp;", " ")
+                .replaceAll("<br>", "\n");
     }
 
     public static void openMapView(Activity activity, Place place){
