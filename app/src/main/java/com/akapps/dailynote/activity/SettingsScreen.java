@@ -121,6 +121,7 @@ public class SettingsScreen extends AppCompatActivity{
     private SwitchCompat showDeleteIcon;
     private SwitchCompat hideRichTextEditor;
     private SwitchCompat showAudioButton;
+    private SwitchCompat hideBudgetButton;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -238,6 +239,7 @@ public class SettingsScreen extends AppCompatActivity{
         showDeleteIcon = findViewById(R.id.add_delete_icon_switch);
         hideRichTextEditor = findViewById(R.id.rich_text_switch);
         showAudioButton = findViewById(R.id.audio_button_switch);
+        hideBudgetButton = findViewById(R.id.hide_budget_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -541,6 +543,13 @@ public class SettingsScreen extends AppCompatActivity{
             realm.commitTransaction();
         });
 
+        hideBudgetButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setHideBudget(isChecked);
+            realm.commitTransaction();
+        });
+
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
@@ -728,6 +737,7 @@ public class SettingsScreen extends AppCompatActivity{
         showDeleteIcon.setChecked(currentUser.isEnableDeleteIcon());
         hideRichTextEditor.setChecked(currentUser.isHideRichTextEditor());
         showAudioButton.setChecked(currentUser.isShowAudioButton());
+        hideBudgetButton.setChecked(currentUser.isHideBudget());
         if(currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));

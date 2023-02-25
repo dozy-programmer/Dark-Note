@@ -13,7 +13,7 @@ android {
         applicationId "com.akapps.dailynote"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 106
+        versionCode 108
         versionName "@string/app_version_int"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
@@ -59,7 +59,7 @@ dependencies {
     implementation "androidx.biometric:biometric:1.1.0"
 
     // firebase
-    implementation platform('com.google.firebase:firebase-bom:29.0.0')
+    implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation ('com.google.firebase:firebase-auth'){
         exclude module: "play-services-safetynet"
     }

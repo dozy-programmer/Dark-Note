@@ -31,10 +31,7 @@
         android:extractNativeLibs="false">
 
         <receiver android:name=".classes.helpers.AlertReceiver"
-            android:showWhenLocked="true"
-            android:turnScreenOn="true"
-            android:exported="false"
-            tools:targetApi="o_mr1" />
+            android:exported="false" />
 
         <receiver android:name=".classes.helpers.AlertDismissReceiver"
             android:exported="false" />

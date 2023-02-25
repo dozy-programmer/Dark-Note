@@ -170,7 +170,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             @Override
             public void onTextChanged(CharSequence charSequence, int current, int before, int count) {
                 if(!isTextPastedDetected) {
-                    if (count - before > 1) {
+                    if (count - before > 5) {
                         info.setText(info.getText().toString().split("\n")[0] + "\n\nPaste detected, if you want to want this to " +
                                 "only be one item, click here.\n");
                         isTextPastedDetected = true;

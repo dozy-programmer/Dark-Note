@@ -169,6 +169,9 @@ public class RealmDatabase {
 
             if(!schema.get("Place").hasField("longitude"))
                 schema.get("Place").addField("longitude", double.class);
+
+            if(!schema.get("User").hasField("hideBudget"))
+                schema.get("User").addField("hideBudget", boolean.class);
         }
     }
 }

@@ -517,8 +517,8 @@ public class Helper {
         } catch (Exception e) {}
     }
 
-    public static int darkenColor(int color, int percentage) {
-        return ColorUtils.setAlphaComponent(color, percentage);
+    public static int darkenColor(int color, int alpha) {
+        return ColorUtils.setAlphaComponent(color, alpha);
     }
 
     public static String capitalize(String word){

@@ -204,6 +204,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="gone"
+            android:weightSum="100"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -214,6 +215,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"
+                android:layout_weight="1"
                 android:layout_marginRight="20dp"
                 android:backgroundTint="@color/mdtp_transparent_black"
                 android:src="@drawable/location_delete_icon"
@@ -225,9 +227,11 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/baloo_bhai"
                 android:text="place_info"
+                android:layout_weight="98"
                 android:textColor="@color/blue"
                 android:textSize="14sp"
-                android:layout_marginTop="3dp"/>
+                android:layout_marginTop="3dp"
+                android:gravity="center"/>
 
             <ImageView
                 android:id="@+id/edit_location"
@@ -235,6 +239,7 @@
                 android:layout_height="22dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/mdtp_transparent_black"
                 android:src="@drawable/edit_location_icon"
                 android:tint="@color/tan_hide" />

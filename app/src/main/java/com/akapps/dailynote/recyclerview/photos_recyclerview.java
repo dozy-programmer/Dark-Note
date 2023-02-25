@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
@@ -14,7 +17,10 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+
+import java.io.File;
 import java.util.ArrayList;
 import io.realm.RealmResults;
 
@@ -31,7 +37,8 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         private final ImageView delete;
         private final ImageView share;
         private final View view;
-        private final CardView background;
+        private final MaterialCardView background;
+        private final TextView imageSize;
 
         public MyViewHolder(View v) {
             super(v);
@@ -39,6 +46,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
             delete = v.findViewById(R.id.delete);
             share = v.findViewById(R.id.share);
             background = v.findViewById(R.id.background);
+            imageSize = v.findViewById(R.id.image_size);
             view = v;
         }
     }
@@ -63,19 +71,24 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         // retrieves current photo object
         Photo currentPhoto = allPhotos.get(position);
 
+        if(AppData.getAppData().isDarkerMode)
+            holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
+
         if(!showDelete) {
             holder.delete.setVisibility(View.GONE);
             holder.share.setVisibility(View.GONE);
+            holder.imageSize.setVisibility(View.GONE);
+            holder.background.setCardBackgroundColor(context.getColor(R.color.transparent));
         }
-
-        if(AppData.getAppData().isDarkerMode)
-            holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
 
         // populates photo into the recyclerview
         Glide.with(context).load(currentPhoto.getPhotoLocation())
                 .centerCrop()
                 .placeholder(activity.getDrawable(R.drawable.error_icon))
                 .into(holder.image);
+
+        holder.imageSize.setText(Helper.getFormattedFileSize(context,
+                new File(currentPhoto.getPhotoLocation()).length()));
 
         // if photo is clicked, it opens it in the default device gallery
         holder.view.setOnClickListener(v -> {

@@ -239,99 +239,32 @@
                 android:backgroundTint="@android:color/transparent"
                 android:hint="Title"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="55dp"
                 android:layout_marginTop="-10dp"
                 android:textColor="@color/ultra_white"
                 android:textColorHint="@color/light_gray"
                 android:textCursorDrawable="@drawable/cursor"
-                android:textSize="30sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="26sp"
+                app:layout_constraintEnd_toStartOf="@id/budget"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/reminderLayout"></EditText>
 
-            <com.github.clans.fab.FloatingActionMenu
-                android:id="@+id/more_options_menu"
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/budget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-18dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/money_icon"
                 android:elevation="2dp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                app:menu_backgroundColor="@android:color/transparent"
-                app:menu_buttonSpacing="0dp"
-                app:menu_colorNormal="@color/light_gray"
-                app:menu_colorPressed="@color/pressed_blue"
-                app:menu_colorRipple="#99FFFFFF"
-                app:menu_fab_hide_animation="@anim/hide_to_bottom"
-                app:menu_fab_show_animation="@anim/show_from_bottom"
-                app:menu_fab_size="mini"
-                app:menu_icon="@drawable/more_icon"
-                app:menu_labels_colorNormal="#333333"
-                app:menu_labels_colorPressed="#444444"
-                app:menu_labels_colorRipple="#66FFFFFF"
-                app:menu_labels_cornerRadius="3dp"
-                app:menu_labels_ellipsize="none"
-                app:menu_labels_margin="0dp"
-                app:menu_labels_maxLines="-1"
-                app:menu_labels_paddingBottom="4dp"
-                app:menu_labels_paddingLeft="8dp"
-                app:menu_labels_paddingRight="8dp"
-                app:menu_labels_paddingTop="4dp"
-                app:menu_labels_position="left"
-                app:menu_labels_showShadow="true"
-                app:menu_labels_singleLine="false"
-                app:menu_labels_textColor="@color/orange"
-                app:menu_labels_textSize="16sp"
-                app:menu_openDirection="down"
-                app:menu_shadowColor="#00000000"
-                app:menu_shadowRadius="4dp"
-                app:menu_shadowXOffset="1dp"
-                app:menu_shadowYOffset="3dp"
-                app:menu_showShadow="true">
-
-                <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/info_icon"
-                    app:fab_colorNormal="@color/dark_gold"
-                    app:fab_colorPressed="@color/gray"
-                    app:fab_colorRipple="@color/light_gray"
-                    app:fab_label="Note Info"
-                    app:fab_size="mini"
-                    app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
-
-                <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/sort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/filter_icon"
-                    app:fab_colorNormal="@color/orange"
-                    app:fab_colorPressed="@color/gray"
-                    app:fab_colorRipple="@color/light_gray"
-                    app:fab_label="Sort"
-                    app:fab_size="mini"
-                    app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
-
-                <com.github.clans.fab.FloatingActionButton
-                    android:id="@+id/budget"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/money_icon"
-                    app:fab_colorNormal="@color/not_too_dark_gray"
-                    app:fab_colorPressed="@color/gray"
-                    app:fab_colorRipple="@color/light_gray"
-                    app:fab_label="Budget"
-                    app:fab_size="mini"
-                    app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
-
-            </com.github.clans.fab.FloatingActionMenu>
+                app:fab_colorNormal="@color/not_too_dark_gray"
+                app:fab_colorPressed="@color/gray"
+                app:fab_colorRipple="@color/light_gray"
+                app:fab_label="Budget"
+                app:fab_size="mini"
+                app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
             <TextView
                 android:id="@+id/date"
@@ -555,6 +488,19 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/open_budget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:backgroundTint="@color/money_green"
+        app:fabCustomSize="40dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginVertical="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/add_checklist_item"
+        app:layout_constraintEnd_toEndOf="@+id/add_checklist_item"
+        app:srcCompat="@drawable/money_icon" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_checklist_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -608,7 +554,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/undoi_icon" />
 
                 <ImageButton
@@ -616,7 +561,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/redo_icon" />
 
                 <ImageButton
@@ -624,7 +568,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/bold_icon" />
 
                 <ImageButton
@@ -632,7 +575,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/italic_icon" />
 
                 <ImageButton
@@ -640,7 +582,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/strikethrough_icon" />
 
                 <ImageButton
@@ -648,7 +589,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/underline_icon" />
 
                 <ImageButton
@@ -656,7 +596,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/bullets_icon" />
 
                 <ImageButton
@@ -664,7 +603,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/numbers_icon" />
 
                 <ImageButton
@@ -672,7 +610,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/format_size_icon" />
 
                 <ImageButton
@@ -680,7 +617,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/color_text_icon" />
 
                 <ImageButton
@@ -688,7 +624,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/format_clear_icon" />
 
                 <ImageButton
@@ -696,7 +631,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/indent_icon" />
 
                 <ImageButton
@@ -704,7 +638,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/outdent_icon" />
 
                 <ImageButton
@@ -712,7 +645,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/justify_left" />
 
                 <ImageButton
@@ -720,7 +652,6 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/justify_center" />
 
                 <ImageButton
@@ -728,10 +659,9 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:contentDescription="@null"
                     android:src="@drawable/justify_right" />
 
-            </LinearLayout>`
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 

@@ -136,10 +136,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
         if(Helper.isColorDark(currentNote.getBackgroundColor())) {
-            holder.note_title.setTextColor(activity.getColor(R.color.white));
+            holder.note_title.setTextColor(activity.getColor(R.color.ultra_white));
             holder.note_edited.setTextColor(activity.getColor(R.color.white));
-            holder.note_preview.setTextColor(activity.getColor(R.color.white));
+            holder.note_preview.setTextColor(activity.getColor(R.color.ultra_white));
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.white));
+            holder.checklist_icon.setColorFilter(activity.getColor(R.color.white));
         }
         else{
             holder.note_title.setTextColor(activity.getColor(R.color.black));
@@ -148,10 +149,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
         }
 
-        if(((notes) noteFragment).user.isModeSettings())
+        if(((notes) noteFragment).user.isModeSettings()) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.black));
-        else
+            holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 192));
+        }
+        else {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.not_too_dark_gray));
+            holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 255));
+        }
 
         // changes the number of lines title and preview occupy depending on user setting
         int titleLines = ((notes) noteFragment).user.getTitleLines();
