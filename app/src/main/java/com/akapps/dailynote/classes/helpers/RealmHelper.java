@@ -44,6 +44,12 @@ public class RealmHelper {
         // deletes note
         try(Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(tRealm -> {
+                if(currentNote.getWidgetId() > 0) {
+                    currentNote.setPinNumber(0);
+                    currentNote.setTitle("Delete Me");
+                    currentNote.setNote("* Note has been deleted, delete this widget *");
+                    Helper.updateWidget(currentNote, context, realm);
+                }
                 currentNote.deleteFromRealm();
             });
         }
@@ -55,9 +61,7 @@ public class RealmHelper {
             for(Photo currentPhoto: allNotePhotos) {
                 deleteImage(currentPhoto.getPhotoLocation());
             }
-            realm.executeTransaction(tRealm -> {
-                allNotePhotos.deleteAllFromRealm();
-            });
+            realm.executeTransaction(tRealm -> allNotePhotos.deleteAllFromRealm());
         }
     }
 
@@ -139,11 +143,10 @@ public class RealmHelper {
                     item.setChecked(status);
                 });
                 if(null != item.getSubChecklist()) {
-                    if (item.getSubChecklist().size() > 0)
+                    if (item.getSubChecklist().size() > 0) {
                         for (SubCheckListItem subItem : item.getSubChecklist())
-                            realm.executeTransaction(tRealm -> {
-                                subItem.setChecked(status);
-                            });
+                            realm.executeTransaction(tRealm -> subItem.setChecked(status));
+                    }
                 }
             }
         }
@@ -155,16 +158,14 @@ public class RealmHelper {
         try(Realm realm = Realm.getDefaultInstance()) {
             RealmResults<Note> allNotes = realm.where(Note.class).findAll();
             for (Note currentNote : allNotes) {
-                    try {
-                        long lastDateEditedNoteInMilli = Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis();
-                        if (lastDateEditedNoteInMilli != currentNote.getDateEditedMilli()) {
-                            realm.executeTransaction(tRealm -> {
-                                currentNote.setDateEditedMilli(lastDateEditedNoteInMilli);
-                            });
-                        }
-                    } catch (Exception e){
-                        continue;
+                try {
+                    long lastDateEditedNoteInMilli = Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis();
+                    if (lastDateEditedNoteInMilli != currentNote.getDateEditedMilli()) {
+                        realm.executeTransaction(tRealm -> {
+                            currentNote.setDateEditedMilli(lastDateEditedNoteInMilli);
+                        });
                     }
+                } catch (Exception e){}
             }
         }
     }
@@ -172,8 +173,8 @@ public class RealmHelper {
     public static void updateNoteReminder(Context context, int noteID){
         try(Realm realm = getRealm(context)) {
             Note currentNote = realm.where(Note.class).equalTo("noteId", noteID).findFirst();
-            assert currentNote != null;
-            realm.executeTransaction(realm1 -> currentNote.setReminderDateTime(""));
+            if(currentNote != null && currentNote.getReminderDateTime() != null)
+                realm.executeTransaction(realm1 -> currentNote.setReminderDateTime(""));
         }
     }
 }

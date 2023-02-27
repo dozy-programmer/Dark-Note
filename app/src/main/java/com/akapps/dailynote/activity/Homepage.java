@@ -2,6 +2,8 @@ package com.akapps.dailynote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.fragment.app.FragmentActivity;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
@@ -37,10 +39,12 @@ public class Homepage extends FragmentActivity{
 
             user = realm.where(User.class).findFirst();
 
-            RealmResults<Note> notesWithWidgets = realm.where(Note.class)
-                    .greaterThan("widgetId", 0).findAll();
-            for(Note currentNote: notesWithWidgets)
-                Helper.updateWidget(currentNote, this, realm);
+            realm.executeTransactionAsync(realm -> {
+                RealmResults<Note> notesWithWidgets = realm.where(Note.class)
+                        .greaterThan("widgetId", 0).findAll();
+                for(Note currentNote: notesWithWidgets)
+                    Helper.updateWidget(currentNote, Homepage.this, realm);
+            });
 
             if(user != null) {
                 if (user.isModeSettings())

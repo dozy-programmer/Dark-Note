@@ -80,6 +80,13 @@ public class Helper {
         return orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
+    // return height of screen
+    public static int getDeviceHeight(Activity activity){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
+    }
+
     // returns true if device is in portrait
     public static boolean isPortrait(Context context){
         int orientation = context.getResources().getConfiguration().orientation;
@@ -372,7 +379,7 @@ public class Helper {
                     ResourcesCompat.getFont(activity, R.font.overpass));
         }
         catch (Exception e){
-            Toast.makeText(activity.getBaseContext(), title + "\n" + message, Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, title + "\n" + message, Toast.LENGTH_LONG).show();
         }
     }
 

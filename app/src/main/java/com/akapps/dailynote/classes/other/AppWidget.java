@@ -19,7 +19,6 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,11 +29,8 @@ public class AppWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        // initialize database and get data
-
         for (int appWidgetId : appWidgetIds)
-            updateAppWidget(context, appWidgetManager, -1, appWidgetId);
+            updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetId);
     }
 
     @Override
@@ -118,6 +114,7 @@ public class AppWidget extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
+
             // if title or checklist is clicked, then open note
             views.setOnClickPendingIntent(R.id.widget_background, pendingIntent);
             views.setPendingIntentTemplate(R.id.preview_checklist, pendingIntent);
@@ -144,15 +141,14 @@ public class AppWidget extends AppWidgetProvider {
 
         return results.get(0);
     }
-    private static boolean isAllChecklistChecked(Note currentNote){
-        if(currentNote.isCheckList()){
-            List<CheckListItem> results = currentNote.getChecklist().stream()
-                    .filter(item -> item.isChecked() == true)
-                    .collect(Collectors.toList());
 
-            if(results.size() == currentNote.getChecklist().size() && results.size()!=0)
-                return true;
+    private static boolean isAllChecklistChecked(Note currentNote){
+        List<CheckListItem> results = new ArrayList<>();
+        if(currentNote.isCheckList()){
+            results = currentNote.getChecklist().stream()
+                    .filter(CheckListItem::isChecked)
+                    .collect(Collectors.toList());
         }
-        return false;
+        return results.size() == currentNote.getChecklist().size() && results.size() != 0;
     }
 }

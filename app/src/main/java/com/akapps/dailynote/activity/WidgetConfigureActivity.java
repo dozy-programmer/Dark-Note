@@ -42,7 +42,6 @@ public class WidgetConfigureActivity extends Activity {
         // Set layout size of activity
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
-        findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
         ListView listView = (ListView) findViewById(R.id.list);
 
         allNotes = AppData.getAllNotes(this);
@@ -67,8 +66,8 @@ public class WidgetConfigureActivity extends Activity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
         // If this activity was started with an intent without an app widget ID, finish with an error.
@@ -79,16 +78,6 @@ public class WidgetConfigureActivity extends Activity {
 
         mAppWidgetText.setText(loadTitlePref(WidgetConfigureActivity.this, mAppWidgetId));
     }
-
-    View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            final Context context = WidgetConfigureActivity.this;
-
-            // When the button is clicked, get text
-            String widgetText = mAppWidgetText.getText().toString();
-            createWidget(context, widgetText);
-        }
-    };
 
     private void createWidget(Context context, String widgetText) {
         // Store the string locally

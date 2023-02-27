@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -37,7 +38,7 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            checklist = AppData.getNoteChecklist(noteId, getApplicationContext());
+            checklist = AppData.getNoteChecklist(noteId, context);
         }
 
         @Override
@@ -86,15 +87,17 @@ public class WidgetListView extends RemoteViewsService {
                     remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);
                 }
             }
-            else
+            else {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.GONE);
+                remoteView.setViewVisibility(R.id.audio, View.GONE);
+            }
 
             String checklistItemText = currentItem.replace("~~", "").replace("-Note-", "");
             checklistItemText += checklistItemText.isEmpty() ? "[Audio]": "";
+
             remoteView.setTextViewText(R.id.checklist_text, Html.fromHtml(checklistItemText, Html.FROM_HTML_MODE_COMPACT));
 
             Intent fillInIntent = new Intent();
-            // Make it possible to distinguish the individual on-click
             remoteView.setOnClickFillInIntent(R.id.checklist_text, fillInIntent);
 
             return remoteView;

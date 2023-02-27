@@ -1,6 +1,8 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
@@ -64,8 +66,10 @@ public class AppData{
         ArrayList<CheckListItem> noteArrayList = new ArrayList<>();
         ArrayList<String> allArraylistChecklist = new ArrayList<>();
 
-        if(currentNote != null && currentNote.getPinNumber() != 0)
-            allArraylistChecklist.add("*Note is Locked*");
+        if(currentNote == null)
+            allArraylistChecklist.add("* Note has been deleted, delete this widget * -Note-");
+        else if(currentNote.getPinNumber() != 0)
+            allArraylistChecklist.add("* Note is Locked * -Note-");
         else {
             if(!currentNote.isCheckList()){
                 if(currentNote.getNote().isEmpty())
@@ -123,7 +127,6 @@ public class AppData{
                 .equalTo("archived", false)
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
-        allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
         return allNotes;
     }

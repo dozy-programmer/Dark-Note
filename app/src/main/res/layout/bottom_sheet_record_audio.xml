@@ -84,7 +84,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/pause_play_button"
             app:layout_constraintEnd_toStartOf="@+id/pause_play_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/pause_play_button"></com.google.android.material.button.MaterialButton>
+            app:layout_constraintTop_toTopOf="@+id/pause_play_button"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/done_recording"
