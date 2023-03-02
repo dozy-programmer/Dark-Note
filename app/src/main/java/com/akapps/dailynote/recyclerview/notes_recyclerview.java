@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.fragments.notes;
@@ -45,6 +47,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final Fragment noteFragment;
     private boolean showPreview;
     private boolean showPreviewNotesInfo;
+    private boolean isDarkMode;
 
     // database
     private final Realm realm;
@@ -107,6 +110,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         this.noteFragment = fragment;
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
+        isDarkMode = ((notes) noteFragment).user.isModeSettings();
     }
 
     @Override
@@ -149,7 +153,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
         }
 
-        if(((notes) noteFragment).user.isModeSettings()) {
+        if(isDarkMode) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.black));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 192));
         }
@@ -196,7 +200,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (currentNote.isSelected())
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
             else
-                holder.note_background.setStrokeColor(currentNote.getBackgroundColor());
+                holder.note_background.setStrokeColor(isDarkMode ?
+                        Helper.darkenColor(currentNote.getBackgroundColor(), 0)
+                        : currentNote.getBackgroundColor());
             holder.note_background.setStrokeWidth(10);
         }
 
@@ -418,9 +424,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
             }
-            else
-                Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
-                        "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
             return false;
         });
 
@@ -435,9 +438,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
             }
-            else
-                Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
-                        "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
             return false;
         });
 
@@ -452,9 +452,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
             }
-            else
-                Helper.showMessage(activity, "Action not supported", "Can't multi-select" +
-                        "notes, checklists, AND shareable checklists", MotionToast.TOAST_ERROR);
             return false;
         });
 
@@ -469,7 +466,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             else{
                 if(currentNote.isSelected()) {
                     saveSelected(currentNote, false);
-                    holder.note_background.setStrokeColor(currentNote.getBackgroundColor());
+                    holder.note_background.setStrokeColor(isDarkMode ?
+                            Helper.darkenColor(currentNote.getBackgroundColor(), 0)
+                            : currentNote.getBackgroundColor());
                     holder.note_background.setStrokeWidth(10);
                     ((notes) noteFragment).numberSelected(0, 1, -1);
                 }
@@ -499,8 +498,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         });
 
         holder.note_info.setOnClickListener(view -> {
-            NoteInfoSheet noteInfoSheet = new NoteInfoSheet(((notes) noteFragment).user, currentNote, allPhotos, true);
-            noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
+            if(!enableSelectMultiple) {
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(((notes) noteFragment).user, currentNote, allPhotos, true);
+                noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
+            }
         });
     }
 
