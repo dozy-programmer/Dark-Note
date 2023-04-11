@@ -517,13 +517,21 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
 
         search.setOnClickListener(v -> {
-            if(note.getHtml().length()>0) {
+            if(note.getHtml().length() > 0) {
                 textSizeLayout.setVisibility(View.VISIBLE);
                 showSearchBar();
             }
             else
                 Helper.showMessage(this, "Empty", "Searching for something " +
                         "that does not exist is impossible", MotionToast.TOAST_WARNING);
+        });
+
+        scrollView.setOnClickListener(view -> {
+            if(currentNote != null && !currentNote.isCheckList()){
+                note.focusEditor();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(note, InputMethodManager.SHOW_IMPLICIT);
+            }
         });
 
         searchEditText.addTextChangedListener(new TextWatcher() {
@@ -736,7 +744,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void closeAndDeleteNote(){
-        if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0){
+        if(currentNote != null && currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty()
+                && currentNote.getChecklist().size() == 0){
             if(!user.isEnableEmptyNote()) {
                 RealmHelper.deleteNote(context, currentNote.getNoteId());
                 Helper.showMessage(this, "Deleted", "Note has been deleted, change in settings", MotionToast.TOAST_WARNING);

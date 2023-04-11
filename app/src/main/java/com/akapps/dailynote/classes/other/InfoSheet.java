@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
@@ -18,10 +20,12 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
+import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.backup_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -62,9 +66,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
     boolean isAppLocked;
     private int attempts;
     private String messageText;
+    private boolean deleteMultipleNotes;
+    private Fragment fragmentActivity;
+    private boolean isTrashSelected;
 
-    public InfoSheet(){
-    }
+    public InfoSheet(){}
 
     public InfoSheet(String messageText, int message){
         this.messageText = messageText;
@@ -89,6 +95,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
     public InfoSheet(int message, boolean deleteAllChecklists){
         this.message = message;
         this.deleteAllChecklists = deleteAllChecklists;
+    }
+
+    public InfoSheet(int message, boolean deleteMultipleNotes, Fragment fragmentActivity, boolean isTrashSelected){
+        this.message = message;
+        this.deleteMultipleNotes = deleteMultipleNotes;
+        this.fragmentActivity = fragmentActivity;
+        this.isTrashSelected = isTrashSelected;
     }
 
     @Override
@@ -173,7 +186,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                 info.setText("Are you sure you want to delete checklist?");
             }
             else {
-                if(message == 3) {
+                if(message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
                     backup.setText("TRASH");
                     backup.setBackgroundColor(getContext().getColor(R.color.orange));
@@ -183,6 +196,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
                     backup.setText("DELETE");
                     info.setVisibility(View.GONE);
                 }
+                else if(isTrashSelected)
+                    info.setVisibility(View.GONE);
             }
             info.setGravity(Gravity.CENTER);
         }
@@ -333,10 +348,14 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             if(message == 1 || message == 2)
                 ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
             else if(message == 3 || message == -3){
-                if(deleteAllChecklists)
-                    ((NoteEdit) getActivity()).deleteChecklist();
-                else
-                    ((NoteEdit) getActivity()).deleteNote(false);
+                if(deleteMultipleNotes)
+                    ((notes) fragmentActivity).deleteMultipleNotes(false);
+                else {
+                    if (deleteAllChecklists)
+                        ((NoteEdit) getActivity()).deleteChecklist();
+                    else
+                        ((NoteEdit) getActivity()).deleteNote(false);
+                }
             }
             else if(message == 4){
                 // delete file
@@ -362,8 +381,12 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         });
 
         delete.setOnClickListener(view1 -> {
-            // delete note without sending to trash
-            ((NoteEdit) getActivity()).deleteNote(true);
+            if(deleteMultipleNotes)
+                ((notes) fragmentActivity).deleteMultipleNotes(true);
+            else
+                // delete note without sending to trash
+                ((NoteEdit) getActivity()).deleteNote(true);
+            this.dismiss();
         });
 
         return view;

@@ -23,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
+
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,6 +43,7 @@ import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -214,6 +217,8 @@ public class notes extends Fragment{
                     showData();
                     isListEmpty(allNotes.size(), false);
                 }
+                else
+                    getActivity().finish();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -444,7 +449,8 @@ public class notes extends Fragment{
             addMenuLarge.close(true);
             if(deletingMultipleNotes){
                 isAllSelected = false;
-                deleteMultipleNotes();
+                InfoSheet info = new InfoSheet(3, true, notes.this, isTrashSelected);
+                info.show(getActivity().getSupportFragmentManager(), info.getTag());
             }
             else {
                 showSearchBar();
@@ -934,7 +940,7 @@ public class notes extends Fragment{
         updateToolbarColors();
     }
 
-    public void deleteMultipleNotes(){
+    public void deleteMultipleNotes(boolean deleteNotes){
         RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
         RealmResults<Note> lockedNotes = realm.where(Note.class).equalTo("isSelected", true)
                 .greaterThan("pinNumber", 0)
@@ -947,7 +953,7 @@ public class notes extends Fragment{
         else {
             if (selectedNotes.size() != 0) {
                 int number = selectedNotes.size();
-                if (isTrashSelected) {
+                if (isTrashSelected || deleteNotes) {
                     for(Note deleteCurrentNote: selectedNotes)
                         RealmHelper.deleteNote(getContext(), deleteCurrentNote.getNoteId());
                     isListEmpty(allNotes.size(), false);
