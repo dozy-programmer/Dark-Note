@@ -70,6 +70,32 @@
         <item>@color/spray</item>
         <item>@color/wistful</item>
         <item>@color/ocean_green</item>
+        <item>@color/color_1</item>
+        <item>@color/color_2</item>
+        <item>@color/color_3</item>
+        <item>@color/color_4</item>
+        <item>@color/color_5</item>
+        <item>@color/color_6</item>
+        <item>@color/color_7</item>
+        <item>@color/color_8</item>
+        <item>@color/color_9</item>
+        <item>@color/color_10</item>
+        <item>@color/color_11</item>
+        <item>@color/color_12</item>
+        <item>@color/color_13</item>
+        <item>@color/color_14</item>
+        <item>@color/color_15</item>
+        <item>@color/color_16</item>
+        <item>@color/color_17</item>
+        <item>@color/color_18</item>
+        <item>@color/color_19</item>
+        <item>@color/color_20</item>
+        <item>@color/color_21</item>
+        <item>@color/color_22</item>
+        <item>@color/color_23</item>
+        <item>@color/color_24</item>
+        <item>@color/color_25</item>
+        <item>@color/color_26</item>
     </array>
 
     <color name="havelock_blue">#4792D8</color>
@@ -114,4 +140,30 @@
     <color name="spray">#8de0f0</color>
     <color name="wistful">#a8a2d4</color>
     <color name="ocean_green">#4dba86</color>
+    <color name="color_1">#e9ebdd</color>
+    <color name="color_2">#198c07</color>
+    <color name="color_3">#c3e1c4</color>
+    <color name="color_4">#ad8e93</color>
+    <color name="color_5">#d1e8d4</color>
+    <color name="color_6">#ccc1a0</color>
+    <color name="color_7">#1f83b5</color>
+    <color name="color_8">#466a6d</color>
+    <color name="color_9">#c2a84a</color>
+    <color name="color_10">#b1f3b7</color>
+    <color name="color_11">#6e82b3</color>
+    <color name="color_12">#38a1a2</color>
+    <color name="color_13">#f0ddac</color>
+    <color name="color_14">#eabab5</color>
+    <color name="color_15">#e3e5dc</color>
+    <color name="color_16">#053885</color>
+    <color name="color_17">#71b8de</color>
+    <color name="color_18">#fce19e</color>
+    <color name="color_19">#d4b265</color>
+    <color name="color_20">#0ba4a4</color>
+    <color name="color_21">#13a4b7</color>
+    <color name="color_22">#ccd1ba</color>
+    <color name="color_23">#4dddea</color>
+    <color name="color_24">#289d7a</color>
+    <color name="color_25">#f5c489</color>
+    <color name="color_26">#bfd6c6</color>
 </resources>

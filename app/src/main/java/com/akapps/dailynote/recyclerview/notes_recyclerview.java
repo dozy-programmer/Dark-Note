@@ -48,6 +48,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private boolean showPreview;
     private boolean showPreviewNotesInfo;
     private boolean isDarkMode;
+    private boolean isTwentyFourHourFormat;
 
     // database
     private final Realm realm;
@@ -111,6 +112,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
         isDarkMode = ((notes) noteFragment).user.isModeSettings();
+        isTwentyFourHourFormat = ((notes) noteFragment).user.isTwentyFourHourFormat();
     }
 
     @Override
@@ -130,13 +132,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 .equalTo("noteId", currentNote.getNoteId()).findAll();
 
         // retrieves note text, the lock status of note and reminder status
-        noteText = currentNote.getNote() == null ? "": currentNote.getNote();
+        noteText = currentNote.getNote() == null ? "" : currentNote.getNote();
         boolean isNoteLocked = currentNote.getPinNumber() > 0;
         boolean hasReminder = currentNote.getReminderDateTime().length() > 0;
 
         // populates note data into the recyclerview
         holder.note_title.setText(currentNote.getTitle().replaceAll("\n"," "));
-        holder.note_edited.setText(currentNote.getDateEdited());
+        holder.note_edited.setText(isTwentyFourHourFormat?
+                Helper.convertToTwentyFourHour(currentNote.getDateEdited()) : currentNote.getDateEdited());
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
         if(Helper.isColorDark(currentNote.getBackgroundColor())) {
@@ -211,8 +214,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setVisibility(View.VISIBLE);
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
-            RealmResults<CheckListItem> checklist = currentNote.getChecklist()
-                    .sort("positionInList", Sort.ASCENDING);
+            RealmResults<CheckListItem> checklist = Helper.sortChecklist(currentNote, realm);
             if (!isNoteLocked) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText(checklist.size()+ " items");
@@ -283,12 +285,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // if note is checked, it sets the note title and note preview text to
         // has a strike through them
         if(currentNote.isChecked()) {
-            holder.note_title.setPaintFlags(holder.note_title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.note_preview.setPaintFlags(holder.note_title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.note_title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+            holder.note_preview.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         }
         else {
-            holder.note_title.setPaintFlags(0);
-            holder.note_preview.setPaintFlags(0);
+            holder.note_title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+            holder.note_preview.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         }
 
         if(currentNote.getTitle().isEmpty())

@@ -62,10 +62,10 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByDate.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByDate.setStrokeColor(getContext().getColor(R.color.light_gray_2));
-            sortByDate.setStrokeWidth(8);
+            sortByDate.setStrokeWidth(5);
             sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.light_gray_2));
-            sortByAlphabetical.setStrokeWidth(8);
+            sortByAlphabetical.setStrokeWidth(5);
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));

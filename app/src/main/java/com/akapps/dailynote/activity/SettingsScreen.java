@@ -122,6 +122,7 @@ public class SettingsScreen extends AppCompatActivity{
     private SwitchCompat hideRichTextEditor;
     private SwitchCompat showAudioButton;
     private SwitchCompat hideBudgetButton;
+    private SwitchCompat twentyFourHourFormatButton;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -240,6 +241,7 @@ public class SettingsScreen extends AppCompatActivity{
         hideRichTextEditor = findViewById(R.id.rich_text_switch);
         showAudioButton = findViewById(R.id.audio_button_switch);
         hideBudgetButton = findViewById(R.id.hide_budget_switch);
+        twentyFourHourFormatButton = findViewById(R.id.twenty_hour_format_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -550,6 +552,13 @@ public class SettingsScreen extends AppCompatActivity{
             realm.commitTransaction();
         });
 
+        twentyFourHourFormatButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setTwentyFourHourFormat(isChecked);
+            realm.commitTransaction();
+        });
+
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
@@ -563,7 +572,7 @@ public class SettingsScreen extends AppCompatActivity{
             realmStatus();
             realm.beginTransaction();
             currentUser.setEnableSublists(isChecked);
-            realm.where(Note.class).findAll().setBoolean("enableSublist", true);
+            realm.where(Note.class).findAll().setBoolean("enableSublist", isChecked);
             realm.commitTransaction();
         });
 
@@ -723,6 +732,9 @@ public class SettingsScreen extends AppCompatActivity{
         findViewById(R.id.gap_twelve).setBackgroundColor(gapColor);
         findViewById(R.id.gap_thirteen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_fourteen).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_fifteen).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_sixteen).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_seventeen).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings(){
@@ -738,6 +750,7 @@ public class SettingsScreen extends AppCompatActivity{
         hideRichTextEditor.setChecked(currentUser.isHideRichTextEditor());
         showAudioButton.setChecked(currentUser.isShowAudioButton());
         hideBudgetButton.setChecked(currentUser.isHideBudget());
+        twentyFourHourFormatButton.setChecked(currentUser.isTwentyFourHourFormat());
         if(currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));

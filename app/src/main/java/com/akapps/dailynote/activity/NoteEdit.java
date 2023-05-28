@@ -225,10 +225,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (savedInstanceState != null)
             noteId = savedInstanceState.getInt("id");
 
+        user = realm.where(User.class).findFirst();
         initializeLayout(savedInstanceState);
 
-        user = realm.where(User.class).findFirst();
-        assert user != null;
         if (user.isModeSettings()) {
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             isDarkerMode = true;
@@ -455,7 +454,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
 
         if(currentNote.isChecked())
-            title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         // sets background of color icon to whatever the current note color is
         if (!isNewNote)
@@ -988,24 +987,24 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         Note newNote = null;
         if (isCheckList) {
             if(titleFromOtherApp !=null && !titleFromOtherApp.isEmpty())
-                newNote = new Note(titleFromOtherApp, "");
+                newNote = new Note(titleFromOtherApp, "", user.isEnableSublists());
             else
-                newNote = new Note(title.getText().toString(), "");
+                newNote = new Note(title.getText().toString(), "", user.isEnableSublists());
         }
         else {
             try {
                 if((noteFromOtherApp != null && !noteFromOtherApp.isEmpty()) ||
                         (titleFromOtherApp != null && !titleFromOtherApp.isEmpty()))
-                    newNote = new Note(titleFromOtherApp, noteFromOtherApp);
+                    newNote = new Note(titleFromOtherApp, noteFromOtherApp, user.isEnableSublists());
                 else
-                    newNote = new Note(title.getText().toString(), note.getHtml());
+                    newNote = new Note(title.getText().toString(), note.getHtml(), user.isEnableSublists());
             }
             catch (Exception e) {
                 if((noteFromOtherApp != null && !noteFromOtherApp.isEmpty()) ||
                         (titleFromOtherApp != null && !titleFromOtherApp.isEmpty()))
-                    newNote = new Note(titleFromOtherApp, noteFromOtherApp);
+                    newNote = new Note(titleFromOtherApp, noteFromOtherApp, user.isEnableSublists());
                 else
-                    newNote = new Note(title.getText().toString(), "");
+                    newNote = new Note(title.getText().toString(), "", user.isEnableSublists());
             }
         }
 
@@ -1090,9 +1089,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             title.clearFocus();
 
         if(currentNote.isChecked())
-            ((NoteEdit)context).title.setPaintFlags(((NoteEdit) context).title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            ((NoteEdit)context).title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         else
-            ((NoteEdit)context).title.setPaintFlags(0);
+            ((NoteEdit)context).title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         checkListRecyclerview.smoothScrollToPosition(initialPosition < 0 ? 0 : initialPosition);
         return currentItem;
@@ -1219,7 +1218,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
             noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
             noteMenu.addItem(7, new IconPowerMenuItem(getDrawable(R.drawable.filter_icon), "Sort"));
-            if( realm.where(User.class).findFirst().isEnableSublists()) {
+            if(realm.where(User.class).findFirst().isEnableSublists()) {
                 String sublistStatus = "";
                 if(currentNote.isEnableSublist()) {
                     sublistStatus = sublistStatus + "Sub-List";
@@ -1378,9 +1377,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         currentNote.setChecked(status);
         realm.commitTransaction();
         if(currentNote.isChecked())
-            title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         else
-            title.setPaintFlags(0);
+            title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         updateSaveDateEdited();
     }
 
@@ -1693,8 +1692,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     if (!realm.isClosed()) {
                         try {
                             if (Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false).length() > 0) {
-                                date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + currentNote.getDateEdited().replace("\n", " ") +
-                                        "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                                if(user.isTwentyFourHourFormat()){
+                                    date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + Helper.convertToTwentyFourHour(currentNote.getDateEdited()).replace("\n", " ") +
+                                            "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                                }
+                                else {
+                                    date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + currentNote.getDateEdited().replace("\n", " ") +
+                                            "<br>" + Helper.getTimeDifference(Helper.dateToCalender(currentNote.getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                                }
                             } else {
                                 date.setText(currentNote.getDateEdited().replace("\n", " ") + "\n  ");
                             }

@@ -122,11 +122,15 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
-                            "<font color='#e65c00'>" + currentNote.getDateCreated().replace("\n", " ") + "</font>",
+                            "<font color='#e65c00'>" + (user.isTwentyFourHourFormat() ?
+                            Helper.convertToTwentyFourHour(currentNote.getDateCreated()).replace("\n", " ")
+                            : currentNote.getDateCreated().replace("\n", " ")) + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateEdited.setText(Html.fromHtml(dateEdited.getText() + "<br>" +
-                            "<font color='#e65c00'>" + currentNote.getDateEdited().replace("\n", " ") + "</font>",
+                            "<font color='#e65c00'>" + (user.isTwentyFourHourFormat() ?
+                            Helper.convertToTwentyFourHour(currentNote.getDateEdited()).replace("\n", " ")
+                            : currentNote.getDateEdited().replace("\n", " ")) + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             folderName.setText(Html.fromHtml(folderName.getText() + "<br>" +

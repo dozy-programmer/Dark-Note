@@ -207,12 +207,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
         if(isSelected) {
-            holder.checklistText.setPaintFlags(holder.checklistText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
         }
         else {
-            holder.checklistText.setPaintFlags(0);
+            holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.unchecked_icon));
             holder.checklistText.setTextColor(currentNote.getTextColor());
         }
@@ -337,9 +337,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             realm.commitTransaction();
 
             if(currentNote.isChecked())
-                ((NoteEdit)context).title.setPaintFlags(((NoteEdit)context).title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                ((NoteEdit)context).title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             else
-                ((NoteEdit)context).title.setPaintFlags(0);
+                ((NoteEdit)context).title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         }
     }
 }

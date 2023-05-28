@@ -289,6 +289,22 @@ public class Helper {
         return calendar;
     }
 
+    public static String convertToTwentyFourHour(String input){
+        // Parse the original string into a Date object
+        SimpleDateFormat originalFormat = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa");
+        Date originalDate = null;
+        try {
+            originalDate = originalFormat.parse(input);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Format the Date object into the desired format
+        SimpleDateFormat desiredFormat = new SimpleDateFormat("E, MMM dd, yyyy\nHH:mm:ss");
+
+        return desiredFormat.format(originalDate);
+    }
+
     /**
      * Determines if recyclerview is empty and displays empty view
      * @param size   The size of recyclerview

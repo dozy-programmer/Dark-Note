@@ -1,6 +1,8 @@
 package com.akapps.dailynote.classes.other;
 
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.backup_recyclerview;
+import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -36,11 +39,15 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.stfalcon.imageviewer.StfalconImageViewer;
+
 import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -119,12 +126,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton backup = view.findViewById(R.id.backup);
         MaterialButton delete = view.findViewById(R.id.delete_directly);
         TextView info = view.findViewById(R.id.info);
-
         TextInputLayout securityWordLayout = view.findViewById(R.id.security_word_layout);
         TextInputEditText securityWord = view.findViewById(R.id.security_word);
         ImageView unlock = view.findViewById(R.id.unlock);
+        ImageView budgetChecklist = view.findViewById(R.id.budget_checklist);
+        ImageView budgetGraph = view.findViewById(R.id.budget_graph);
 
-        if (AppData.getAppData().isDarkerMode) {
+        if(AppData.getAppData().isDarkerMode){
             securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
@@ -318,6 +326,32 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               info.setText(getContext().getString(R.string.try_out_budget)
                       .replaceAll("\\$", Matcher.quoteReplacement(expenseChar))
                       .replaceAll("\\+" + expenseChar, Matcher.quoteReplacement(budgetChar)));
+
+              budgetChecklist.setVisibility(View.VISIBLE);
+              budgetGraph.setVisibility(View.VISIBLE);
+              List<Drawable> imageList = new ArrayList<>();
+              imageList.add(getContext().getResources().getDrawable(R.drawable.budget_checklist));
+              imageList.add(getContext().getResources().getDrawable(R.drawable.budget_graph));
+
+              budgetChecklist.setOnClickListener(view12 -> new StfalconImageViewer.Builder<>(getContext(), imageList, (imageView, image) ->
+                      Glide.with(getContext()).load(image).into(imageView))
+                      .withBackgroundColor(getContext().getColor(R.color.gray))
+                      .allowZooming(true)
+                      .allowSwipeToDismiss(true)
+                      .withHiddenStatusBar(false)
+                      .withStartPosition(0)
+                      .withTransitionFrom(budgetChecklist)
+                      .show());
+
+              budgetGraph.setOnClickListener(view13 -> new StfalconImageViewer.Builder<>(getContext(), imageList, (imageView, image) ->
+                      Glide.with(getContext()).load(image).into(imageView))
+                      .withBackgroundColor(getContext().getColor(R.color.gray))
+                      .allowZooming(true)
+                      .allowSwipeToDismiss(true)
+                      .withHiddenStatusBar(false)
+                      .withStartPosition(1)
+                      .withTransitionFrom(budgetGraph)
+                      .show());
         }
         else if(message == 11){
               title.setText("Audio Info");

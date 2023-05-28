@@ -41,6 +41,7 @@ public class User extends RealmObject {
     private boolean hideRichTextEditor;
     private boolean showAudioButton;
     private boolean hideBudget;
+    private boolean twentyFourHourFormat;
 
     // note security and retrieval of password
     private String securityWord;
@@ -51,8 +52,8 @@ public class User extends RealmObject {
 
     public User(int userId) {
         this.userId = userId;
-        ultimateUser = proUser = openFoldersOnStart = showFolderNotes =
-                enableEmptyNote = hideRichTextEditor = enableDeleteIcon = fingerprint = false;
+        ultimateUser = proUser = openFoldersOnStart = showFolderNotes = enableEmptyNote =
+                hideRichTextEditor = enableDeleteIcon = fingerprint = twentyFourHourFormat = false;
         textSize = backupReminderOccurrence = pinNumber = 0;
         layoutSelected = "stag";
         showPreview = showPreviewNoteInfo = increaseFabSize =
@@ -303,5 +304,13 @@ public class User extends RealmObject {
 
     public void setHideBudget(boolean hideBudget) {
         this.hideBudget = hideBudget;
+    }
+
+    public boolean isTwentyFourHourFormat() {
+        return twentyFourHourFormat;
+    }
+
+    public void setTwentyFourHourFormat(boolean twentyFourHourFormat) {
+        this.twentyFourHourFormat = twentyFourHourFormat;
     }
 }

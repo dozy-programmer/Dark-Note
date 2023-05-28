@@ -73,6 +73,35 @@
 
         </androidx.core.widget.NestedScrollView>
 
+        <ImageView
+            android:id="@+id/budget_checklist"
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:src="@drawable/budget_checklist"
+            android:background="@drawable/round_corner"
+            android:padding="7dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/budget_graph"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/backup_recyclerview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/info_layout" />
+
+        <ImageView
+            android:id="@+id/budget_graph"
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:src="@drawable/budget_graph"
+            android:background="@drawable/round_corner"
+            android:padding="7dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/budget_checklist"
+            app:layout_constraintTop_toBottomOf="@+id/info_layout" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/backup_recyclerview"
             android:layout_width="match_parent"

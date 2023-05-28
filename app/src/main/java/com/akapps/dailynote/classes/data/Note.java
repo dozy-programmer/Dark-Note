@@ -59,7 +59,7 @@ public class Note extends RealmObject {
 
     public Note(){}
 
-    public Note(String title, String note){
+    public Note(String title, String note, boolean enableSublist){
         this.title = title;
         dateCreated = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime());
         dateEdited = dateCreated;
@@ -69,7 +69,7 @@ public class Note extends RealmObject {
         dateCreatedMilli = dateEditedMilli = Helper.dateToCalender(dateCreated).getTimeInMillis();
         category = "none";
         sort = 5;
-        enableSublist = false;
+        this.enableSublist = enableSublist;
         widgetId = -1;
         pinNumber = 0;
     }

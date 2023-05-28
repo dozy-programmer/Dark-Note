@@ -2,6 +2,7 @@ package com.akapps.dailynote.recyclerview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,13 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         holder.expenseColor.setCardBackgroundColor(currentExpense.getColor());
         holder.expenseName.setText(expenseName);
         holder.expensePercentage.setText(formatDouble(currentExpense.getExpenseAmountPercentage()));
+
+        if(expenseName.equals("Over Budget"))
+            holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.amaranth));
+        else if(expenseName.equals("Under Budget"))
+            holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.money_green));
+        else
+            holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.pressed_blue));
 
         holder.dropDown.setOnClickListener(view -> {
             if(holder.subExpensesRecyclerview.getVisibility() == View.VISIBLE){
