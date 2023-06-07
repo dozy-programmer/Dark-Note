@@ -52,6 +52,7 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
@@ -293,11 +294,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     public void onBackPressed() {
         if(currentNote == null) {
+            RealmSingleton.setKeepRealmOpen(true);
+            Log.d("Here", "keep realm open in NoteEdit onBackPressed 1");
             finish();
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
-        else if(currentNote.getTitle().isEmpty() &&
-                currentNote.getNote().isEmpty() && currentNote.getChecklist().size() == 0)
+        else if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() &&
+                currentNote.getChecklist().size() == 0)
             closeAndDeleteNote();
         else if(isSearchingNotes) {
             hideSearchBar();
@@ -307,6 +310,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if(isChangingTextSize)
             isChangingTextSize = false;
         else {
+            RealmSingleton.setKeepRealmOpen(true);
+            Log.d("Here", "keep realm open in NoteEdit onBackPressed 3");
             if(noteChanged() && !isNewNote)
                 Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
 
@@ -331,8 +336,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     protected void onDestroy() {
         super.onDestroy();
 
-        if(realm!=null)
-            realm.close();
+        RealmSingleton.closeRealmInstance("NoteEdit onDestroy");
 
         if(handler!=null)
             handler.removeCallbacksAndMessages(null);
@@ -743,6 +747,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void closeAndDeleteNote(){
+        RealmSingleton.setKeepRealmOpen(true);
+        Log.d("Here", "keep realm open in NoteEdit");
         if(currentNote != null && currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty()
                 && currentNote.getChecklist().size() == 0){
             if(!user.isEnableEmptyNote()) {
@@ -1248,7 +1254,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (item.getTitle().contains("Archive")) {
                 updateArchivedStatus();
             } else if (item.getTitle().equals("Export")) {
-                ExportNotesSheet exportNotesSheet = new ExportNotesSheet(noteId, realm,
+                ExportNotesSheet exportNotesSheet = new ExportNotesSheet(noteId,
                         true, currentNote.isCheckList() ?
                         Helper.getNoteString(currentNote, realm) : currentNote.getNote());
                 exportNotesSheet.show(getSupportFragmentManager(), exportNotesSheet.getTag());
@@ -1266,7 +1272,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 openDialog();
             }
             else if (item.getTitle().equals("Sort")) {
-                FilterChecklistSheet filter = new FilterChecklistSheet(realm, currentNote);
+                FilterChecklistSheet filter = new FilterChecklistSheet(currentNote);
                 filter.show(getSupportFragmentManager(), filter.getTag());
             }
             else if(item.getTitle().equals("Lock")){
@@ -1314,7 +1320,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 increaseTextSize.setAlpha(new Float(1.0));
             }
             else if(item.getTitle().equals("Info")){
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(user, currentNote, allNotePhotos, false);
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(user, currentNote, false);
                 noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             }
             else if(item.getTitle().contains("Sub-List"))

@@ -14,14 +14,7 @@ import io.realm.RealmResults;
 public class RealmHelper {
 
     public static Realm getRealm(Context context){
-        Realm realm;
-        try {
-            realm = Realm.getDefaultInstance();
-        }
-        catch (Exception e){
-            realm = RealmDatabase.setUpDatabase(context);
-        }
-        return realm;
+        return RealmSingleton.getInstance(context);
     }
 
     public static void deleteNote(Context context, int noteID){

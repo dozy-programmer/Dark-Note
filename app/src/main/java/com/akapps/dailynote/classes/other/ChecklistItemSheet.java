@@ -37,6 +37,7 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -134,7 +135,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             this.dismiss();
 
         currentNote = ((NoteEdit)getActivity()).currentNote;
-        realm = ((NoteEdit)getActivity()).realm;
+        realm = RealmSingleton.getInstance(getContext());
         user = ((NoteEdit)getActivity()).user;
 
         // Initialize the SDK

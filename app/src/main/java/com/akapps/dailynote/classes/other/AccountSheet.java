@@ -15,6 +15,7 @@ import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -51,10 +52,9 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
     private FragmentActivity activity;
 
-    public AccountSheet(FirebaseAuth mAuth, User currentUser, Realm realm, boolean signUp){
+    public AccountSheet(FirebaseAuth mAuth, User currentUser, boolean signUp){
         this.mAuth = mAuth;
         this.currentUser = currentUser;
-        this.realm = realm;
         this.signUp = signUp;
     }
 
@@ -72,6 +72,8 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         passwordLayout = view.findViewById(R.id.insert_password_layout);
         passwordInput = view.findViewById(R.id.insert_password);
         loginButton = view.findViewById(R.id.login);
+
+        realm = RealmSingleton.getInstance(getContext());
 
         if (AppData.getAppData().isDarkerMode) {
             emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));

@@ -13,6 +13,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -27,8 +28,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
 
     public FilterChecklistSheet(){}
 
-    public FilterChecklistSheet(Realm realm, Note currentNote){
-        this.realm = realm;
+    public FilterChecklistSheet(Note currentNote){
         this.currentNote = currentNote;
     }
 
@@ -45,6 +45,8 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         MaterialCardView addedTop = view.findViewById(R.id.add_top);
         ImageView clearFilter = view.findViewById(R.id.clear_filter);
         CheckBox applyAll = view.findViewById(R.id.apply_all);
+
+        realm = RealmSingleton.getInstance(getContext());
 
         if (AppData.getAppData().isDarkerMode) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));

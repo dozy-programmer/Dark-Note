@@ -29,14 +29,7 @@ public class AppData{
     }
 
     private static Realm getRealm(Context context){
-        Realm realm;
-        try {
-            realm = Realm.getDefaultInstance();
-        }
-        catch (Exception e){
-            realm = RealmDatabase.setUpDatabase(context);
-        }
-        return realm;
+        return RealmSingleton.getInstance(context);
     }
 
     public static ArrayList getAllNotes(Context context){
@@ -52,8 +45,7 @@ public class AppData{
                 noteArrayList.get(i).setTitle("- No Title -");
         }
 
-        if(realm != null)
-            realm.close();
+        RealmSingleton.closeRealmInstance("AppData class, getAllNotes method");
 
         return noteArrayList;
     }
@@ -95,8 +87,7 @@ public class AppData{
             }
         }
 
-        if(realm != null)
-            realm.close();
+        RealmSingleton.closeRealmInstance("AppData class, getNoteChecklist method");
 
         return allArraylistChecklist;
     }
@@ -113,8 +104,7 @@ public class AppData{
             realm.commitTransaction();
         }
 
-        if(realm != null)
-            realm.close();
+        RealmSingleton.closeRealmInstance("AppData class, updateNoteWidget method");
     }
 
 

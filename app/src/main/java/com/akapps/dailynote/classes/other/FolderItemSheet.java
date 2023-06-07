@@ -18,6 +18,7 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -54,9 +55,8 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
     }
 
     // editing
-    public FolderItemSheet(Realm realm, Folder checkListItem, RecyclerView.Adapter adapter, int position){
+    public FolderItemSheet(Folder checkListItem, RecyclerView.Adapter adapter, int position){
         isAdding = false;
-        this.realm = realm;
         this.currentItem = checkListItem;
         this.allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
         this.adapter = adapter;
@@ -72,8 +72,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
             position = savedInstanceState.getInt("pos");
         }
 
+        realm = RealmSingleton.getInstance(getContext());
+
         if(isAdding) {
-            realm = ((CategoryScreen) getActivity()).realm;
             adapter = ((CategoryScreen) getActivity()).categoriesAdapter;
             allCategories = realm.where(Folder.class).sort("positionInList").findAll();
         }

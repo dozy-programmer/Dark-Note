@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.AccountSheet;
 import com.akapps.dailynote.classes.other.CreditsSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
@@ -165,11 +167,7 @@ public class SettingsScreen extends AppCompatActivity{
         all_Notes = getIntent().getIntExtra("size", 0);
         boolean backingUp = getIntent().getBooleanExtra("backup", false);
 
-        try {
-            realm = Realm.getDefaultInstance();
-        } catch (Exception e) {
-            realm = RealmDatabase.setUpDatabase(context);
-        }
+        realm = RealmSingleton.getInstance(context);
         currentUser = realm.where(User.class).findFirst();
 
         populateUserSettings();
@@ -187,8 +185,7 @@ public class SettingsScreen extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(realm!=null)
-            realm.close();
+        RealmSingleton.closeRealmInstance("SettingsScreen onDestroy");
     }
 
     @Override
@@ -198,11 +195,7 @@ public class SettingsScreen extends AppCompatActivity{
 
     private void realmStatus(){
         if(realm.isClosed()) {
-            try {
-                realm = Realm.getDefaultInstance();
-            } catch (Exception e) {
-                realm = RealmDatabase.setUpDatabase(context);
-            }
+            realm = RealmSingleton.getInstance(context);
             currentUser = realm.where(User.class).findFirst();
         }
     }
@@ -344,7 +337,7 @@ public class SettingsScreen extends AppCompatActivity{
             realmStatus();
             if(currentUser.isUltimateUser()) {
                 if (mAuth.getCurrentUser() == null) {
-                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, true);
+                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, true);
                     accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
                 }
             }
@@ -355,7 +348,7 @@ public class SettingsScreen extends AppCompatActivity{
             if (mAuth.getCurrentUser() != null) {
                 showBackupRestoreInfo(8);
             } else {
-                AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, realm, false);
+                AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, false);
                 accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
             }
         });
@@ -1166,12 +1159,7 @@ public class SettingsScreen extends AppCompatActivity{
                     realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
 
                     // update image paths from restored database so it knows where the images are
-                    try {
-                        realm = Realm.getDefaultInstance();
-                    }
-                    catch (Exception e){
-                        realm = RealmDatabase.setUpDatabase(context);
-                    }
+                    realm = RealmSingleton.getInstance(context);
                     updateAlarms(realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
@@ -1231,12 +1219,7 @@ public class SettingsScreen extends AppCompatActivity{
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
-                    try {
-                        realm = Realm.getDefaultInstance();
-                    }
-                    catch (Exception e){
-                        realm = RealmDatabase.setUpDatabase(context);
-                    }
+                    realm = RealmSingleton.getInstance(context);
                     updateAlarms(realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
@@ -1431,6 +1414,8 @@ public class SettingsScreen extends AppCompatActivity{
     }
 
     private void close(){
+        RealmSingleton.setKeepRealmOpen(true);
+        Log.d("Here", "Keep realm open in SettingsScreen");
         Intent intent = new Intent(this, Homepage.class);
         startActivity(intent);
         finish();

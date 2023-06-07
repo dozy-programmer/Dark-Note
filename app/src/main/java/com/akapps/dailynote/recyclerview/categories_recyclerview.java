@@ -2,6 +2,7 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -89,8 +91,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
 
         holder.view.setOnClickListener(v -> {
             if(((CategoryScreen)activity).isEditing) {
-                FolderItemSheet checklistItemSheet = new FolderItemSheet(realm, currentFolder,
-                        this, position);
+                FolderItemSheet checklistItemSheet = new FolderItemSheet(currentFolder,this, position);
                 checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
             }
             else {
@@ -112,8 +113,9 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                     allSelectedNotes.setBoolean("isSelected", false);
                     realm.commitTransaction();
 
+                    RealmSingleton.setKeepRealmOpen(true);
+                    Log.d("Here", "keep realm open in categories_recyclerview");
                     activity.setResult(5, home);
-
                     activity.finish();
                     activity.overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
                 }

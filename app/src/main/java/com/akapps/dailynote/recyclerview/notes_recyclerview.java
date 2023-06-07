@@ -1,6 +1,7 @@
 package com.akapps.dailynote.recyclerview;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
@@ -23,6 +24,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
@@ -51,7 +53,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private boolean isTwentyFourHourFormat;
 
     // database
-    private final Realm realm;
+    private Realm realm;
+    private Context context;
 
     // multi select
     private boolean enableSelectMultiple;
@@ -103,14 +106,15 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
     }
 
-    public notes_recyclerview(RealmResults<Note> allNotes, Realm realm, Activity activity, Fragment fragment,
+    public notes_recyclerview(RealmResults<Note> allNotes, Context context, Activity activity, Fragment fragment,
                               boolean showPreview, boolean showPreviewNotesInfo) {
         this.allNotes = allNotes;
-        this.realm = realm;
+        this.context = context;
         this.activity = activity;
         this.noteFragment = fragment;
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
+        realm = RealmSingleton.getInstance(context);
         isDarkMode = ((notes) noteFragment).user.isModeSettings();
         isTwentyFourHourFormat = ((notes) noteFragment).user.isTwentyFourHourFormat();
     }
@@ -501,7 +505,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         holder.note_info.setOnClickListener(view -> {
             if(!enableSelectMultiple) {
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(((notes) noteFragment).user, currentNote, allPhotos, true);
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(((notes) noteFragment).user, currentNote, true);
                 noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
             }
         });

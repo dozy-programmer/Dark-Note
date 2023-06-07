@@ -15,6 +15,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -40,9 +41,8 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
         this.isOneNoteSelected = isOneNoteSelected;
     }
 
-    public ExportNotesSheet(int noteId, Realm realm, boolean isOneNoteSelected, String noteText){
+    public ExportNotesSheet(int noteId, boolean isOneNoteSelected, String noteText){
         this.numNotesSelected = noteId;
-        this.realm = realm;
         this.isOneNoteSelected = isOneNoteSelected;
         this.noteText = noteText;
     }
@@ -59,6 +59,8 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton exportTextStringFormatted = view.findViewById(R.id.export_text_string_formatted);
         MaterialButton exportNote = view.findViewById(R.id.export_note);
         MaterialButton info = view.findViewById(R.id.export_info);
+
+        realm = RealmSingleton.getInstance(getContext());
 
         if (AppData.getAppData().isDarkerMode) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));

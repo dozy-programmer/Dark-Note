@@ -28,12 +28,15 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import org.jetbrains.annotations.NotNull;
+
+import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
@@ -44,12 +47,12 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     boolean showOpenButton;
     private User user;
     String noteTitle;
+    private Realm realm;
 
     public NoteInfoSheet(){}
 
-    public NoteInfoSheet(User user, Note currentNote, RealmResults<Photo> allPhotos, boolean showOpenButton){
+    public NoteInfoSheet(User user, Note currentNote, boolean showOpenButton){
         this.currentNote = currentNote;
-        this.allPhotos = allPhotos;
         this.showOpenButton = showOpenButton;
         this.user = user;
     }
@@ -64,6 +67,9 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         }
         else
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+
+        realm = RealmSingleton.getInstance(getContext());
+        allPhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
 
         TextView noteName = view.findViewById(R.id.note_name);
         TextView dateCreated = view.findViewById(R.id.date_created);

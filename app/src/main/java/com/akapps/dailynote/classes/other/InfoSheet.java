@@ -27,6 +27,7 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.backup_recyclerview;
 import com.bumptech.glide.Glide;
@@ -211,7 +212,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
         }
         else if(message == 4){
             // initialize data
-            realm = ((NoteEdit) getActivity()).realm;
+            realm = RealmSingleton.getInstance(getContext());
             allNotePhotos =  ((NoteEdit) getActivity()).allNotePhotos;
             currentPhoto = allNotePhotos.get(position);
             adapter =  ((NoteEdit) getActivity()).scrollAdapter;
@@ -234,7 +235,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
             info.setGravity(Gravity.CENTER);
         }
         else if(message == 6){
-              realm = ((SettingsScreen) getActivity()).realm;
+              realm = RealmSingleton.getInstance(getContext());
               User currentUser = realm.where(User.class).findFirst();
               allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
@@ -256,7 +257,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               info.setGravity(Gravity.CENTER);
               securityWord.setVisibility(View.GONE);
 
-              realm = ((SettingsScreen) getActivity()).realm;
+              realm = RealmSingleton.getInstance(getContext());
               User currentUser = realm.where(User.class).findFirst();
               // recyclerview
               allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();

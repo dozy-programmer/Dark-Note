@@ -36,8 +36,8 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.helpers.AppData;
-import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
@@ -167,12 +167,7 @@ public class notes extends Fragment{
         thread.start();
 
         // initialize database and get data
-        try {
-            realm = Realm.getDefaultInstance();
-        }
-        catch (Exception e){
-            realm = RealmDatabase.setUpDatabase(context);
-        }
+        realm = RealmSingleton.getInstance(context);
 
         if (realm.where(User.class).findAll().size() == 0)
             addUser();
@@ -280,8 +275,7 @@ public class notes extends Fragment{
     public void onDestroy() {
         super.onDestroy();
 
-        if(realm!=null)
-            realm.close();
+        RealmSingleton.closeRealmInstance("fragment notes onDestroy");
 
         if(customSheet != null)
             customSheet.dismiss();
@@ -552,13 +546,13 @@ public class notes extends Fragment{
 
     private void openSettings(){
         int size = realm.where(Note.class).findAll().size();
+        String userId =String.valueOf(user.getUserId());
         Intent settings = new Intent(context, SettingsScreen.class);
         settings.putExtra("size", size);
-        settings.putExtra("user", String.valueOf(user.getUserId()));
+        settings.putExtra("user", userId);
         startActivity(settings);
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
-        realm.close();
     }
 
     @Override
@@ -818,7 +812,7 @@ public class notes extends Fragment{
     // populates the recyclerview
     private void populateAdapter(RealmResults<Note> allNotes) {
         filteredNotes = allNotes;
-        adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes: allNotes, realm, getActivity(),
+        adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes: allNotes, context, getActivity(),
                 notes.this, user.isShowPreview(), user.isShowPreviewNoteInfo());
         recyclerViewNotes.setAdapter(adapterNotes);
     }

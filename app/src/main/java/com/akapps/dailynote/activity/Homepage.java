@@ -10,7 +10,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -31,14 +31,9 @@ public class Homepage extends FragmentActivity{
 
         if(AppData.isAppFirstStarted) {
             // initialize database and get data
-            try {
-                realm = Realm.getDefaultInstance();
-            } catch (Exception e) {
-                realm = RealmDatabase.setUpDatabase(this);
-            }
+            realm = RealmSingleton.getInstance(this);
 
             user = realm.where(User.class).findFirst();
-
             realm.executeTransactionAsync(realm -> {
                 RealmResults<Note> notesWithWidgets = realm.where(Note.class)
                         .greaterThan("widgetId", 0).findAll();
@@ -66,9 +61,6 @@ public class Homepage extends FragmentActivity{
             }
             else
                 openApp();
-
-            if(realm != null)
-                realm.close();
         }
         else if (savedInstanceState == null)
            openApp();
@@ -77,5 +69,4 @@ public class Homepage extends FragmentActivity{
     private void openApp(){
         getSupportFragmentManager().beginTransaction().add(android.R.id.content, new notes()).commit();
     }
-
 }

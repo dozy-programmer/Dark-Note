@@ -11,19 +11,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.categories_recyclerview;
@@ -105,11 +105,7 @@ public class CategoryScreen extends AppCompatActivity {
         }
 
         // initialize database and get data
-        try {
-            realm = Realm.getDefaultInstance();
-        } catch (Exception e) {
-            realm = RealmDatabase.setUpDatabase(context);
-        }
+        realm = RealmSingleton.getInstance(context);
 
         allCategories = realm.where(Folder.class).sort("positionInList").findAll();
 
@@ -150,11 +146,9 @@ public class CategoryScreen extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // if any note is selected, un-select all of them
-        Intent home = new Intent();
-        setResult(0, home);
-        finish();
-        overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
+        if(editingRegularNote)
+            unSelectAllNotes();
+        closeActivity(0);
     }
 
     @Override
@@ -167,9 +161,7 @@ public class CategoryScreen extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if(realm!=null)
-            realm.close();
+        RealmSingleton.closeRealmInstance("CategoryScreen onDestroy");
     }
 
     @SuppressLint("SetTextI18n")
@@ -533,6 +525,8 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     private void closeActivity(int resultCode){
+        RealmSingleton.setKeepRealmOpen(true);
+        Log.d("Here", "Keep realm open in CategoryScreen");
         Intent home = new Intent();
         setResult(resultCode, home);
         finish();

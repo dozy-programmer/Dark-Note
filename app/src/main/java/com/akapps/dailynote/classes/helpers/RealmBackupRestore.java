@@ -37,8 +37,7 @@ public class RealmBackupRestore {
     }
 
     private Realm getRealm(){
-        realm = Realm.getDefaultInstance();
-        return realm;
+        return RealmSingleton.getInstance(context);
     }
 
     public File backup_Share() {
