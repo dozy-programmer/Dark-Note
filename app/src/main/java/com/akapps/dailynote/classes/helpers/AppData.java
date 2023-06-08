@@ -16,6 +16,7 @@ public class AppData{
     public boolean isDarkerMode;
     public static boolean isAppFirstStarted;
     public static int timerDuration;
+    public static boolean isKeyboardOpen;
 
     private AppData() { }
 
@@ -23,6 +24,7 @@ public class AppData{
         //instantiate a new CustomerLab if we didn't instantiate one yet
         if (appData == null) {
             isAppFirstStarted = true;
+            isKeyboardOpen = false;
             appData = new AppData();
         }
         return appData;

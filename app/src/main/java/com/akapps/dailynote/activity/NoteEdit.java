@@ -351,8 +351,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onResume() {
         super.onResume();
-        // close keyboard if open
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         if(currentNote!=null)
             category.setText(currentNote.getCategory());
     }

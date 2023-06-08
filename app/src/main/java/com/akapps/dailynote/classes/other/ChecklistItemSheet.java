@@ -513,8 +513,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                 .setMenuShadow(10f)
                 .build();
 
-        if((currentItem != null && currentItem.getPlace() == null) || currentItem.getPlace().getPlaceName().isEmpty())
-            noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location), "Location"));
+        if(currentItem != null) {
+            if (currentItem.getPlace() == null || currentItem.getPlace().getPlaceName().isEmpty())
+                noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location), "Location"));
+        }
 
         noteMenu.showAsAnchorLeftTop(dropDownMenu);
     }
@@ -613,6 +615,24 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Helper.updateKeyboardStatus(getActivity());
+        Helper.toggleKeyboard(getContext(), itemName, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        itemName.requestFocus();
+        if(AppData.isKeyboardOpen) {
+            Helper.toggleKeyboard(getContext(), itemName, true);
+            AppData.isKeyboardOpen = false;
+        }
     }
 
     @Override

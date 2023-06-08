@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
+import com.akapps.dailynote.activity.Homepage;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
@@ -256,7 +257,11 @@ public class notes extends Fragment{
 
         Helper.unSetOrientation(getActivity(), context);
 
-        if(user!=null)
+        if(isSearchingNotes){
+            return;
+        }
+
+        if(user != null)
             savePreferences();
 
         if(realm.isClosed())

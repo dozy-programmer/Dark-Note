@@ -54,6 +54,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         isAdding = true;
     }
 
+    // layout
+    private TextInputEditText itemName;
+
     // editing
     public FolderItemSheet(Folder checkListItem, RecyclerView.Adapter adapter, int position){
         isAdding = false;
@@ -85,7 +88,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton delete = view.findViewById(R.id.delete);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
-        TextInputEditText itemName = view.findViewById(R.id.item_name);
+        itemName = view.findViewById(R.id.item_name);
         TextView title = view.findViewById(R.id.title);
 
         itemName.requestFocusFromTouch();
@@ -240,9 +243,21 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    public void onPause() {
+        super.onPause();
+        Helper.updateKeyboardStatus(getActivity());
+        Helper.toggleKeyboard(getContext(), itemName, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        itemName.requestFocus();
+        if(AppData.isKeyboardOpen) {
+            Helper.toggleKeyboard(getContext(), itemName, true);
+            AppData.isKeyboardOpen = false;
+        }
     }
 
     @Override

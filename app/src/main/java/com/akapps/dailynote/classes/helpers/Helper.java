@@ -15,6 +15,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
@@ -26,6 +27,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -225,7 +227,7 @@ public class Helper {
                     else
                         timeDifference += " ";
                 }
-                if (secs % 60 > 0) {
+                if (secs % 60 > 0 && (years + months + days + hours + mins == 0)) {
                     timeDifference += secs % 60 + " sec";
                     if ((secs % 60) > 1)
                         timeDifference += "s";
@@ -901,6 +903,34 @@ public class Helper {
     public static void cancelNotification(Context context, int notificationId){
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(notificationId);
+    }
+
+    public static void updateKeyboardStatus(Activity activity){
+        // get the root view of your activity
+        View rootView = activity.getWindow().getDecorView().getRootView();
+
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
+        int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
+
+        if (heightDiff > 300) {
+            AppData.getAppData().isKeyboardOpen = true;
+        } else {
+            AppData.getAppData().isKeyboardOpen = false;
+        }
+    }
+
+    public static void toggleKeyboard(Context context, View view, boolean open) {
+        if (context != null && view != null) {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                if (open) {
+                    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+                } else {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        }
     }
 
 }
