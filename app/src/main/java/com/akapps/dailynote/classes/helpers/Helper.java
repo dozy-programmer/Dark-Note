@@ -52,6 +52,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -59,7 +62,9 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 import io.realm.Realm;
@@ -931,6 +936,27 @@ public class Helper {
                 }
             }
         }
+    }
+
+    public static String getLocalCurrency(Double amount, boolean includeCents) {
+        // Get the default locale of the device
+        Locale locale = Locale.getDefault();
+        // Create the DecimalFormatSymbols for the specified locale
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+        // Get the currency instance based on the specified locale
+        Currency currency = Currency.getInstance(locale);
+        // Set the currency symbol based on the specified currency
+        symbols.setCurrencySymbol(currency.getSymbol(locale));
+        // Create the DecimalFormat with the modified symbols
+        NumberFormat nf = DecimalFormat.getCurrencyInstance(locale);
+        ((DecimalFormat) nf).setDecimalFormatSymbols(symbols);
+
+        // Include or exclude cents based on the boolean parameter
+        if (!includeCents && amount > 1) {
+            nf.setMaximumFractionDigits(0);
+        }
+
+        return nf.format(amount);
     }
 
 }

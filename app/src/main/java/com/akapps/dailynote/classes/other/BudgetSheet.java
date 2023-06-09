@@ -29,10 +29,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
@@ -110,12 +112,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment{
                 RecyclerView.Adapter expensesAdapter = new expenses_recyclerview(expensesList, budget, expenseKey);
                 expensesRecyclerview.setAdapter(expensesAdapter);
                 expensesRecyclerview.setNestedScrollingEnabled(false);
-                DecimalFormat df = new DecimalFormat("#,##0.00");
-                Double budgetNumber = Double.parseDouble(df.format(budget).replaceAll(",", ""));
-                if(budgetNumber % 2 == 0)
-                    budgetText.setText(expenseKey + budgetNumber.intValue());
-                else
-                    budgetText.setText(expenseKey + df.format(budget));
+                budgetText.setText(Helper.getLocalCurrency(budget, false));
             }
             else
                 updateErrorMessage(errorMessage.getText().toString());
