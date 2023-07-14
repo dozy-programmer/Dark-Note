@@ -195,10 +195,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         realm = RealmHelper.getRealm(context);
 
         if(noteId > 0 && realm.where(Note.class).equalTo("noteId", noteId).count() == 0){
-            Log.d("Here", "Deleted Note is being accessed via widget");
             // this catches a widget whose associated note has been deleted
             Toast.makeText(this, "Note has been deleted, please delete widget!", Toast.LENGTH_LONG).show();
-            finish();
+            finish("Deleted Note is being accessed via widget");
             System.exit(0);
         }
 
@@ -294,9 +293,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     public void onBackPressed() {
         if(currentNote == null) {
-            RealmSingleton.setKeepRealmOpen(true);
-            Log.d("Here", "keep realm open in NoteEdit onBackPressed 1");
-            finish();
+            finish("note is null");
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
         else if(currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() &&
@@ -310,12 +307,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if(isChangingTextSize)
             isChangingTextSize = false;
         else {
-            RealmSingleton.setKeepRealmOpen(true);
-            Log.d("Here", "keep realm open in NoteEdit onBackPressed 3");
             if(noteChanged() && !isNewNote)
                 Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
 
-            finish();
+            finish("on-back press");
             overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
     }
@@ -334,8 +329,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         RealmSingleton.closeRealmInstance("NoteEdit onDestroy");
 
         if(handler!=null)
@@ -346,6 +339,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             colorPickerView.cancel();
         if (noteMenu != null)
             noteMenu.dismiss();
+
+        super.onDestroy();
     }
 
     @Override
@@ -745,8 +740,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void closeAndDeleteNote(){
-        RealmSingleton.setKeepRealmOpen(true);
-        Log.d("Here", "keep realm open in NoteEdit");
         if(currentNote != null && currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty()
                 && currentNote.getChecklist().size() == 0){
             if(!user.isEnableEmptyNote()) {
@@ -754,7 +747,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Helper.showMessage(this, "Deleted", "Note has been deleted, change in settings", MotionToast.TOAST_WARNING);
             }
         }
-        finish();
+        finish("Closing and maybe deleting note");
         overridePendingTransition(R.anim.stay, R.anim.right_out);
     }
 
@@ -916,7 +909,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         int index = 0;
         while (index >= 0) {
             index = text.indexOf(target, index);
-            Log.d("Here", "index " + index);
             if(index != -1)
                 wordOccurences.add(index++);
         }
@@ -1290,7 +1282,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             else if(item.getTitle().equals("Select All")){
                 if(checkListItems.size()!=0) {
-                    RealmHelper.selectAllChecklists(currentNote, true);
+                    RealmHelper.selectAllChecklists(currentNote, context,true);
                     checkNote(true);
                     checklistAdapter.notifyDataSetChanged();
                     Helper.showMessage(NoteEdit.this, "Success", "All items " +
@@ -1299,7 +1291,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             else if(item.getTitle().equals("Deselect All")){
                 if(checkListItems.size()!=0) {
-                    RealmHelper.selectAllChecklists(currentNote, false);
+                    RealmHelper.selectAllChecklists(currentNote, context, false);
                     checkNote(false);
                     checklistAdapter.notifyDataSetChanged();
                     Helper.showMessage(NoteEdit.this, "Success", "All items " +
@@ -1369,7 +1361,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void deleteChecklist(){
-        RealmHelper.deleteChecklist(currentNote);
+        RealmHelper.deleteChecklist(currentNote, context);
         checkNote(false);
         checklistAdapter.notifyDataSetChanged();
         Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
@@ -1665,6 +1657,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             realm.commitTransaction();
             Helper.showMessage(NoteEdit.this, "Sent to trash", currentNote.getTitle(), MotionToast.TOAST_SUCCESS);
         }
+        finish("Deleting note");
+    }
+
+    public void finish(String message){
+        RealmSingleton.setCloseRealm(false);
+        Log.d("Here", "keep realm open in NoteEdit " + message);
         finish();
     }
 

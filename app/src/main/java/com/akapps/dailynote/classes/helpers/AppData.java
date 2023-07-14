@@ -47,8 +47,6 @@ public class AppData{
                 noteArrayList.get(i).setTitle("- No Title -");
         }
 
-        RealmSingleton.closeRealmInstance("AppData class, getAllNotes method");
-
         return noteArrayList;
     }
 
@@ -89,8 +87,6 @@ public class AppData{
             }
         }
 
-        RealmSingleton.closeRealmInstance("AppData class, getNoteChecklist method");
-
         return allArraylistChecklist;
     }
 
@@ -105,8 +101,6 @@ public class AppData{
             currentNote.setWidgetId(widgetId);
             realm.commitTransaction();
         }
-
-        RealmSingleton.closeRealmInstance("AppData class, updateNoteWidget method");
     }
 
 

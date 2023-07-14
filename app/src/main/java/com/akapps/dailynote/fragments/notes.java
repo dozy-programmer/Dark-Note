@@ -191,7 +191,7 @@ public class notes extends Fragment{
         }
 
         // before getting all notes, make sure all their date and millisecond parameters match
-        RealmHelper.verifyDateWithMilli();
+        RealmHelper.verifyDateWithMilli(context);
         updateDateEditedMilli();
         unSelectAllNotes();
 
@@ -213,8 +213,9 @@ public class notes extends Fragment{
                     showData();
                     isListEmpty(allNotes.size(), false);
                 }
-                else
+                else {
                     getActivity().finish();
+                }
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -278,14 +279,13 @@ public class notes extends Fragment{
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
         RealmSingleton.closeRealmInstance("fragment notes onDestroy");
 
         if(customSheet != null)
             customSheet.dismiss();
 
         Helper.deleteCache(context);
+        super.onDestroy();
     }
 
     private void updateToolbarColors(){
@@ -550,8 +550,9 @@ public class notes extends Fragment{
     }
 
     private void openSettings(){
+        RealmSingleton.setCloseRealm(false);
         int size = realm.where(Note.class).findAll().size();
-        String userId =String.valueOf(user.getUserId());
+        String userId = String.valueOf(user.getUserId());
         Intent settings = new Intent(context, SettingsScreen.class);
         settings.putExtra("size", size);
         settings.putExtra("user", userId);
@@ -1050,6 +1051,7 @@ public class notes extends Fragment{
 
     private void refreshFragment(boolean refresh){
         if(refresh) {
+            RealmSingleton.getInstance(context);
             getActivity().finish();
             Intent refreshActivity = new Intent(getActivity(), getActivity().getClass());
             startActivity(refreshActivity);

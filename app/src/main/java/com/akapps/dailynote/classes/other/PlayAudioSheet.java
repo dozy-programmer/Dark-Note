@@ -134,7 +134,7 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
         public void onItemClick(int position, IconPowerMenuItem menuItem) {
             if (position == 0) {
                 // delete audio
-                RealmHelper.deleteRecording(item);
+                RealmHelper.deleteRecording(item, getContext());
                 Helper.showMessage(getActivity(), "Recording", "Deleted Recording", MotionToast.TOAST_SUCCESS);
                 ((NoteEdit)getActivity()).checklistAdapter.notifyDataSetChanged();
                 ((NoteEdit)getActivity()).updateDateEdited();

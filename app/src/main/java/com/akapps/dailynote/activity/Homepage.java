@@ -34,12 +34,12 @@ public class Homepage extends FragmentActivity{
             realm = RealmSingleton.getInstance(this);
 
             user = realm.where(User.class).findFirst();
-            realm.executeTransactionAsync(realm -> {
-                RealmResults<Note> notesWithWidgets = realm.where(Note.class)
-                        .greaterThan("widgetId", 0).findAll();
-                for(Note currentNote: notesWithWidgets)
-                    Helper.updateWidget(currentNote, Homepage.this, realm);
-            });
+            realm.beginTransaction();
+            RealmResults<Note> notesWithWidgets = realm.where(Note.class)
+                    .greaterThan("widgetId", 0).findAll();
+            for(Note currentNote: notesWithWidgets)
+                Helper.updateWidget(currentNote, Homepage.this, realm);
+            realm.commitTransaction();
 
             if(user != null) {
                 if (user.isModeSettings())

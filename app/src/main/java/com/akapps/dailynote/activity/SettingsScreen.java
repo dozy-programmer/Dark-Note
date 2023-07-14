@@ -184,8 +184,8 @@ public class SettingsScreen extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         RealmSingleton.closeRealmInstance("SettingsScreen onDestroy");
+        super.onDestroy();
     }
 
     @Override
@@ -197,6 +197,7 @@ public class SettingsScreen extends AppCompatActivity{
         if(realm.isClosed()) {
             realm = RealmSingleton.getInstance(context);
             currentUser = realm.where(User.class).findFirst();
+            Log.d("Here", "realm was closed, so it was reopened. SettingsScreen");
         }
     }
 
@@ -1039,7 +1040,7 @@ public class SettingsScreen extends AppCompatActivity{
     private void shareFile(File backup){
         realmStatus();
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("text/plain");
+        emailIntent.setType("*/*");
 
         Uri fileBackingUp  = FileProvider.getUriForFile(
                 context,
@@ -1414,7 +1415,7 @@ public class SettingsScreen extends AppCompatActivity{
     }
 
     private void close(){
-        RealmSingleton.setKeepRealmOpen(true);
+        RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in SettingsScreen");
         Intent intent = new Intent(this, Homepage.class);
         startActivity(intent);

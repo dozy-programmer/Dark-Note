@@ -160,8 +160,8 @@ public class CategoryScreen extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         RealmSingleton.closeRealmInstance("CategoryScreen onDestroy");
+        super.onDestroy();
     }
 
     @SuppressLint("SetTextI18n")
@@ -525,7 +525,7 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     private void closeActivity(int resultCode){
-        RealmSingleton.setKeepRealmOpen(true);
+        RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in CategoryScreen");
         Intent home = new Intent();
         setResult(resultCode, home);

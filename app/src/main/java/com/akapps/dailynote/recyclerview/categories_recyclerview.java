@@ -113,7 +113,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                     allSelectedNotes.setBoolean("isSelected", false);
                     realm.commitTransaction();
 
-                    RealmSingleton.setKeepRealmOpen(true);
+                    RealmSingleton.setCloseRealm(false);
                     Log.d("Here", "keep realm open in categories_recyclerview");
                     activity.setResult(5, home);
                     activity.finish();

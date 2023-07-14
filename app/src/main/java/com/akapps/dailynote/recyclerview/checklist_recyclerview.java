@@ -267,7 +267,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         });
 
         holder.deleteIcon.setOnClickListener(view -> {
-            RealmHelper.deleteChecklistItem(checkListItem, false);
+            RealmHelper.deleteChecklistItem(checkListItem, context, false);
             realm.beginTransaction();
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
             realm.commitTransaction();

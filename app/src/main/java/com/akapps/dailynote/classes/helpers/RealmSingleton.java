@@ -7,7 +7,7 @@ import io.realm.Realm;
 
 public class RealmSingleton {
     private static Realm realmInstance;
-    private static boolean keepRealmOpen;
+    private static boolean closeRealm;
 
     private RealmSingleton() {
         // Private constructor to prevent instantiation
@@ -25,17 +25,17 @@ public class RealmSingleton {
         return realmInstance;
     }
 
-    public static void setKeepRealmOpen(boolean newValue){
-        keepRealmOpen = newValue;
+    public static void setCloseRealm(boolean newValue){
+        closeRealm = newValue;
     }
 
     public static void closeRealmInstance(String location) {
-        if (realmInstance != null && !keepRealmOpen) {
+        if (realmInstance != null && closeRealm) {
             realmInstance.close();
             realmInstance = null;
             Log.d("Here", "realm instance closed at " + location);
         }
 
-        keepRealmOpen = false;
+        setCloseRealm(true);
     }
 }
