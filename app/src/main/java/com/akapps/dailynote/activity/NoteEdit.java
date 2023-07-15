@@ -346,7 +346,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onResume() {
         super.onResume();
-        if(currentNote!=null)
+        if(realm.isClosed()){
+            finish();
+            Intent refreshActivity = new Intent(this, this.getClass());
+            startActivity(refreshActivity);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
+        else if(!realm.isClosed() && currentNote != null)
             category.setText(currentNote.getCategory());
     }
 

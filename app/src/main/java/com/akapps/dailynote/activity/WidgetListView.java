@@ -3,8 +3,9 @@ package com.akapps.dailynote.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -38,7 +39,7 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            checklist = AppData.getNoteChecklist(noteId, context);
+            new Handler(Looper.getMainLooper()).post(() -> checklist = AppData.getNoteChecklist(noteId, context));
         }
 
         @Override

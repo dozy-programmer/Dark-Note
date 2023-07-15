@@ -92,8 +92,7 @@ public class AppData{
 
     public static void updateNoteWidget(Context context, int noteId, int widgetId){
         Realm realm = getRealm(context);
-        Note currentNote = realm.where(Note.class)
-                .equalTo("noteId", noteId).findFirst();
+        Note currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
 
         assert currentNote != null;
         if(currentNote.getWidgetId() != widgetId){
