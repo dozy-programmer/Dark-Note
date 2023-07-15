@@ -31,7 +31,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -41,7 +40,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Place;
@@ -71,7 +69,6 @@ import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
@@ -599,7 +596,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if(currentNote != null) {
             note.setOnTextChangeListener(text -> {
                 oldTitle = currentNote.getTitle();
-                oldNote = note.getHtml().toString();
+                oldNote = currentNote.getNote();
                 if (text.length() == 0 || currentNote.getNote().equals(text)) {
                     if (text.length() == 0)
                         saveChanges(text, 0);
@@ -670,7 +667,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         closeNote.setOnClickListener(v -> {
-            closeAndDeleteNote();
+            onBackPressed();
         });
 
         addCheckListItem.setOnClickListener(v -> {
@@ -1601,7 +1598,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     // determines if there were changes to the note
     private boolean noteChanged() {
-        return !title.getText().toString().equals(oldTitle) || !note.getHtml().toString().equals(oldNote);
+        boolean isTitleChanged = !title.getText().toString().equals(oldTitle);
+        boolean isNoteChanged = !note.getHtml().toString().equals(oldNote);
+        return isTitleChanged || isNoteChanged;
     }
 
     // makes sure title is not empty

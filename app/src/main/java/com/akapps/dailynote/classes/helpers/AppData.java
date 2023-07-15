@@ -1,8 +1,6 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
@@ -21,7 +19,6 @@ public class AppData{
     private AppData() { }
 
     public static AppData getAppData() {
-        //instantiate a new CustomerLab if we didn't instantiate one yet
         if (appData == null) {
             isAppFirstStarted = true;
             isKeyboardOpen = false;
