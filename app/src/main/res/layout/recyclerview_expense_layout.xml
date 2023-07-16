@@ -9,7 +9,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/color"
-        android:layout_width="30dp"
+        android:layout_width="25dp"
         android:layout_height="10dp"
         android:layout_marginVertical="10dp"
         app:cardBackgroundColor="@color/blue"
@@ -35,13 +35,13 @@
 
     <TextView
         android:id="@+id/expense_percentage"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="5dp"
-        android:gravity="right"
-        android:text="0%"
+        android:gravity="bottom"
+        android:text="100%"
         android:textColor="@color/flamingo"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/expense_name"
         app:layout_constraintEnd_toStartOf="@+id/drop_down"
@@ -49,11 +49,13 @@
 
     <ImageButton
         android:id="@+id/drop_down"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center"
         android:src="@drawable/arrow_down"
+        android:paddingTop="2dp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/expense_percentage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/expense_percentage"

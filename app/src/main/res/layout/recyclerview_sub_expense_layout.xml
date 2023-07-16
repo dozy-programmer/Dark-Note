@@ -55,14 +55,13 @@
 
         <TextView
             android:id="@+id/expense_percentage"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:gravity="bottom|right"
-            android:paddingBottom="2dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="100.00%"
             android:textColor="@color/orange_dark"
-            android:textSize="10sp"
+            android:textSize="13sp"
             android:textStyle="bold"
+            android:layout_marginTop="2dp"
             android:layout_marginRight="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/expense_name"
             app:layout_constraintEnd_toEndOf="parent"

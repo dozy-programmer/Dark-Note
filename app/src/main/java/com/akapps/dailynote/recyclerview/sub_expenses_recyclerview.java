@@ -56,7 +56,7 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
         String expenseName = Helper.capitalize(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
 
         holder.expenseName.setText(expenseName);
-        holder.expenseAmount.setText(Helper.getLocalCurrency(currentExpense.getTotalExpenseAmount(), true));
+        holder.expenseAmount.setText(expenseKey + Helper.formatToTwoDecimalPlaces(currentExpense.getTotalExpenseAmount()));
         holder.expensePercentage.setText(formatPercentage(currentExpense.getTotalExpenseAmount() / totalBudget));
 
         if(currentExpense.getExpenseName().toLowerCase().contains("total"))
