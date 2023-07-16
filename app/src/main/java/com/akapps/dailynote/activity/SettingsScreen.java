@@ -1194,8 +1194,8 @@ public class SettingsScreen extends AppCompatActivity{
             }
             else {
                 Helper.showLoading("", progressDialog, context, false);
-                Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
-                        "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Error\uD83D\uDE14", "" +
+                        "Filename needs to end in '.zip'. Try again!", MotionToast.TOAST_ERROR);
             }
         }
     }
@@ -1241,8 +1241,8 @@ public class SettingsScreen extends AppCompatActivity{
                 }
             }
             else
-                Helper.showMessage(this, "Big Error\uD83D\uDE14", "" +
-                        "Why are you trying to break my app (only .realm files)", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Error\uD83D\uDE14", "" +
+                        "Filename needs to end in '.realm'. Try again!", MotionToast.TOAST_ERROR);
         }
     }
 

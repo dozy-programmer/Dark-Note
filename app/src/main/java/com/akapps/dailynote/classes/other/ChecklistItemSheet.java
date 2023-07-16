@@ -248,7 +248,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
                     title.setText("Editing");
                     itemName.setText(currentItem.getText());
 
-                    if(currentItem.getItemImage()!=null && !currentItem.getItemImage().isEmpty()) {
+                    if(currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
                         Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
                         photo_info.setVisibility(View.VISIBLE);
                         dateCreated.setGravity(Gravity.LEFT);

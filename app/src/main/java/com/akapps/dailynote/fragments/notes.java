@@ -550,12 +550,12 @@ public class notes extends Fragment{
     }
 
     private void openSettings(){
-        RealmSingleton.setCloseRealm(false);
         int size = realm.where(Note.class).findAll().size();
         String userId = String.valueOf(user.getUserId());
         Intent settings = new Intent(context, SettingsScreen.class);
         settings.putExtra("size", size);
         settings.putExtra("user", userId);
+        RealmSingleton.setCloseRealm(false);
         startActivity(settings);
         getActivity().finish();
         getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);

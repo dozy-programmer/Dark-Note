@@ -474,10 +474,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             Date now = new Date();
             if (now.after(reminderDate)) {
-                updateReminderDate("");
-                updateReminderLayout(View.GONE);
-                Helper.showMessage(NoteEdit.this, "Reminder Deleted", "Reminder has passed " +
-                    "so it was deleted", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(NoteEdit.this, "Reminder Passed", "Please delete reminder to " +
+                        "get rid of this message!", MotionToast.TOAST_WARNING);
             }
         }
         if (currentNote.isPin())

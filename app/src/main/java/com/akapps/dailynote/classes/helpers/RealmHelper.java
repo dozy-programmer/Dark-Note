@@ -146,12 +146,4 @@ public class RealmHelper {
         }
         getRealm(context).commitTransaction();
     }
-
-    public static void updateNoteReminder(Context context, int noteID){
-        getRealm(context).beginTransaction();
-        Note currentNote = getRealm(context).where(Note.class).equalTo("noteId", noteID).findFirst();
-        if(currentNote != null && currentNote.getReminderDateTime() != null)
-            currentNote.setReminderDateTime("");
-        getRealm(context).commitTransaction();
-    }
 }

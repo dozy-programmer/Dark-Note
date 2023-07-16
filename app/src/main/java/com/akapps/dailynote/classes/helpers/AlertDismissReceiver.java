@@ -11,9 +11,6 @@ public class AlertDismissReceiver extends BroadcastReceiver {
         int notificationId = intent.getIntExtra("notificationId", -1);
 
         if(notificationId != -1) {
-            // notification id uses note id, so it is used to find note and remove its reminder
-            RealmHelper.updateNoteReminder(context, notificationId);
-
             // cancel notification
             Helper.cancelNotification(context, notificationId);
         }
