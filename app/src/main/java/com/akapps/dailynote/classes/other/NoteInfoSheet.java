@@ -35,7 +35,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import org.jetbrains.annotations.NotNull;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -111,6 +113,16 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                 trashIcon.setVisibility(View.GONE);
 
             if(!currentNote.getReminderDateTime().isEmpty() && !currentNote.isTrash()){
+                Date reminderDate = null;
+                try {
+                    reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Date now = new Date();
+                if (now.after(reminderDate)) {
+                    trashIcon.setColorFilter(getContext().getColor(R.color.red));
+                }
                 trashIcon.setVisibility(View.VISIBLE);
                 trashIcon.setImageDrawable(getContext().getDrawable(R.drawable.reminder_icon));
             }

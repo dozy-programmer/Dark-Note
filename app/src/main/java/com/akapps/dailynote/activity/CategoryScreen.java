@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
@@ -91,6 +93,12 @@ public class CategoryScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_screen);
         overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
+
+        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
+            Log.d("Here2", paramThrowable.getMessage());
+            Helper.refreshActivity(this);
+            Toast.makeText(this, "Error occurred, so refreshed screen!", Toast.LENGTH_LONG).show();
+        });
 
         context = this;
         isDarkMode = AppData.getAppData().isDarkerMode;

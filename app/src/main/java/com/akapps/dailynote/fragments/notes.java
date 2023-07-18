@@ -2,7 +2,6 @@ package com.akapps.dailynote.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.ColorFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
@@ -665,11 +664,11 @@ public class notes extends Fragment{
             filteringAllNotesRealm(queryLockedNotes, true);
         }
         else if(resultCode == -15){
-            RealmResults<Note> queryLockedNotes =
+            RealmResults<Note> queryRemindNotes =
                     realm.where(Note.class)
                             .isNotEmpty("reminderDateTime").findAll();
 
-            filteringAllNotesRealm(queryLockedNotes, true);
+            filteringAllNotesRealm(queryRemindNotes, true);
         }
     }
 
@@ -1051,11 +1050,7 @@ public class notes extends Fragment{
 
     private void refreshFragment(boolean refresh){
         if(refresh) {
-            RealmSingleton.getInstance(context);
-            getActivity().finish();
-            Intent refreshActivity = new Intent(getActivity(), getActivity().getClass());
-            startActivity(refreshActivity);
-            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            Helper.refreshActivity(getActivity());
         }
         else {
             getActivity().getSupportFragmentManager().beginTransaction().detach(this).attach(this).commit();

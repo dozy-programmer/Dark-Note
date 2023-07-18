@@ -239,7 +239,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment{
               User currentUser = realm.where(User.class).findFirst();
               allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
-              if(allBackups.size() <= 20){
+              if(allBackups.size() <= 50){
                   ((SettingsScreen) getActivity()).upLoadData();
                   this.dismiss();
               }

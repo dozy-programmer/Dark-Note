@@ -186,6 +186,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
 
+        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
+            Log.d("Here2", paramThrowable.getMessage());
+            Helper.refreshActivity(this);
+            Toast.makeText(this, "Error occurred, so refreshed screen!", Toast.LENGTH_LONG).show();
+        });
+
         context = this;
         noteId = getIntent().getIntExtra("id", -1);
         // initializes database and retrieves all notes
@@ -474,6 +480,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             Date now = new Date();
             if (now.after(reminderDate)) {
+                remindNoteDate.setTextColor(getColor(R.color.red));
                 Helper.showMessage(NoteEdit.this, "Reminder Passed", "Please delete reminder to " +
                         "get rid of this message!", MotionToast.TOAST_WARNING);
             }
@@ -651,12 +658,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 changeTextSize(false, currentNote.isCheckList());
         }));
 
-        note.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        note.setOnClickListener(view -> {});
 
         remindNote.setOnClickListener(v -> {
             cancelAlarm(currentNote.getNoteId());

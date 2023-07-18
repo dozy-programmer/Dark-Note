@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Backup;
@@ -160,6 +162,12 @@ public class SettingsScreen extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_screen);
+
+        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
+            Log.d("Here2", paramThrowable.getMessage());
+            Helper.refreshActivity(this);
+            Toast.makeText(this, "Error occurred, so refreshed screen!", Toast.LENGTH_LONG).show();
+        });
 
         context = this;
 

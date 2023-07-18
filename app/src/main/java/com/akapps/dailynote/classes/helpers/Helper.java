@@ -896,11 +896,13 @@ public class Helper {
     }
 
     public static void openMapView(Activity activity, Place place) {
-        String mapTo = "https://www.google.com/maps/search/?api=1&query=" + place.getLatitude()
-                + "," + place.getLongitude() + "&query_place_id=" + place.getPlaceId();
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapTo));
-        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-        activity.startActivity(intent);
+        try {
+            String mapTo = "https://www.google.com/maps/search/?api=1&query=" + place.getLatitude()
+                    + "," + place.getLongitude() + "&query_place_id=" + place.getPlaceId();
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapTo));
+            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+            activity.startActivity(intent);
+        }catch (Exception e){}
     }
 
     public static void cancelNotification(Context context, int notificationId) {
@@ -939,5 +941,13 @@ public class Helper {
     public static String formatToTwoDecimalPlaces(double number) {
         DecimalFormat decimalFormat = new DecimalFormat("#0.00");
         return decimalFormat.format(number);
+    }
+
+    public static void refreshActivity(Activity activity){
+        RealmSingleton.getInstance(activity);
+        activity.finish();
+        Intent refreshActivity = new Intent(activity, activity.getClass());
+        activity.startActivity(refreshActivity);
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

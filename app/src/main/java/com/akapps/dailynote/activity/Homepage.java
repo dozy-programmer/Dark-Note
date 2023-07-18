@@ -3,6 +3,7 @@ package com.akapps.dailynote.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 import com.akapps.dailynote.R;
@@ -25,6 +26,12 @@ public class Homepage extends FragmentActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage_screen);
+
+        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
+            Log.d("Here2", paramThrowable.getMessage());
+            Helper.refreshActivity(this);
+            Toast.makeText(this, "Error occurred, so refreshed screen!", Toast.LENGTH_LONG).show();
+        });
 
         isOpenApp = getIntent().getBooleanExtra("openApp", false);
         AppData.getAppData();

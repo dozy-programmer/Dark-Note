@@ -175,23 +175,6 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.addSubChecklist.setVisibility(View.GONE);
         }
 
-
-        // checks to see if there is a reminder and makes sure it has not passed
-        if (!currentNote.getReminderDateTime().isEmpty()) {
-            Date reminderDate = null;
-            try {
-                reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            Date now = new Date();
-            if (now.after(reminderDate)) {
-                realm.beginTransaction();
-                currentNote.setReminderDateTime("");
-                realm.commitTransaction();
-            }
-        }
-
         // retrieves checkList text and select status of checkListItem
         String checkListText = checkListItem.getText();
         boolean isSelected = checkListItem.isChecked();
