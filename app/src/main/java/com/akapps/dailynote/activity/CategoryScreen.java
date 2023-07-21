@@ -1,11 +1,5 @@
 package com.akapps.dailynote.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
@@ -31,6 +31,7 @@ import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.categories_recyclerview;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -94,12 +95,6 @@ public class CategoryScreen extends AppCompatActivity {
         setContentView(R.layout.activity_category_screen);
         overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
-        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
-            Log.d("Here2", paramThrowable.getMessage());
-            Helper.refreshActivity(this);
-            Toast.makeText(this, "Error occurred, so refreshed screen!", Toast.LENGTH_LONG).show();
-        });
-
         context = this;
         isDarkMode = AppData.getAppData().isDarkerMode;
 
@@ -147,14 +142,13 @@ public class CategoryScreen extends AppCompatActivity {
         if (isDarkMode) {
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
-        }
-        else
+        } else
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
     }
 
     @Override
     public void onBackPressed() {
-        if(editingRegularNote)
+        if (editingRegularNote)
             unSelectAllNotes();
         closeActivity(0);
     }
@@ -173,7 +167,7 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void initializeLayout(){
+    private void initializeLayout() {
         toolbar = findViewById(R.id.toolbar);
         title = findViewById(R.id.title);
         close = findViewById(R.id.close_activity);
@@ -206,10 +200,10 @@ public class CategoryScreen extends AppCompatActivity {
         reminder.setText(reminder.getText());
         pinned.setText(pinned.getText());
 
-        if(editingRegularNote){
+        if (editingRegularNote) {
             allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
             title.setText("Current:\n" + allSelectedNotes.get(0).getCategory());
-            if(allSelectedNotes.get(0).getCategory().equals("none"))
+            if (allSelectedNotes.get(0).getCategory().equals("none"))
                 unselectCategories.setVisibility(View.GONE);
 
             showAllNotes.setVisibility(View.GONE);
@@ -219,13 +213,12 @@ public class CategoryScreen extends AppCompatActivity {
             pinned.setVisibility(View.GONE);
             locked.setVisibility(View.GONE);
             reminder.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             int allNotesSize = 0;
             int noCategoryNotesSize = 0;
-            int allSelected= 0;
+            int allSelected = 0;
 
-            allNotesSize += allNotes.size() ;
+            allNotesSize += allNotes.size();
             noCategoryNotesSize += uncategorizedNotes.size();
             allSelected += allSelectedNotes.size();
 
@@ -233,15 +226,15 @@ public class CategoryScreen extends AppCompatActivity {
 
             noCategory.setText("Uncategorized notes");
 
-            if(allSelected == 0)
+            if (allSelected == 0)
                 unselectCategories.setVisibility(View.GONE);
             else
                 title.setText(allSelected + " Selected");
 
             // make padding shorter since there isn't a folder opened
-            title.setPadding(0,20,0,0);
+            title.setPadding(0, 20, 0, 0);
 
-            if(multiSelect){
+            if (multiSelect) {
                 showAllNotes.setVisibility(View.VISIBLE);
                 noCategory.setVisibility(View.VISIBLE);
                 trash.setVisibility(View.GONE);
@@ -260,8 +253,7 @@ public class CategoryScreen extends AppCompatActivity {
 
                 reminder.setVisibility(View.INVISIBLE);
                 locked.setVisibility(View.GONE);
-            }
-            else{
+            } else {
                 // text
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
                         true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
@@ -279,7 +271,7 @@ public class CategoryScreen extends AppCompatActivity {
                 Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
                         true, R.color.transparent, isDarkMode ? R.color.golden_rod : R.color.gray);
 
-                if(AppData.getAppData().isDarkerMode){
+                if (AppData.getAppData().isDarkerMode) {
                     pinned.setBackgroundColor(getColor(R.color.darker_mode));
                     pinned.setStrokeColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
                     pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
@@ -303,7 +295,7 @@ public class CategoryScreen extends AppCompatActivity {
 
         // recyclerview
         customCategories.setHasFixedSize(true);
-        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_DRAG| ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_DRAG | ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
@@ -313,23 +305,21 @@ public class CategoryScreen extends AppCompatActivity {
                 Folder item = allCategories.get(started);
                 Folder item2 = allCategories.get(ended);
                 realm.beginTransaction();
-                if(Math.abs(ended-started)>1){
-                    if(started<ended) {
-                        Folder item3 = allCategories.get(started+1);
+                if (Math.abs(ended - started) > 1) {
+                    if (started < ended) {
+                        Folder item3 = allCategories.get(started + 1);
+                        int middlePosition = item3.getPositionInList();
+                        item.setPositionInList(ended);
+                        item3.setPositionInList(started);
+                        item2.setPositionInList(middlePosition);
+                    } else {
+                        Folder item3 = allCategories.get(started - 1);
                         int middlePosition = item3.getPositionInList();
                         item.setPositionInList(ended);
                         item3.setPositionInList(started);
                         item2.setPositionInList(middlePosition);
                     }
-                    else{
-                        Folder item3 = allCategories.get(started-1);
-                        int middlePosition = item3.getPositionInList();
-                        item.setPositionInList(ended);
-                        item3.setPositionInList(started);
-                        item2.setPositionInList(middlePosition);
-                    }
-                }
-                else {
+                } else {
                     item.setPositionInList(ended);
                     item2.setPositionInList(started);
                 }
@@ -341,18 +331,19 @@ public class CategoryScreen extends AppCompatActivity {
             @Override
             public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                if(!recyclerView.isComputingLayout()) {
+                if (!recyclerView.isComputingLayout()) {
                     categoriesAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) { }
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            }
 
         });
 
         helper.attachToRecyclerView(customCategories);
-        if(Helper.isTablet(context))
+        if (Helper.isTablet(context))
             customCategories.setLayoutManager(new GridLayoutManager(context, 3));
         else
             customCategories.setLayoutManager(new GridLayoutManager(context, 2));
@@ -382,17 +373,16 @@ public class CategoryScreen extends AppCompatActivity {
 
         info.setOnClickListener(v -> showInfoDialog());
 
-        edit.setOnClickListener(v-> {
+        edit.setOnClickListener(v -> {
             isEditing = !isEditing;
-            if(isEditing) {
+            if (isEditing) {
                 titleBefore = title.getText().toString();
                 title.setText("Editing");
                 Helper.showMessage(this, "Editing", "Click on item to edit", MotionToast.TOAST_SUCCESS);
                 edit.setImageDrawable(getDrawable(R.drawable.cancel));
                 info.setVisibility(View.GONE);
                 selections.setVisibility(View.GONE);
-            }
-            else{
+            } else {
                 title.setText(titleBefore);
                 edit.setImageDrawable(getDrawable(R.drawable.edit_icon));
                 info.setVisibility(View.VISIBLE);
@@ -403,65 +393,63 @@ public class CategoryScreen extends AppCompatActivity {
         addCategory.setOnClickListener(v -> openNewItemDialog());
 
         showAllNotes.setOnClickListener(v -> {
-            if(multiSelect) {
+            if (multiSelect) {
                 realm.beginTransaction();
                 allSelectedNotes.setBoolean("archived", true);
                 realm.commitTransaction();
                 closeActivity(-8);
-            }
-            else if(!isNotesSelected)
+            } else if (!isNotesSelected)
                 closeActivity(-2);
             else
                 showErrorMessage();
         });
 
         noCategory.setOnClickListener(v -> {
-            if(multiSelect) {
+            if (multiSelect) {
                 realm.beginTransaction();
                 allSelectedNotes.setBoolean("archived", false);
                 realm.commitTransaction();
                 closeActivity(-9);
-            }
-            else if(!isNotesSelected)
+            } else if (!isNotesSelected)
                 closeActivity(-3);
             else
                 showErrorMessage();
         });
 
         trash.setOnClickListener(v -> {
-            if(!isNotesSelected && trashAllNotes.size() > 0)
+            if (!isNotesSelected && trashAllNotes.size() > 0)
                 closeActivity(-5);
-            else if(trashAllNotes.size() == 0)
+            else if (trashAllNotes.size() == 0)
                 showEmptyMessage();
             else
                 showErrorMessage();
         });
 
         archived.setOnClickListener(v -> {
-            if(multiSelect) {
+            if (multiSelect) {
                 realm.beginTransaction();
                 allSelectedNotes.setBoolean("pin", true);
                 realm.commitTransaction();
                 closeActivity(-13);
             }
-            if(!isNotesSelected && archivedAllNotes.size() > 0)
+            if (!isNotesSelected && archivedAllNotes.size() > 0)
                 closeActivity(-10);
-            else if(archivedAllNotes.size() == 0)
+            else if (archivedAllNotes.size() == 0)
                 showEmptyMessage();
             else
                 showErrorMessage();
         });
 
         pinned.setOnClickListener(v -> {
-            if(multiSelect) {
+            if (multiSelect) {
                 realm.beginTransaction();
                 allSelectedNotes.setBoolean("pin", false);
                 realm.commitTransaction();
                 closeActivity(-12);
             }
-            if(!isNotesSelected && pinnedAllNotes.size() > 0)
+            if (!isNotesSelected && pinnedAllNotes.size() > 0)
                 closeActivity(-11);
-            else if(pinnedAllNotes.size() == 0)
+            else if (pinnedAllNotes.size() == 0)
                 showEmptyMessage();
             else
                 showErrorMessage();
@@ -475,18 +463,18 @@ public class CategoryScreen extends AppCompatActivity {
         });
 
         locked.setOnClickListener(v -> {
-            if(!isNotesSelected && lockedAllNotes.size() > 0)
+            if (!isNotesSelected && lockedAllNotes.size() > 0)
                 closeActivity(-14);
-            else if(lockedAllNotes.size() == 0)
+            else if (lockedAllNotes.size() == 0)
                 showEmptyMessage();
             else
                 showErrorMessage();
         });
 
         reminder.setOnClickListener(v -> {
-            if(!isNotesSelected && reminderAllNotes.size() > 0)
+            if (!isNotesSelected && reminderAllNotes.size() > 0)
                 closeActivity(-15);
-            else if(reminderAllNotes.size() == 0)
+            else if (reminderAllNotes.size() == 0)
                 showEmptyMessage();
             else
                 showErrorMessage();
@@ -501,7 +489,7 @@ public class CategoryScreen extends AppCompatActivity {
         });
 
         close.setOnClickListener(v -> {
-            if(editingRegularNote)
+            if (editingRegularNote)
                 unSelectAllNotes();
             closeActivity(0);
         });
@@ -512,12 +500,12 @@ public class CategoryScreen extends AppCompatActivity {
         customCategories.setAdapter(categoriesAdapter);
     }
 
-    private void showErrorMessage(){
+    private void showErrorMessage() {
         Helper.showMessage(this, "Select Folder", "You need to select a folder" +
-                        " to put all the notes you selected", MotionToast.TOAST_ERROR);
+                " to put all the notes you selected", MotionToast.TOAST_ERROR);
     }
 
-    private void showEmptyMessage(){
+    private void showEmptyMessage() {
         Helper.showMessage(this, "Empty", "Cannot open empty folder", MotionToast.TOAST_ERROR);
     }
 
@@ -526,13 +514,13 @@ public class CategoryScreen extends AppCompatActivity {
         emptyAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
-    private void unSelectAllNotes(){
+    private void unSelectAllNotes() {
         realm.beginTransaction();
         allSelectedNotes.setBoolean("isSelected", false);
         realm.commitTransaction();
     }
 
-    private void closeActivity(int resultCode){
+    private void closeActivity(int resultCode) {
         RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in CategoryScreen");
         Intent home = new Intent();
@@ -541,12 +529,12 @@ public class CategoryScreen extends AppCompatActivity {
         overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 
-    private void showInfoDialog(){
+    private void showInfoDialog() {
         InfoSheet info = new InfoSheet(0);
         info.show(getSupportFragmentManager(), info.getTag());
     }
 
-    private void openNewItemDialog(){
+    private void openNewItemDialog() {
         FolderItemSheet folderItemSheet = new FolderItemSheet();
         folderItemSheet.show(getSupportFragmentManager(), folderItemSheet.getTag());
     }

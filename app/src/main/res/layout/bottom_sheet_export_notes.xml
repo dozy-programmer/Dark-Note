@@ -43,20 +43,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/export_info"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="5dp"
-            app:backgroundTint="@color/light_gray"
-            app:cornerRadius="15dp"
-            app:icon="@drawable/info_icon"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconSize="28dp"
-            app:iconTint="@color/ultra_white"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/info_icon"
             app:layout_constraintEnd_toEndOf="@+id/export_markdown"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/export_markdown"

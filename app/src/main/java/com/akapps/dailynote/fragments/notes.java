@@ -35,9 +35,11 @@ import com.akapps.dailynote.activity.Homepage;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
+import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UniqueIDGenerator;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.data.User;
@@ -721,11 +723,12 @@ public class notes extends Fragment{
     }
 
     private void addUser(){
-        int generateId = (int)(Math.random() * 10000000 + 1);
-        user = new User(generateId);
+        int uniqueId = UniqueIDGenerator.generateUniqueID();
+        user = new User(uniqueId);
         realm.beginTransaction();
         realm.insert(user);
         realm.commitTransaction();
+        AppAnalytics.logNewUser(context, uniqueId);
     }
 
     private void filteringByCategory(RealmResults<Note> query, boolean isCategory){
@@ -862,10 +865,7 @@ public class notes extends Fragment{
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
 
-        if(isDarkerMode){
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.darker_mode));
-            searchEditText.setBackgroundColor(context.getColor(R.color.darker_mode));
-        }
+        searchEditText.setBackgroundColor(context.getColor(isDarkerMode ? R.color.darker_mode : R.color.gray));
 
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));

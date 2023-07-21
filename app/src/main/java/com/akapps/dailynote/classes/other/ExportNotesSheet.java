@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,7 +59,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton exportTextString = view.findViewById(R.id.export_text_string);
         MaterialButton exportTextStringFormatted = view.findViewById(R.id.export_text_string_formatted);
         MaterialButton exportNote = view.findViewById(R.id.export_note);
-        MaterialButton info = view.findViewById(R.id.export_info);
+        ImageButton info = view.findViewById(R.id.export_info);
 
         realm = RealmSingleton.getInstance(getContext());
 
@@ -69,7 +70,6 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
             exportTextString.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             exportTextStringFormatted.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             exportNote.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            info.setBackgroundColor(getContext().getColor(R.color.not_too_dark_gray));
             exportText.setStrokeWidth(5);
             exportMarkdown.setStrokeWidth(5);
             exportTextString.setStrokeWidth(5);
@@ -134,9 +134,9 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment{
                     "• Markdown file\n" +
                     "  - export note as markdown file\n\n" +
                     "• Text\n" +
-                    "  - export note as text \n\n" +
-                    "• Text (formatted)\n" +
-                    "  - export note as markdown text\n\n" +
+                    "  - export note as text (removes all formatting)\n\n" +
+                    "• Text (Markdown)\n" +
+                    "  - export note as markdown text (keeps all formatting)\n\n" +
                     "• Export Note\n" +
                     "  - exports note as text\n" +
                     "  - exports all images and audio files";

@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.PlayAudioSheet;
@@ -27,17 +27,15 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyclerview.MyViewHolder>{
+public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyclerview.MyViewHolder> {
 
     // project data
     private final RealmResults<CheckListItem> checkList;
@@ -104,33 +102,31 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // search for duplicate sublist id
         int duplicateSize = realm.where(CheckListItem.class)
                 .equalTo("subListId", checkListItem.getSubListId()).findAll().size();
-        if(duplicateSize > 1){
+        if (duplicateSize > 1) {
             Random rand = new Random();
             realm.beginTransaction();
             checkListItem.setSubListId(rand.nextInt(100000) + 1);
             realm.commitTransaction();
         }
 
-        if(checkListItem.getPlace() != null && !checkListItem.getPlace().getPlaceName().isEmpty()){
+        if (checkListItem.getPlace() != null && !checkListItem.getPlace().getPlaceName().isEmpty()) {
             holder.locationLayout.setVisibility(View.VISIBLE);
             holder.placeAttached.setText(checkListItem.getPlace().getPlaceName());
-        }
-        else
+        } else
             holder.locationLayout.setVisibility(View.GONE);
 
         boolean recordingExists = false;
-        if(checkListItem.getAudioPath() != null)
+        if (checkListItem.getAudioPath() != null)
             recordingExists = new File(checkListItem.getAudioPath()).length() > 0;
 
-        if(null != checkListItem.getAudioPath() && !checkListItem.getAudioPath().isEmpty() && recordingExists) {
+        if (null != checkListItem.getAudioPath() && !checkListItem.getAudioPath().isEmpty() && recordingExists) {
             holder.audio.setVisibility(View.VISIBLE);
             holder.selectedIcon.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             holder.audio.setVisibility(View.GONE);
             holder.selectedIcon.setVisibility(View.VISIBLE);
 
-            if(null != checkListItem.getAudioPath() && !checkListItem.getAudioPath().isEmpty()){
+            if (null != checkListItem.getAudioPath() && !checkListItem.getAudioPath().isEmpty()) {
                 realm.beginTransaction();
                 checkListItem.setAudioPath("");
                 checkListItem.setAudioDuration(0);
@@ -138,12 +134,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             }
         }
 
-        if(user.isEnableDeleteIcon())
+        if (user.isEnableDeleteIcon())
             holder.deleteIcon.setVisibility(View.VISIBLE);
         else
             holder.deleteIcon.setVisibility(View.GONE);
 
-        if(user.isModeSettings()){
+        if (user.isModeSettings()) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(activity.getColor(R.color.light_gray));
             holder.background.setStrokeWidth(5);
@@ -151,16 +147,15 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         holder.subChecklist.setAdapter(null);
         RecyclerView.Adapter subChecklistAdapter = null;
-        if(user.isEnableSublists() && currentNote.isEnableSublist()) {
+        if (user.isEnableSublists() && currentNote.isEnableSublist()) {
             holder.addSubChecklist.setVisibility(View.VISIBLE);
             if (null == checkListItem.getSubChecklist()) {
                 realm.beginTransaction();
                 checkListItem.setSubChecklist(new RealmList<>());
                 realm.commitTransaction();
                 holder.subChecklist.setVisibility(View.GONE);
-            }
-            else {
-                if(checkListItem.getSubChecklist().size() != 0) {
+            } else {
+                if (checkListItem.getSubChecklist().size() != 0) {
                     holder.subChecklist.setVisibility(View.VISIBLE);
                     subChecklistAdapter = new sub_checklist_recyclerview(realm.where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
@@ -169,8 +164,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                     subChecklistAdapter.notifyItemChanged(position);
                 }
             }
-        }
-        else{
+        } else {
             holder.subChecklist.setVisibility(View.GONE);
             holder.addSubChecklist.setVisibility(View.GONE);
         }
@@ -183,33 +177,31 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         holder.checklistText.setText(recordingExists && checkListItem.getText().isEmpty() ? "[Audio]" : checkListText);
 
         String textSize = Helper.getPreference(context, "size");
-        if(textSize==null)
+        if (textSize == null)
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
-        if(isSelected) {
+        if (isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
-        }
-        else {
+        } else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.unchecked_icon));
             holder.checklistText.setTextColor(currentNote.getTextColor());
         }
 
         // show if checklist item has an image
-        if(checkListItem.getItemImage()!=null && !checkListItem.getItemImage().isEmpty()) {
+        if (checkListItem.getItemImage() != null && !checkListItem.getItemImage().isEmpty()) {
             holder.itemImageLayout.setVisibility(View.VISIBLE);
             Glide.with(context).load(checkListItem.getItemImage()).into(holder.itemImage);
-        }
-        else
+        } else
             holder.itemImageLayout.setVisibility(View.GONE);
 
         holder.audio.setOnClickListener(view -> {
-            if(holder.audio.getVisibility() == View.VISIBLE) {
+            if (holder.audio.getVisibility() == View.VISIBLE) {
                 PlayAudioSheet playAudioSheet = new PlayAudioSheet(checkListItem);
                 playAudioSheet.show(activity.getSupportFragmentManager(), playAudioSheet.getTag());
             }
@@ -223,12 +215,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         // if checklist item is clicked, then it updates the status of the item
         holder.checkItem.setOnClickListener(v -> {
-            saveSelected(checkListItem, !isSelected);
-            isAllItemsSelected();
-            if(currentNote.getSort() == 3 || currentNote.getSort() == 4)
-                notifyDataSetChanged();
-            else
-                notifyItemChanged(position);
+            updateChecklistStatus(checkListItem, !isSelected, position);
+        });
+
+        // if checklist item is clicked, then it updates the status of the
+        // this is added to support clickable links
+        holder.checklistText.setOnClickListener(v -> {
+            updateChecklistStatus(checkListItem, isSelected, position);
         });
 
         holder.edit.setOnClickListener(v -> {
@@ -276,53 +269,62 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         return position;
     }
 
+    private void updateChecklistStatus(CheckListItem checkListItem, boolean isSelected, int position) {
+        saveSelected(checkListItem, !isSelected);
+        isAllItemsSelected();
+        if (currentNote.getSort() == 3 || currentNote.getSort() == 4)
+            notifyDataSetChanged();
+        else
+            notifyItemChanged(position);
+    }
+
     // updates select status of note in database
-    private void saveSelected(CheckListItem checkListItem, boolean status){
+    private void saveSelected(CheckListItem checkListItem, boolean status) {
         // save status to database
         realm.beginTransaction();
         checkListItem.setChecked(status);
 
-        if(null != checkListItem.getSubChecklist()) {
+        if (null != checkListItem.getSubChecklist()) {
             if (checkListItem.getSubChecklist().size() > 0) {
                 RealmResults<SubCheckListItem> subCheckListItems = realm.where(SubCheckListItem.class).equalTo("id", checkListItem.getSubListId()).findAll();
                 subCheckListItems.setBoolean("checked", status);
             }
         }
 
-        if(status)
+        if (status)
             checkListItem.setLastCheckedDate(Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis());
         else
             checkListItem.setLastCheckedDate(0);
         realm.commitTransaction();
 
-        ((NoteEdit)context).updateSaveDateEdited();
+        ((NoteEdit) context).updateSaveDateEdited();
     }
 
     // opens dialog that allows user to edit or delete checklist item
-    private void openEditDialog(CheckListItem checkListItem, int position){
+    private void openEditDialog(CheckListItem checkListItem, int position) {
         ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, position, this);
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
     }
 
     // determines if all items are select and if they are, checklist is set to check or "finished"
-    private void isAllItemsSelected(){
+    private void isAllItemsSelected() {
         RealmResults<CheckListItem> select = checkList.where()
                 .equalTo("checked", true)
                 .findAll();
 
         boolean isAllChecked = select.size() == checkList.size();
-        if(select.size()==0 && checkList.size()==0)
+        if (select.size() == 0 && checkList.size() == 0)
             isAllChecked = false;
 
-        if(currentNote.isChecked() != isAllChecked) {
+        if (currentNote.isChecked() != isAllChecked) {
             realm.beginTransaction();
             currentNote.setChecked(isAllChecked);
             realm.commitTransaction();
 
-            if(currentNote.isChecked())
-                ((NoteEdit)context).title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+            if (currentNote.isChecked())
+                ((NoteEdit) context).title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             else
-                ((NoteEdit)context).title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+                ((NoteEdit) context).title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         }
     }
 }

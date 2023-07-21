@@ -1,8 +1,8 @@
 package com.akapps.dailynote.classes.other;
 
 import android.app.PendingIntent;
-import android.appwidget.AppWidgetProvider;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -19,6 +19,7 @@ import com.akapps.dailynote.activity.WidgetListView;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import java.util.ArrayList;
@@ -44,15 +45,21 @@ public class AppWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onEnabled(Context context) {}
+    public void onEnabled(Context context) {
+        AppAnalytics.logEvent(context, "1", "Widget - (onEnabled)",
+                "Placing widget on home-screen");
+    }
 
     @Override
-    public void onDisabled(Context context) {}
+    public void onDisabled(Context context) {
+        AppAnalytics.logEvent(context, "1", "Widget - (onDisabled)",
+                "Deleting widget from home-screen");
+    }
 
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId) {
         CharSequence widgetText = WidgetConfigureActivity.loadTitlePref(context, appWidgetId);
 
-        if(widgetText.equals("null"))
+        if (widgetText.equals("null"))
             return;
 
         new Handler(Looper.getMainLooper()).post(() -> {
@@ -128,10 +135,10 @@ public class AppWidget extends AppWidgetProvider {
         });
     }
 
-    private static Note getCurrentNote(ArrayList<Note> allNotes, String noteTitle, int noteId){
+    private static Note getCurrentNote(ArrayList<Note> allNotes, String noteTitle, int noteId) {
         List<Note> results;
 
-        if(noteId != -1)
+        if (noteId != -1)
             results = allNotes.stream()
                     .filter(item -> item.getNoteId() == noteId)
                     .collect(Collectors.toList());
@@ -140,15 +147,15 @@ public class AppWidget extends AppWidgetProvider {
                     .filter(item -> item.getTitle().equals(noteTitle))
                     .collect(Collectors.toList());
 
-        if(results.size() == 0)
+        if (results.size() == 0)
             return null;
 
         return results.get(0);
     }
 
-    private static boolean isAllChecklistChecked(Note currentNote){
+    private static boolean isAllChecklistChecked(Note currentNote) {
         List<CheckListItem> results = new ArrayList<>();
-        if(currentNote.isCheckList()){
+        if (currentNote.isCheckList()) {
             results = currentNote.getChecklist().stream()
                     .filter(CheckListItem::isChecked)
                     .collect(Collectors.toList());

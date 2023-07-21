@@ -2,13 +2,11 @@ package com.akapps.dailynote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
 import androidx.fragment.app.FragmentActivity;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -16,7 +14,7 @@ import com.akapps.dailynote.fragments.notes;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class Homepage extends FragmentActivity{
+public class Homepage extends FragmentActivity {
 
     private Realm realm;
     private User user;
@@ -27,16 +25,11 @@ public class Homepage extends FragmentActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage_screen);
 
-        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
-            Log.d("Here2", paramThrowable.getMessage());
-            Helper.refreshActivity(this);
-            Toast.makeText(this, "Error occurred, so refreshed screen!", Toast.LENGTH_LONG).show();
-        });
-
         isOpenApp = getIntent().getBooleanExtra("openApp", false);
         AppData.getAppData();
+        AppAnalytics.get(this);
 
-        if(AppData.isAppFirstStarted) {
+        if (AppData.isAppFirstStarted) {
             // initialize database and get data
             realm = RealmSingleton.getInstance(this);
 
@@ -44,11 +37,11 @@ public class Homepage extends FragmentActivity{
             realm.beginTransaction();
             RealmResults<Note> notesWithWidgets = realm.where(Note.class)
                     .greaterThan("widgetId", 0).findAll();
-            for(Note currentNote: notesWithWidgets)
+            for (Note currentNote : notesWithWidgets)
                 Helper.updateWidget(currentNote, Homepage.this, realm);
             realm.commitTransaction();
 
-            if(user != null) {
+            if (user != null) {
                 if (user.isModeSettings())
                     AppData.getAppData().setDarkerMode(true);
 
@@ -65,15 +58,13 @@ public class Homepage extends FragmentActivity{
                     if (savedInstanceState == null)
                         openApp();
                 }
-            }
-            else
+            } else
                 openApp();
-        }
-        else if (savedInstanceState == null)
-           openApp();
+        } else if (savedInstanceState == null)
+            openApp();
     }
 
-    private void openApp(){
+    private void openApp() {
         getSupportFragmentManager().beginTransaction().add(android.R.id.content, new notes()).commit();
     }
 }

@@ -1,11 +1,5 @@
 package com.akapps.dailynote.activity;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
@@ -24,8 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Backup;
@@ -69,7 +67,7 @@ import io.realm.RealmResults;
 import kotlin.io.FilesKt;
 import www.sanju.motiontoast.MotionToast;
 
-public class SettingsScreen extends AppCompatActivity{
+public class SettingsScreen extends AppCompatActivity {
 
     // activity
     private Context context;
@@ -140,7 +138,6 @@ public class SettingsScreen extends AppCompatActivity{
     private MaterialCardView grid;
     private MaterialCardView row;
     private MaterialCardView staggered;
-
     private MaterialCardView buyMeCoffeeLayout;
     private MaterialCardView accountLayout;
     private MaterialCardView backupRestoreLayout;
@@ -155,19 +152,13 @@ public class SettingsScreen extends AppCompatActivity{
     private MaterialCardView aboutInfoLayout;
 
     // variables
-    private boolean betaBackup  = false;
+    private boolean betaBackup = false;
     private boolean betaRestore = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_screen);
-
-        Thread.setDefaultUncaughtExceptionHandler((paramThread, paramThrowable) -> {
-            Log.d("Here2", paramThrowable.getMessage());
-            Helper.refreshActivity(this);
-            Toast.makeText(this, "Error occurred, so refreshed screen!", Toast.LENGTH_LONG).show();
-        });
 
         context = this;
 
@@ -180,7 +171,7 @@ public class SettingsScreen extends AppCompatActivity{
 
         populateUserSettings();
 
-        if(backingUp)
+        if (backingUp)
             showBackupRestoreInfo(6);
     }
 
@@ -198,18 +189,18 @@ public class SettingsScreen extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-       close();
+        close();
     }
 
-    private void realmStatus(){
-        if(realm.isClosed()) {
+    private void realmStatus() {
+        if (realm.isClosed()) {
             realm = RealmSingleton.getInstance(context);
             currentUser = realm.where(User.class).findFirst();
             Log.d("Here", "realm was closed, so it was reopened. SettingsScreen");
         }
     }
 
-    private void initializeLayout(){
+    private void initializeLayout() {
         toolbar = findViewById(R.id.toolbar);
         close = findViewById(R.id.close_activity);
         lockApp = findViewById(R.id.lock_app);
@@ -271,7 +262,7 @@ public class SettingsScreen extends AppCompatActivity{
         fabSizeLayout = findViewById(R.id.fab_setting);
         aboutInfoLayout = findViewById(R.id.about_info);
 
-        if(!Helper.isTablet(context)) {
+        if (!Helper.isTablet(context)) {
             MaterialCardView coffee = findViewById(R.id.coffee_button);
             TextView coffeeText = findViewById(R.id.support_me_message);
             coffeeText.setOnClickListener(view -> {
@@ -287,17 +278,17 @@ public class SettingsScreen extends AppCompatActivity{
         Helper.moveBee(findViewById(R.id.version_icon), 300f);
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
-        if(null == currentUser.getEmail()){
+        if (null == currentUser.getEmail()) {
             realm.beginTransaction();
             currentUser.setEmail("");
             realm.commitTransaction();
         }
 
-        if(currentUser.isUltimateUser()) {
+        if (currentUser.isUltimateUser()) {
             accountLayout.setVisibility(View.VISIBLE);
             accountText.setVisibility(View.VISIBLE);
-            if(mAuth.getCurrentUser() != null){
-                if(mAuth.getCurrentUser().isEmailVerified()) {
+            if (mAuth.getCurrentUser() != null) {
+                if (mAuth.getCurrentUser().isEmailVerified()) {
                     signUp.setVisibility(View.GONE);
                     logIn.setText("Log Out");
                     syncLayout.setVisibility(View.VISIBLE);
@@ -316,8 +307,7 @@ public class SettingsScreen extends AppCompatActivity{
                     }
                 }
             }
-        }
-        else{
+        } else {
             accountLayout.setVisibility(View.GONE);
             accountText.setVisibility(View.GONE);
         }
@@ -344,7 +334,7 @@ public class SettingsScreen extends AppCompatActivity{
 
         signUp.setOnClickListener(view -> {
             realmStatus();
-            if(currentUser.isUltimateUser()) {
+            if (currentUser.isUltimateUser()) {
                 if (mAuth.getCurrentUser() == null) {
                     AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, true);
                     accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
@@ -477,7 +467,7 @@ public class SettingsScreen extends AppCompatActivity{
 
         staggered.setOnClickListener(v -> {
             realmStatus();
-            if(!currentUser.getLayoutSelected().equals("stag")) {
+            if (!currentUser.getLayoutSelected().equals("stag")) {
                 realm.beginTransaction();
                 currentUser.setLayoutSelected("stag");
                 realm.commitTransaction();
@@ -496,11 +486,10 @@ public class SettingsScreen extends AppCompatActivity{
 
         lockApp.setOnClickListener(view -> {
             realmStatus();
-            if(currentUser.getPinNumber() == 0) {
+            if (currentUser.getPinNumber() == 0) {
                 LockSheet lockSheet = new LockSheet(true);
                 lockSheet.show(getSupportFragmentManager(), lockSheet.getTag());
-            }
-            else
+            } else
                 unLockNote();
         });
 
@@ -601,42 +590,42 @@ public class SettingsScreen extends AppCompatActivity{
 
         about.setOnClickListener(v -> {
             upgradeToProCounter++;
-            if(upgradeToProCounter == 1) {
+            if (upgradeToProCounter == 1) {
                 CreditsSheet creditSheet = new CreditsSheet();
                 creditSheet.show(getSupportFragmentManager(), creditSheet.getTag());
             }
         });
 
         about.setOnLongClickListener(v -> {
-            if(upgradeToProCounter == 12)
+            if (upgradeToProCounter == 12)
                 upgradeToPro();
             return false;
         });
     }
 
     // hidden feature
-    private void upgradeToPro(){
+    private void upgradeToPro() {
         realm.beginTransaction();
         currentUser.setUltimateUser(!currentUser.isUltimateUser());
         realm.commitTransaction();
 
-        if(currentUser.isUltimateUser())
+        if (currentUser.isUltimateUser())
             Helper.showMessage(SettingsScreen.this, "Upgrade Successful", "" +
                     "Thank you and Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
         else
             Helper.showMessage(SettingsScreen.this, "Downgrade Successful", "" +
                     "Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
 
-      restart();
+        restart();
     }
 
-    private void populateUserSettings(){
+    private void populateUserSettings() {
         initializeLayout();
         initializeSettings();
     }
 
-    private void checkModeSettings(){
-        if(currentUser.isModeSettings()) {
+    private void checkModeSettings() {
+        if (currentUser.isModeSettings()) {
             AppData.getAppData().isDarkerMode = true;
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
@@ -645,8 +634,7 @@ public class SettingsScreen extends AppCompatActivity{
             changeBackgroundColors(R.color.darker_mode, R.color.gray, 6);
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
-        }
-        else {
+        } else {
             modeSetting.setText("Gray Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
             AppData.getAppData().isDarkerMode = false;
@@ -657,7 +645,7 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void changeBackgroundColors(int color, int strokeColor, int width){
+    private void changeBackgroundColors(int color, int strokeColor, int width) {
         buyMeCoffeeLayout.setCardBackgroundColor(context.getColor(color));
         buyMeCoffeeLayout.setStrokeColor(context.getColor(strokeColor));
         buyMeCoffeeLayout.setStrokeWidth(width);
@@ -695,7 +683,7 @@ public class SettingsScreen extends AppCompatActivity{
         fabSizeLayout.setStrokeColor(context.getColor(strokeColor));
         fabSizeLayout.setStrokeWidth(width);
 
-        if(AppData.getAppData().isDarkerMode){
+        if (AppData.getAppData().isDarkerMode) {
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
             staggered.setCardBackgroundColor(context.getColor(color));
@@ -705,8 +693,7 @@ public class SettingsScreen extends AppCompatActivity{
             row.setStrokeWidth(width);
             staggered.setStrokeColor(context.getColor(strokeColor));
             staggered.setStrokeWidth(width);
-        }
-        else {
+        } else {
             color = R.color.gray;
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
@@ -717,7 +704,7 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void updateGapLayoutColor(int gapColor){
+    private void updateGapLayoutColor(int gapColor) {
         findViewById(R.id.space_one).setBackgroundColor(gapColor);
         findViewById(R.id.space_two).setBackgroundColor(gapColor);
         findViewById(R.id.gap_one).setBackgroundColor(gapColor);
@@ -739,7 +726,7 @@ public class SettingsScreen extends AppCompatActivity{
         findViewById(R.id.gap_seventeen).setBackgroundColor(gapColor);
     }
 
-    private void initializeSettings(){
+    private void initializeSettings() {
         showPreview.setChecked(currentUser.isShowPreview());
         showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
@@ -753,31 +740,29 @@ public class SettingsScreen extends AppCompatActivity{
         showAudioButton.setChecked(currentUser.isShowAudioButton());
         hideBudgetButton.setChecked(currentUser.isHideBudget());
         twentyFourHourFormatButton.setChecked(currentUser.isTwentyFourHourFormat());
-        if(currentUser.getPinNumber() > 0) {
+        if (currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));
-        }
-        else
+        } else
             lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
         checkModeSettings();
 
         updateCurrentLayout();
     }
 
-    private void updateCurrentLayout(){
-        if(currentUser.getLayoutSelected().equals("row"))
+    private void updateCurrentLayout() {
+        if (currentUser.getLayoutSelected().equals("row"))
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-        else if(currentUser.getLayoutSelected().equals("grid"))
+        else if (currentUser.getLayoutSelected().equals("grid"))
             grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         else
             staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
     }
 
-    public void openBackUpRestoreDialog(){
+    public void openBackUpRestoreDialog() {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT != Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
-        }
-        else
+        } else
             openBackup();
     }
 
@@ -793,66 +778,65 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    public void lockNote(int pin, String securityWord, boolean fingerprint){
+    public void lockNote(int pin, String securityWord, boolean fingerprint) {
         realm.beginTransaction();
         currentUser.setPinNumber(pin);
         currentUser.setSecurityWord(securityWord);
         currentUser.setFingerprint(fingerprint);
         realm.commitTransaction();
         Helper.showMessage(this, "App Locked", "App has been " +
-                "locked" , MotionToast.TOAST_SUCCESS);
+                "locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
         lockApp.setColorFilter(getColor(R.color.blue));
     }
 
-    public void unLockNote(){
+    public void unLockNote() {
         realm.beginTransaction();
         currentUser.setPinNumber(0);
         currentUser.setSecurityWord("");
         currentUser.setFingerprint(false);
         realm.commitTransaction();
         Helper.showMessage(this, "App un-Locked", "App has been " +
-                "un-locked" , MotionToast.TOAST_SUCCESS);
+                "un-locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
         lockApp.setColorFilter(getColor(R.color.ultra_white));
     }
 
-    public void restart(){
+    public void restart() {
         Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
         startActivity(intent);
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    private void openBackup(){
-        if(betaBackup)
+    private void openBackup() {
+        if (betaBackup)
             backUpDataAndImages();
         else
             backUpData();
     }
 
-   private void backUpData(){
-        if(all_Notes!=0) {
+    private void backUpData() {
+        if (all_Notes != 0) {
             realm.close();
             RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
             realmBackupRestore.update(this, context);
             File exportedFilePath = realmBackupRestore.backup_Share();
             shareFile(exportedFilePath);
-        }
-        else
+        } else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
     }
 
-    private void backUpDataAndImages(){
-        if(all_Notes!=0)
+    private void backUpDataAndImages() {
+        if (all_Notes != 0)
             shareFile(new File(backUpZip()));
         else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
     }
 
-    private String backUpZip(){
+    private String backUpZip() {
         RealmResults<Note> checklistPhotos = realm.where(Note.class).findAll();
         ArrayList<String> allFiles = new ArrayList<>();
         ArrayList<String> allPhotos = getAllFilePaths(realm.where(Photo.class)
@@ -874,17 +858,17 @@ public class SettingsScreen extends AppCompatActivity{
         return zipPhotos(allFiles);
     }
 
-    private ArrayList<String> getAllFilePaths(RealmResults<Photo> allNotePhotos, RealmResults<Note> allNotes){
+    private ArrayList<String> getAllFilePaths(RealmResults<Photo> allNotePhotos, RealmResults<Note> allNotes) {
         ArrayList<String> allPhotos = new ArrayList<>();
-        for(int i = 0; i < allNotePhotos.size(); i++)
+        for (int i = 0; i < allNotePhotos.size(); i++)
             allPhotos.add(allNotePhotos.get(i).getPhotoLocation());
 
-        for(int i=0; i< allNotes.size(); i++){
-            RealmList<CheckListItem> currentNoteChecklist= allNotes.get(i).getChecklist();
-            if(currentNoteChecklist.size() > 0){
-                for(int j=0 ;j < currentNoteChecklist.size(); j++){
+        for (int i = 0; i < allNotes.size(); i++) {
+            RealmList<CheckListItem> currentNoteChecklist = allNotes.get(i).getChecklist();
+            if (currentNoteChecklist.size() > 0) {
+                for (int j = 0; j < currentNoteChecklist.size(); j++) {
                     CheckListItem currentChecklistItem = currentNoteChecklist.get(j);
-                    if(currentChecklistItem.getItemImage() != null && !currentChecklistItem.getItemImage().isEmpty())
+                    if (currentChecklistItem.getItemImage() != null && !currentChecklistItem.getItemImage().isEmpty())
                         allPhotos.add(currentChecklistItem.getItemImage());
                 }
             }
@@ -893,16 +877,16 @@ public class SettingsScreen extends AppCompatActivity{
         return allPhotos;
     }
 
-    private ArrayList<String> getAllRecordingsPaths(RealmResults<CheckListItem> allChecklistRecordings){
+    private ArrayList<String> getAllRecordingsPaths(RealmResults<CheckListItem> allChecklistRecordings) {
         ArrayList<String> allRecordings = new ArrayList<>();
-        for(int i = 0; i < allChecklistRecordings.size(); i++)
+        for (int i = 0; i < allChecklistRecordings.size(); i++)
             allRecordings.add(allChecklistRecordings.get(i).getAudioPath());
 
         return allRecordings;
     }
 
     // creates a zip folder
-    public String createZipFolder(){
+    public String createZipFolder() {
         File storageDir = new File(
                 context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "");
         if (!storageDir.exists()) {
@@ -925,12 +909,11 @@ public class SettingsScreen extends AppCompatActivity{
             byte[] data = new byte[BUFFER];
             for (int i = 0; i < files.size(); i++) {
                 File newFile = new File(files.get(i));
-                if(newFile.exists()) {
+                if (newFile.exists()) {
                     String canonicalPath = newFile.getCanonicalPath();
                     if (!canonicalPath.startsWith(zipPath.replace(".zip", ""))) {
                         throw new SecurityException("Zipping Error");
-                    }
-                    else {
+                    } else {
                         FileInputStream fi = new FileInputStream(files.get(i));
                         origin = new BufferedInputStream(fi, BUFFER);
                         ZipEntry entry = new ZipEntry(files.get(i).substring(files.get(i).lastIndexOf("/") + 1));
@@ -952,20 +935,20 @@ public class SettingsScreen extends AppCompatActivity{
         return zipFile.getAbsolutePath();
     }
 
-    public void upLoadData(){
+    public void upLoadData() {
         File backupFile = new File(backUpZip());
         Uri file = Uri.fromFile(backupFile);
         // file info
         String fileSize = Helper.getFormattedFileSize(context, backupFile.length());
 
-        if(!fileSize.toLowerCase().contains("b") && !fileSize.toLowerCase().contains("kb")
-                && !fileSize.toLowerCase().contains("mb")){
+        if (!fileSize.toLowerCase().contains("b") && !fileSize.toLowerCase().contains("kb")
+                && !fileSize.toLowerCase().contains("mb")) {
             Helper.showMessage(this, "Upload Failed", "File size is too big, backup locally",
                     MotionToast.TOAST_ERROR);
             return;
         }
 
-        if(fileSize.toLowerCase().contains("mb")){
+        if (fileSize.toLowerCase().contains("mb")) {
             try {
                 double fileSizeNumber = Double.parseDouble(fileSize.toLowerCase().replace("mb", "").trim());
                 if (fileSizeNumber > 100.0) {
@@ -973,7 +956,8 @@ public class SettingsScreen extends AppCompatActivity{
                             MotionToast.TOAST_ERROR);
                     return;
                 }
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
         }
 
         progressDialog = Helper.showLoading("Uploading...\n" + fileSize,
@@ -983,12 +967,11 @@ public class SettingsScreen extends AppCompatActivity{
         String fileName = currentDate + "_backup.zip";
 
         // check if file exists
-        if(realm.where(Backup.class).equalTo("fileName", fileName).count() == 1){
+        if (realm.where(Backup.class).equalTo("fileName", fileName).count() == 1) {
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload Failed", "File name exists, " +
                     "please wait a minute and try again", MotionToast.TOAST_ERROR);
-        }
-        else {
+        } else {
             String userEmail = mAuth.getCurrentUser().getEmail();
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference().child("users")
@@ -1008,7 +991,7 @@ public class SettingsScreen extends AppCompatActivity{
                 restart();
             }).addOnSuccessListener(taskSnapshot -> {
                 String bytesTransferredFormatted = Helper.getFormattedFileSize(context, taskSnapshot.getBytesTransferred());
-                if(bytesTransferredFormatted.equals(fileSize)){
+                if (bytesTransferredFormatted.equals(fileSize)) {
                     realm.beginTransaction();
                     realm.insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
                     currentUser.setLastUpload(Helper.getCurrentDate());
@@ -1019,11 +1002,12 @@ public class SettingsScreen extends AppCompatActivity{
                     Helper.showMessage(SettingsScreen.this, "Upload Success",
                             "Data Uploaded",
                             MotionToast.TOAST_SUCCESS);
-                }
-                else{
+                } else {
                     // deleting file since it was missing files
-                    storageRef.delete().addOnSuccessListener(aVoid -> {})
-                            .addOnFailureListener(exception -> {});
+                    storageRef.delete().addOnSuccessListener(aVoid -> {
+                            })
+                            .addOnFailureListener(exception -> {
+                            });
                     progressDialog.cancel();
                     Helper.showMessage(SettingsScreen.this, "Upload Error",
                             "Files lost in transfer, please upload again!",
@@ -1033,7 +1017,7 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void showBackupRestoreInfo(int selection){
+    private void showBackupRestoreInfo(int selection) {
         InfoSheet info = new InfoSheet(selection);
         info.show(getSupportFragmentManager(), info.getTag());
     }
@@ -1045,12 +1029,12 @@ public class SettingsScreen extends AppCompatActivity{
         startActivityForResult(intent, 1);
     }
 
-    private void shareFile(File backup){
+    private void shareFile(File backup) {
         realmStatus();
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("*/*");
 
-        Uri fileBackingUp  = FileProvider.getUriForFile(
+        Uri fileBackingUp = FileProvider.getUriForFile(
                 context,
                 "com.akapps.dailynote.fileprovider",
                 backup);
@@ -1063,14 +1047,14 @@ public class SettingsScreen extends AppCompatActivity{
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-            if(betaRestore)
+            if (betaRestore)
                 restoreBackupBeta(data);
             else
                 restoreBackup(data);
         }
     }
 
-    public void restoreFromDatabase(String fileName, String fileSize){
+    public void restoreFromDatabase(String fileName, String fileSize) {
         progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
         String userEmail = mAuth.getCurrentUser().getEmail();
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -1083,22 +1067,22 @@ public class SettingsScreen extends AppCompatActivity{
         if (!storageDir.exists())
             storageDir.mkdirs();
 
-        File localFile = new File(storageDir,"backup.zip");
+        File localFile = new File(storageDir, "backup.zip");
         storageRef.getFile(localFile)
                 .addOnProgressListener(snapshot -> {
                     String bytesTransferredFormatted = Helper.getFormattedFileSize(context, snapshot.getBytesTransferred());
                     progressDialog = Helper.showLoading("Syncing...\n" + bytesTransferredFormatted + " / " + fileSize,
                             progressDialog, context, true);
                 }).addOnSuccessListener(taskSnapshot -> {
-            restoreFromDatabase(Uri.fromFile(localFile));
-        }).addOnFailureListener(exception ->{
-                Helper.showLoading("", progressDialog, context, false);
-                Helper.showMessage(SettingsScreen.this, "Error", "" +
-                "Restoring Error from database, please clear app storage & try again", MotionToast.TOAST_ERROR);
-        });
+                    restoreFromDatabase(Uri.fromFile(localFile));
+                }).addOnFailureListener(exception -> {
+                    Helper.showLoading("", progressDialog, context, false);
+                    Helper.showMessage(SettingsScreen.this, "Error", "" +
+                            "Restoring Error from database, please clear app storage & try again", MotionToast.TOAST_ERROR);
+                });
     }
 
-    private void restoreFromDatabase(Uri uri){
+    private void restoreFromDatabase(Uri uri) {
         RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
         try {
             // close realm before restoring
@@ -1138,7 +1122,7 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void restoreBackupBeta(Intent data){
+    private void restoreBackupBeta(Intent data) {
         if (data != null) {
             Uri uri = data.getData();
             Cursor returnCursor = context.getContentResolver()
@@ -1147,7 +1131,7 @@ public class SettingsScreen extends AppCompatActivity{
             returnCursor.moveToFirst();
             String fileName = returnCursor.getString(nameIndex);
 
-            if(fileName.contains(".zip")) {
+            if (fileName.contains(".zip")) {
                 RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
                 try {
                     // close realm before restoring
@@ -1187,20 +1171,18 @@ public class SettingsScreen extends AppCompatActivity{
                     close();
                 } catch (Exception e) {
                     Helper.showLoading("", progressDialog, context, false);
-                    if(tryAgain){
+                    if (tryAgain) {
                         Helper.showMessage(this, "Error", "Clear storage via App Settings",
                                 MotionToast.TOAST_ERROR);
                         appSettings.setBackgroundColor(getColor(R.color.flamingo));
                         tryAgain = false;
-                    }
-                    else {
-                        Helper.showMessage(this, "Error","attempting to fix error...try again",
+                    } else {
+                        Helper.showMessage(this, "Error", "attempting to fix error...try again",
                                 MotionToast.TOAST_ERROR);
                         tryAgain = true;
                     }
                 }
-            }
-            else {
+            } else {
                 Helper.showLoading("", progressDialog, context, false);
                 Helper.showMessage(this, "Error\uD83D\uDE14", "" +
                         "Filename needs to end in '.zip'. Try again!", MotionToast.TOAST_ERROR);
@@ -1208,7 +1190,7 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void restoreBackup(Intent data){
+    private void restoreBackup(Intent data) {
         if (data != null) {
             Uri uri = data.getData();
             Cursor returnCursor = context.getContentResolver()
@@ -1217,7 +1199,7 @@ public class SettingsScreen extends AppCompatActivity{
             returnCursor.moveToFirst();
             String fileName = returnCursor.getString(nameIndex);
 
-            if(fileName.contains(".realm")) {
+            if (fileName.contains(".realm")) {
                 try {
                     RealmConfiguration configuration = realm.getConfiguration();
                     realm.close();
@@ -1237,52 +1219,49 @@ public class SettingsScreen extends AppCompatActivity{
 
                     close();
                 } catch (Exception e) {
-                    if(tryAgain){
+                    if (tryAgain) {
                         Helper.showMessage(this, "Error", "Clear storage via App Settings", MotionToast.TOAST_ERROR);
                         appSettings.setBackgroundColor(getColor(R.color.flamingo));
                         tryAgain = false;
-                    }
-                    else {
-                        Helper.showMessage(this, "Error","attempting to fix error...try again", MotionToast.TOAST_ERROR);
+                    } else {
+                        Helper.showMessage(this, "Error", "attempting to fix error...try again", MotionToast.TOAST_ERROR);
                         tryAgain = true;
                     }
                 }
-            }
-            else
+            } else
                 Helper.showMessage(this, "Error\uD83D\uDE14", "" +
                         "Filename needs to end in '.realm'. Try again!", MotionToast.TOAST_ERROR);
         }
     }
 
-    private void updateAlarms(RealmResults<Note> allNotes){
-        for (int i=0; i < allNotes.size(); i++){
+    private void updateAlarms(RealmResults<Note> allNotes) {
+        for (int i = 0; i < allNotes.size(); i++) {
             Note currentNote = allNotes.get(i);
-            if(null != currentNote.getReminderDateTime() && !currentNote.getReminderDateTime().isEmpty())
+            if (null != currentNote.getReminderDateTime() && !currentNote.getReminderDateTime().isEmpty())
                 Helper.startAlarm(this, currentNote, realm);
         }
     }
 
-    private void resetWidgets(){
+    private void resetWidgets() {
         realm.beginTransaction();
         realm.where(Note.class).not().equalTo("widgetId", 0).findAll().setInt("widgetId", 0);
         realm.commitTransaction();
     }
 
-    private void updateImages(ArrayList<String> imagePaths){
-        if(imagePaths.size() != 0) {
+    private void updateImages(ArrayList<String> imagePaths) {
+        if (imagePaths.size() != 0) {
             for (int i = 0; i < imagePaths.size(); i++) {
                 String imagePath = imagePaths.get(i).substring(imagePaths.get(i).lastIndexOf("/") + 1);
-                if(imagePaths.get(i).contains("~")){
+                if (imagePaths.get(i).contains("~")) {
                     CheckListItem currentChecklistPhoto = realm.where(CheckListItem.class).contains("itemImage", imagePath).findFirst();
-                    if(currentChecklistPhoto != null) {
+                    if (currentChecklistPhoto != null) {
                         realm.beginTransaction();
                         currentChecklistPhoto.setItemImage(imagePaths.get(i));
                         realm.commitTransaction();
                     }
-                }
-                else{
+                } else {
                     Photo currentPhoto = realm.where(Photo.class).contains("photoLocation", imagePath).findFirst();
-                    if(currentPhoto != null) {
+                    if (currentPhoto != null) {
                         realm.beginTransaction();
                         currentPhoto.setPhotoLocation(imagePaths.get(i));
                         realm.commitTransaction();
@@ -1292,13 +1271,13 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void updateRecordings(ArrayList<String> recordingsPath){
-        if(recordingsPath.size() != 0) {
+    private void updateRecordings(ArrayList<String> recordingsPath) {
+        if (recordingsPath.size() != 0) {
             for (int i = 0; i < recordingsPath.size(); i++) {
                 String fullRecordingPath = recordingsPath.get(i);
                 String recordingPath = fullRecordingPath.substring(fullRecordingPath.lastIndexOf("/") + 1);
                 CheckListItem checkListItem = realm.where(CheckListItem.class).contains("audioPath", recordingPath).findFirst();
-                if(checkListItem != null) {
+                if (checkListItem != null) {
                     realm.beginTransaction();
                     checkListItem.setAudioPath(fullRecordingPath);
                     realm.commitTransaction();
@@ -1307,28 +1286,28 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void showLineNumberMenu(TextView lines, SwitchCompat reminderDropDown){
+    private void showLineNumberMenu(TextView lines, SwitchCompat reminderDropDown) {
         linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
-            .addItem(new IconPowerMenuItem(null, "1"))
-            .addItem(new IconPowerMenuItem(null, "2"))
-            .addItem(new IconPowerMenuItem(null, "3"))
-            .addItem(new IconPowerMenuItem(null, "4"))
-            .addItem(new IconPowerMenuItem(null, "5"))
-            .addItem(new IconPowerMenuItem(null, "6"))
-            .addItem(new IconPowerMenuItem(null, "7"))
-            .addItem(new IconPowerMenuItem(null, "8"))
-            .setBackgroundColor(getColor(R.color.light_gray))
-            .setOnMenuItemClickListener(onIconMenuItemClickListener)
-            .setAnimation(MenuAnimation.SHOW_UP_CENTER)
-            .setWidth(300)
-            .setMenuRadius(15f)
-            .setMenuShadow(10f)
-            .build();
+                .addItem(new IconPowerMenuItem(null, "1"))
+                .addItem(new IconPowerMenuItem(null, "2"))
+                .addItem(new IconPowerMenuItem(null, "3"))
+                .addItem(new IconPowerMenuItem(null, "4"))
+                .addItem(new IconPowerMenuItem(null, "5"))
+                .addItem(new IconPowerMenuItem(null, "6"))
+                .addItem(new IconPowerMenuItem(null, "7"))
+                .addItem(new IconPowerMenuItem(null, "8"))
+                .setBackgroundColor(getColor(R.color.light_gray))
+                .setOnMenuItemClickListener(onIconMenuItemClickListener)
+                .setAnimation(MenuAnimation.SHOW_UP_CENTER)
+                .setWidth(300)
+                .setMenuRadius(15f)
+                .setMenuShadow(10f)
+                .build();
 
         linesMenu.showAsDropDown(lines);
     }
 
-    private void expandListMenu(List<IconPowerMenuItem> list, TextView textView){
+    private void expandListMenu(List<IconPowerMenuItem> list, TextView textView) {
         linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
                 .addItemList(list)
                 .setBackgroundColor(getColor(R.color.light_gray))
@@ -1346,57 +1325,52 @@ public class SettingsScreen extends AppCompatActivity{
     private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
         @Override
         public void onItemClick(int position, IconPowerMenuItem item) {
-            if(checkEditingStatus()){
+            if (checkEditingStatus()) {
                 realm.beginTransaction();
                 String text = item.getTitle();
-                if(isEditingChecklistSep) {
+                if (isEditingChecklistSep) {
                     currentUser.setItemsSeparator(text);
                     checklistSeparator.setText(text);
-                }
-                else if(isEditingSublistSep) {
-                    if(text.equals("space")) {
+                } else if (isEditingSublistSep) {
+                    if (text.equals("space")) {
                         currentUser.setItemsSeparator("newline");
                         checklistSeparator.setText("newline");
                     }
                     currentUser.setSublistSeparator(text);
                     sublistSeparator.setText(text);
-                }
-                else if(isEditingBudgetSymbol) {
+                } else if (isEditingBudgetSymbol) {
                     currentUser.setBudgetCharacter(text);
                     budgetSymbol.setText(text);
-                }
-                else if(isEditingExpenseSymbol) {
+                } else if (isEditingExpenseSymbol) {
                     currentUser.setExpenseCharacter(text);
                     expenseSymbol.setText(text);
                 }
                 realm.commitTransaction();
-            }
-            else
-                updateSelectedLines(position+1);
+            } else
+                updateSelectedLines(position + 1);
             linesMenu.dismiss();
         }
     };
 
-    private void clearEditingStatus(){
+    private void clearEditingStatus() {
         isEditingChecklistSep = false;
         isEditingSublistSep = false;
         isEditingBudgetSymbol = false;
         isEditingExpenseSymbol = false;
     }
 
-    private boolean checkEditingStatus(){
+    private boolean checkEditingStatus() {
         return isEditingChecklistSep || isEditingSublistSep ||
                 isEditingBudgetSymbol || isEditingExpenseSymbol;
     }
 
-    private void updateSelectedLines(int position){
-        if(isTitleSelected) {
+    private void updateSelectedLines(int position) {
+        if (isTitleSelected) {
             realm.beginTransaction();
             currentUser.setTitleLines(position);
             realm.commitTransaction();
             titleLines.setText(String.valueOf(position));
-        }
-        else {
+        } else {
             realm.beginTransaction();
             currentUser.setContentLines(position);
             realm.commitTransaction();
@@ -1404,17 +1378,17 @@ public class SettingsScreen extends AppCompatActivity{
         }
     }
 
-    private void openAppInPlayStore(){
+    private void openAppInPlayStore() {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.akapps.dailynote"));
             intent.setPackage("com.android.vending");
             startActivity(intent);
+        } catch (Exception exception) {
         }
-        catch (Exception exception){}
     }
 
-    private void contactMe(){
+    private void contactMe() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"ak.apps.2019@gmail.com"});
@@ -1422,7 +1396,7 @@ public class SettingsScreen extends AppCompatActivity{
         startActivity(intent);
     }
 
-    private void close(){
+    private void close() {
         RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in SettingsScreen");
         Intent intent = new Intent(this, Homepage.class);
@@ -1431,7 +1405,7 @@ public class SettingsScreen extends AppCompatActivity{
         overridePendingTransition(0, R.anim.hide_to_bottom);
     }
 
-    private void openAppInSettings(){
+    private void openAppInSettings() {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);

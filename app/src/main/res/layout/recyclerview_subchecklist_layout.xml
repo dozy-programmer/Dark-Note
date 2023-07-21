@@ -48,7 +48,8 @@
                     android:layout_marginVertical="10dp"
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/ultra_white"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:autoLink="web"/>
 
             </LinearLayout>
 

@@ -34,11 +34,11 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
-public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
+public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
     private Realm realm;
     private Folder currentItem;
-    private  boolean isAdding;
+    private boolean isAdding;
     private RecyclerView.Adapter adapter;
     private int position;
     private int color;
@@ -50,7 +50,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
     private MaterialCardView folderColor;
 
     // adding
-    public FolderItemSheet(){
+    public FolderItemSheet() {
         isAdding = true;
     }
 
@@ -58,10 +58,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
     private TextInputEditText itemName;
 
     // editing
-    public FolderItemSheet(Folder checkListItem, RecyclerView.Adapter adapter, int position){
+    public FolderItemSheet(Folder checkListItem, RecyclerView.Adapter adapter, int position) {
         isAdding = false;
         this.currentItem = checkListItem;
-        this.allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
+        this.allSelectedNotes = RealmSingleton.getInstance(getContext()).where(Note.class).equalTo("isSelected", true).findAll();
         this.adapter = adapter;
         this.position = position;
     }
@@ -70,14 +70,14 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_folder_item, container, false);
 
-        if(savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             isAdding = savedInstanceState.getBoolean("add");
             position = savedInstanceState.getInt("pos");
         }
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if(isAdding) {
+        if (isAdding) {
             adapter = ((CategoryScreen) getActivity()).categoriesAdapter;
             allCategories = realm.where(Folder.class).sort("positionInList").findAll();
         }
@@ -98,34 +98,32 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
             itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemName.setTextColor(getContext().getColor(R.color.ultra_white));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        }
-        else {
+        } else {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
             delete.setBackgroundColor(getContext().getColor(R.color.light_gray));
         }
 
-        if(isAdding){
+        if (isAdding) {
             title.setText("Adding");
             delete.setVisibility(View.GONE);
             folderColor.setCardBackgroundColor(getContext().getColor(R.color.orange));
-        }
-        else{
+        } else {
             title.setText("Editing");
-            try{
+            try {
                 itemName.setText(currentItem.getName());
                 folderColor.setCardBackgroundColor(currentItem.getColor() == 0 ? getContext().getColor(R.color.orange) : currentItem.getColor());
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
                 next.setVisibility(View.GONE);
-            }catch (Exception e){
+            } catch (Exception e) {
                 this.dismiss();
             }
         }
 
         folderColor.setOnClickListener(v -> editColorDialog(currentItem));
 
-        delete.setOnClickListener(v-> {
-            if(!isAdding) {
+        delete.setOnClickListener(v -> {
+            if (!isAdding) {
                 deleteCategory(currentItem);
                 this.dismiss();
             }
@@ -136,7 +134,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         });
 
         next.setOnClickListener(v -> {
-            if(confirmEntry(itemName, itemNameLayout)){
+            if (confirmEntry(itemName, itemNameLayout)) {
                 FolderItemSheet checklistItemSheet = new FolderItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
             }
@@ -145,9 +143,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         return view;
     }
 
-    private void editColorDialog(Folder current){
+    private void editColorDialog(Folder current) {
         int initialColor;
-        if(current==null || current.getColor()==0)
+        if (current == null || current.getColor() == 0)
             initialColor = getContext().getColor(R.color.orange_red);
         else
             initialColor = current.getColor();
@@ -160,11 +158,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(10)
                 .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
-                    if(isAdding) {
+                    if (isAdding) {
                         color = selectedColor;
                         folderColor.setCardBackgroundColor(color);
-                    }
-                    else {
+                    } else {
                         realm.beginTransaction();
                         current.setColor(selectedColor);
                         realm.commitTransaction();
@@ -178,7 +175,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         colorPickerView.show();
     }
 
-    private void editCategory(Folder current, String newName){
+    private void editCategory(Folder current, String newName) {
         allSelectedNotes = realm.where(Note.class).equalTo("category", current.getName()).findAll();
         // update database
         realm.beginTransaction();
@@ -189,7 +186,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         this.dismiss();
     }
 
-    private void deleteCategory(Folder current){
+    private void deleteCategory(Folder current) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         allSelectedNotes = realm.where(Note.class).equalTo("category", current.getName()).findAll();
@@ -208,28 +205,26 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
                 .equalTo("name", itemText, Case.INSENSITIVE).findAll();
         Folder newItem = new Folder(itemText, allCategories.size());
         newItem.setColor(color);
-        if(results.size() == 0) {
+        if (results.size() == 0) {
             realm.beginTransaction();
             realm.insert(newItem);
             realm.commitTransaction();
             adapter.notifyDataSetChanged();
             this.dismiss();
-        }
-        else
+        } else
             Helper.showMessage(getActivity(), "Duplicate", "A category with that name exists",
                     MotionToast.TOAST_ERROR);
     }
 
-    private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout){
+    private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout) {
 
-        if(!itemName.getText().toString().isEmpty()){
-            if(isAdding)
+        if (!itemName.getText().toString().isEmpty()) {
+            if (isAdding)
                 addCategory(itemName.getText().toString(), color);
             else
                 editCategory(currentItem, itemName.getText().toString());
             return true;
-        }
-        else
+        } else
             itemNameLayout.setError("Required");
 
         return false;
@@ -254,7 +249,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         super.onResume();
 
         itemName.requestFocus();
-        if(AppData.isKeyboardOpen) {
+        if (AppData.isKeyboardOpen) {
             Helper.toggleKeyboard(getContext(), itemName, true);
             AppData.isKeyboardOpen = false;
         }
@@ -262,7 +257,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isDarkerMode)
+        if (AppData.getAppData().isDarkerMode)
             return R.style.BaseBottomSheetDialogLight;
         else
             return R.style.BaseBottomSheetDialog;
@@ -273,11 +268,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog =(BottomSheetDialog) getDialog ();
+                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
                     if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
+                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);
+                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     }

@@ -109,6 +109,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             notifyItemChanged(position);
         });
 
+        // if checklist item is clicked, then it updates the status of the item
+        // this is added to support clickable links
+        holder.checklistText.setOnClickListener(v -> {
+            saveSelected(checkListItem, !isSelected);
+            notifyItemChanged(position);
+        });
+
         holder.edit.setOnClickListener(v -> {
             openEditDialog(checkListItem, position);
         });

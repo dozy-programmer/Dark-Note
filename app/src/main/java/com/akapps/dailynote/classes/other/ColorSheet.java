@@ -14,6 +14,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -95,7 +96,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment{
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(10)
                 .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
-                    Realm realm = ((NoteEdit) getActivity()).realm;
+                    Realm realm = RealmSingleton.getInstance(getContext());
                     realm.beginTransaction();
                     if(colorChanging.equals("b"))
                         currentNote.setBackgroundColor(selectedColor);
