@@ -52,6 +52,9 @@ public class WidgetConfigureActivity extends Activity {
 
             for(Note currentNote: allNotes)
                 allArraylistNotes.add(currentNote.getTitle());
+
+            if(allArraylistNotes.size() == 0)
+                allArraylistNotes.add("No notes or checklists found\n\nPress Here to Close");
         });
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -63,7 +66,11 @@ public class WidgetConfigureActivity extends Activity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             // Take ListView clicked item value
             String  widgetText    = (String) listView.getItemAtPosition(position);
-            createWidget(getApplicationContext(), widgetText);
+
+            if(widgetText.equals("No notes or checklists found\n\nPress Here to Close"))
+                finish();
+            else
+                createWidget(getApplicationContext(), widgetText);
         });
 
         // Find the widget id from the intent.

@@ -30,6 +30,7 @@ public class RealmSingleton {
     }
 
     public static void closeRealmInstance(String location) {
+        if(realmInstance.isClosed()) return;
         if (realmInstance != null && closeRealm) {
             realmInstance.close();
             realmInstance = null;

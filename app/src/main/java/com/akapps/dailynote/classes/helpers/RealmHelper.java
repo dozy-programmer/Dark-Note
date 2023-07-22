@@ -42,9 +42,16 @@ public class RealmHelper {
             currentNote.setNote("* Note has been deleted, delete this widget *");
             Helper.updateWidget(currentNote, context, RealmSingleton.getInstance(context));
         }
+        getRealm(context).commitTransaction();
+        deleteNoteFromDatabase(context, currentNote);
+    }
+
+    public static void deleteNoteFromDatabase(Context context, Note currentNote){
+        getRealm(context).beginTransaction();
         currentNote.deleteFromRealm();
         getRealm(context).commitTransaction();
     }
+
 
     public static void deleteNotePhotos(Note currentNote, Context context){
         getRealm(context).beginTransaction();
@@ -146,4 +153,9 @@ public class RealmHelper {
         }
         getRealm(context).commitTransaction();
     }
+
+    public static Note getNote(Context context, int noteId){
+        return getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+    }
+
 }

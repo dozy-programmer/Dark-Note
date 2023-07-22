@@ -197,8 +197,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (noteId > 0 && realm.where(Note.class).equalTo("noteId", noteId).count() == 0) {
             // this catches a widget whose associated note has been deleted
             Toast.makeText(this, "Note has been deleted, please delete widget!", Toast.LENGTH_LONG).show();
-            finish("Deleted Note is being accessed via widget");
-            System.exit(0);
+            RealmSingleton.closeRealmInstance("NoteEdit onDestroy - Deleted Note is being accessed via widget");
+            finish();
         }
 
         noteFromOtherApp = getIntent().getStringExtra("otherAppNote");
@@ -317,7 +317,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (isWidget)
             Helper.updateWidget(currentNote, context, realm);
 
-        if (currentNote.getPinNumber() != 0) {
+        if (RealmHelper.getNote(context, noteId).getPinNumber() != 0) {
             Intent lockScreen = new Intent(this, NoteLockScreen.class);
             lockScreen.putExtra("id", currentNote.getNoteId());
             lockScreen.putExtra("title", currentNote.getTitle().replace("\n", " "));

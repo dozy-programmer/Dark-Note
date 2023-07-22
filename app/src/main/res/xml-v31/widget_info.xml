@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.akapps.dailynote.activity.WidgetConfigureActivity"
     android:minWidth="80dp"
     android:minHeight="20dp"
     android:targetCellWidth="2"
     android:targetCellHeight="1"
-    android:maxResizeWidth="1000dp"
-    android:maxResizeHeight="1000dp"
-    android:updatePeriodMillis="1800000"
+    android:updatePeriodMillis="86400"
     android:previewLayout="@layout/widget_preview"
     android:initialLayout="@layout/widget"
-    android:configure="com.akapps.dailynote.activity.WidgetConfigureActivity"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen">
 </appwidget-provider>

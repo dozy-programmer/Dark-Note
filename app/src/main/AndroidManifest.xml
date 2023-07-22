@@ -18,6 +18,9 @@
     <!-- Needed for cloud backup and attaching locations to checklist items !-->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Needed for Analytics !-->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -44,6 +47,17 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
+        </receiver>
+
+        <receiver android:name=".classes.other.AppWidgetShortcut"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_shortcut_info" />
         </receiver>
 
         <meta-data
