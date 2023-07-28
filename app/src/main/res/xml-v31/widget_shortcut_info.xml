@@ -4,7 +4,7 @@
     android:previewLayout="@layout/widget_shortcut"
     android:initialLayout="@layout/widget_shortcut"
     android:minHeight="40dp"
-    android:minWidth="60dp"
+    android:minWidth="110dp"
     android:targetCellWidth="2"
     android:targetCellHeight="1"
     android:maxResizeHeight="100dp"
