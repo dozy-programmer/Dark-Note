@@ -258,13 +258,7 @@ public class notes extends Fragment{
         super.onResume();
 
         Helper.unSetOrientation(getActivity(), context);
-
-        if(isSearchingNotes){
-            return;
-        }
-
-        if(user != null)
-            savePreferences();
+        if(isSearchingNotes) return;
 
         if(realm.isClosed())
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
@@ -273,9 +267,10 @@ public class notes extends Fragment{
 
             // if list is empty, then it shows an empty layout
             isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
+
+            if(RealmSingleton.getInstance(context).where(Note.class).findAll().size() == 0)
+                Helper.deleteAppFiles(context);
         }
-        if(realm.where(Note.class).findAll().size() == 0)
-            Helper.deleteAppFiles(context);
     }
 
     @Override
@@ -551,6 +546,7 @@ public class notes extends Fragment{
     }
 
     private void openSettings(){
+        savePreferences();
         int size = realm.where(Note.class).findAll().size();
         String userId = String.valueOf(user.getUserId());
         Intent settings = new Intent(context, SettingsScreen.class);
@@ -1073,14 +1069,15 @@ public class notes extends Fragment{
     }
 
     private void savePreferences(){
+        if(realm.isClosed() || user == null) return;
         // text size saved by user
         int savedSize = user.getTextSize();
         // text size set by user
         String textSize = Helper.getPreference(context, "size");
-        int currentSize = Integer.parseInt(textSize==null ? "0" : textSize);
+        int currentSize = Integer.parseInt(textSize == null ? "0" : textSize);
 
         // if device was backed up, then restore text size
-        if(savedSize>0 && currentSize == 0) {
+        if(savedSize > 0 && currentSize == 0) {
             Helper.savePreference(context, String.valueOf(savedSize), "size");
         }
         // if text size save

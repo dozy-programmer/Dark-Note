@@ -1,6 +1,7 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
@@ -155,7 +156,14 @@ public class RealmHelper {
     }
 
     public static Note getNote(Context context, int noteId){
-        return getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+        Note note = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+        return note;
+    }
+
+    public static int getNotePin(Context context, int noteId){
+        Note note = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+        if(note == null) return 0;
+        return note.getPinNumber();
     }
 
 }

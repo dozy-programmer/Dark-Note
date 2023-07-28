@@ -36,7 +36,7 @@
                     android:src="@drawable/unchecked_icon"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginTop="1dp">
                 </ImageView>
 

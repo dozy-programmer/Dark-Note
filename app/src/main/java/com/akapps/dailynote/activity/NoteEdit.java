@@ -138,6 +138,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private String oldNote;
     private boolean currentPin;
     private boolean dismissDialog;
+    private boolean isAppPaused;
     private boolean isShowingPhotos;
     private String currentDateTimeSelected;
     private Calendar dateSelected;
@@ -290,6 +291,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     @Override
     public void onBackPressed() {
+        if(realm.isClosed()) currentNote = RealmHelper.getNote(context, noteId);
         if (currentNote == null) {
             finish("note is null");
             overridePendingTransition(R.anim.stay, R.anim.right_out);
@@ -314,20 +316,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onPause() {
         super.onPause();
+        isAppPaused = true;
         if (isWidget)
             Helper.updateWidget(currentNote, context, realm);
-
-        if (RealmHelper.getNote(context, noteId).getPinNumber() != 0) {
-            Intent lockScreen = new Intent(this, NoteLockScreen.class);
-            lockScreen.putExtra("id", currentNote.getNoteId());
-            lockScreen.putExtra("title", currentNote.getTitle().replace("\n", " "));
-            lockScreen.putExtra("pin", currentNote.getPinNumber());
-            lockScreen.putExtra("securityWord", currentNote.getSecurityWord());
-            lockScreen.putExtra("fingerprint", currentNote.isFingerprint());
-            startActivity(lockScreen);
-            overridePendingTransition(R.anim.stay, R.anim.right_out);
-            finish();
-        }
     }
 
     @Override
@@ -354,7 +345,19 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onResume() {
         super.onResume();
-        if (realm.isClosed()) {
+
+        if (RealmHelper.getNotePin(context, noteId) != 0 && isAppPaused) {
+            Intent lockScreen = new Intent(this, NoteLockScreen.class);
+            lockScreen.putExtra("id", currentNote.getNoteId());
+            lockScreen.putExtra("title", currentNote.getTitle().replace("\n", " "));
+            lockScreen.putExtra("pin", currentNote.getPinNumber());
+            lockScreen.putExtra("securityWord", currentNote.getSecurityWord());
+            lockScreen.putExtra("fingerprint", currentNote.isFingerprint());
+            startActivity(lockScreen);
+            overridePendingTransition(R.anim.stay, R.anim.right_out);
+            finish();
+        }
+        else if (realm.isClosed()) {
             finish();
             Intent refreshActivity = new Intent(this, this.getClass());
             startActivity(refreshActivity);
@@ -362,6 +365,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         } else if (!realm.isClosed() && currentNote != null) {
             category.setText(currentNote.getCategory());
         }
+        isAppPaused = false;
     }
 
     @SuppressLint("ClickableViewAccessibility")
