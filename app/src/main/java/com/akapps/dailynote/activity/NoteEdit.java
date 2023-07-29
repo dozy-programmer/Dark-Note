@@ -347,6 +347,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         super.onResume();
 
         if (RealmHelper.getNotePin(context, noteId) != 0 && isAppPaused) {
+            RealmSingleton.setCloseRealm(false);
             Intent lockScreen = new Intent(this, NoteLockScreen.class);
             lockScreen.putExtra("id", currentNote.getNoteId());
             lockScreen.putExtra("title", currentNote.getTitle().replace("\n", " "));

@@ -803,6 +803,7 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public void restart() {
+        RealmSingleton.setCloseRealm(false);
         Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
         startActivity(intent);
         finish();
