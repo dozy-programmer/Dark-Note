@@ -42,6 +42,8 @@ public class User extends RealmObject {
     private boolean showAudioButton;
     private boolean hideBudget;
     private boolean twentyFourHourFormat;
+    private boolean enableEditableNoteButton;
+    private boolean disableAnimation;
 
     // note security and retrieval of password
     private String securityWord;
@@ -64,6 +66,7 @@ public class User extends RealmObject {
         sublistSeparator = "space";
         budgetCharacter = "+$";
         expenseCharacter = "$";
+        enableEditableNoteButton = disableAnimation = false;
     }
 
     public int getUserId() {
@@ -312,5 +315,21 @@ public class User extends RealmObject {
 
     public void setTwentyFourHourFormat(boolean twentyFourHourFormat) {
         this.twentyFourHourFormat = twentyFourHourFormat;
+    }
+
+    public boolean isEnableEditableNoteButton() {
+        return enableEditableNoteButton;
+    }
+
+    public void setEnableEditableNoteButton(boolean enableEditableNoteButton) {
+        this.enableEditableNoteButton = enableEditableNoteButton;
+    }
+
+    public boolean isDisableAnimation() {
+        return disableAnimation;
+    }
+
+    public void setDisableAnimation(boolean disableAnimation) {
+        this.disableAnimation = disableAnimation;
     }
 }

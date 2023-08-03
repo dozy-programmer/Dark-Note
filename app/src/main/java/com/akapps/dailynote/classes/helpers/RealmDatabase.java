@@ -175,6 +175,12 @@ public class RealmDatabase {
 
             if(!schema.get("User").hasField("twentyFourHourFormat"))
                 schema.get("User").addField("twentyFourHourFormat", boolean.class);
+
+            if(!schema.get("User").hasField("enableEditableNoteButton"))
+                schema.get("User").addField("enableEditableNoteButton", boolean.class);
+
+            if(!schema.get("User").hasField("disableAnimation"))
+                schema.get("User").addField("disableAnimation", boolean.class);
         }
     }
 }

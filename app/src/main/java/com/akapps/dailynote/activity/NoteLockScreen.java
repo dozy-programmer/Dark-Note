@@ -52,7 +52,8 @@ public class NoteLockScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_lock_screen);
 
-        overridePendingTransition(R.anim.left_in, R.anim.stay);
+        if(!AppData.isDisableAnimation)
+            overridePendingTransition(R.anim.left_in, R.anim.stay);
 
         context = this;
 
@@ -69,7 +70,8 @@ public class NoteLockScreen extends AppCompatActivity {
     public void onBackPressed() {
         if(!isAppLocked) {
             finish();
-            overridePendingTransition(R.anim.stay, R.anim.right_out);
+            if(!AppData.isDisableAnimation)
+                overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
     }
 

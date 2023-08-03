@@ -120,11 +120,13 @@ public class SettingsScreen extends AppCompatActivity {
     private SwitchCompat sublistMode;
     private SwitchCompat emptyNoteMode;
     private SwitchCompat fabButtonSizeMode;
+    private SwitchCompat showScreenAnimation;
     private SwitchCompat showDeleteIcon;
     private SwitchCompat hideRichTextEditor;
     private SwitchCompat showAudioButton;
     private SwitchCompat hideBudgetButton;
     private SwitchCompat twentyFourHourFormatButton;
+    private SwitchCompat editableNoteButton;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -147,7 +149,9 @@ public class SettingsScreen extends AppCompatActivity {
     private MaterialCardView noteSettingLayout;
     private MaterialCardView appSettingsLayout;
     private MaterialCardView fabSizeLayout;
+    private MaterialCardView animationLayout;
     private MaterialCardView contact;
+    private MaterialCardView reddit;
     private MaterialCardView review;
     private MaterialCardView aboutInfoLayout;
 
@@ -208,6 +212,7 @@ public class SettingsScreen extends AppCompatActivity {
         restoreBackup = findViewById(R.id.restore_backup);
         appSettings = findViewById(R.id.app_settings);
         contact = findViewById(R.id.contact);
+        reddit = findViewById(R.id.reddit);
         review = findViewById(R.id.review);
         about = findViewById(R.id.about);
         titleLines = findViewById(R.id.title_lines);
@@ -230,11 +235,13 @@ public class SettingsScreen extends AppCompatActivity {
         sublistMode = findViewById(R.id.sublists_switch);
         emptyNoteMode = findViewById(R.id.empty_note_switch);
         fabButtonSizeMode = findViewById(R.id.fab_switch);
+        showScreenAnimation = findViewById(R.id.animation_switch);
         showDeleteIcon = findViewById(R.id.add_delete_icon_switch);
         hideRichTextEditor = findViewById(R.id.rich_text_switch);
         showAudioButton = findViewById(R.id.audio_button_switch);
         hideBudgetButton = findViewById(R.id.hide_budget_switch);
         twentyFourHourFormatButton = findViewById(R.id.twenty_hour_format_switch);
+        editableNoteButton = findViewById(R.id.editable_note_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -260,6 +267,7 @@ public class SettingsScreen extends AppCompatActivity {
         noteSettingLayout = findViewById(R.id.note_setting_layout);
         appSettingsLayout = findViewById(R.id.materialCardView2);
         fabSizeLayout = findViewById(R.id.fab_setting);
+        animationLayout = findViewById(R.id.animation_setting);
         aboutInfoLayout = findViewById(R.id.about_info);
 
         if (!Helper.isTablet(context)) {
@@ -480,6 +488,8 @@ public class SettingsScreen extends AppCompatActivity {
 
         contact.setOnClickListener(v -> contactMe());
 
+        reddit.setOnClickListener(v -> openReddit());
+
         review.setOnClickListener(v -> openAppInPlayStore());
 
         close.setOnClickListener(v -> close());
@@ -550,6 +560,13 @@ public class SettingsScreen extends AppCompatActivity {
             realm.commitTransaction();
         });
 
+        editableNoteButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setEnableEditableNoteButton(isChecked);
+            realm.commitTransaction();
+        });
+
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
@@ -579,6 +596,14 @@ public class SettingsScreen extends AppCompatActivity {
             realm.beginTransaction();
             currentUser.setIncreaseFabSize(isChecked);
             realm.commitTransaction();
+        });
+
+        showScreenAnimation.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setDisableAnimation(isChecked);
+            realm.commitTransaction();
+            AppData.isDisableAnimation = isChecked;
         });
 
         showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -676,12 +701,18 @@ public class SettingsScreen extends AppCompatActivity {
         contact.setCardBackgroundColor(context.getColor(color));
         contact.setStrokeColor(context.getColor(strokeColor));
         contact.setStrokeWidth(width);
+        reddit.setCardBackgroundColor(context.getColor(color));
+        reddit.setStrokeColor(context.getColor(strokeColor));
+        reddit.setStrokeWidth(width);
         review.setCardBackgroundColor(context.getColor(color));
         review.setStrokeColor(context.getColor(strokeColor));
         review.setStrokeWidth(width);
         fabSizeLayout.setCardBackgroundColor(context.getColor(color));
         fabSizeLayout.setStrokeColor(context.getColor(strokeColor));
         fabSizeLayout.setStrokeWidth(width);
+        animationLayout.setCardBackgroundColor(context.getColor(color));
+        animationLayout.setStrokeColor(context.getColor(strokeColor));
+        animationLayout.setStrokeWidth(width);
 
         if (AppData.getAppData().isDarkerMode) {
             grid.setCardBackgroundColor(context.getColor(color));
@@ -724,6 +755,7 @@ public class SettingsScreen extends AppCompatActivity {
         findViewById(R.id.gap_fifteen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_sixteen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_seventeen).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_eighteen).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings() {
@@ -735,11 +767,13 @@ public class SettingsScreen extends AppCompatActivity {
         sublistMode.setChecked(currentUser.isEnableSublists());
         emptyNoteMode.setChecked(currentUser.isEnableEmptyNote());
         fabButtonSizeMode.setChecked(currentUser.isIncreaseFabSize());
+        showScreenAnimation.setChecked(currentUser.isDisableAnimation());
         showDeleteIcon.setChecked(currentUser.isEnableDeleteIcon());
         hideRichTextEditor.setChecked(currentUser.isHideRichTextEditor());
         showAudioButton.setChecked(currentUser.isShowAudioButton());
         hideBudgetButton.setChecked(currentUser.isHideBudget());
         twentyFourHourFormatButton.setChecked(currentUser.isTwentyFourHourFormat());
+        editableNoteButton.setChecked(currentUser.isEnableEditableNoteButton());
         if (currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));
@@ -807,7 +841,8 @@ public class SettingsScreen extends AppCompatActivity {
         Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
         startActivity(intent);
         finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        if(!AppData.isDisableAnimation)
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void openBackup() {
@@ -1389,6 +1424,13 @@ public class SettingsScreen extends AppCompatActivity {
         }
     }
 
+    private void openReddit() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com/r/darknoteapp/")));
+        } catch (Exception exception) {
+        }
+    }
+
     private void contactMe() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
@@ -1403,7 +1445,8 @@ public class SettingsScreen extends AppCompatActivity {
         Intent intent = new Intent(this, Homepage.class);
         startActivity(intent);
         finish();
-        overridePendingTransition(0, R.anim.hide_to_bottom);
+        if(!AppData.isDisableAnimation)
+            overridePendingTransition(0, R.anim.hide_to_bottom);
     }
 
     private void openAppInSettings() {

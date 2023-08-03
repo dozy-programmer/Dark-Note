@@ -210,7 +210,7 @@ public class notes extends Fragment{
                     isListEmpty(allNotes.size(), false);
                 }
                 else {
-                    getActivity().finish();
+                    getActivity().moveTaskToBack(true);
                 }
             }
         };
@@ -550,7 +550,8 @@ public class notes extends Fragment{
         RealmSingleton.setCloseRealm(false);
         startActivity(settings);
         getActivity().finish();
-        getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
+        if(!AppData.isDisableAnimation)
+            getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
     }
 
     @Override

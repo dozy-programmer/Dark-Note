@@ -45,6 +45,9 @@ public class Homepage extends FragmentActivity {
                 if (user.isModeSettings())
                     AppData.getAppData().setDarkerMode(true);
 
+                if (user.isDisableAnimation())
+                    AppData.isDisableAnimation = true;
+
                 if (user.getPinNumber() > 0 && !isOpenApp && AppData.isAppFirstStarted) {
                     Intent lockScreen = new Intent(this, NoteLockScreen.class);
                     lockScreen.putExtra("id", -11);

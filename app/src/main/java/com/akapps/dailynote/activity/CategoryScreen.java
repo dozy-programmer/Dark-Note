@@ -93,7 +93,8 @@ public class CategoryScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_screen);
-        overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
+        if(!AppData.isDisableAnimation)
+            overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
         context = this;
         isDarkMode = AppData.getAppData().isDarkerMode;
@@ -526,7 +527,8 @@ public class CategoryScreen extends AppCompatActivity {
         Intent home = new Intent();
         setResult(resultCode, home);
         finish();
-        overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
+        if(!AppData.isDisableAnimation)
+            overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 
     private void showInfoDialog() {

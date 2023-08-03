@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
@@ -37,8 +35,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
-import www.sanju.motiontoast.MotionToast;
 
 public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.MyViewHolder>{
 

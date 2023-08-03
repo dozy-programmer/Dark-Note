@@ -223,8 +223,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
         if(isAdding){
             info.setVisibility(View.VISIBLE);
             dropDownMenu.setVisibility(View.GONE);
-            if(isSubChecklist)
+            if(isSubChecklist) {
                 title.setText("Adding Sub-Item to\n" + parentNode);
+                addLocation.setVisibility(View.GONE);
+            }
             else
                 title.setText("Adding");
             info.setText(multipleItemsMessage);

@@ -948,6 +948,7 @@ public class Helper {
         activity.finish();
         Intent refreshActivity = new Intent(activity, activity.getClass());
         activity.startActivity(refreshActivity);
-        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        if(!AppData.isDisableAnimation)
+            activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

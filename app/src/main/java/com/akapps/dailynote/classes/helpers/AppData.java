@@ -15,6 +15,7 @@ public class AppData{
     public static boolean isAppFirstStarted;
     public static int timerDuration;
     public static boolean isKeyboardOpen;
+    public static boolean isDisableAnimation;
 
     private AppData() { }
 
@@ -22,6 +23,7 @@ public class AppData{
         if (appData == null) {
             isAppFirstStarted = true;
             isKeyboardOpen = false;
+            isDisableAnimation = false;
             appData = new AppData();
         }
         return appData;

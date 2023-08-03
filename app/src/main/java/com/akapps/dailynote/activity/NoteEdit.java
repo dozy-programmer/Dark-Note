@@ -140,6 +140,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean dismissDialog;
     private boolean isAppPaused;
     private boolean isShowingPhotos;
+    private boolean isEditLockedMode;
     private String currentDateTimeSelected;
     private Calendar dateSelected;
     private int countPicsNotFound;
@@ -196,6 +197,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         realm = RealmHelper.getRealm(context);
 
         if (noteId > 0 && realm.where(Note.class).equalTo("noteId", noteId).count() == 0) {
+            RealmSingleton.setCloseRealm(false);
             // this catches a widget whose associated note has been deleted
             Toast.makeText(this, "Note has been deleted, please delete widget!", Toast.LENGTH_LONG).show();
             RealmSingleton.closeRealmInstance("NoteEdit onDestroy - Deleted Note is being accessed via widget");
@@ -218,7 +220,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if (noteId == -1) {
             isNewNote = true;
             isNewNoteCopy = true;
-        } else
+        } else if(!AppData.isDisableAnimation)
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
         // if orientation changes, then position is updated
@@ -287,6 +289,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         savedInstanceState.putInt("id", noteId);
         savedInstanceState.putBoolean("photos", isShowingPhotos);
         savedInstanceState.putBoolean("search", isSearchingNotes);
+        savedInstanceState.putBoolean("do_not_edit", isEditLockedMode);
     }
 
     @Override
@@ -294,7 +297,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if(realm.isClosed()) currentNote = RealmHelper.getNote(context, noteId);
         if (currentNote == null) {
             finish("note is null");
-            overridePendingTransition(R.anim.stay, R.anim.right_out);
+            if(!AppData.isDisableAnimation)
+                overridePendingTransition(R.anim.stay, R.anim.right_out);
         } else if (currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() &&
                 currentNote.getChecklist().size() == 0)
             closeAndDeleteNote();
@@ -309,7 +313,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
 
             finish("on-back press");
-            overridePendingTransition(R.anim.stay, R.anim.right_out);
+            if(!AppData.isDisableAnimation)
+                overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
     }
 
@@ -355,14 +360,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             lockScreen.putExtra("securityWord", currentNote.getSecurityWord());
             lockScreen.putExtra("fingerprint", currentNote.isFingerprint());
             startActivity(lockScreen);
-            overridePendingTransition(R.anim.stay, R.anim.right_out);
+            if(!AppData.isDisableAnimation)
+                overridePendingTransition(R.anim.stay, R.anim.right_out);
             finish();
         }
         else if (realm.isClosed()) {
             finish();
             Intent refreshActivity = new Intent(this, this.getClass());
             startActivity(refreshActivity);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            if(!AppData.isDisableAnimation)
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } else if (!realm.isClosed() && currentNote != null) {
             category.setText(currentNote.getCategory());
         }
@@ -462,6 +469,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             checkListRecyclerview.requestFocus();
         } else {
             formatMenu.setVisibility(View.VISIBLE);
+
+            // TO DO, see if do not edit note toggle is enabled and then run the following
+            if(user.isEnableEditableNoteButton() && !isNewNoteCopy){
+                addCheckListItem.setVisibility(View.VISIBLE);
+                addCheckListItem.setImageDrawable(getDrawable(
+                        isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+            }
+
             if (isNewNote)
                 title.requestFocus();
             else
@@ -474,9 +489,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         // sets background of color icon to whatever the current note color is
         if (!isNewNote)
             noteColor.setCardBackgroundColor(currentNote.getBackgroundColor());
-
-        if (savedInstanceState != null)
-            isShowingPhotos = savedInstanceState.getBoolean("photos");
 
         updateDateEdited();
         if (!currentNote.getReminderDateTime().isEmpty()) {
@@ -506,6 +518,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isNewNote = savedInstanceState.getBoolean("newNote");
             isShowingPhotos = savedInstanceState.getBoolean("photos");
             isSearchingNotes = savedInstanceState.getBoolean("search");
+            isEditLockedMode = savedInstanceState.getBoolean("do_not_edit");
 
             isNewNoteCopy = isNewNote;
 
@@ -526,6 +539,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (isSearchingNotes) {
                 addCheckListItem.setVisibility(View.GONE);
                 photosScrollView.setVisibility(View.GONE);
+            }
+
+            // TO DO, see if do not edit note toggle is enabled and then run the following
+            if(user.isEnableEditableNoteButton() && !isNewNoteCopy){
+                addCheckListItem.setVisibility(View.VISIBLE);
+                addCheckListItem.setImageDrawable(getDrawable(
+                        isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
             }
         }
 
@@ -630,6 +650,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 hideButtons();
                 if (currentNote.isCheckList())
                     addCheckListItem.setVisibility(View.VISIBLE);
+                else{
+                    // TO DO, see if do not edit note toggle is enabled and then run the following
+                    if(user.isEnableEditableNoteButton()) {
+                        addCheckListItem.setVisibility(View.VISIBLE);
+                        addCheckListItem.setImageDrawable(getDrawable(
+                                isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+                    }
+                }
             } else {
                 hideSearchBar();
                 isChangingTextSize = false;
@@ -682,8 +710,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         addCheckListItem.setOnClickListener(v -> {
             if (currentNote.isCheckList() && !isShowingPhotos)
                 openNewItemDialog();
-            else
+            else if(isShowingPhotos)
                 showCameraDialog();
+            else{
+                note.setInputEnabled(isEditLockedMode);
+                isEditLockedMode = !isEditLockedMode;
+                // TO DO, see if do not edit note toggle is enabled and then run the following
+                addCheckListItem.setImageDrawable(getDrawable(
+                        isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+            }
         });
 
         addCheckListItem.setOnLongClickListener(view -> {
@@ -759,7 +794,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         }
         finish("Closing and maybe deleting note");
-        overridePendingTransition(R.anim.stay, R.anim.right_out);
+        if(!AppData.isDisableAnimation)
+            overridePendingTransition(R.anim.stay, R.anim.right_out);
     }
 
     private void showSearchBar() {

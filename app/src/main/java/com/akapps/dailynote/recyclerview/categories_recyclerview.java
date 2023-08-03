@@ -117,7 +117,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                     Log.d("Here", "keep realm open in categories_recyclerview");
                     activity.setResult(5, home);
                     activity.finish();
-                    activity.overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
                 }
             }
         });

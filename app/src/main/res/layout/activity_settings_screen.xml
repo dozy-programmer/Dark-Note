@@ -896,7 +896,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/note_setting_layout"
             android:layout_width="match_parent"
-            android:layout_height="570dp"
+            android:layout_height="620dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="5dp"
@@ -1368,6 +1368,44 @@
 
                 </LinearLayout>
 
+                <ImageView
+                    android:id="@+id/gap_eighteen"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="2"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/editable_note_button_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="10"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Enable Lock Button for Note Editing"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/editable_note_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="10"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="5dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
             </LinearLayout>
 
 
@@ -1427,10 +1465,54 @@
                     android:layout_marginRight="5dp"
                     android:checked="false">
                 </androidx.appcompat.widget.SwitchCompat>
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/animation_setting"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fab_setting">
+
+            <LinearLayout
+                android:id="@+id/animation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="90"
+                    android:gravity="center_vertical"
+                    android:text="Turn Off Screen Animation"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"></TextView>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/animation_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_weight="10"
+                    android:theme="@style/ThemeOverlay.MySwitchCompat"
+                    android:layout_marginRight="5dp"
+                    android:checked="false">
+                </androidx.appcompat.widget.SwitchCompat>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView2"
@@ -1442,7 +1524,7 @@
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fab_setting">
+            app:layout_constraintTop_toBottomOf="@+id/animation_setting">
 
             <LinearLayout
                 android:id="@+id/app_settings"
@@ -1578,7 +1660,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/review"
+            android:id="@+id/reddit"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
@@ -1588,6 +1670,48 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/contact">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="8"
+                    android:gravity="center|left"
+                    android:text="Dark Note Sub-Reddit Feedback"
+                    android:textColor="@color/ultra_white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"></TextView>
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:tint="@color/ultra_white"
+                    android:src="@drawable/reddit_logo">
+                </ImageView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/review"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardBackgroundColor="@color/light_gray"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reddit">
 
             <LinearLayout
                 android:layout_width="match_parent"
