@@ -20,10 +20,12 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.PlayAudioSheet;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import java.io.File;
@@ -48,8 +50,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
         private final TextView placeAttached;
-        //private final MaterialCheckBox selectedIcon;
-        private final ImageView selectedIcon;
+        private final MaterialCheckBox selectedIcon;
         private final ImageView deleteIcon;
         private final LinearLayout checkItem;
         private final LinearLayout edit;
@@ -80,12 +81,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
     }
 
-    public checklist_recyclerview(User user, RealmResults<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
-        this.user = user;
+    public checklist_recyclerview(RealmResults<CheckListItem> checkList, Note currentNote, Realm realm, FragmentActivity activity) {
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
+        user = RealmSingleton.getUser();
     }
 
     @Override
@@ -187,13 +188,21 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         if (isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
-            //holder.selectedIcon.setChecked(true);
-            holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
+            if(user.isShowChecklistCheckbox()){
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_checked));
+            }
+            else {
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.checked_icon));
+            }
         } else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(currentNote.getTextColor());
-            //holder.selectedIcon.setChecked(false);
-            holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.unchecked_icon));
+            if(user.isShowChecklistCheckbox()){
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_unchecked));
+            }
+            else {
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.unchecked_icon));
+            }
         }
 
         // show if checklist item has an image
@@ -219,12 +228,6 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // if checklist item is clicked, then it updates the status of the item
         holder.checkItem.setOnClickListener(v -> {
             updateChecklistStatus(checkListItem, !isSelected, position);
-        });
-
-        // if checklist item is clicked, then it updates the status of the item
-        holder.selectedIcon.setOnClickListener(v -> {
-            updateChecklistStatus(checkListItem, !isSelected, position);
-            //holder.selectedIcon.setChecked(!isSelected);
         });
 
         // if checklist item is clicked, then it updates the status of the

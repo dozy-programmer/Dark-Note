@@ -15,10 +15,14 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.checkbox.MaterialCheckBox;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -31,10 +35,11 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     private FragmentActivity activity;
     private final Realm realm;
     private boolean isNightMode;
+    private User user;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
-        private final ImageView selectedIcon;
+        private final MaterialCheckBox selectedIcon;
         private final LinearLayout checkItem;
         private final LinearLayout edit;
         private final MaterialCardView background;
@@ -55,6 +60,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
+        user = RealmSingleton.getUser();
         isNightMode = AppData.getAppData().isDarkerMode;
     }
 
@@ -95,12 +101,22 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         if(isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
-            holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.checked_icon));
+            if(user.isShowChecklistCheckbox()){
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_checked));
+            }
+            else {
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.checked_icon));
+            }
         }
         else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-            holder.selectedIcon.setImageDrawable(context.getDrawable(R.drawable.unchecked_icon));
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 200));
+            if(user.isShowChecklistCheckbox()){
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_unchecked));
+            }
+            else {
+                holder.selectedIcon.setBackground(context.getDrawable(R.drawable.unchecked_icon));
+            }
         }
 
         // if checklist item is clicked, then it updates the status of the item

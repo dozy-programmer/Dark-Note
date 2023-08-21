@@ -24,6 +24,7 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.backup_recyclerview;
@@ -222,7 +223,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setText("Enter Security Word to Unlock " + (isAppLocked ? "App" : "Note"));
             info.setGravity(Gravity.CENTER);
         } else if (message == 6) {
-            User currentUser = realm.where(User.class).findFirst();
+            User currentUser = RealmSingleton.getUser();
             allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
             if (allBackups.size() <= 50) {
@@ -241,7 +242,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
 
-            User currentUser = realm.where(User.class).findFirst();
+            User currentUser = RealmSingleton.getUser();
             // recyclerview
             allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
             info.setText("Select file\n\nLoading...");
@@ -269,7 +270,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                             info.setText("No files to sync");
                         else {
                             info.setVisibility(View.GONE);
-                            backupAdapter = new backup_recyclerview(allBackups, currentUser, realm, getActivity(), getContext());
+                            backupAdapter = new backup_recyclerview(allBackups, realm, getActivity(), getContext());
                             backupRecyclerview.setAdapter(backupAdapter);
                         }
                     })

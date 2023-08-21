@@ -896,7 +896,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/note_setting_layout"
             android:layout_width="match_parent"
-            android:layout_height="620dp"
+            android:layout_height="750dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="5dp"
@@ -916,7 +916,7 @@
                     android:id="@+id/checklist_item_sep_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -959,14 +959,13 @@
                     android:id="@+id/gap_eight"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"/>
 
                 <LinearLayout
                     android:id="@+id/sublist_item_sep_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1009,14 +1008,13 @@
                     android:id="@+id/gap_nine"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"/>
 
                 <LinearLayout
                     android:id="@+id/budget_char_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1059,14 +1057,13 @@
                     android:id="@+id/gap_ten"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"/>
 
                 <LinearLayout
                     android:id="@+id/expense_char_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1106,14 +1103,13 @@
                     android:id="@+id/gap_eleven"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/checklist_sublist"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1144,14 +1140,13 @@
                     android:id="@+id/gap_twelve"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"/>
 
                 <LinearLayout
                     android:id="@+id/empty_note_setting_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1182,14 +1177,13 @@
                     android:id="@+id/gap_thirteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/add_delete_icon"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1220,14 +1214,13 @@
                     android:id="@+id/gap_fourteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/rich_text_visibility"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1237,7 +1230,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Hide Rich-text Editor"
+                        android:text="Hide Rich-Text Editor"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>
@@ -1258,14 +1251,13 @@
                     android:id="@+id/gap_fifteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/show_audio_button"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1296,14 +1288,13 @@
                     android:id="@+id/gap_sixteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/hide_budget_button"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1334,14 +1325,13 @@
                     android:id="@+id/gap_seventeen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/twenty_four_hour_button"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1351,7 +1341,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="24 Hour Date Format"
+                        android:text="Enable 24 Hour Date Format"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>
@@ -1372,14 +1362,13 @@
                     android:id="@+id/gap_eighteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:layout_weight="2"
                     android:background="@color/gray"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/editable_note_button_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="10"
+                    android:layout_weight="7"
                     android:orientation="horizontal"
                     android:weightSum="100">
 
@@ -1389,13 +1378,50 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Enable Lock Button for Note Editing"
+                        android:text="Notes are View-Only by Default"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/editable_note_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_weight="10"
+                        android:theme="@style/ThemeOverlay.MySwitchCompat"
+                        android:layout_marginRight="5dp"
+                        android:checked="true">
+                    </androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/gap_nineteen"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/gray"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/change_checkbox_style_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="7"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Square Style for Checklist Checkboxes"
+                        android:textColor="@color/ultra_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/checkbox_style_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_weight="10"
@@ -1693,6 +1719,7 @@
                     android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:layout_weight="2"
+                    android:layout_marginRight="5dp"
                     android:tint="@color/ultra_white"
                     android:src="@drawable/reddit_logo">
                 </ImageView>
@@ -1725,7 +1752,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="9"
                     android:gravity="center|left"
-                    android:text="Leave a review"
+                    android:text="Leave a Review"
                     android:textColor="@color/ultra_white"
                     android:textSize="16sp"
                     android:textStyle="bold"></TextView>

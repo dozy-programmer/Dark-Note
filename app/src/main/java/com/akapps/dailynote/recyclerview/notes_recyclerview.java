@@ -135,6 +135,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         noteText = currentNote.getNote() == null ? "" : currentNote.getNote();
         boolean isNoteLocked = currentNote.getPinNumber() > 0;
         boolean hasReminder = currentNote.getReminderDateTime().length() > 0;
+        Note currentNoteUnmanaged = realm.copyFromRealm(currentNote);
 
         // populates note data into the recyclerview
         holder.note_title.setText(currentNote.getTitle().replaceAll("\n"," "));
@@ -463,7 +464,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.view.setOnClickListener(v -> {
             enableSelectMultiple = ((notes) noteFragment).enableSelectMultiple;
             if(!enableSelectMultiple) {
-                openNoteActivity(currentNote);
+                openNoteActivity(currentNoteUnmanaged);
             }
             else{
                 if(currentNote.isSelected()) {
@@ -501,7 +502,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         holder.note_info.setOnClickListener(view -> {
             if(!enableSelectMultiple) {
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(((notes) noteFragment).user, currentNote, true);
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, true);
                 noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
             }
         });

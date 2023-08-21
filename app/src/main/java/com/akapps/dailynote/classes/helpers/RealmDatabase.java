@@ -181,6 +181,9 @@ public class RealmDatabase {
 
             if(!schema.get("User").hasField("disableAnimation"))
                 schema.get("User").addField("disableAnimation", boolean.class);
+
+            if(!schema.get("User").hasField("showChecklistCheckbox"))
+                schema.get("User").addField("showChecklistCheckbox", boolean.class);
         }
     }
 }

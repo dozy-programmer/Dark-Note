@@ -13,6 +13,7 @@ import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.storage.FirebaseStorage;
@@ -54,14 +55,14 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         }
     }
 
-    public backup_recyclerview(RealmResults<Backup> allBackups, User currentUser, Realm realm,
+    public backup_recyclerview(RealmResults<Backup> allBackups, Realm realm,
                                FragmentActivity activity, Context context) {
         this.allBackups = allBackups;
-        this.currentUser = currentUser;
         this.realm = realm;
         this.activity = activity;
         this.context = context;
-        isLightMode = realm.where(User.class).findFirst().isModeSettings();
+        currentUser = RealmSingleton.getUser();
+        isLightMode = currentUser.isModeSettings();
     }
 
     @Override

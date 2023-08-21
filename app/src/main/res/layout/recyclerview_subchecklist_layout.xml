@@ -29,16 +29,23 @@
                 android:orientation="horizontal"
                 android:layout_weight="99">
 
-                <ImageView
+
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/check_status"
                     android:layout_width="15dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/unchecked_icon"
+                    android:layout_height="15dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="1dp">
-                </ImageView>
+                    android:layout_marginTop="1dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:clickable="false"
+                    android:elevation="-5dp"
+                    android:checked="false"
+                    android:buttonTint="@color/blue"
+                    android:background="@drawable/unchecked_icon"
+                    android:button="@null"/>
 
                 <TextView
                     android:id="@+id/note_Textview"

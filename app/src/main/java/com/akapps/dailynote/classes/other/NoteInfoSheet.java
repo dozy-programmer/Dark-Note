@@ -53,10 +53,10 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     public NoteInfoSheet(){}
 
-    public NoteInfoSheet(User user, Note currentNote, boolean showOpenButton){
+    public NoteInfoSheet(Note currentNote, boolean showOpenButton){
         this.currentNote = currentNote;
         this.showOpenButton = showOpenButton;
-        this.user = user;
+        this.user = RealmSingleton.getUser();
     }
 
     @SuppressLint("SetTextI18n")

@@ -35,6 +35,7 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.AccountSheet;
 import com.akapps.dailynote.classes.other.CreditsSheet;
@@ -127,6 +128,7 @@ public class SettingsScreen extends AppCompatActivity {
     private SwitchCompat hideBudgetButton;
     private SwitchCompat twentyFourHourFormatButton;
     private SwitchCompat editableNoteButton;
+    private SwitchCompat enableSqaureStyleForChecklists;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -171,7 +173,7 @@ public class SettingsScreen extends AppCompatActivity {
         boolean backingUp = getIntent().getBooleanExtra("backup", false);
 
         realm = RealmSingleton.getInstance(context);
-        currentUser = realm.where(User.class).findFirst();
+        currentUser = RealmHelper.getUser(this, "setting oncreate");
 
         populateUserSettings();
 
@@ -199,7 +201,7 @@ public class SettingsScreen extends AppCompatActivity {
     private void realmStatus() {
         if (realm.isClosed()) {
             realm = RealmSingleton.getInstance(context);
-            currentUser = realm.where(User.class).findFirst();
+            currentUser = RealmHelper.getUser(this, "settings realmstatus");
             Log.d("Here", "realm was closed, so it was reopened. SettingsScreen");
         }
     }
@@ -242,6 +244,7 @@ public class SettingsScreen extends AppCompatActivity {
         hideBudgetButton = findViewById(R.id.hide_budget_switch);
         twentyFourHourFormatButton = findViewById(R.id.twenty_hour_format_switch);
         editableNoteButton = findViewById(R.id.editable_note_switch);
+        enableSqaureStyleForChecklists = findViewById(R.id.checkbox_style_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -344,7 +347,7 @@ public class SettingsScreen extends AppCompatActivity {
             realmStatus();
             if (currentUser.isUltimateUser()) {
                 if (mAuth.getCurrentUser() == null) {
-                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, true);
+                    AccountSheet accountLoginSheet = new AccountSheet(mAuth, true);
                     accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
                 }
             }
@@ -355,7 +358,7 @@ public class SettingsScreen extends AppCompatActivity {
             if (mAuth.getCurrentUser() != null) {
                 showBackupRestoreInfo(8);
             } else {
-                AccountSheet accountLoginSheet = new AccountSheet(mAuth, currentUser, false);
+                AccountSheet accountLoginSheet = new AccountSheet(mAuth, false);
                 accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
             }
         });
@@ -567,6 +570,13 @@ public class SettingsScreen extends AppCompatActivity {
             realm.commitTransaction();
         });
 
+        enableSqaureStyleForChecklists.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            realmStatus();
+            realm.beginTransaction();
+            currentUser.setShowChecklistCheckbox(isChecked);
+            realm.commitTransaction();
+        });
+
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
@@ -756,6 +766,7 @@ public class SettingsScreen extends AppCompatActivity {
         findViewById(R.id.gap_sixteen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_seventeen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_eighteen).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_nineteen).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings() {
@@ -774,6 +785,7 @@ public class SettingsScreen extends AppCompatActivity {
         hideBudgetButton.setChecked(currentUser.isHideBudget());
         twentyFourHourFormatButton.setChecked(currentUser.isTwentyFourHourFormat());
         editableNoteButton.setChecked(currentUser.isEnableEditableNoteButton());
+        enableSqaureStyleForChecklists.setChecked(currentUser.isShowChecklistCheckbox());
         if (currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));
@@ -840,6 +852,8 @@ public class SettingsScreen extends AppCompatActivity {
         RealmSingleton.setCloseRealm(false);
         Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
         startActivity(intent);
+        if(currentUser != null)
+            currentUser.removeAllChangeListeners();
         finish();
         if(!AppData.isDisableAnimation)
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -1444,6 +1458,8 @@ public class SettingsScreen extends AppCompatActivity {
         Log.d("Here", "Keep realm open in SettingsScreen");
         Intent intent = new Intent(this, Homepage.class);
         startActivity(intent);
+        if(currentUser != null)
+            currentUser.removeAllChangeListeners();
         finish();
         if(!AppData.isDisableAnimation)
             overridePendingTransition(0, R.anim.hide_to_bottom);

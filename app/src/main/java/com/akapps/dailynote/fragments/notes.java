@@ -166,25 +166,7 @@ public class notes extends Fragment{
         // initialize database and get data
         realm = RealmSingleton.getInstance(context);
 
-        if (realm.where(User.class).findAll().size() == 0)
-            addUser();
-        else {
-            user = realm.where(User.class).findFirst();
-            if(user.getTitleLines() == 0){
-                realm.beginTransaction();
-                user.setTitleLines(3);
-                user.setContentLines(3);
-                realm.commitTransaction();
-            }
-            if(user.getItemsSeparator() == null){
-                realm.beginTransaction();
-                user.setItemsSeparator("newline");
-                user.setSublistSeparator("space");
-                user.setBudgetCharacter("+$");
-                user.setExpenseCharacter("$");
-                realm.commitTransaction();
-            }
-        }
+        user = RealmSingleton.getUser();
 
         // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli(context);
@@ -714,15 +696,6 @@ public class notes extends Fragment{
             closeFilter();
     }
 
-    private void addUser(){
-        int uniqueId = UniqueIDGenerator.generateUniqueID();
-        user = new User(uniqueId);
-        realm.beginTransaction();
-        realm.insert(user);
-        realm.commitTransaction();
-        AppAnalytics.logNewUser(context, uniqueId);
-    }
-
     private void filteringByCategory(RealmResults<Note> query, boolean isCategory){
         isNotesFiltered = true;
         isListEmpty(query.size(), false);
@@ -1011,6 +984,10 @@ public class notes extends Fragment{
     }
 
     public void unSelectAllNotes(){
+        if(realm.isClosed()){
+            refreshFragment(true);
+            return;
+        }
         RealmResults<Note> realmResults = realm.where(Note.class).equalTo("isSelected", true).findAll();
         if(realmResults.size()!=0) {
             realm.beginTransaction();

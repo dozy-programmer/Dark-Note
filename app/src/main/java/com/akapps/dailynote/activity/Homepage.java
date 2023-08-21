@@ -9,6 +9,7 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import io.realm.Realm;
@@ -32,8 +33,9 @@ public class Homepage extends FragmentActivity {
         if (AppData.isAppFirstStarted) {
             // initialize database and get data
             realm = RealmSingleton.getInstance(this);
-
-            user = realm.where(User.class).findFirst();
+            user = RealmHelper.getUser(this, "home");
+            if(user != null)
+                user.removeAllChangeListeners();
             realm.beginTransaction();
             RealmResults<Note> notesWithWidgets = realm.where(Note.class)
                     .greaterThan("widgetId", 0).findAll();

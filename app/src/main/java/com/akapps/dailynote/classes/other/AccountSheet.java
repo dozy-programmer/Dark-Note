@@ -52,9 +52,8 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
     private FragmentActivity activity;
 
-    public AccountSheet(FirebaseAuth mAuth, User currentUser, boolean signUp){
+    public AccountSheet(FirebaseAuth mAuth, boolean signUp){
         this.mAuth = mAuth;
-        this.currentUser = currentUser;
         this.signUp = signUp;
     }
 
@@ -63,6 +62,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         View view = inflater.inflate(R.layout.bottom_sheet_account_login, container, false);
 
         activity = getActivity();
+        currentUser = RealmSingleton.getUser();
 
         // layout
         title = view.findViewById(R.id.title);

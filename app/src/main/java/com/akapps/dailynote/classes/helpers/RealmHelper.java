@@ -1,14 +1,14 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
-import android.util.Log;
-
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.data.User;
 import java.io.File;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -164,6 +164,32 @@ public class RealmHelper {
         Note note = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
         if(note == null) return 0;
         return note.getPinNumber();
+    }
+
+    public static User getUser(Context context, String location){
+        User user = getRealm(context).where(User.class).findFirst();
+        updateUser(context, user == null ? addUser(context) : user, location);
+
+        return user;
+    }
+
+    private static User addUser(Context context){
+        int uniqueId = UniqueIDGenerator.generateUniqueID();
+        User user = new User(uniqueId);
+        Realm realm = getRealm(context);
+        realm.beginTransaction();
+        realm.insert(user);
+        realm.commitTransaction();
+        AppAnalytics.logNewUser(context, uniqueId);
+        return getRealm(context).where(User.class).findFirst();
+    }
+
+    public static void updateUser(Context context, User user, String location) {
+        RealmSingleton.updateUser(getRealm(context).copyFromRealm(user));
+
+        user.addChangeListener((RealmChangeListener<User>) object -> {
+            RealmSingleton.updateUser(getRealm(context).copyFromRealm(user));
+        });
     }
 
 }

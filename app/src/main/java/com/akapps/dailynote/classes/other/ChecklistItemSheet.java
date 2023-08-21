@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,7 +135,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment{
 
         currentNote = ((NoteEdit)getActivity()).currentNote;
         realm = RealmSingleton.getInstance(getContext());
-        user = ((NoteEdit)getActivity()).user;
+        user = RealmSingleton.getUser();
 
         // Initialize the SDK
         if (!Places.isInitialized())

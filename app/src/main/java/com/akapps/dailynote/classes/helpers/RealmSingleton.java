@@ -3,11 +3,14 @@ package com.akapps.dailynote.classes.helpers;
 import android.content.Context;
 import android.util.Log;
 
+import com.akapps.dailynote.classes.data.User;
+
 import io.realm.Realm;
 
 public class RealmSingleton {
     private static Realm realmInstance;
     private static boolean closeRealm;
+    private static User user;
 
     private RealmSingleton() {
         // Private constructor to prevent instantiation
@@ -23,6 +26,14 @@ public class RealmSingleton {
             }
         }
         return realmInstance;
+    }
+
+    public static User getUser(){
+        return user;
+    }
+
+    public static void updateUser(User updatedUser){
+        user = updatedUser;
     }
 
     public static void setCloseRealm(boolean newValue){

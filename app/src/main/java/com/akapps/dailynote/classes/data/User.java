@@ -44,6 +44,7 @@ public class User extends RealmObject {
     private boolean twentyFourHourFormat;
     private boolean enableEditableNoteButton;
     private boolean disableAnimation;
+    private boolean showChecklistCheckbox;
 
     // note security and retrieval of password
     private String securityWord;
@@ -66,7 +67,7 @@ public class User extends RealmObject {
         sublistSeparator = "space";
         budgetCharacter = "+$";
         expenseCharacter = "$";
-        enableEditableNoteButton = disableAnimation = false;
+        enableEditableNoteButton = disableAnimation = showChecklistCheckbox = false;
     }
 
     public int getUserId() {
@@ -331,5 +332,13 @@ public class User extends RealmObject {
 
     public void setDisableAnimation(boolean disableAnimation) {
         this.disableAnimation = disableAnimation;
+    }
+
+    public boolean isShowChecklistCheckbox() {
+        return showChecklistCheckbox;
+    }
+
+    public void setShowChecklistCheckbox(boolean showChecklistCheckbox) {
+        this.showChecklistCheckbox = showChecklistCheckbox;
     }
 }

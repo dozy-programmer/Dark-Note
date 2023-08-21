@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.akapps.dailynote.R;
@@ -55,9 +54,7 @@ public class AudioManager {
 
         try {
             recorder.prepare();
-        } catch (IOException e) {
-            Log.e("Here", "prepare() failed");
-        }
+        } catch (IOException e) {}
 
         recorder.start();
         isRecording = true;
@@ -100,9 +97,7 @@ public class AudioManager {
             player.start();
             isPlaying = true;
             isStopped = isPaused = false;
-        } catch (IOException e) {
-            Log.e("Here", "prepare() failed");
-        }
+        } catch (IOException e) {}
         Helper.startTimer(handlerTimer, 0);
         updateTextDuration(currentDuration, audioSeekbar);
         pausePlayButton.setImageDrawable(activity.getDrawable(R.drawable.pause_icon));
@@ -162,7 +157,6 @@ public class AudioManager {
                 }
                 else{
                     AppData.timerDuration--;
-                    Log.d("Here", "~~~~~~~~~ should be stopped");
                     pausePlaying();
                     pausePlayButton.setImageDrawable(activity.getDrawable(R.drawable.play_icon));
                 }

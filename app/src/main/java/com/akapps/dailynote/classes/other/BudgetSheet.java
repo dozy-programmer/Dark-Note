@@ -90,7 +90,6 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
             List<DonutSection> list = getListOfExpenses(currentNote.getChecklist(), errorMessage, budget);
 
             if (list.size() > 1) {
-                Log.d("Here", "@@@ " + Arrays.toString(list.toArray()));
                 updateErrorMessage("\n\n" + "Budget is missing, add using " +
                         budgetKey + "XXXX" + "\n\nExample: " + budgetKey + "1000");
             } else {
@@ -159,7 +158,6 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                                 .trim().replaceAll(",", "");
 
                         try {
-                            Log.d("Here", "@@@@@@@@@@@" + currentTokenTrimmed);
                             Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
                             currentExpenseAmount += currentTokenDouble;
                             currentSubExpenseTotal += currentTokenDouble;

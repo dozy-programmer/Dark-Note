@@ -140,7 +140,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean dismissDialog;
     private boolean isAppPaused;
     private boolean isShowingPhotos;
-    private boolean isEditLockedMode;
+    private boolean isEditLockedMode = true;
     private String currentDateTimeSelected;
     private Calendar dateSelected;
     private int countPicsNotFound;
@@ -227,7 +227,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (savedInstanceState != null)
             noteId = savedInstanceState.getInt("id");
 
-        user = realm.where(User.class).findFirst();
+        user = RealmSingleton.getUser();
         initializeLayout(savedInstanceState);
 
         if (user.isModeSettings()) {
@@ -472,6 +472,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
             // TO DO, see if do not edit note toggle is enabled and then run the following
             if(user.isEnableEditableNoteButton() && !isNewNoteCopy){
+                note.setInputEnabled(!isEditLockedMode);
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
                         isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
@@ -559,7 +560,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         scrollView.setOnClickListener(view -> {
-            if (currentNote != null && !currentNote.isCheckList()) {
+            if (currentNote != null && !currentNote.isCheckList() && !isEditLockedMode) {
                 note.focusEditor();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(note, InputMethodManager.SHOW_IMPLICIT);
@@ -1254,7 +1255,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
             noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
             noteMenu.addItem(7, new IconPowerMenuItem(getDrawable(R.drawable.filter_icon), "Sort"));
-            if (realm.where(User.class).findFirst().isEnableSublists()) {
+            if (user.isEnableSublists()) {
                 String sublistStatus = "";
                 if (currentNote.isEnableSublist()) {
                     sublistStatus = sublistStatus + "Sub-List";
@@ -1337,7 +1338,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 decreaseTextSize.setAlpha(new Float(1.0));
                 increaseTextSize.setAlpha(new Float(1.0));
             } else if (item.getTitle().equals("Info")) {
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(user, currentNote, false);
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, false);
                 noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             } else if (item.getTitle().contains("Sub-List"))
                 updateSublistEnabledStatus();
@@ -1471,8 +1472,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             span = 2;
         GridLayoutManager layout = new GridLayoutManager(context, span);
         checkListRecyclerview.setLayoutManager(layout);
-        checklistAdapter = new checklist_recyclerview(realm.where(User.class).findFirst(),
-                currentList, currentNote, realm, this);
+        checklistAdapter = new checklist_recyclerview(currentList, currentNote, realm, this);
         checklistAdapter.setHasStableIds(true);
         checkListRecyclerview.setAdapter(checklistAdapter);
     }
