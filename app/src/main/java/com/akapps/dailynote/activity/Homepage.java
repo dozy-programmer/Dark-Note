@@ -2,7 +2,9 @@ package com.akapps.dailynote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.FragmentActivity;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
@@ -12,6 +14,7 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -34,7 +37,7 @@ public class Homepage extends FragmentActivity {
             // initialize database and get data
             realm = RealmSingleton.getInstance(this);
             user = RealmHelper.getUser(this, "home");
-            if(user != null)
+            if (user != null)
                 user.removeAllChangeListeners();
             realm.beginTransaction();
             RealmResults<Note> notesWithWidgets = realm.where(Note.class)
@@ -44,8 +47,11 @@ public class Homepage extends FragmentActivity {
             realm.commitTransaction();
 
             if (user != null) {
-                if (user.isModeSettings())
-                    AppData.getAppData().setDarkerMode(true);
+                if (user.getScreenMode().getValue() == 0) {
+                    realm.beginTransaction();
+                    user.setScreenMode(user.isModeSettings() ? 1 : 2);
+                    realm.commitTransaction();
+                }
 
                 if (user.isDisableAnimation())
                     AppData.isDisableAnimation = true;

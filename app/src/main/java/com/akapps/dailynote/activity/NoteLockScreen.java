@@ -1,24 +1,30 @@
 package com.akapps.dailynote.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.biometric.BiometricPrompt;
-import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.ContextCompat;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
+
 import java.util.concurrent.Executor;
+
 import www.sanju.motiontoast.MotionToast;
 
 public class NoteLockScreen extends AppCompatActivity {
@@ -52,30 +58,32 @@ public class NoteLockScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_lock_screen);
 
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
         context = this;
 
         initializeLayout();
 
-        if(AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.darker_mode));
             lockView.setBackgroundColor(getColor(R.color.black));
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(!isAppLocked) {
+        if (!isAppLocked) {
             finish();
-            if(!AppData.isDisableAnimation)
+            if (!AppData.isDisableAnimation)
                 overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
     }
 
-    private void initializeLayout(){
+    private void initializeLayout() {
         noteId = getIntent().getIntExtra("id", -1);
         notePinNumber = getIntent().getIntExtra("pin", -1);
         securityWord = getIntent().getStringExtra("securityWord");
@@ -101,19 +109,19 @@ public class NoteLockScreen extends AppCompatActivity {
         lockView.setDeleteButtonPressedColor(getColor(R.color.red));
 
         // if there is no pin number/it is 0, then just open note
-        if(notePinNumber==0)
+        if (notePinNumber == 0)
             openNote();
 
         // shows the note title so that user knows which note they are trying to open
         noteTitleText.setText(noteTitle);
         // if fingerprint is not enabled for note, don't show icon button
-        if(!fingerprint)
+        if (!fingerprint)
             fingerprintIcon.setVisibility(View.GONE);
 
         lockView.setPinLockListener(new PinLockListener() {
             @Override
             public void onComplete(String pin) {
-                if(Integer.parseInt(pin) == notePinNumber)
+                if (Integer.parseInt(pin) == notePinNumber)
                     openNote();
                 else
                     changeLottieAnimationColor(lockIcon, R.color.red);
@@ -126,7 +134,7 @@ public class NoteLockScreen extends AppCompatActivity {
 
             @Override
             public void onPinChange(int pinLength, String intermediatePin) {
-                if(pinEmpty.getVisibility() == View.VISIBLE)
+                if (pinEmpty.getVisibility() == View.VISIBLE)
                     pinEmpty.setVisibility(View.INVISIBLE);
 
                 changeLottieAnimationColor(lockIcon, R.color.cornflower_blue);
@@ -160,19 +168,18 @@ public class NoteLockScreen extends AppCompatActivity {
         });
     }
 
-    private void changeLottieAnimationColor(ImageView icon, int newColor){
+    private void changeLottieAnimationColor(ImageView icon, int newColor) {
         icon.setColorFilter(context.getResources().getColor(newColor));
     }
 
     // if pin is correct, note is opened
-    public void openNote(){
-        if(isAppLocked){
+    public void openNote() {
+        if (isAppLocked) {
             Intent homepage;
             homepage = new Intent(this, Homepage.class);
             homepage.putExtra("openApp", true);
             startActivity(homepage);
-        }
-        else {
+        } else {
             Intent note;
             note = new Intent(this, NoteEdit.class);
             note.putExtra("id", noteId);
@@ -183,13 +190,13 @@ public class NoteLockScreen extends AppCompatActivity {
     }
 
     // shows a dialog for user to get their note pin
-    private void forgotPasswordDialog(){
+    private void forgotPasswordDialog() {
         InfoSheet info = new InfoSheet(5, securityWord, isAppLocked);
         info.show(getSupportFragmentManager(), info.getTag());
     }
 
     // shows fingerprint dialog for user to use fingerprint
-    private void fingerprintDialog(){
+    private void fingerprintDialog() {
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
                 .setTitle("Biometric login for note")
                 .setNegativeButtonText("Use pin instead")

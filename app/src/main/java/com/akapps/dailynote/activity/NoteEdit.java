@@ -78,7 +78,9 @@ import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,6 +88,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import jp.wasabeef.richeditor.RichEditor;
@@ -152,7 +155,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isChanged;
     private boolean isWidget;
     private Handler handler;
-    private boolean isDarkerMode;
     private boolean dismissNotification;
     // dialog
     // dialog
@@ -220,7 +222,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if (noteId == -1) {
             isNewNote = true;
             isNewNoteCopy = true;
-        } else if(!AppData.isDisableAnimation)
+        } else if (!AppData.isDisableAnimation)
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
         // if orientation changes, then position is updated
@@ -230,10 +232,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         user = RealmSingleton.getUser();
         initializeLayout(savedInstanceState);
 
-        if (user.isModeSettings()) {
+        if (user.getScreenMode() == User.Mode.Dark) {
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
-            isDarkerMode = true;
-            AppData.getAppData().isDarkerMode = true;
             scrollView.setBackgroundColor(context.getColor(R.color.darker_mode));
             richtextEditorScrollView.setBackgroundColor(getColor(R.color.darker_mode));
             note.setBackgroundColor(context.getColor(R.color.darker_mode));
@@ -248,7 +248,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             palleteIconColor.setColorFilter(getColor(R.color.ultra_white));
             budget.setColorNormal(getColor(R.color.not_too_dark_gray));
             formatMenu.setBackgroundColor(getColor(R.color.not_too_dark_gray));
-        } else {
+        } else if (user.getScreenMode() == User.Mode.Gray) {
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
             searchEditText.setTextColor(context.getColor(R.color.light_gray));
             richtextEditorScrollView.setBackgroundColor(getColor(R.color.gray));
@@ -257,6 +257,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (noteId != -1 && !isNewNote)
                 if (currentNote.getTextColor() <= 0)
                     note.setEditorFontColor(context.getColor(R.color.ultra_white));
+        } else if (user.getScreenMode() == User.Mode.Light) {
+
         }
 
         hideRichTextStatus = user.isHideRichTextEditor();
@@ -294,10 +296,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     @Override
     public void onBackPressed() {
-        if(realm.isClosed()) currentNote = RealmHelper.getNote(context, noteId);
+        if (realm.isClosed()) currentNote = RealmHelper.getNote(context, noteId);
         if (currentNote == null) {
             finish("note is null");
-            if(!AppData.isDisableAnimation)
+            if (!AppData.isDisableAnimation)
                 overridePendingTransition(R.anim.stay, R.anim.right_out);
         } else if (currentNote.getTitle().isEmpty() && currentNote.getNote().isEmpty() &&
                 currentNote.getChecklist().size() == 0)
@@ -313,7 +315,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Helper.showMessage(this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
 
             finish("on-back press");
-            if(!AppData.isDisableAnimation)
+            if (!AppData.isDisableAnimation)
                 overridePendingTransition(R.anim.stay, R.anim.right_out);
         }
     }
@@ -360,15 +362,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             lockScreen.putExtra("securityWord", currentNote.getSecurityWord());
             lockScreen.putExtra("fingerprint", currentNote.isFingerprint());
             startActivity(lockScreen);
-            if(!AppData.isDisableAnimation)
+            if (!AppData.isDisableAnimation)
                 overridePendingTransition(R.anim.stay, R.anim.right_out);
             finish();
-        }
-        else if (realm.isClosed()) {
+        } else if (realm.isClosed()) {
             finish();
             Intent refreshActivity = new Intent(this, this.getClass());
             startActivity(refreshActivity);
-            if(!AppData.isDisableAnimation)
+            if (!AppData.isDisableAnimation)
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } else if (!realm.isClosed() && currentNote != null) {
             category.setText(currentNote.getCategory());
@@ -471,7 +472,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             formatMenu.setVisibility(View.VISIBLE);
 
             // TO DO, see if do not edit note toggle is enabled and then run the following
-            if(user.isEnableEditableNoteButton() && !isNewNoteCopy){
+            if (user.isEnableEditableNoteButton() && !isNewNoteCopy) {
                 note.setInputEnabled(!isEditLockedMode);
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
@@ -543,7 +544,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
 
             // TO DO, see if do not edit note toggle is enabled and then run the following
-            if(user.isEnableEditableNoteButton() && !isNewNoteCopy){
+            if (user.isEnableEditableNoteButton() && !isNewNoteCopy) {
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
                         isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
@@ -651,9 +652,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 hideButtons();
                 if (currentNote.isCheckList())
                     addCheckListItem.setVisibility(View.VISIBLE);
-                else{
+                else {
                     // TO DO, see if do not edit note toggle is enabled and then run the following
-                    if(user.isEnableEditableNoteButton()) {
+                    if (user.isEnableEditableNoteButton()) {
                         addCheckListItem.setVisibility(View.VISIBLE);
                         addCheckListItem.setImageDrawable(getDrawable(
                                 isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
@@ -711,9 +712,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         addCheckListItem.setOnClickListener(v -> {
             if (currentNote.isCheckList() && !isShowingPhotos)
                 openNewItemDialog();
-            else if(isShowingPhotos)
+            else if (isShowingPhotos)
                 showCameraDialog();
-            else{
+            else {
                 note.setInputEnabled(isEditLockedMode);
                 isEditLockedMode = !isEditLockedMode;
                 // TO DO, see if do not edit note toggle is enabled and then run the following
@@ -765,7 +766,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 openMenuDialog());
 
         noteColor.setOnClickListener(v -> {
-            ColorSheet colorSheet = new ColorSheet(isDarkerMode);
+            ColorSheet colorSheet = new ColorSheet();
             colorSheet.show(getSupportFragmentManager(), colorSheet.getTag());
         });
 
@@ -795,7 +796,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         }
         finish("Closing and maybe deleting note");
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             overridePendingTransition(R.anim.stay, R.anim.right_out);
     }
 
@@ -810,11 +811,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        if (isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             searchLayout.setCardBackgroundColor(context.getColor(R.color.darker_mode));
-        else {
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
             searchEditText.setTextColor(context.getColor(R.color.ultra_white));
             searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
         }
 
         searchEditText.setVisibility(View.VISIBLE);
@@ -857,10 +860,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         pinNoteButton.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
 
-        if (isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) photosNote.getLayoutParams();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1228,8 +1234,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             lockStatus += "ed";
 
         int backgroundColor = R.color.light_gray;
-        if (user.isModeSettings())
+        if (user.getScreenMode() == User.Mode.Dark)
             backgroundColor = R.color.darker_mode;
+        else if (user.getScreenMode() == User.Mode.Light) {
+
+        }
 
         IconPowerMenuItem reminderItem = new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder");
         noteMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(false))
@@ -1450,10 +1459,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             photosNote.setCardBackgroundColor(getColor(R.color.blue));
         } else {
             isShowingPhotos = false;
-            if (isDarkerMode)
+            if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
                 photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            else
+            else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
                 photosNote.setCardBackgroundColor(getColor(R.color.light_gray));
+            else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+            }
         }
 
         photosScrollView.setVisibility(visibility);
@@ -1615,7 +1627,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     // determines if there were changes to the note
     private boolean noteChanged() {
         boolean isTitleChanged = !title.getText().toString().equals(oldTitle);
-        boolean isNoteChanged = !note.getHtml().toString().equals(oldNote);
+        boolean isNoteChanged = !note.getHtml().equals(oldNote);
         return isTitleChanged || isNoteChanged;
     }
 

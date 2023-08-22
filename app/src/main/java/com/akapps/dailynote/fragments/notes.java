@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -20,39 +16,45 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
-import com.akapps.dailynote.classes.helpers.AppAnalytics;
+import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
-import com.akapps.dailynote.classes.helpers.UniqueIDGenerator;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
-import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+
 import java.io.File;
 import java.util.ArrayList;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
 
-public class notes extends Fragment{
+public class notes extends Fragment {
 
     // layout
     private View view;
@@ -90,7 +92,6 @@ public class notes extends Fragment{
     private boolean isTrashSelected;
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
-    private boolean isDarkerMode;
     private int lightColor;
 
     // dialog
@@ -105,7 +106,8 @@ public class notes extends Fragment{
     private TextView subtitle;
     private TextView subSubTitle;
 
-    public notes() { }
+    public notes() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,7 +136,7 @@ public class notes extends Fragment{
                     else
                         note.putExtra("otherAppTitle", "");
 
-                    Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                    Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                     ArrayList<String> images = new ArrayList<>();
                     if (imageUri != null) {
                         File newFile = Helper.createFile(getActivity(), "image", ".png");
@@ -144,14 +146,14 @@ public class notes extends Fragment{
 
                     ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
                     if (imageUris != null) {
-                        for(Uri image: imageUris){
+                        for (Uri image : imageUris) {
                             File newFile = Helper.createFile(getActivity(), "image", ".png");
                             String filePath = Helper.createFile(context, image, newFile).getAbsolutePath();
                             images.add(filePath);
                         }
                     }
 
-                    if(images.size() > 0)
+                    if (images.size() > 0)
                         note.putStringArrayListExtra("images", images);
 
                     getActivity().startActivity(note);
@@ -178,20 +180,19 @@ public class notes extends Fragment{
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
 
-        if(user.isShowFolderNotes())
+        if (user.isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if(isSearchingNotes) {
+                if (isSearchingNotes) {
                     hideSearchBar();
                     closeMultipleNotesLayout();
                     showData();
                     isListEmpty(allNotes.size(), false);
-                }
-                else {
+                } else {
                     getActivity().moveTaskToBack(true);
                 }
             }
@@ -203,14 +204,11 @@ public class notes extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        if(user.isModeSettings()) {
-            isDarkerMode = true;
+        if (user.getScreenMode() == User.Mode.Dark) {
             lightColor = context.getColor(R.color.darker_mode);
             view.setBackgroundColor(lightColor);
             getActivity().getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
         }
-
-        AppData.getAppData().setDarkerMode(isDarkerMode);
 
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
@@ -219,7 +217,7 @@ public class notes extends Fragment{
 
         updateToolbarColors();
 
-        if(user.isOpenFoldersOnStart() && AppData.isAppFirstStarted){
+        if (user.isOpenFoldersOnStart() && AppData.isAppFirstStarted) {
             AppData.isAppFirstStarted = false;
             Helper.saveBooleanPreference(context, true, "app_started");
             Intent category = new Intent(getActivity(), CategoryScreen.class);
@@ -235,17 +233,17 @@ public class notes extends Fragment{
         super.onResume();
 
         Helper.unSetOrientation(getActivity(), context);
-        if(isSearchingNotes) return;
+        if (isSearchingNotes) return;
 
-        if(realm.isClosed())
+        if (realm.isClosed())
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
-        else{
+        else {
             adapterNotes.notifyDataSetChanged();
 
             // if list is empty, then it shows an empty layout
             isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
 
-            if(RealmSingleton.getInstance(context).where(Note.class).findAll().size() == 0)
+            if (RealmSingleton.getInstance(context).where(Note.class).findAll().size() == 0)
                 Helper.deleteAppFiles(context);
         }
     }
@@ -254,23 +252,21 @@ public class notes extends Fragment{
     public void onDestroy() {
         RealmSingleton.closeRealmInstance("fragment notes onDestroy");
 
-        if(customSheet != null)
+        if (customSheet != null)
             customSheet.dismiss();
 
         Helper.deleteCache(context);
         super.onDestroy();
     }
 
-    private void updateToolbarColors(){
-        if(user.isModeSettings()) {
-            AppData.getAppData().isDarkerMode = true;
+    private void updateToolbarColors() {
+        if (user.getScreenMode() == User.Mode.Dark) {
             searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             filterNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             settings.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             restoreNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             categoryNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-        }
-        else{
+        } else {
             searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
             filterNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
             settings.setCardBackgroundColor(context.getColor(R.color.light_gray));
@@ -279,27 +275,25 @@ public class notes extends Fragment{
         }
     }
 
-    private void setRecyclerviewLayout(){
+    private void setRecyclerviewLayout() {
         int span = 2;
-        if(Helper.isTablet(context))
+        if (Helper.isTablet(context))
             span = 3;
 
-        if(user.getLayoutSelected().equals("stag")) {
+        if (user.getLayoutSelected().equals("stag")) {
             StaggeredGridLayoutManager layout = new StaggeredGridLayoutManager(span, LinearLayoutManager.VERTICAL);
             layout.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
             recyclerViewNotes.setLayoutManager(layout);
-        }
-        else if(user.getLayoutSelected().equals("grid")){
+        } else if (user.getLayoutSelected().equals("grid")) {
             GridLayoutManager layout = new GridLayoutManager(context, span);
             recyclerViewNotes.setLayoutManager(layout);
-        }
-        else if(user.getLayoutSelected().equals("row")){
+        } else if (user.getLayoutSelected().equals("row")) {
             LinearLayoutManager layout = new LinearLayoutManager(context);
             recyclerViewNotes.setLayoutManager(layout);
         }
     }
 
-    private void initializeUi(){
+    private void initializeUi() {
         fragmentTitle = view.findViewById(R.id.fragment_title);
         sortedBy = view.findViewById(R.id.sorted_by);
         searchLayout = view.findViewById(R.id.search_padding);
@@ -324,18 +318,17 @@ public class notes extends Fragment{
         addCheckListTwo = view.findViewById(R.id.add_checklist_2);
     }
 
-    private void showData(){
+    private void showData() {
         getSortDataAndSort();
     }
 
-    private void initializeLayout(){
+    private void initializeLayout() {
         setRecyclerviewLayout();
 
-        if(user.isIncreaseFabSize()){
+        if (user.isIncreaseFabSize()) {
             addMenuLarge.setVisibility(View.VISIBLE);
             addMenu.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             addMenuLarge.setVisibility(View.GONE);
             addMenu.setVisibility(View.VISIBLE);
         }
@@ -344,41 +337,38 @@ public class notes extends Fragment{
         int searchPlateId = searchEditText.getContext().getResources()
                 .getIdentifier("android:id/search_plate", null, null);
         View searchPlateView = searchEditText.findViewById(searchPlateId);
-        if (searchPlateView != null){
-            if(isDarkerMode){
+        if (searchPlateView != null) {
+            if (user.getScreenMode() == User.Mode.Dark) {
                 searchPlateView.setBackgroundColor(getActivity().getColor(R.color.darker_mode));
                 int id = searchEditText.getContext()
                         .getResources()
                         .getIdentifier("android:id/search_src_text", null, null);
-                TextView textView = (TextView) searchEditText.findViewById(id);
+                TextView textView = searchEditText.findViewById(id);
                 textView.setTextColor(getActivity().getColor(R.color.black));
                 ((EditText) searchEditText.findViewById(id)).setHintTextColor(context.getColor(R.color.ultra_white));
                 ((EditText) searchEditText.findViewById(id)).setTextColor(context.getColor(R.color.ultra_white));
-            }
-            else
+            } else
                 searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray));
         }
 
         settings.setOnClickListener(v -> {
-            if(enableSelectMultiple){
+            if (enableSelectMultiple) {
                 int numSelectedNotes = Integer.parseInt(fragmentTitle.getText().toString().replace(" Selected", ""));
                 ExportNotesSheet exportNotesSheet = new ExportNotesSheet(numSelectedNotes, this, false);
                 exportNotesSheet.show(getActivity().getSupportFragmentManager(), exportNotesSheet.getTag());
-            }
-            else
+            } else
                 openSettings();
         });
 
         addMenuLarge.setOnMenuButtonClickListener(v -> {
-            if(isSearchingNotes){
+            if (isSearchingNotes) {
                 hideSearchBar();
                 closeMultipleNotesLayout();
                 showData();
-            }
-            else if(isNotesFiltered || isTrashSelected || enableSelectMultiple)
+            } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
                 clearMultipleSelect();
             else {
-                if(addMenuLarge.isOpened())
+                if (addMenuLarge.isOpened())
                     addMenuLarge.close(true);
                 else
                     addMenuLarge.open(true);
@@ -386,14 +376,13 @@ public class notes extends Fragment{
         });
 
         addMenu.setOnMenuButtonClickListener(v -> {
-            if(isSearchingNotes){
+            if (isSearchingNotes) {
                 hideSearchBar();
                 closeMultipleNotesLayout();
                 showData();
-            }
-            else if(isNotesFiltered || isTrashSelected || enableSelectMultiple)
+            } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
                 clearMultipleSelect();
-            else{
+            else {
                 if (addMenu.isOpened())
                     addMenu.close(true);
                 else
@@ -409,22 +398,21 @@ public class notes extends Fragment{
         });
 
         categoryNotes.setOnClickListener(v -> {
-           Intent category = new Intent(getActivity(), CategoryScreen.class);
-           Helper.setOrientation(getActivity(), context);
-           if (enableSelectMultiple)
-               category.putExtra("multi_select", true);
-           startActivityForResult(category, 5);
+            Intent category = new Intent(getActivity(), CategoryScreen.class);
+            Helper.setOrientation(getActivity(), context);
+            if (enableSelectMultiple)
+                category.putExtra("multi_select", true);
+            startActivityForResult(category, 5);
         });
 
         search.setOnClickListener(v -> {
             addMenu.close(true);
             addMenuLarge.close(true);
-            if(deletingMultipleNotes){
+            if (deletingMultipleNotes) {
                 isAllSelected = false;
                 InfoSheet info = new InfoSheet(3, true, notes.this, isTrashSelected);
                 info.show(getActivity().getSupportFragmentManager(), info.getTag());
-            }
-            else {
+            } else {
                 showSearchBar();
                 isListEmpty(0, true);
                 populateAdapter(realm.where(Note.class).equalTo("title", "~~test~~").findAll());
@@ -468,13 +456,12 @@ public class notes extends Fragment{
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if(isSearchingNotes) {
-                    if(s.length() == 0){
+                if (isSearchingNotes) {
+                    if (s.length() == 0) {
                         RealmResults<Note> showEmptyLayout = realm.where(Note.class).equalTo("pinNumber", -1).findAll();
                         isListEmpty(0, true);
                         populateAdapter(showEmptyLayout);
-                    }
-                    else
+                    } else
                         searchNotesAndUpdate(s);
                 }
                 return false;
@@ -482,7 +469,7 @@ public class notes extends Fragment{
         });
     }
 
-    private void updateDateEditedMilli(){
+    private void updateDateEditedMilli() {
         RealmResults<Note> resultsCreated = realm.where(Note.class)
                 .equalTo("dateCreatedMilli", 0)
                 .findAll();
@@ -491,7 +478,7 @@ public class notes extends Fragment{
                 .equalTo("dateEditedMilli", 0)
                 .findAll();
 
-        if(resultsCreated.size() != 0) {
+        if (resultsCreated.size() != 0) {
             for (int i = 0; i < resultsCreated.size(); i++) {
                 realm.beginTransaction();
                 Note currentNote = resultsCreated.get(i);
@@ -500,7 +487,7 @@ public class notes extends Fragment{
             }
         }
 
-        if(resultsEdited.size() != 0) {
+        if (resultsEdited.size() != 0) {
             for (int i = 0; i < resultsEdited.size(); i++) {
                 realm.beginTransaction();
                 Note currentNote = resultsEdited.get(i);
@@ -509,11 +496,11 @@ public class notes extends Fragment{
             }
         }
 
-        if(resultsCreated.size() > 0 || resultsEdited.size() > 0)
+        if (resultsCreated.size() > 0 || resultsEdited.size() > 0)
             updateDateEditedMilli();
     }
 
-    public void clearMultipleSelect(){
+    public void clearMultipleSelect() {
         numMultiSelect = -1;
         unSelectAllNotes();
         enableSelectMultiple = isNotesFiltered = false;
@@ -522,7 +509,7 @@ public class notes extends Fragment{
         showData();
     }
 
-    private void openSettings(){
+    private void openSettings() {
         savePreferences();
         int size = realm.where(Note.class).findAll().size();
         String userId = String.valueOf(user.getUserId());
@@ -532,7 +519,7 @@ public class notes extends Fragment{
         RealmSingleton.setCloseRealm(false);
         startActivity(settings);
         getActivity().finish();
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
     }
 
@@ -557,28 +544,24 @@ public class notes extends Fragment{
                     clearMultipleSelect();
                 }
             }
-        }
-        else if (resultCode == -4 || resultCode == -2) {
-            if(resultCode == -2){
+        } else if (resultCode == -4 || resultCode == -2) {
+            if (resultCode == -2) {
                 filteringByCategory(realm.where(Note.class).findAll(), true);
                 restoreNotes.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 closeMultipleNotesLayout();
                 Helper.showMessage(getActivity(), "UnSelected", "All Selected note(s) have " +
                         "been unselected from category", MotionToast.TOAST_SUCCESS);
                 clearMultipleSelect();
             }
-        }
-        else if (resultCode == -3) {
+        } else if (resultCode == -3) {
             restoreNotes.setVisibility(View.GONE);
             RealmResults<Note> category = realm.where(Note.class)
                     .equalTo("trash", false)
                     .equalTo("archived", false)
                     .equalTo("category", "none").findAll();
             filteringByCategory(category, true);
-        }
-        else if(resultCode == -5){
+        } else if (resultCode == -5) {
             RealmResults<Note> queryDeletedNotes = realm.where(Note.class).equalTo("trash", true).findAll();
             isListEmpty(queryDeletedNotes.size(), false);
             populateAdapter(queryDeletedNotes);
@@ -590,56 +573,50 @@ public class notes extends Fragment{
             unSelectAllNotes();
             isNotesFiltered = true;
             closeFilter();
-        }
-        else if(resultCode == -10 || resultCode == -9 || resultCode == -8){
+        } else if (resultCode == -10 || resultCode == -9 || resultCode == -8) {
             RealmResults<Note> queryArchivedNotes =
                     realm.where(Note.class)
                             .equalTo("archived", true)
                             .equalTo("trash", false).findAll();
 
-            if(resultCode == -8)
+            if (resultCode == -8)
                 Helper.showMessage(getActivity(), "Archived", "All Selected note(s) have " +
                         "been archived", MotionToast.TOAST_SUCCESS);
-            else if(resultCode == -9)
+            else if (resultCode == -9)
                 Helper.showMessage(getActivity(), "Un-Archived", "All Selected note(s) have " +
                         "been un-archived", MotionToast.TOAST_SUCCESS);
 
-            if(enableSelectMultiple) {
+            if (enableSelectMultiple) {
                 closeMultipleNotesLayout();
                 showData();
-            }
-            else
+            } else
                 filteringAllNotesRealm(queryArchivedNotes, true);
-        }
-        else if(resultCode == -11 || resultCode == -12 || resultCode == -13){
+        } else if (resultCode == -11 || resultCode == -12 || resultCode == -13) {
             RealmResults<Note> queryArchivedNotes =
                     realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("pin", true)
                             .equalTo("trash", false).findAll();
 
-            if(resultCode == -13)
+            if (resultCode == -13)
                 Helper.showMessage(getActivity(), "Pinned", "All Selected note(s) have " +
                         "been pinned", MotionToast.TOAST_SUCCESS);
-            else if(resultCode == -12)
+            else if (resultCode == -12)
                 Helper.showMessage(getActivity(), "Un-Pinned", "All Selected note(s) have " +
                         "been un-pinned", MotionToast.TOAST_SUCCESS);
 
-            if(enableSelectMultiple) {
+            if (enableSelectMultiple) {
                 closeMultipleNotesLayout();
                 showData();
-            }
-            else
+            } else
                 filteringAllNotesRealm(queryArchivedNotes, true);
-        }
-        else if(resultCode == -14){
+        } else if (resultCode == -14) {
             RealmResults<Note> queryLockedNotes =
                     realm.where(Note.class)
                             .greaterThan("pinNumber", 0).findAll();
 
             filteringAllNotesRealm(queryLockedNotes, true);
-        }
-        else if(resultCode == -15){
+        } else if (resultCode == -15) {
             RealmResults<Note> queryRemindNotes =
                     realm.where(Note.class)
                             .isNotEmpty("reminderDateTime").findAll();
@@ -648,13 +625,13 @@ public class notes extends Fragment{
         }
     }
 
-    private void showFilterMenu(){
+    private void showFilterMenu() {
         customSheet = new FilterSheet(this);
         customSheet.show(getParentFragmentManager(), customSheet.getTag());
     }
 
     public void filterAndSortNotes(String dateType, boolean oldestToNewest,
-                                   boolean newestToOldest, boolean aToZ, boolean zToA){
+                                   boolean newestToOldest, boolean aToZ, boolean zToA) {
         isNotesFiltered = true;
 
         RealmResults<Note> result = realm.where(Note.class)
@@ -662,118 +639,113 @@ public class notes extends Fragment{
                 .equalTo("trash", false)
                 .findAll();
 
-        if(dateType!=null && !dateType.equals("null")) {
-            if(newestToOldest)
-                result = result.where().sort(dateType , Sort.DESCENDING).findAll();
-            else if(oldestToNewest)
-                result = result.where().sort(dateType , Sort.ASCENDING).findAll();
+        if (dateType != null && !dateType.equals("null")) {
+            if (newestToOldest)
+                result = result.where().sort(dateType, Sort.DESCENDING).findAll();
+            else if (oldestToNewest)
+                result = result.where().sort(dateType, Sort.ASCENDING).findAll();
         }
 
-        if(aToZ)
+        if (aToZ)
             result = result.where().sort("title").findAll();
-        if(zToA)
+        if (zToA)
             result = result.where().sort("title", Sort.DESCENDING).findAll();
 
-        if(result != null)
+        if (result != null)
             filteringAllNotesRealm(result, false);
     }
 
-    private void filteringAllNotesRealm(RealmResults<Note> query, boolean isCategory){
+    private void filteringAllNotesRealm(RealmResults<Note> query, boolean isCategory) {
         isNotesFiltered = true;
         restoreNotes.setVisibility(View.GONE);
         isListEmpty(query.size(), false);
         populateAdapter(query);
-        if(query.size()==0)
+        if (query.size() == 0)
             isListEmpty(query.size(), true);
-        if(!isCategory) {
+        if (!isCategory) {
             filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
             addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
             addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
             addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-        }
-        else
+        } else
             closeFilter();
     }
 
-    private void filteringByCategory(RealmResults<Note> query, boolean isCategory){
+    private void filteringByCategory(RealmResults<Note> query, boolean isCategory) {
         isNotesFiltered = true;
         isListEmpty(query.size(), false);
         populateAdapter(query);
-        if(query.size()==0)
+        if (query.size() == 0)
             isListEmpty(query.size(), true);
-        if(!isCategory) {
+        if (!isCategory) {
             filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
             addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
             addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
             addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-        }
-        else
+        } else
             closeFilter();
     }
 
-    public void showDefaultSort(){
+    public void showDefaultSort() {
         sortedBy.setVisibility(View.GONE);
         allNotes = realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
-        if(user.isShowFolderNotes())
+        if (user.isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
         populateAdapter(allNotes);
         isListEmpty(allNotes.size(), false);
     }
 
-    public void getSortDataAndSort(){
+    public void getSortDataAndSort() {
         String dateType = Helper.getPreference(getContext(), "_dateType");
-        boolean oldestToNewest = Helper.getBooleanPreference(getContext(),"_oldestToNewest");
-        boolean newestToOldest = Helper.getBooleanPreference(getContext(),"_newestToOldest");
+        boolean oldestToNewest = Helper.getBooleanPreference(getContext(), "_oldestToNewest");
+        boolean newestToOldest = Helper.getBooleanPreference(getContext(), "_newestToOldest");
 
-        boolean aToZ = Helper.getBooleanPreference(getContext(),"_aToZ");
-        boolean zToA = Helper.getBooleanPreference(getContext(),"_zToA");
+        boolean aToZ = Helper.getBooleanPreference(getContext(), "_aToZ");
+        boolean zToA = Helper.getBooleanPreference(getContext(), "_zToA");
 
         sortedBy.setVisibility(View.GONE);
 
         if (dateType != null || aToZ || zToA) {
             if (oldestToNewest) {
-                allNotes =  realm.where(Note.class)
+                allNotes = realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.ASCENDING).findAll();
 
-                if(user.isShowFolderNotes())
+                if (user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-            }
-            else if (newestToOldest) {
-                allNotes =  realm.where(Note.class)
+            } else if (newestToOldest) {
+                allNotes = realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.DESCENDING).findAll();
 
-                if(user.isShowFolderNotes())
+                if (user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-            }
-            else if (aToZ) {
-                allNotes =  realm.where(Note.class)
+            } else if (aToZ) {
+                allNotes = realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title").findAll();
 
-                if(user.isShowFolderNotes())
+                if (user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-            }
-            else if (zToA) {
-                allNotes =  realm.where(Note.class)
+            } else if (zToA) {
+                allNotes = realm.where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title", Sort.DESCENDING).findAll();
 
-                if(user.isShowFolderNotes())
+                if (user.isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             }
@@ -785,12 +757,12 @@ public class notes extends Fragment{
     // populates the recyclerview
     private void populateAdapter(RealmResults<Note> allNotes) {
         filteredNotes = allNotes;
-        adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes: allNotes, context, getActivity(),
+        adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes : allNotes, context, getActivity(),
                 notes.this, user.isShowPreview(), user.isShowPreviewNoteInfo());
         recyclerViewNotes.setAdapter(adapterNotes);
     }
 
-    private void closeFilter(){
+    private void closeFilter() {
         isNotesFiltered = true;
         categoryNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
@@ -800,7 +772,7 @@ public class notes extends Fragment{
     }
 
 
-    private void searchNotesAndUpdate(String target){
+    private void searchNotesAndUpdate(String target) {
         RealmResults<Note> queryNotes = realm.where(Note.class)
                 .contains("note", target, Case.INSENSITIVE).or()
                 .contains("title", target, Case.INSENSITIVE).or()
@@ -811,7 +783,7 @@ public class notes extends Fragment{
         populateAdapter(queryNotes);
     }
 
-    private void showSearchBar(){
+    private void showSearchBar() {
         isSearchingNotes = true;
         fragmentTitle.setVisibility(View.GONE);
         filterNotes.setVisibility(View.GONE);
@@ -830,7 +802,7 @@ public class notes extends Fragment{
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
 
-        searchEditText.setBackgroundColor(context.getColor(isDarkerMode ? R.color.darker_mode : R.color.gray));
+        searchEditText.setBackgroundColor(context.getColor(user.getScreenMode() == User.Mode.Dark ? R.color.darker_mode : R.color.gray));
 
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
@@ -840,7 +812,7 @@ public class notes extends Fragment{
         updateToolbarColors();
     }
 
-    private void hideSearchBar(){
+    private void hideSearchBar() {
         searchEditText.setQuery("", false);
         search.setVisibility(View.VISIBLE);
         searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
@@ -849,7 +821,7 @@ public class notes extends Fragment{
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
         searchEditText.setVisibility(View.GONE);
-        if(isTrashSelected)
+        if (isTrashSelected)
             restoreNotes.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
         categoryNotes.setVisibility(View.VISIBLE);
@@ -869,7 +841,7 @@ public class notes extends Fragment{
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
     }
 
-    public void deleteMultipleNotesLayout(){
+    public void deleteMultipleNotesLayout() {
         enableSelectMultiple = true;
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
@@ -882,8 +854,8 @@ public class notes extends Fragment{
         deletingMultipleNotes = true;
     }
 
-    public void closeMultipleNotesLayout(){
-        enableSelectMultiple  = false;
+    public void closeMultipleNotesLayout() {
+        enableSelectMultiple = false;
         deletingMultipleNotes = false;
         unSelectAllNotes();
         clearVariables();
@@ -904,21 +876,20 @@ public class notes extends Fragment{
         updateToolbarColors();
     }
 
-    public void deleteMultipleNotes(boolean deleteNotes){
+    public void deleteMultipleNotes(boolean deleteNotes) {
         RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
         RealmResults<Note> lockedNotes = realm.where(Note.class).equalTo("isSelected", true)
                 .greaterThan("pinNumber", 0)
                 .findAll();
 
-        if(lockedNotes.size() > 0){
+        if (lockedNotes.size() > 0) {
             Helper.showMessage(getActivity(), "Locked Notes", "Locked notes " +
                     "cannot be deleted", MotionToast.TOAST_ERROR);
-        }
-        else {
+        } else {
             if (selectedNotes.size() != 0) {
                 int number = selectedNotes.size();
                 if (isTrashSelected || deleteNotes) {
-                    for(Note deleteCurrentNote: selectedNotes)
+                    for (Note deleteCurrentNote : selectedNotes)
                         RealmHelper.deleteNote(getContext(), deleteCurrentNote.getNoteId());
                     isListEmpty(allNotes.size(), false);
                     numberSelected(0, 0, 0);
@@ -927,10 +898,9 @@ public class notes extends Fragment{
                     closeMultipleNotesLayout();
                     showData();
 
-                    if(allNotes.size() == 0)
+                    if (allNotes.size() == 0)
                         Helper.deleteAppFiles(context);
-                }
-                else {
+                } else {
                     realm.beginTransaction();
                     selectedNotes.setBoolean("trash", true);
                     realm.commitTransaction();
@@ -940,19 +910,18 @@ public class notes extends Fragment{
                     numberSelected(0, 0, 0);
                     clearMultipleSelect();
                 }
-            }
-            else
+            } else
                 Helper.showMessage(getActivity(), "Not Deleted", "Nothing was selected " +
                         "and thus not deleted", MotionToast.TOAST_ERROR);
             adapterNotes.notifyDataSetChanged();
         }
     }
 
-    public void restoreMultipleNotes(){
+    public void restoreMultipleNotes() {
         RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true)
                 .equalTo("trash", true).findAll();
 
-        if(selectedNotes.size()!=0) {
+        if (selectedNotes.size() != 0) {
             int number = selectedNotes.size();
             realm.beginTransaction();
             selectedNotes.setBoolean("trash", false);
@@ -961,21 +930,20 @@ public class notes extends Fragment{
             Helper.showMessage(getActivity(), "Restored", number + " selected " +
                     "have been restored", MotionToast.TOAST_SUCCESS);
             clearMultipleSelect();
-        }
-        else
+        } else
             Helper.showMessage(getActivity(), "Not Restored", "Nothing was selected " +
                     "and thus not restored", MotionToast.TOAST_ERROR);
     }
 
-    public void numberSelected(int add, int subtract, int number){
+    public void numberSelected(int add, int subtract, int number) {
         int currentlySelected = 1;
-        if(number==-1) {
+        if (number == -1) {
             try {
                 currentlySelected = Integer.parseInt(fragmentTitle.getText().toString()
                         .replaceAll("[^0-9]", "")) + add - subtract;
-            } catch (Exception e) {}
-        }
-        else
+            } catch (Exception e) {
+            }
+        } else
             currentlySelected = number;
 
         numMultiSelect = currentlySelected;
@@ -983,30 +951,29 @@ public class notes extends Fragment{
         fragmentTitle.setTextSize(24);
     }
 
-    public void unSelectAllNotes(){
-        if(realm.isClosed()){
+    public void unSelectAllNotes() {
+        if (realm.isClosed()) {
             refreshFragment(true);
             return;
         }
         RealmResults<Note> realmResults = realm.where(Note.class).equalTo("isSelected", true).findAll();
-        if(realmResults.size()!=0) {
+        if (realmResults.size() != 0) {
             realm.beginTransaction();
             realmResults.setBoolean("isSelected", false);
             realm.commitTransaction();
         }
     }
 
-    private void selectAllNotes(){
+    private void selectAllNotes() {
         isAllSelected = !isAllSelected;
-        if(isTrashSelected){
+        if (isTrashSelected) {
             RealmResults<Note> realmResults = realm.where(Note.class).equalTo("trash", true).findAll();
             if (realmResults.size() != 0) {
                 realm.beginTransaction();
                 realmResults.setBoolean("isSelected", isAllSelected);
                 realm.commitTransaction();
             }
-        }
-        else {
+        } else {
             if (filteredNotes.size() != 0) {
                 realm.beginTransaction();
                 filteredNotes.setBoolean("isSelected", isAllSelected);
@@ -1017,17 +984,16 @@ public class notes extends Fragment{
         adapterNotes.notifyDataSetChanged();
     }
 
-    private void refreshFragment(boolean refresh){
-        if(refresh) {
+    private void refreshFragment(boolean refresh) {
+        if (refresh) {
             Helper.refreshActivity(getActivity());
-        }
-        else {
+        } else {
             getActivity().getSupportFragmentManager().beginTransaction().detach(this).attach(this).commit();
             clearVariables();
         }
     }
 
-    private void clearVariables(){
+    private void clearVariables() {
         isSearchingNotes = false;
         searchEditText.setQuery("", false);
         isNotesFiltered = false;
@@ -1036,13 +1002,13 @@ public class notes extends Fragment{
         isAllSelected = false;
     }
 
-    private void isListEmpty(int size, boolean isResult){
+    private void isListEmpty(int size, boolean isResult) {
         Helper.isListEmpty(context, size, empty_Layout, title, subtitle, subSubTitle,
                 isResult, false, false, view.findViewById(R.id.empty_view));
     }
 
-    private void savePreferences(){
-        if(realm.isClosed() || user == null) return;
+    private void savePreferences() {
+        if (realm.isClosed() || user == null) return;
         // text size saved by user
         int savedSize = user.getTextSize();
         // text size set by user
@@ -1050,19 +1016,19 @@ public class notes extends Fragment{
         int currentSize = Integer.parseInt(textSize == null ? "0" : textSize);
 
         // if device was backed up, then restore text size
-        if(savedSize > 0 && currentSize == 0) {
+        if (savedSize > 0 && currentSize == 0) {
             Helper.savePreference(context, String.valueOf(savedSize), "size");
         }
         // if text size save
-        else if(savedSize != currentSize){
+        else if (savedSize != currentSize) {
             realm.beginTransaction();
             user.setTextSize(currentSize);
             realm.commitTransaction();
         }
     }
 
-    private void showMessage(String title, String message, boolean error){
-        if(error)
+    private void showMessage(String title, String message, boolean error) {
+        if (error)
             Helper.showMessage(getActivity(), title, message, MotionToast.TOAST_ERROR);
         else
             Helper.showMessage(getActivity(), title, message, MotionToast.TOAST_SUCCESS);

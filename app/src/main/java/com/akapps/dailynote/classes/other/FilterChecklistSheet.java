@@ -7,28 +7,33 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
+
 import org.jetbrains.annotations.NotNull;
+
 import io.realm.Realm;
 
-public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
+public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
     private Realm realm;
     private Note currentNote;
 
-    public FilterChecklistSheet(){}
+    public FilterChecklistSheet() {
+    }
 
-    public FilterChecklistSheet(Note currentNote){
+    public FilterChecklistSheet(Note currentNote) {
         this.currentNote = currentNote;
     }
 
@@ -48,7 +53,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             background.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             background.setStrokeColor(getContext().getColor(R.color.gray));
@@ -60,38 +65,35 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
             darkModeItemLayout(checkedTop);
             darkModeItemLayout(addedBottom);
             darkModeItemLayout(addedTop);
-        }
-        else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         int sort = 0;
         try {
             sort = currentNote.getSort();
-        }catch (Exception e) {
+        } catch (Exception e) {
             this.dismiss();
         }
 
         if (sort == 1) {
             aZ.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
             aZ.setStrokeColor(getContext().getColor(R.color.havelock_blue));
-        }
-        else if (sort == 2) {
+        } else if (sort == 2) {
             zA.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
             zA.setStrokeColor(getContext().getColor(R.color.havelock_blue));
-        }
-        else if (sort == 4) {
+        } else if (sort == 4) {
             checkedBottom.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
             checkedBottom.setStrokeColor(getContext().getColor(R.color.havelock_blue));
-        }
-        else if (sort == 3) {
+        } else if (sort == 3) {
             checkedTop.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
             checkedTop.setStrokeColor(getContext().getColor(R.color.havelock_blue));
-        }
-        else if (sort == 5) {
+        } else if (sort == 5) {
             addedBottom.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
             addedBottom.setStrokeColor(getContext().getColor(R.color.havelock_blue));
-        }
-        else if (sort == 6) {
+        } else if (sort == 6) {
             addedTop.setCardBackgroundColor(getContext().getColor(R.color.havelock_blue));
             addedTop.setStrokeColor(getContext().getColor(R.color.havelock_blue));
         }
@@ -107,12 +109,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
          **/
 
         aZ.setOnClickListener(v -> {
-            if(applyAll.isChecked()){
+            if (applyAll.isChecked()) {
                 realm.beginTransaction();
                 realm.where(Note.class).findAll().setInt("sort", 1);
                 realm.commitTransaction();
-            }
-            else{
+            } else {
                 realm.beginTransaction();
                 currentNote.setSort(1);
                 realm.commitTransaction();
@@ -122,12 +123,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         zA.setOnClickListener(v -> {
-            if(applyAll.isChecked()){
+            if (applyAll.isChecked()) {
                 realm.beginTransaction();
                 realm.where(Note.class).findAll().setInt("sort", 2);
                 realm.commitTransaction();
-            }
-            else{
+            } else {
                 realm.beginTransaction();
                 currentNote.setSort(2);
                 realm.commitTransaction();
@@ -137,12 +137,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         checkedBottom.setOnClickListener(v -> {
-            if(applyAll.isChecked()){
+            if (applyAll.isChecked()) {
                 realm.beginTransaction();
                 realm.where(Note.class).findAll().setInt("sort", 4);
                 realm.commitTransaction();
-            }
-            else{
+            } else {
                 realm.beginTransaction();
                 currentNote.setSort(4);
                 realm.commitTransaction();
@@ -152,12 +151,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         checkedTop.setOnClickListener(v -> {
-            if(applyAll.isChecked()){
+            if (applyAll.isChecked()) {
                 realm.beginTransaction();
                 realm.where(Note.class).findAll().setInt("sort", 3);
                 realm.commitTransaction();
-            }
-            else{
+            } else {
                 realm.beginTransaction();
                 currentNote.setSort(3);
                 realm.commitTransaction();
@@ -167,12 +165,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         addedBottom.setOnClickListener(v -> {
-            if(applyAll.isChecked()){
+            if (applyAll.isChecked()) {
                 realm.beginTransaction();
                 realm.where(Note.class).findAll().setInt("sort", 5);
                 realm.commitTransaction();
-            }
-            else{
+            } else {
                 realm.beginTransaction();
                 currentNote.setSort(5);
                 realm.commitTransaction();
@@ -182,12 +179,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         addedTop.setOnClickListener(v -> {
-            if(applyAll.isChecked()){
+            if (applyAll.isChecked()) {
                 realm.beginTransaction();
                 realm.where(Note.class).findAll().setInt("sort", 6);
                 realm.commitTransaction();
-            }
-            else{
+            } else {
                 realm.beginTransaction();
                 currentNote.setSort(6);
                 realm.commitTransaction();
@@ -197,12 +193,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         });
 
         clearFilter.setOnClickListener(v -> {
-            if(applyAll.isChecked()){
+            if (applyAll.isChecked()) {
                 realm.beginTransaction();
                 realm.where(Note.class).findAll().setInt("sort", 5);
                 realm.commitTransaction();
-            }
-            else{
+            } else {
                 realm.beginTransaction();
                 currentNote.setSort(5);
                 realm.commitTransaction();
@@ -214,7 +209,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         return view;
     }
 
-    private void darkModeItemLayout(MaterialCardView view){
+    private void darkModeItemLayout(MaterialCardView view) {
         view.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
         view.setStrokeColor(getContext().getColor(R.color.gray));
         view.setStrokeWidth(8);
@@ -227,10 +222,13 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override
@@ -238,11 +236,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog =(BottomSheetDialog) getDialog ();
+                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
                     if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
+                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);
+                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     }

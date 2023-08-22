@@ -7,20 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+
 import org.jetbrains.annotations.NotNull;
+
 import www.sanju.motiontoast.MotionToast;
 
 public class FilterSheet extends RoundedBottomSheetDialogFragment {
@@ -58,7 +63,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
         MaterialCardView aToZButton = view.findViewById(R.id.a_z);
         MaterialCardView zToAButton = view.findViewById(R.id.z_a);
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByDate.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByDate.setStrokeColor(getContext().getColor(R.color.light_gray_2));
@@ -66,20 +71,22 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
             sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.light_gray_2));
             sortByAlphabetical.setStrokeWidth(5);
-        }
-        else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         // set current filter
         String dateType = Helper.getPreference(getContext(), "_dateType");
-        boolean oldestToNewest = Helper.getBooleanPreference(getContext(),"_oldestToNewest");
-        boolean newestToOldest = Helper.getBooleanPreference(getContext(),"_newestToOldest");
+        boolean oldestToNewest = Helper.getBooleanPreference(getContext(), "_oldestToNewest");
+        boolean newestToOldest = Helper.getBooleanPreference(getContext(), "_newestToOldest");
 
-        boolean aToZSaved = Helper.getBooleanPreference(getContext(),"_aToZ");
-        boolean zToASaved = Helper.getBooleanPreference(getContext(),"_zToA");
+        boolean aToZSaved = Helper.getBooleanPreference(getContext(), "_aToZ");
+        boolean zToASaved = Helper.getBooleanPreference(getContext(), "_zToA");
 
 
-        if(null != dateType) {
+        if (null != dateType) {
             if (dateType.equals("dateCreatedMilli"))
                 createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
             else if (dateType.equals("dateEditedMilli"))
@@ -90,8 +97,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
                 oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
             else if (newestToOldest)
                 newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
-        }
-        else if(aToZSaved || zToASaved){
+        } else if (aToZSaved || zToASaved) {
             if (aToZSaved)
                 aToZButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
             else if (zToASaved)
@@ -187,15 +193,9 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
                 dateTypeSelected = "null";
 
             if (!dateTypeSelected.equals("null")) {
-                if (!oldestToLatest && !latestToOldest)
-                    isDateCorrectlySelected = false;
-                else
-                    isDateCorrectlySelected = true;
+                isDateCorrectlySelected = oldestToLatest || latestToOldest;
             } else {
-                if (oldestToLatest || latestToOldest)
-                    isDateCorrectlySelected = false;
-                else
-                    isDateCorrectlySelected = true;
+                isDateCorrectlySelected = !oldestToLatest && !latestToOldest;
             }
 
             isAlphabeticalChosen = aToZ || zToA;
@@ -285,10 +285,13 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override

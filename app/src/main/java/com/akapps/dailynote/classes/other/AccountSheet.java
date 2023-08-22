@@ -7,13 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -23,14 +24,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+
 import org.jetbrains.annotations.NotNull;
+
 import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
 
-public class AccountSheet extends RoundedBottomSheetDialogFragment{
+public class AccountSheet extends RoundedBottomSheetDialogFragment {
 
     // account authentication
-    private FirebaseAuth mAuth;
+    private final FirebaseAuth mAuth;
 
     // variables
     private int loginAttempts;
@@ -48,11 +51,11 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
     private Realm realm;
     private User currentUser;
-    private boolean signUp;
+    private final boolean signUp;
 
     private FragmentActivity activity;
 
-    public AccountSheet(FirebaseAuth mAuth, boolean signUp){
+    public AccountSheet(FirebaseAuth mAuth, boolean signUp) {
         this.mAuth = mAuth;
         this.signUp = signUp;
     }
@@ -75,7 +78,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
@@ -85,11 +88,13 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
             passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             passwordInput.setTextColor(getContext().getColor(R.color.light_light_gray));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        }
-        else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
 
-        if(!signUp)
+        }
+
+        if (!signUp)
             title.setText("Log in");
         else
             forgotPassword.setVisibility(View.INVISIBLE);
@@ -98,7 +103,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
 
         forgotPassword.setOnClickListener(view12 -> {
             String inputEmail = emailInput.getText().toString();
-            if(inputEmail.contains("@") && inputEmail.contains(".com")) {
+            if (inputEmail.contains("@") && inputEmail.contains(".com")) {
                 mAuth.sendPasswordResetEmail(inputEmail)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -112,16 +117,15 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                                         MotionToast.TOAST_ERROR);
                             }
                         });
-            }
-            else
+            } else
                 emailLayout.setError("Enter Email to Reset");
         });
 
         return view;
     }
 
-    private void signUp(String email, String password){
-        if(mAuth.getCurrentUser() == null){
+    private void signUp(String email, String password) {
+        if (mAuth.getCurrentUser() == null) {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(activity, task2 -> {
                         if (task2.isSuccessful()) {
@@ -133,8 +137,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                                                 Helper.showMessage(activity, "Verify Email",
                                                         "Check your Inbox/Spam for email",
                                                         MotionToast.TOAST_SUCCESS);
-                                            }
-                                            else
+                                            } else
                                                 Helper.showMessage(activity, "Signing Up",
                                                         "Cannot Send Email, check internet connection",
                                                         MotionToast.TOAST_ERROR);
@@ -147,28 +150,26 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                                     MotionToast.TOAST_ERROR);
                         }
                     });
-        }
-        else{
+        } else {
             Helper.showMessage(activity, "Error",
                     "Currently logged in",
                     MotionToast.TOAST_ERROR);
         }
     }
 
-    private void login(String email, String password){
-        if(loginAttempts <= maxLoginAttempts) {
+    private void login(String email, String password) {
+        if (loginAttempts <= maxLoginAttempts) {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(activity, task -> {
                         if (task.isSuccessful()) {
-                            if(mAuth.getCurrentUser().isEmailVerified()){
+                            if (mAuth.getCurrentUser().isEmailVerified()) {
                                 realm.beginTransaction();
                                 currentUser.setEmail(email);
                                 currentUser.setProUser(true);
                                 realm.commitTransaction();
                                 dialog.dismiss();
                                 ((SettingsScreen) activity).restart();
-                            }
-                            else {
+                            } else {
                                 mAuth.getCurrentUser().sendEmailVerification()
                                         .addOnCompleteListener(task3 -> {
                                             if (task.isSuccessful())
@@ -190,14 +191,13 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                                     MotionToast.TOAST_ERROR);
                         }
                     });
-        }
-        else
+        } else
             Helper.showMessage(activity, getContext().getString(R.string.login_max_title),
                     getContext().getString(R.string.login_max_message),
                     MotionToast.TOAST_ERROR);
     }
 
-    private void getInput(){
+    private void getInput() {
         String inputEmail = emailInput.getText().toString();
         String inputPassword = passwordInput.getText().toString();
 
@@ -210,17 +210,20 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
                     login(inputEmail, inputPassword);
             } else
                 passwordLayout.setError(getContext().getString(R.string.input_error));
-        }
-        else
+        } else
             emailLayout.setError(getContext().getString(R.string.input_error));
     }
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
+        return 0;
     }
 
     @Override
@@ -228,11 +231,11 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    dialog =(BottomSheetDialog) getDialog ();
+                    dialog = (BottomSheetDialog) getDialog();
                     if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
+                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);
+                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     }

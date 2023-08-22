@@ -8,14 +8,17 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -28,7 +31,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
 import org.jetbrains.annotations.NotNull;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -93,14 +98,16 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
         itemName.requestFocusFromTouch();
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemName.setTextColor(getContext().getColor(R.color.ultra_white));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else {
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
             delete.setBackgroundColor(getContext().getColor(R.color.light_gray));
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
         }
 
         if (isAdding) {
@@ -257,10 +264,13 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override

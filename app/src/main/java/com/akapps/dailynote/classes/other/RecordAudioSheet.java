@@ -9,34 +9,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Place;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
-import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.AudioManager;
+import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
-public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
+public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
 
     private AudioManager audioManager;
     private String recordToFilePath;
-    private Handler handlerTimer = new Handler();
-    private Handler handlerTimerText = new Handler();
+    private final Handler handlerTimer = new Handler();
+    private final Handler handlerTimerText = new Handler();
 
     private BottomSheetDialog dialog;
 
-    public RecordAudioSheet(){
+    public RecordAudioSheet() {
         AppData.timerDuration = 0;
     }
 
@@ -52,11 +58,13 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
 
         audioManager = new AudioManager(recordToFilePath);
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        }
-        else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         MaterialButton close = view.findViewById(R.id.cancel_recording);
         MaterialButton done = view.findViewById(R.id.done_recording);
@@ -67,23 +75,21 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
         recordingAnimation.pauseAnimation();
 
         pauseOrPlayButton.setOnClickListener(view12 -> {
-            if(audioManager.isRecording()) {
+            if (audioManager.isRecording()) {
                 handlerTimer.removeCallbacksAndMessages(null);
                 audioManager.pauseRecording(true);
                 recordingAnimation.pauseAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.mic_icon));
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
                         .getColor(R.color.red)));
-            }
-            else if(audioManager.isPaused()) {
+            } else if (audioManager.isPaused()) {
                 Helper.startTimer(handlerTimer, AppData.timerDuration);
                 audioManager.pauseRecording(false);
                 recordingAnimation.playAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.pause_icon));
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
                         .getColor(R.color.ocean_green)));
-            }
-            else {
+            } else {
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.setCancelable(false);
                 audioManager.startRecording();
@@ -97,16 +103,16 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
         });
 
         close.setOnClickListener(view13 -> {
-            if(audioManager != null && audioManager.isRecording())
+            if (audioManager != null && audioManager.isRecording())
                 audioManager.stopRecording();
             Helper.deleteFile(recordToFilePath);
             dismiss();
         });
 
         done.setOnClickListener(view1 -> {
-            if(audioManager != null && audioManager.isRecording())
+            if (audioManager != null && audioManager.isRecording())
                 audioManager.stopRecording();
-            if(!Helper.isFileEmpty(recordToFilePath)){
+            if (!Helper.isFileEmpty(recordToFilePath)) {
                 CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("", new Place());
                 ((NoteEdit) getActivity()).addCheckList(voiceItem.getSubListId(), recordToFilePath, AppData.timerDuration);
             }
@@ -125,7 +131,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
         super.onStop();
     }
 
-    private void updateRecordingDuration(TextView recordingDuration){
+    private void updateRecordingDuration(TextView recordingDuration) {
         handlerTimerText.postDelayed(new Runnable() {
             public void run() {
                 int currentTime = AppData.timerDuration;
@@ -137,10 +143,13 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override
@@ -148,11 +157,11 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    dialog = (BottomSheetDialog) getDialog ();
+                    dialog = (BottomSheetDialog) getDialog();
                     if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
+                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);
+                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     }

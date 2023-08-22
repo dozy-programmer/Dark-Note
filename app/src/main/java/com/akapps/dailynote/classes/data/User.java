@@ -21,6 +21,7 @@ public class User extends RealmObject {
     private boolean showPreview;
     private boolean showPreviewNoteInfo;
     private boolean modeSettings;
+    private int screenMode;
 
     private String email;
 
@@ -51,7 +52,24 @@ public class User extends RealmObject {
     private int pinNumber;
     private boolean fingerprint;
 
-    public User() {}
+    public enum Mode {
+        Dark(1),
+        Gray(2),
+        Light(3);
+
+        private final int value;
+
+        Mode(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    public User() {
+    }
 
     public User(int userId) {
         this.userId = userId;
@@ -68,6 +86,7 @@ public class User extends RealmObject {
         budgetCharacter = "+$";
         expenseCharacter = "$";
         enableEditableNoteButton = disableAnimation = showChecklistCheckbox = false;
+        screenMode = 1;
     }
 
     public int getUserId() {
@@ -341,4 +360,20 @@ public class User extends RealmObject {
     public void setShowChecklistCheckbox(boolean showChecklistCheckbox) {
         this.showChecklistCheckbox = showChecklistCheckbox;
     }
+
+    public Mode getScreenMode() {
+        switch (screenMode) {
+            case 2:
+                return Mode.Gray;
+            case 3:
+                return Mode.Light;
+            default:
+                return Mode.Dark;
+        }
+    }
+
+    public void setScreenMode(int value) {
+        this.screenMode = value;
+    }
+
 }

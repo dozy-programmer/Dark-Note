@@ -23,6 +23,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -83,7 +84,7 @@ public class CategoryScreen extends AppCompatActivity {
     private boolean isNotesSelected;
     public boolean isEditing;
     private String titleBefore;
-    boolean isDarkMode;
+    User.Mode screenMode;
 
     // category empty view
     private TextView showEmptyMessage;
@@ -93,11 +94,12 @@ public class CategoryScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_screen);
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
         context = this;
-        isDarkMode = AppData.getAppData().isDarkerMode;
+
+        screenMode = RealmSingleton.getUser().getScreenMode();
 
         // if orientation changes, retrieve these values
         if (savedInstanceState != null) {
@@ -124,7 +126,7 @@ public class CategoryScreen extends AppCompatActivity {
                 .equalTo("pin", true)
                 .findAll();
         allSelectedNotes = allNotes.where().equalTo("isSelected", true).findAll();
-        isNotesSelected = allSelectedNotes.size() > 0 ? true : false;
+        isNotesSelected = allSelectedNotes.size() > 0;
         uncategorizedNotes = allNotes.where()
                 .equalTo("archived", false)
                 .equalTo("pin", false)
@@ -140,11 +142,14 @@ public class CategoryScreen extends AppCompatActivity {
         initializeLayout();
 
 
-        if (isDarkMode) {
+        if (screenMode == User.Mode.Dark) {
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
-        } else
+        } else if (screenMode == User.Mode.Gray)
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
+        else if (screenMode == User.Mode.Light) {
+
+        }
     }
 
     @Override
@@ -256,23 +261,37 @@ public class CategoryScreen extends AppCompatActivity {
                 locked.setVisibility(View.GONE);
             } else {
                 // text
+                int colorOne = R.color.gray;
+                int colorTwo = R.color.blue;
+                int colorThree = R.color.golden_rod;
+
+                if (screenMode == User.Mode.Gray) {
+                    colorOne = R.color.light_gray_2;
+                    colorTwo = R.color.ultra_white;
+                    colorThree = R.color.gray;
+                } else if (screenMode == User.Mode.Light) {
+                    colorOne = 0;
+                    colorTwo = 0;
+                    colorThree = 0;
+                }
+
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
-                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, colorOne, R.color.ultra_white);
                 Helper.addNotificationNumber(this, showAllNotes, allNotesSize, 0,
-                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, colorOne, R.color.ultra_white);
                 Helper.addNotificationNumber(this, archived, archivedAllNotes.size(), 0,
-                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, colorOne, R.color.ultra_white);
                 Helper.addNotificationNumber(this, trash, trashAllNotes.size(), 0,
-                        true, isDarkMode ? R.color.gray : R.color.light_gray_2, R.color.ultra_white);
+                        true, colorOne, R.color.ultra_white);
                 // buttons
                 Helper.addNotificationNumber(this, locked, lockedAllNotes.size(), 75,
-                        true, R.color.transparent, isDarkMode ? R.color.blue : R.color.ultra_white);
+                        true, R.color.transparent, colorTwo);
                 Helper.addNotificationNumber(this, reminder, reminderAllNotes.size(), 75,
                         true, R.color.transparent, R.color.green);
                 Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
-                        true, R.color.transparent, isDarkMode ? R.color.golden_rod : R.color.gray);
+                        true, R.color.transparent, colorThree);
 
-                if (AppData.getAppData().isDarkerMode) {
+                if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
                     pinned.setBackgroundColor(getColor(R.color.darker_mode));
                     pinned.setStrokeColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
                     pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
@@ -290,6 +309,8 @@ public class CategoryScreen extends AppCompatActivity {
                     locked.setIcon(getDrawable(R.drawable.lock_icon));
                     locked.setIconTintResource(R.color.blue);
                     locked.setStrokeWidth(5);
+                } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
                 }
             }
         }
@@ -527,7 +548,7 @@ public class CategoryScreen extends AppCompatActivity {
         Intent home = new Intent();
         setResult(resultCode, home);
         finish();
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 

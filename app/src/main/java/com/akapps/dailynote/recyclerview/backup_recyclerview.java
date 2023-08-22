@@ -5,31 +5,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
-public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclerview.MyViewHolder>{
+public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclerview.MyViewHolder> {
 
     // project data
-    private RealmResults<Backup> allBackups;
-    private User currentUser;
+    private final RealmResults<Backup> allBackups;
+    private final User currentUser;
     private final FragmentActivity activity;
     private final Context context;
-    private final boolean isLightMode;
 
     // database
     private final Realm realm;
@@ -40,8 +41,8 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         private final TextView file_size;
         private final MaterialButton delete;
         private final MaterialButton sync;
-        private View view;
-        private MaterialCardView background;
+        private final View view;
+        private final MaterialCardView background;
 
         public MyViewHolder(View v) {
             super(v);
@@ -62,7 +63,6 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         this.activity = activity;
         this.context = context;
         currentUser = RealmSingleton.getUser();
-        isLightMode = currentUser.isModeSettings();
     }
 
     @Override
@@ -77,13 +77,15 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         // retrieves current photo object
         Backup currentBackup = allBackups.get(position);
 
-        if(AppData.getAppData().isDarkerMode){
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(context.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(context.getColor(R.color.light_gray));
             holder.background.setStrokeWidth(5);
-        }
-        else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             holder.background.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         String fileName = currentBackup.getFileName().replace("_backup.zip", "");
 
@@ -96,7 +98,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
             holder.file_date.setText(fileName.split("~")[0].replace("_", " "));
             fileSize = fileName.split("~")[2].replace("_", " ");
             holder.file_size.setText(fileSize);
-        }catch (Exception e){
+        } catch (Exception e) {
             holder.file_name.setText("00_00_00_" + fileName);
             holder.file_date.setText("Date ?");
             holder.file_size.setText("? MB");
@@ -125,7 +127,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         return allBackups.size();
     }
 
-    private void deleteBackupFile(Backup currentBackup){
+    private void deleteBackupFile(Backup currentBackup) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         StorageReference storageRef = storage.getReference().child("users")

@@ -7,14 +7,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Photo;
-import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
@@ -22,9 +22,10 @@ import com.stfalcon.imageviewer.StfalconImageViewer;
 
 import java.io.File;
 import java.util.ArrayList;
+
 import io.realm.RealmResults;
 
-public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclerview.MyViewHolder>{
+public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclerview.MyViewHolder> {
 
     // project data
     private final RealmResults<Photo> allPhotos;
@@ -71,10 +72,14 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         // retrieves current photo object
         Photo currentPhoto = allPhotos.get(position);
 
-        if(AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
 
-        if(!showDelete) {
+        }
+
+        if (!showDelete) {
             holder.delete.setVisibility(View.GONE);
             holder.share.setVisibility(View.GONE);
             holder.imageSize.setVisibility(View.GONE);
@@ -93,8 +98,8 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         // if photo is clicked, it opens it in the default device gallery
         holder.view.setOnClickListener(v -> {
             ArrayList<String> images = new ArrayList<>();
-            for(int i = 0; i < allPhotos.size(); i++){
-                if(!allPhotos.get(i).getPhotoLocation().isEmpty())
+            for (int i = 0; i < allPhotos.size(); i++) {
+                if (!allPhotos.get(i).getPhotoLocation().isEmpty())
                     images.add(allPhotos.get(i).getPhotoLocation());
             }
 
@@ -123,7 +128,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
     }
 
     // dialog to ensure user wants to delete photo
-    private void deleteDialog(int position){
+    private void deleteDialog(int position) {
         InfoSheet info = new InfoSheet(4, position);
         info.show(activity.getSupportFragmentManager(), info.getTag());
     }

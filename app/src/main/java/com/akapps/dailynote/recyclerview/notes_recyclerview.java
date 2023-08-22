@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
@@ -21,6 +23,7 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
@@ -28,29 +31,30 @@ import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.MyViewHolder>{
+public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.MyViewHolder> {
 
     // project data
     private final RealmResults<Note> allNotes;
     private String noteText;
     private final Activity activity;
     private final Fragment noteFragment;
-    private boolean showPreview;
-    private boolean showPreviewNotesInfo;
-    private boolean isDarkMode;
-    private boolean isTwentyFourHourFormat;
+    private final boolean showPreview;
+    private final boolean showPreviewNotesInfo;
+    private final boolean isTwentyFourHourFormat;
 
     // database
-    private Realm realm;
-    private Context context;
+    private final Realm realm;
+    private final Context context;
 
     // multi select
     private boolean enableSelectMultiple;
@@ -111,7 +115,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
         realm = RealmSingleton.getInstance(context);
-        isDarkMode = ((notes) noteFragment).user.isModeSettings();
         isTwentyFourHourFormat = ((notes) noteFragment).user.isTwentyFourHourFormat();
     }
 
@@ -138,32 +141,32 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         Note currentNoteUnmanaged = realm.copyFromRealm(currentNote);
 
         // populates note data into the recyclerview
-        holder.note_title.setText(currentNote.getTitle().replaceAll("\n"," "));
-        holder.note_edited.setText(isTwentyFourHourFormat?
+        holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));
+        holder.note_edited.setText(isTwentyFourHourFormat ?
                 Helper.convertToTwentyFourHour(currentNote.getDateEdited()) : currentNote.getDateEdited());
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
-        if(Helper.isColorDark(currentNote.getBackgroundColor())) {
+        if (Helper.isColorDark(currentNote.getBackgroundColor())) {
             holder.note_title.setTextColor(activity.getColor(R.color.ultra_white));
             holder.note_edited.setTextColor(activity.getColor(R.color.white));
             holder.note_preview.setTextColor(activity.getColor(R.color.ultra_white));
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.white));
             holder.checklist_icon.setColorFilter(activity.getColor(R.color.white));
-        }
-        else{
+        } else {
             holder.note_title.setTextColor(activity.getColor(R.color.black));
             holder.note_edited.setTextColor(activity.getColor(R.color.gray));
             holder.note_preview.setTextColor(activity.getColor(R.color.gray));
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
         }
 
-        if(isDarkMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.black));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 192));
-        }
-        else {
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.not_too_dark_gray));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 255));
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
         }
 
         // changes the number of lines title and preview occupy depending on user setting
@@ -172,7 +175,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_title.setMaxLines(titleLines);
         holder.note_preview.setMaxLines(contentLines);
 
-        if(showPreviewNotesInfo)
+        if (showPreviewNotesInfo)
             holder.note_info.setVisibility(View.VISIBLE);
         else
             holder.note_info.setVisibility(View.GONE);
@@ -183,7 +186,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_preview.setText(preview);
 
         // if note has a category, then it shows it
-        if(currentNote.getCategory().equals("none"))
+        if (currentNote.getCategory().equals("none"))
             holder.category_background.setVisibility(View.GONE);
         else {
             Folder folderColor = realm.where(Folder.class)
@@ -200,25 +203,25 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         // if selecting multiple notes, it changes the color of the note outline
         // based on if it is selected or not
-        if(enableSelectMultiple) {
+        if (enableSelectMultiple) {
             if (currentNote.isSelected())
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
             else
-                holder.note_background.setStrokeColor(isDarkMode ?
+                holder.note_background.setStrokeColor(RealmSingleton.getUser().getScreenMode() == User.Mode.Dark ?
                         Helper.darkenColor(currentNote.getBackgroundColor(), 0)
                         : currentNote.getBackgroundColor());
             holder.note_background.setStrokeWidth(10);
         }
 
         // if a note has a checklist, show an icon so user can differentiate between them
-        if(currentNote.isCheckList()) {
+        if (currentNote.isCheckList()) {
             holder.checklist_icon.setVisibility(View.VISIBLE);
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
             RealmResults<CheckListItem> checklist = Helper.sortChecklist(currentNote, realm);
             if (!isNoteLocked) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
-                holder.preview_photo_message.setText(checklist.size()+ " items");
+                holder.preview_photo_message.setText(checklist.size() + " items");
             }
             for (int i = 0; i < checklist.size(); i++) {
                 checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
@@ -230,31 +233,27 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.note_preview.setText(checkListString.toString());
             holder.note_preview.setTextSize(13);
             holder.note_preview.setGravity(Gravity.LEFT);
-        }
-        else
+        } else
             holder.checklist_icon.setVisibility(View.GONE);
 
-        if(currentNote.isArchived()) {
-            if(!currentNote.isCheckList()){
+        if (currentNote.isArchived()) {
+            if (!currentNote.isCheckList()) {
                 holder.checklist_icon.setVisibility(View.VISIBLE);
                 holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.archive_icon));
                 holder.archived_icon.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 holder.archived_icon.setVisibility(View.VISIBLE);
                 holder.archived_icon.setImageDrawable(activity.getDrawable(R.drawable.archive_icon));
             }
-        }
-        else
+        } else
             holder.archived_icon.setVisibility(View.GONE);
 
         // if note is locked, then the note will display a lock icon
         // and user can't see a preview of the note text
-        if(isNoteLocked) {
+        if (isNoteLocked) {
             holder.note_preview.setVisibility(View.GONE);
             holder.lock_icon.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             holder.note_preview.setVisibility(View.VISIBLE);
             holder.lock_icon.setVisibility(View.GONE);
         }
@@ -266,7 +265,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.pin_icon.setVisibility(View.GONE);
 
         // if a note has a reminder, then a clock icon is showed
-        if(hasReminder) {
+        if (hasReminder) {
             holder.reminder_icon.setVisibility(View.VISIBLE);
             Date reminderDate = null;
             try {
@@ -279,45 +278,41 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 holder.reminder_icon.setColorFilter(activity.getColor(R.color.red));
             else
                 holder.reminder_icon.setColorFilter(activity.getColor(R.color.ocean_green));
-        }
-        else
+        } else
             holder.reminder_icon.setVisibility(View.GONE);
 
         // if note is checked, it sets the note title and note preview text to
         // has a strike through them
-        if(currentNote.isChecked()) {
+        if (currentNote.isChecked()) {
             holder.note_title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.note_preview.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        }
-        else {
+        } else {
             holder.note_title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.note_preview.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         }
 
-        if(currentNote.getTitle().isEmpty())
+        if (currentNote.getTitle().isEmpty())
             holder.note_title.setVisibility(View.GONE);
         else
             holder.note_title.setVisibility(View.VISIBLE);
 
         // if preview is empty and it is note locked, then the note will show a sad emoji instead
-        if(noteText.isEmpty() && !isNoteLocked) {
-            if(!currentNote.isCheckList()){
+        if (noteText.isEmpty() && !isNoteLocked) {
+            if (!currentNote.isCheckList()) {
                 holder.note_preview.setText("\uD83E\uDD7A");
                 holder.note_preview.setGravity(Gravity.CENTER);
                 holder.note_preview.setTextSize(30);
             }
-        }
-        else {
+        } else {
             holder.note_preview.setGravity(Gravity.LEFT);
             holder.note_preview.setTextSize(13);
         }
 
-        if(showPreview && !isNoteLocked){
+        if (showPreview && !isNoteLocked) {
             holder.preview_photo_message.setVisibility(View.VISIBLE);
             holder.note_preview.setVisibility(View.VISIBLE);
-            holder.preview_photo_message.setText(currentNote.getChecklist().size()+ " items");
-        }
-        else {
+            holder.preview_photo_message.setText(currentNote.getChecklist().size() + " items");
+        } else {
             holder.note_preview.setVisibility(View.GONE);
             holder.preview_photo_message.setVisibility(View.GONE);
         }
@@ -329,41 +324,39 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // if note has photos, it displays them under note preview (up to 3)
         // if there are more, it shows a text underneath them with
         // the number of photos that are left
-        if(allPhotos.size()>0 & !isNoteLocked && showPreview){
-            if(allPhotos.size()==1) {
+        if (allPhotos.size() > 0 & !isNoteLocked && showPreview) {
+            if (allPhotos.size() == 1) {
                 holder.preview_1.setVisibility(View.GONE);
                 holder.preview_3.setVisibility(View.GONE);
                 holder.preview_2.setVisibility(View.VISIBLE);
                 preview_2_position = 0;
-                if(new File(allPhotos.get(0).getPhotoLocation()).exists()) {
+                if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.error_icon))
                             .into(holder.preview_2);
                 }
-            }
-            else if(allPhotos.size()==2) {
+            } else if (allPhotos.size() == 2) {
                 holder.preview_1.setVisibility(View.VISIBLE);
                 holder.preview_2.setVisibility(View.GONE);
                 holder.preview_3.setVisibility(View.VISIBLE);
                 preview_1_position = 0;
                 preview_3_position = 1;
 
-                if(new File(allPhotos.get(0).getPhotoLocation()).exists()) {
+                if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.error_icon))
                             .into(holder.preview_1);
                 }
 
-                if(new File(allPhotos.get(1).getPhotoLocation()).exists()) {
+                if (new File(allPhotos.get(1).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.error_icon))
                             .into(holder.preview_3);
                 }
-            }
-            else{
+            } else {
                 holder.preview_1.setVisibility(View.VISIBLE);
                 holder.preview_2.setVisibility(View.VISIBLE);
                 holder.preview_3.setVisibility(View.VISIBLE);
@@ -372,21 +365,21 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 preview_2_position = 1;
                 preview_3_position = 2;
 
-                if(new File(allPhotos.get(0).getPhotoLocation()).exists()) {
+                if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.error_icon))
                             .into(holder.preview_1);
                 }
 
-                if(new File(allPhotos.get(1).getPhotoLocation()).exists()) {
+                if (new File(allPhotos.get(1).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.error_icon))
                             .into(holder.preview_2);
                 }
 
-                if(new File(allPhotos.get(2).getPhotoLocation()).exists()) {
+                if (new File(allPhotos.get(2).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(2).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.error_icon))
@@ -394,18 +387,16 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 }
             }
 
-            if(allPhotos.size()>3) {
+            if (allPhotos.size() > 3) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText("..." + (allPhotos.size() - 3) + " more");
-            }
-            else
+            } else
                 holder.preview_photo_message.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             holder.preview_1.setVisibility(View.GONE);
             holder.preview_2.setVisibility(View.GONE);
             holder.preview_3.setVisibility(View.GONE);
-            if(!currentNote.isCheckList() || isNoteLocked)
+            if (!currentNote.isCheckList() || isNoteLocked)
                 holder.preview_photo_message.setVisibility(View.GONE);
         }
 
@@ -418,7 +409,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         holder.preview_1_layout.setOnLongClickListener(view -> {
             // prevent opening of images when multi-selecting
-            if(!enableSelectMultiple) {
+            if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(currentNote, true);
@@ -432,7 +423,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         holder.preview_2_layout.setOnLongClickListener(view -> {
             // prevent opening of images when multi-selecting
-            if(!enableSelectMultiple) {
+            if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(currentNote, true);
@@ -446,7 +437,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         holder.preview_3_layout.setOnLongClickListener(view -> {
             // prevent opening of images when multi-selecting
-            if(!enableSelectMultiple) {
+            if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(currentNote, true);
@@ -463,19 +454,17 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // if not, it opens note
         holder.view.setOnClickListener(v -> {
             enableSelectMultiple = ((notes) noteFragment).enableSelectMultiple;
-            if(!enableSelectMultiple) {
+            if (!enableSelectMultiple) {
                 openNoteActivity(currentNoteUnmanaged);
-            }
-            else{
-                if(currentNote.isSelected()) {
+            } else {
+                if (currentNote.isSelected()) {
                     saveSelected(currentNote, false);
-                    holder.note_background.setStrokeColor(isDarkMode ?
+                    holder.note_background.setStrokeColor(RealmSingleton.getUser().getScreenMode() == User.Mode.Dark ?
                             Helper.darkenColor(currentNote.getBackgroundColor(), 0)
                             : currentNote.getBackgroundColor());
                     holder.note_background.setStrokeWidth(10);
                     ((notes) noteFragment).numberSelected(0, 1, -1);
-                }
-                else{
+                } else {
                     saveSelected(currentNote, true);
                     holder.note_background.setStrokeColor(activity.getColor(R.color.red));
                     holder.note_background.setStrokeWidth(10);
@@ -488,7 +477,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.view.setOnLongClickListener(v -> {
             enableSelectMultiple = ((notes) noteFragment).enableSelectMultiple;
             // prevent opening of images when multi-selecting
-            if(!enableSelectMultiple) {
+            if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(currentNote, true);
@@ -501,15 +490,15 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         });
 
         holder.note_info.setOnClickListener(view -> {
-            if(!enableSelectMultiple) {
+            if (!enableSelectMultiple) {
                 NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, true);
                 noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
             }
         });
     }
 
-    private void showPhotos(int position, RealmResults<Photo> allPhotos, ImageView currentImage){
-        if(!enableSelectMultiple) {
+    private void showPhotos(int position, RealmResults<Photo> allPhotos, ImageView currentImage) {
+        if (!enableSelectMultiple) {
             ArrayList<String> images = new ArrayList<>();
             for (int i = 0; i < allPhotos.size(); i++) {
                 if (!allPhotos.get(i).getPhotoLocation().isEmpty())
@@ -535,14 +524,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     // Checks to see if note is locked, if it is then user is sent to lock screen activity
     // where they need to enter a pin. If not locked, it opens note
-    private void openNoteActivity(Note currentNote){
-        if(currentNote.getPinNumber() == 0){
+    private void openNoteActivity(Note currentNote) {
+        if (currentNote.getPinNumber() == 0) {
             Intent note = new Intent(activity, NoteEdit.class);
             note.putExtra("id", currentNote.getNoteId());
             note.putExtra("isChecklist", currentNote.isCheckList());
             activity.startActivity(note);
-        }
-        else {
+        } else {
             Intent lockScreen = new Intent(activity, NoteLockScreen.class);
             lockScreen.putExtra("id", currentNote.getNoteId());
             lockScreen.putExtra("title", currentNote.getTitle().replace("\n", " "));
@@ -554,7 +542,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     }
 
     // updates select status of note in database
-    private void saveSelected(Note currentNote, boolean status){
+    private void saveSelected(Note currentNote, boolean status) {
         // save status to database
         realm.beginTransaction();
         currentNote.setSelected(status);

@@ -18,12 +18,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Backup;
@@ -51,6 +53,7 @@ import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -61,6 +64,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -343,6 +347,14 @@ public class SettingsScreen extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
+        int modeColor = R.color.darker_mode;
+
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+            modeColor = R.color.gray;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
+
         signUp.setOnClickListener(view -> {
             realmStatus();
             if (currentUser.isUltimateUser()) {
@@ -454,12 +466,13 @@ public class SettingsScreen extends AppCompatActivity {
 
         appSettings.setOnClickListener(v -> openAppInSettings());
 
+        int finalModeColor = modeColor;
         row.setOnClickListener(v -> {
             realmStatus();
             realm.beginTransaction();
             currentUser.setLayoutSelected("row");
             realm.commitTransaction();
-            int otherColor = context.getColor(AppData.getAppData().isDarkerMode ? R.color.darker_mode : R.color.gray);
+            int otherColor = context.getColor(finalModeColor);
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             grid.setCardBackgroundColor(otherColor);
             staggered.setCardBackgroundColor(otherColor);
@@ -470,7 +483,7 @@ public class SettingsScreen extends AppCompatActivity {
             realm.beginTransaction();
             currentUser.setLayoutSelected("grid");
             realm.commitTransaction();
-            int otherColor = context.getColor(AppData.getAppData().isDarkerMode ? R.color.darker_mode : R.color.gray);
+            int otherColor = context.getColor(finalModeColor);
             grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             row.setCardBackgroundColor(otherColor);
             staggered.setCardBackgroundColor(otherColor);
@@ -482,7 +495,7 @@ public class SettingsScreen extends AppCompatActivity {
                 realm.beginTransaction();
                 currentUser.setLayoutSelected("stag");
                 realm.commitTransaction();
-                int otherColor = context.getColor(AppData.getAppData().isDarkerMode ? R.color.darker_mode : R.color.gray);
+                int otherColor = context.getColor(finalModeColor);
                 staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
                 grid.setCardBackgroundColor(otherColor);
                 row.setCardBackgroundColor(otherColor);
@@ -660,23 +673,22 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private void checkModeSettings() {
-        if (currentUser.isModeSettings()) {
-            AppData.getAppData().isDarkerMode = true;
+        if (currentUser.getScreenMode() == User.Mode.Dark) {
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
-            AppData.getAppData().isDarkerMode = true;
             updateGapLayoutColor(context.getColor(R.color.gray));
             changeBackgroundColors(R.color.darker_mode, R.color.gray, 6);
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
-        } else {
+        } else if (currentUser.getScreenMode() == User.Mode.Gray) {
             modeSetting.setText("Gray Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
-            AppData.getAppData().isDarkerMode = false;
             getWindow().setStatusBarColor(context.getColor(R.color.gray));
             updateGapLayoutColor(context.getColor(R.color.gray));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
             changeBackgroundColors(R.color.light_gray, R.color.light_gray, 0);
+        } else if (currentUser.getScreenMode() == User.Mode.Light) {
+
         }
     }
 
@@ -724,7 +736,7 @@ public class SettingsScreen extends AppCompatActivity {
         animationLayout.setStrokeColor(context.getColor(strokeColor));
         animationLayout.setStrokeWidth(width);
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
             staggered.setCardBackgroundColor(context.getColor(color));
@@ -734,7 +746,7 @@ public class SettingsScreen extends AppCompatActivity {
             row.setStrokeWidth(width);
             staggered.setStrokeColor(context.getColor(strokeColor));
             staggered.setStrokeWidth(width);
-        } else {
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
             color = R.color.gray;
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
@@ -742,6 +754,8 @@ public class SettingsScreen extends AppCompatActivity {
             grid.setStrokeWidth(width);
             row.setStrokeWidth(width);
             staggered.setStrokeWidth(width);
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
         }
     }
 
@@ -852,10 +866,10 @@ public class SettingsScreen extends AppCompatActivity {
         RealmSingleton.setCloseRealm(false);
         Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
         startActivity(intent);
-        if(currentUser != null)
+        if (currentUser != null)
             currentUser.removeAllChangeListeners();
         finish();
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
@@ -1458,10 +1472,10 @@ public class SettingsScreen extends AppCompatActivity {
         Log.d("Here", "Keep realm open in SettingsScreen");
         Intent intent = new Intent(this, Homepage.class);
         startActivity(intent);
-        if(currentUser != null)
+        if (currentUser != null)
             currentUser.removeAllChangeListeners();
         finish();
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             overridePendingTransition(0, R.anim.hide_to_bottom);
     }
 

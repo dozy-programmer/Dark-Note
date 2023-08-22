@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
@@ -28,11 +30,13 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -43,9 +47,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private final RealmResults<CheckListItem> checkList;
     private final Note currentNote;
     private Context context;
-    private FragmentActivity activity;
+    private final FragmentActivity activity;
     private final Realm realm;
-    private User user;
+    private final User user;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -141,10 +145,11 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         else
             holder.deleteIcon.setVisibility(View.GONE);
 
-        if (user.isModeSettings()) {
+        if (user.getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(activity.getColor(R.color.light_gray));
             holder.background.setStrokeWidth(5);
+        } else if (user.getScreenMode() == User.Mode.Light) {
         }
 
         holder.subChecklist.setAdapter(null);
@@ -188,19 +193,17 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         if (isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
-            if(user.isShowChecklistCheckbox()){
+            if (user.isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_checked));
-            }
-            else {
+            } else {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.checked_icon));
             }
         } else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(currentNote.getTextColor());
-            if(user.isShowChecklistCheckbox()){
+            if (user.isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_unchecked));
-            }
-            else {
+            } else {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.unchecked_icon));
             }
         }

@@ -6,17 +6,17 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
@@ -26,16 +26,15 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checklist_recyclerview.MyViewHolder>{
+public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checklist_recyclerview.MyViewHolder> {
 
     // project data
     private final RealmResults<SubCheckListItem> checkList;
     private final Note currentNote;
     private Context context;
-    private FragmentActivity activity;
+    private final FragmentActivity activity;
     private final Realm realm;
-    private boolean isNightMode;
-    private User user;
+    private final User user;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -61,7 +60,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         this.realm = realm;
         this.activity = activity;
         user = RealmSingleton.getUser();
-        isNightMode = AppData.getAppData().isDarkerMode;
     }
 
     @Override
@@ -83,38 +81,36 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         // populates note into the recyclerview
         holder.checklistText.setText(checkListText);
         String textSize = Helper.getPreference(context, "size");
-        if(textSize == null)
+        if (textSize == null)
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
-        if(isNightMode){
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(activity.getColor(R.color.gray));
             holder.background.setStrokeWidth(5);
-        }
-        else{
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
         }
 
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
-        if(isSelected) {
+        if (isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
-            if(user.isShowChecklistCheckbox()){
+            if (user.isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_checked));
-            }
-            else {
+            } else {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.checked_icon));
             }
-        }
-        else {
+        } else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 200));
-            if(user.isShowChecklistCheckbox()){
+            if (user.isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_unchecked));
-            }
-            else {
+            } else {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.unchecked_icon));
             }
         }
@@ -149,16 +145,16 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     }
 
     // updates select status of note in database
-    private void saveSelected(SubCheckListItem checkListItem, boolean status){
+    private void saveSelected(SubCheckListItem checkListItem, boolean status) {
         // save status to database
         realm.beginTransaction();
         checkListItem.setChecked(status);
         realm.commitTransaction();
-        ((NoteEdit)context).updateSaveDateEdited();
+        ((NoteEdit) context).updateSaveDateEdited();
     }
 
     // opens dialog that allows user to edit or delete checklist item
-    private void openEditDialog(SubCheckListItem checkListItem, int position){
+    private void openEditDialog(SubCheckListItem checkListItem, int position) {
         ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, position, this);
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
     }

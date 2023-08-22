@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
@@ -22,9 +24,7 @@ import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.backup_recyclerview;
@@ -39,7 +39,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -133,14 +136,17 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWord.setTextColor(getContext().getColor(R.color.gray));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         if (message == -1) {
             title.setText("Info");
@@ -428,10 +434,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override

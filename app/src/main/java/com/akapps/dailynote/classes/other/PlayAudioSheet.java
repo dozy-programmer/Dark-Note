@@ -9,16 +9,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.AudioManager;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -27,14 +31,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
+
 import www.sanju.motiontoast.MotionToast;
 
-public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
+public class PlayAudioSheet extends RoundedBottomSheetDialogFragment {
 
     // data
-    private CheckListItem item;
+    private final CheckListItem item;
 
     // timer
     private AudioManager audioManager;
@@ -44,7 +51,7 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
     private CustomPowerMenu audioMenu;
     private ImageView dropDownMenu;
 
-    public PlayAudioSheet(CheckListItem item){
+    public PlayAudioSheet(CheckListItem item) {
         this.item = item;
         AppData.timerDuration = 0;
     }
@@ -62,12 +69,14 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
         TextView totalAudioTime = view.findViewById(R.id.total_audio_time);
         MaterialButton infoRecording = view.findViewById(R.id.info_recording);
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             infoRecording.setBackgroundColor(getContext().getColor(R.color.not_too_dark_gray));
-        }
-        else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         String audioPath = item.getAudioPath();
         int audioDuration = item.getAudioDuration();
@@ -84,28 +93,28 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
         });
 
         rewind.setOnClickListener(view12 -> {
-            if(audioManager.isPlaying() || audioManager.isPaused())
+            if (audioManager.isPlaying() || audioManager.isPaused())
                 audioManager.changePositionByIncrement(-5);
         });
 
         pausePlayButton.setOnClickListener(view1 -> {
-            if(audioManager.isPlaying())
+            if (audioManager.isPlaying())
                 audioManager.pausePlaying();
-            else if(audioManager.isPaused())
+            else if (audioManager.isPaused())
                 audioManager.resumePlaying();
             else
                 audioManager.startPlaying();
         });
 
         forward.setOnClickListener(view13 -> {
-            if(audioManager.isPlaying() || audioManager.isPaused())
+            if (audioManager.isPlaying() || audioManager.isPaused())
                 audioManager.changePositionByIncrement(5);
         });
 
         return view;
     }
 
-    private String getRecordingInfo(){
+    private String getRecordingInfo() {
         String recordingLocation = "Audio Location:\n" + item.getAudioPath() + "\n\n";
         String recordingData = "Date Recorded: " + item.getDateCreated() + "\n\n";
         String recordingDuration = "Recording Duration: " +
@@ -136,11 +145,10 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
                 // delete audio
                 RealmHelper.deleteRecording(item, getContext());
                 Helper.showMessage(getActivity(), "Recording", "Deleted Recording", MotionToast.TOAST_SUCCESS);
-                ((NoteEdit)getActivity()).checklistAdapter.notifyDataSetChanged();
-                ((NoteEdit)getActivity()).updateDateEdited();
+                ((NoteEdit) getActivity()).checklistAdapter.notifyDataSetChanged();
+                ((NoteEdit) getActivity()).updateDateEdited();
                 dismiss();
-            }
-            else if(position == 1) {
+            } else if (position == 1) {
                 // send audio
                 Helper.shareFile(getContext(), "audio", item.getAudioPath(), item.getText());
             }
@@ -150,17 +158,20 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
-        if(audioManager != null)
+        if (audioManager != null)
             audioManager.onStop();
         super.onDismiss(dialog);
     }
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override
@@ -168,11 +179,11 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog =(BottomSheetDialog) getDialog ();
+                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
                     if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
+                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);
+                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     }

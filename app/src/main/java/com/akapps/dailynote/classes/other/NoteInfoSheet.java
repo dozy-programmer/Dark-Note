@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
@@ -26,7 +28,6 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
@@ -34,15 +35,18 @@ import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
-public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
+public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;
     private RealmResults<Photo> allPhotos;
@@ -51,9 +55,10 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     String noteTitle;
     private Realm realm;
 
-    public NoteInfoSheet(){}
+    public NoteInfoSheet() {
+    }
 
-    public NoteInfoSheet(Note currentNote, boolean showOpenButton){
+    public NoteInfoSheet(Note currentNote, boolean showOpenButton) {
         this.currentNote = currentNote;
         this.showOpenButton = showOpenButton;
         this.user = RealmSingleton.getUser();
@@ -64,11 +69,13 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_note_info, container, false);
 
-        if (AppData.getAppData().isDarkerMode) {
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        }
-        else
+        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         realm = RealmSingleton.getInstance(getContext());
         allPhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
@@ -88,14 +95,14 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         MaterialButton open = view.findViewById(R.id.open);
         RecyclerView photosScrollView = view.findViewById(R.id.note_photos);
 
-        if(!showOpenButton)
+        if (!showOpenButton)
             open.setVisibility(View.GONE);
 
         photosScrollView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         RecyclerView.Adapter scrollAdapter = new photos_recyclerview(allPhotos, getActivity(), getContext(), false);
         photosScrollView.setAdapter(scrollAdapter);
 
-        if(allPhotos.size() == 0 || currentNote.getPinNumber() > 0)
+        if (allPhotos.size() == 0 || currentNote.getPinNumber() > 0)
             photosScrollView.setVisibility(View.GONE);
 
         open.setOnClickListener(view1 -> {
@@ -103,16 +110,16 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         });
 
         try {
-            if(currentNote.getPinNumber() == 0)
+            if (currentNote.getPinNumber() == 0)
                 lockIcon.setVisibility(View.GONE);
 
-            if(!currentNote.isPin())
+            if (!currentNote.isPin())
                 pinIcon.setVisibility(View.GONE);
 
-            if(!currentNote.isTrash())
+            if (!currentNote.isTrash())
                 trashIcon.setVisibility(View.GONE);
 
-            if(!currentNote.getReminderDateTime().isEmpty() && !currentNote.isTrash()){
+            if (!currentNote.getReminderDateTime().isEmpty() && !currentNote.isTrash()) {
                 Date reminderDate = null;
                 try {
                     reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(currentNote.getReminderDateTime());
@@ -127,10 +134,10 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                 trashIcon.setImageDrawable(getContext().getDrawable(R.drawable.reminder_icon));
             }
 
-            if(!currentNote.isArchived())
+            if (!currentNote.isArchived())
                 archiveIcon.setVisibility(View.GONE);
 
-            if(currentNote.getTitle().isEmpty())
+            if (currentNote.getTitle().isEmpty())
                 noteTitle = "~ No Title ~";
             else
                 noteTitle = currentNote.getTitle();
@@ -164,19 +171,19 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
             String getChecklistString = "";
             int checklistSize = 0;
             int subChecklistSize = 0;
-            if(currentNote.isCheckList()){
-                checklistSize =  currentNote.getChecklist().size();
-                for(int i=0 ;i < checklistSize; i++){
+            if (currentNote.isCheckList()) {
+                checklistSize = currentNote.getChecklist().size();
+                for (int i = 0; i < checklistSize; i++) {
                     getChecklistString += sanitizeWord(currentNote.getChecklist().get(i).getText()) + " ";
                     int currentSublistSize = currentNote.getChecklist().get(i).getSubChecklist().size();
                     subChecklistSize += currentSublistSize;
-                    for(int j=0; j< currentSublistSize; j++)
+                    for (int j = 0; j < currentSublistSize; j++)
                         getChecklistString += sanitizeWord(currentNote.getChecklist().get(i).getSubChecklist().get(j).getText()) + " ";
                 }
             }
 
             int noteSize = 0;
-            if(getNoteString.length() == 0)
+            if (getNoteString.length() == 0)
                 noteSize = 0;
             else
                 noteSize = getNoteString.split(" ").length;
@@ -191,16 +198,16 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
             numChars.setText(Html.fromHtml(numChars.getText() + "<br>" +
                             "<font color='#e65c00'>" + (currentNote.isCheckList() ?
-                            getChecklistString.length():
+                            getChecklistString.length() :
                             getNoteString.length()) + " characters" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
-        } catch (Exception e){
+        } catch (Exception e) {
             this.dismiss();
         }
 
         copyIcon.setOnClickListener(view14 -> {
             // copy text
-            if(currentNote.isCheckList())
+            if (currentNote.isCheckList())
                 copyToClipboard(copyChecklist(currentNote));
             else
                 copyToClipboard(copyWord(currentNote.getNote()));
@@ -209,7 +216,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         return view;
     }
 
-    private void copyToClipboard(String wordToCopy){
+    private void copyToClipboard(String wordToCopy) {
         ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("text", wordToCopy);
         clipboard.setPrimaryClip(clip);
@@ -217,19 +224,19 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
                 "Copied successfully", MotionToast.TOAST_SUCCESS);
     }
 
-    private String sanitizeWord(String word){
+    private String sanitizeWord(String word) {
         return word.replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ")
                 .replaceAll("\\s+", " ").trim();
     }
 
-    private String copyChecklist(Note currentNote){
+    private String copyChecklist(Note currentNote) {
         String checklistString = "";
         String checklistSeparator = user.getItemsSeparator().equals("newline") ? "\n" : user.getItemsSeparator();
         String sublistSeparator = user.getSublistSeparator().equals("space") ? "\n " : user.getSublistSeparator();
 
-        for(CheckListItem checkListItem: currentNote.getChecklist()){
+        for (CheckListItem checkListItem : currentNote.getChecklist()) {
             checklistString += checkListItem.getText();
-            for (SubCheckListItem subCheckListItem: checkListItem.getSubChecklist()){
+            for (SubCheckListItem subCheckListItem : checkListItem.getSubChecklist()) {
                 checklistString += sublistSeparator + subCheckListItem.getText();
             }
             checklistString += checklistSeparator;
@@ -237,19 +244,18 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         return checklistString;
     }
 
-    private String copyWord(String word){
+    private String copyWord(String word) {
         return word.replaceAll("<br>", "\n").replaceAll("<.*?>", " ").replaceAll("&nbsp;", " ");
     }
 
-    private void openNoteActivity(Note currentNote){
-        if(currentNote.getPinNumber() == 0){
+    private void openNoteActivity(Note currentNote) {
+        if (currentNote.getPinNumber() == 0) {
             Intent note = new Intent(getActivity(), NoteEdit.class);
             note.putExtra("id", currentNote.getNoteId());
             note.putExtra("isChecklist", currentNote.isCheckList());
             getActivity().startActivity(note);
             dismiss();
-        }
-        else {
+        } else {
             Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
             lockScreen.putExtra("id", currentNote.getNoteId());
             lockScreen.putExtra("title", currentNote.getTitle().replace("\n", " "));
@@ -263,10 +269,13 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
 
     @Override
     public int getTheme() {
-        if(AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override
@@ -280,11 +289,11 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment{
         super.onViewCreated(view, savedInstanceState);
         view.getViewTreeObserver()
                 .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog =(BottomSheetDialog) getDialog ();
+                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
                     if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById (R.id.design_bottom_sheet);
+                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                         if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from (bottomSheet);
+                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                             behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         }
                     }

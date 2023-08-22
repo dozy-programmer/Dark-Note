@@ -3,7 +3,6 @@ package com.akapps.dailynote.classes.other;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,9 @@ import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.SubExpense;
-import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.recyclerview.expenses_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -32,7 +32,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -43,7 +42,7 @@ import io.realm.RealmList;
 public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;
-    private ArrayList<Expense> expensesList = new ArrayList<>();
+    private final ArrayList<Expense> expensesList = new ArrayList<>();
     private List<DonutSection> expensesListGraph = new ArrayList<>();
 
     // layout
@@ -70,10 +69,13 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_budget, container, false);
 
-        if (AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+
+        }
 
         double budget = 0;
         String errorMessageString = "";
@@ -290,10 +292,13 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (AppData.getAppData().isDarkerMode)
+        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
+        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        }
+        return 0;
     }
 
     @Override
