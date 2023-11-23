@@ -1,6 +1,6 @@
 # Dark Note
 
-Dark Note offers a wide range of features for taking notes and creating checklists. Its simple and elegant user interface makes it easy to use and navigate, allowing you to quickly and easily create and manage your notes and checklists.
+Dark Note offers a wide range of features for taking notes, creating checklists, and keeping track of your budget. Its simple and elegant user interface makes it easy to use and navigate, allowing you to quickly and easily create and manage your notes + checklists. 
 
 ## Table of contents
 * [Preview](#preview)
@@ -12,17 +12,13 @@ Dark Note offers a wide range of features for taking notes and creating checklis
 
 ## Preview
 
-<img src="Screenshots/Dark_Note_Gif.gif" width="200" height="420"/>
+<img src="Screenshots/Dark_Note_Gif.gif" width="160" height="320"/>
 
 ## App Layout
 
-Home Page | Sample Note |
-:-------------------------:|:-------------------------:|
-<img src="Screenshots/Regular%20Device/1_Main_Screen.png" width="100" height="200"/> | <img src="Screenshots/Regular%20Device/3_Note_Example.png" width="100" height="200"/> 
-
-| Folder Page  | Settings Page |
-| ------------- | ------------- |
-| <img src="Screenshots/Regular%20Device/6_Folders_Screen.png" width="100" height="200"/>  | <img src="Screenshots/Regular%20Device/8_Settings_Screen.png" width="100" height="200"/>  |
+Home Page | Sample Note | Folder Page  | Settings Page |
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+<img src="Screenshots/Regular%20Device/1_Main_Screen.png" width="100" height="200"/> | <img src="Screenshots/Regular%20Device/3_Note_Example.png" width="100" height="200"/> | <img src="Screenshots/Regular%20Device/6_Folders_Screen.png" width="100" height="200"/>  | <img src="Screenshots/Regular%20Device/8_Settings_Screen.png" width="100" height="200"/>  
 
 ## Features
 
@@ -52,12 +48,13 @@ Home Page | Sample Note |
 	* Notes with folders can be hid away and can only be viewed via Folders.
 
 ## Purpose
-This app was created because I wanted to modernize the popular note app ColorNote. Although it is a great and useful app, I felt like the user interface took away from the user experience. After having used ColorNote for a couple years, I felt it was time to do it. Using ColorNote and BlackNote as inspiration, I combined the best of both worlds and I created Dark Note. Now I use dark note everyday to keep track of my notes and even my monthly budget. 
+This app was created because I wanted to modernize the popular note app ColorNote. Although it is a great and useful app, I felt like the user interface took away from the user experience. After having used ColorNote for a couple years, I felt it was time to do it. Using ColorNote and BlackNote as inspiration, I combined the best of both worlds and I created Dark Note. Now I use Dark Note everyday to keep track of my ideas, reminders of stuff to do, and even my monthly budget. 
 	
 ## Tools
 * Android Studio
 * Java
 * Firebase (Storage and Authentication)
+	* This is only used by me as I do not want users to upload their unencrypted data.
 * Realm DB
 
 ## Download
