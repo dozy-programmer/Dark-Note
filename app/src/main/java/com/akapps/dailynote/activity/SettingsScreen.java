@@ -349,9 +349,9 @@ public class SettingsScreen extends AppCompatActivity {
 
         int modeColor = R.color.darker_mode;
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray)
             modeColor = R.color.gray;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -736,7 +736,7 @@ public class SettingsScreen extends AppCompatActivity {
         animationLayout.setStrokeColor(context.getColor(strokeColor));
         animationLayout.setStrokeWidth(width);
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
             staggered.setCardBackgroundColor(context.getColor(color));
@@ -746,7 +746,7 @@ public class SettingsScreen extends AppCompatActivity {
             row.setStrokeWidth(width);
             staggered.setStrokeColor(context.getColor(strokeColor));
             staggered.setStrokeWidth(width);
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray) {
             color = R.color.gray;
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
@@ -754,7 +754,7 @@ public class SettingsScreen extends AppCompatActivity {
             grid.setStrokeWidth(width);
             row.setStrokeWidth(width);
             staggered.setStrokeWidth(width);
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
         }
     }
@@ -1463,7 +1463,7 @@ public class SettingsScreen extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"ak.apps.2019@gmail.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Dark Note App Feedback");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Dark Note: Checklists & Budget Feedback");
         startActivity(intent);
     }
 

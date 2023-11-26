@@ -63,7 +63,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
         MaterialCardView aToZButton = view.findViewById(R.id.a_z);
         MaterialCardView zToAButton = view.findViewById(R.id.z_a);
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByDate.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByDate.setStrokeColor(getContext().getColor(R.color.light_gray_2));
@@ -71,9 +71,9 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
             sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.light_gray_2));
             sortByAlphabetical.setStrokeWidth(5);
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -285,11 +285,11 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

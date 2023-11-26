@@ -59,7 +59,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
-        user = RealmSingleton.getUser();
+        user = RealmSingleton.getUser(context);
     }
 
     @Override
@@ -85,13 +85,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(activity.getColor(R.color.gray));
             holder.background.setStrokeWidth(5);
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
         }
 

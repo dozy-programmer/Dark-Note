@@ -136,15 +136,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
             securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWord.setTextColor(getContext().getColor(R.color.gray));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -229,7 +229,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setText("Enter Security Word to Unlock " + (isAppLocked ? "App" : "Note"));
             info.setGravity(Gravity.CENTER);
         } else if (message == 6) {
-            User currentUser = RealmSingleton.getUser();
+            User currentUser = RealmSingleton.getUser(getContext());
             allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
             if (allBackups.size() <= 50) {
@@ -248,7 +248,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
 
-            User currentUser = RealmSingleton.getUser();
+            User currentUser = RealmSingleton.getUser(getContext());
             // recyclerview
             allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
             info.setText("Select file\n\nLoading...");
@@ -434,11 +434,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

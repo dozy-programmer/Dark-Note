@@ -229,7 +229,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (savedInstanceState != null)
             noteId = savedInstanceState.getInt("id");
 
-        user = RealmSingleton.getUser();
+        user = RealmSingleton.getUser(context);
         initializeLayout(savedInstanceState);
 
         if (user.getScreenMode() == User.Mode.Dark) {
@@ -811,12 +811,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark)
             searchLayout.setCardBackgroundColor(context.getColor(R.color.darker_mode));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
+        else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray) {
             searchEditText.setTextColor(context.getColor(R.color.ultra_white));
             searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -860,11 +860,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         pinNoteButton.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark)
             searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray)
             searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -1459,11 +1459,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             photosNote.setCardBackgroundColor(getColor(R.color.blue));
         } else {
             isShowingPhotos = false;
-            if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+            if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark)
                 photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+            else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray)
                 photosNote.setCardBackgroundColor(getColor(R.color.light_gray));
-            else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+            else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
             }
         }

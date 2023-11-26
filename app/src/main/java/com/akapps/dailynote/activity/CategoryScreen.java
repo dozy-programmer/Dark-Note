@@ -99,7 +99,7 @@ public class CategoryScreen extends AppCompatActivity {
 
         context = this;
 
-        screenMode = RealmSingleton.getUser().getScreenMode();
+        screenMode = RealmSingleton.getUser(context).getScreenMode();
 
         // if orientation changes, retrieve these values
         if (savedInstanceState != null) {
@@ -291,7 +291,7 @@ public class CategoryScreen extends AppCompatActivity {
                 Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
                         true, R.color.transparent, colorThree);
 
-                if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+                if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
                     pinned.setBackgroundColor(getColor(R.color.darker_mode));
                     pinned.setStrokeColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
                     pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
@@ -309,7 +309,7 @@ public class CategoryScreen extends AppCompatActivity {
                     locked.setIcon(getDrawable(R.drawable.lock_icon));
                     locked.setIconTintResource(R.color.blue);
                     locked.setStrokeWidth(5);
-                } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+                } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
                 }
             }

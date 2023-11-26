@@ -159,13 +159,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
         }
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.black));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 192));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.not_too_dark_gray));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 255));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -207,7 +207,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (currentNote.isSelected())
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
             else
-                holder.note_background.setStrokeColor(RealmSingleton.getUser().getScreenMode() == User.Mode.Dark ?
+                holder.note_background.setStrokeColor(RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark ?
                         Helper.darkenColor(currentNote.getBackgroundColor(), 0)
                         : currentNote.getBackgroundColor());
             holder.note_background.setStrokeWidth(10);
@@ -459,7 +459,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             } else {
                 if (currentNote.isSelected()) {
                     saveSelected(currentNote, false);
-                    holder.note_background.setStrokeColor(RealmSingleton.getUser().getScreenMode() == User.Mode.Dark ?
+                    holder.note_background.setStrokeColor(RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark ?
                             Helper.darkenColor(currentNote.getBackgroundColor(), 0)
                             : currentNote.getBackgroundColor());
                     holder.note_background.setStrokeWidth(10);

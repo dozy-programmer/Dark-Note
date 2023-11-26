@@ -58,7 +58,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
         else
             title.setText("Lock Note");
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
             pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             pinLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
@@ -68,9 +68,9 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             securityWord.setTextColor(getContext().getColor(R.color.ultra_white));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -120,11 +120,11 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

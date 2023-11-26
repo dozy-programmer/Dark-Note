@@ -98,15 +98,15 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
         itemName.requestFocusFromTouch();
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
             itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemName.setTextColor(getContext().getColor(R.color.ultra_white));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray) {
+        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray) {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
             delete.setBackgroundColor(getContext().getColor(R.color.light_gray));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -264,11 +264,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

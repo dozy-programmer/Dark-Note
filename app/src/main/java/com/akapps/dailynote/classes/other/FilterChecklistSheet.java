@@ -53,7 +53,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             background.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
             background.setStrokeColor(getContext().getColor(R.color.gray));
@@ -65,9 +65,9 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
             darkModeItemLayout(checkedTop);
             darkModeItemLayout(addedBottom);
             darkModeItemLayout(addedTop);
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -222,11 +222,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

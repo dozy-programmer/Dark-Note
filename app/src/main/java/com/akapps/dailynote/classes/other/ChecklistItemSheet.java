@@ -140,7 +140,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
         currentNote = ((NoteEdit) getActivity()).currentNote;
         realm = RealmSingleton.getInstance(getContext());
-        user = RealmSingleton.getUser();
+        user = RealmSingleton.getUser(getContext());
 
         // Initialize the SDK
         if (!Places.isInitialized())
@@ -189,16 +189,16 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             }
         });
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
             itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemName.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemNameLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemName.setTextColor(getContext().getColor(R.color.ultra_white));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -611,11 +611,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

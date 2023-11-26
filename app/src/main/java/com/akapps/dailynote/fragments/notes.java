@@ -168,7 +168,7 @@ public class notes extends Fragment {
         // initialize database and get data
         realm = RealmSingleton.getInstance(context);
 
-        user = RealmSingleton.getUser();
+        user = RealmSingleton.getUser(context);
 
         // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli(context);

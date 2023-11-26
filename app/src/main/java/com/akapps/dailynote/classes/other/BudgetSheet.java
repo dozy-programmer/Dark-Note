@@ -3,6 +3,7 @@ package com.akapps.dailynote.classes.other;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,11 +70,11 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_budget, container, false);
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -91,12 +92,14 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         if (budget == 0) {
             List<DonutSection> list = getListOfExpenses(currentNote.getChecklist(), errorMessage, budget);
 
-            if (list.size() > 1) {
-                updateErrorMessage("\n\n" + "Budget is missing, add using " +
-                        budgetKey + "XXXX" + "\n\nExample: " + budgetKey + "1000");
-            } else {
-                errorMessageString = getContext().getString(R.string.try_out_budget_message);
-                updateErrorMessage("\n" + errorMessageString);
+            if(list != null) {
+                if (list.size() > 1) {
+                    updateErrorMessage("\n\n" + "Budget is missing, add using " +
+                            budgetKey + "XXXX" + "\n\nExample: " + budgetKey + "1000");
+                } else {
+                    errorMessageString = getContext().getString(R.string.try_out_budget_message);
+                    updateErrorMessage("\n" + errorMessageString);
+                }
             }
         } else if (budget > 0) {
             errorMessage.setVisibility(View.GONE);
@@ -147,7 +150,6 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
             ArrayList<SubExpense> currentExpenseSubList = new ArrayList<>();
 
             String checklistString = currentItem.getText();
-            String expenseKeyRepeatedPattern = "\\\\" + expenseKey + "+";
 
             if (checklistString.contains(expenseKey)) {
                 String[] checklistStringTokens = getTokenArray(checklistString);
@@ -155,14 +157,23 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
                 for (String currentToken : checklistStringTokens) {
                     if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
-                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey) + 1)
-                                .replaceAll(expenseKeyRepeatedPattern, "")
+                        String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey))
+                                .replaceAll("\\" + expenseKey + "+", "\\" + expenseKey)
                                 .trim().replaceAll(",", "");
 
+                        currentTokenTrimmed = currentTokenTrimmed.substring(currentToken.indexOf(expenseKey) + 1);
+
                         try {
-                            Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
-                            currentExpenseAmount += currentTokenDouble;
-                            currentSubExpenseTotal += currentTokenDouble;
+                            if(currentTokenTrimmed.isEmpty()) {
+                                wrongFormatList.add(expenseKey + currentTokenTrimmed);
+                                Log.d("Here", "Current String EMPTY -> " + expenseKey + currentTokenTrimmed);
+                            }
+                            else {
+                                Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
+                                Log.d("Here", "Double is -> " + currentTokenDouble);
+                                currentExpenseAmount += currentTokenDouble;
+                                currentSubExpenseTotal += currentTokenDouble;
+                            }
                         } catch (Exception e) {
                             wrongFormatList.add(expenseKey + currentTokenTrimmed);
                         }
@@ -180,9 +191,11 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
                     for (String currentToken : sublistStringTokens) {
                         if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
-                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey) + 1).trim()
-                                    .replaceAll(expenseKeyRepeatedPattern, "")
-                                    .replaceAll(",", "");
+                            String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey))
+                                    .replaceAll("\\" + expenseKey + "+", "\\" + expenseKey)
+                                    .trim().replaceAll(",", "");
+
+                            currentTokenTrimmed = currentTokenTrimmed.substring(currentToken.indexOf(expenseKey) + 1);
 
                             try {
                                 Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
@@ -210,7 +223,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
         if (wrongFormatList.size() > 0) {
             wrongFormatMessage = "\nFormat errors found: " + wrongFormatList + "\n";
-            errorMessage.setText(wrongFormatMessage);
+            updateErrorMessage(wrongFormatMessage);
             return null;
         } else {
             randomColorGenerated = Helper.getRandomColor();
@@ -292,11 +305,11 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark)
+        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

@@ -28,7 +28,8 @@ public class RealmSingleton {
         return realmInstance;
     }
 
-    public static User getUser(){
+    public static User getUser(Context context){
+        if(user == null || !user.isValid()) RealmHelper.getUser(context, "");
         return user;
     }
 

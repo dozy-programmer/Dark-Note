@@ -62,7 +62,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         this.realm = realm;
         this.activity = activity;
         this.context = context;
-        currentUser = RealmSingleton.getUser();
+        currentUser = RealmSingleton.getUser(context);
     }
 
     @Override
@@ -77,13 +77,13 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         // retrieves current photo object
         Backup currentBackup = allBackups.get(position);
 
-        if (RealmSingleton.getUser().getScreenMode() == User.Mode.Dark) {
+        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(context.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(context.getColor(R.color.light_gray));
             holder.background.setStrokeWidth(5);
-        } else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Gray)
+        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray)
             holder.background.setCardBackgroundColor(context.getColor(R.color.light_gray));
-        else if (RealmSingleton.getUser().getScreenMode() == User.Mode.Light) {
+        else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
 
         }
 

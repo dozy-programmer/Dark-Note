@@ -2,6 +2,7 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,7 +91,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
-        user = RealmSingleton.getUser();
+        user = RealmSingleton.getUser(context);
     }
 
     @Override
@@ -233,7 +234,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             updateChecklistStatus(checkListItem, !isSelected, position);
         });
 
-        // if checklist item is clicked, then it updates the status of the
+        // if checklist item is clicked, then it updates the status of the item
         // this is added to support clickable links
         holder.checklistText.setOnClickListener(v -> {
             updateChecklistStatus(checkListItem, isSelected, position);
@@ -242,6 +243,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         holder.edit.setOnClickListener(v -> {
             openEditDialog(checkListItem, position);
         });
+
+        holder.selectedIcon.setOnClickListener(view -> updateChecklistStatus(checkListItem, isSelected, position));
 
         holder.itemImageLayout.setOnClickListener(view -> {
             ArrayList<String> images = new ArrayList<>();
