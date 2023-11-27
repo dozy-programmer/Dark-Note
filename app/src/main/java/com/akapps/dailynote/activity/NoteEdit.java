@@ -712,8 +712,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         addCheckListItem.setOnClickListener(v -> {
             if (currentNote.isCheckList() && !isShowingPhotos)
                 openNewItemDialog();
-            else if (isShowingPhotos)
-                showCameraDialog();
+            else if (isShowingPhotos) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+                    InfoSheet permissionInfo = new InfoSheet("Camera Permission Required", Manifest.permission.CAMERA);
+                    permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
+                }
+                else
+                    showCameraDialog();
+            }
             else {
                 note.setInputEnabled(isEditLockedMode);
                 isEditLockedMode = !isEditLockedMode;
@@ -724,8 +730,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         addCheckListItem.setOnLongClickListener(view -> {
-            if (Helper.deviceMicExists(this))
-                checkMicrophonePermission();
+            if (Helper.deviceMicExists(this)) {
+                if(isMicrophonePermissionEnabled())
+                    checkMicrophonePermission();
+                else{
+                    InfoSheet permissionInfo = new InfoSheet("Microphone Permission Required", Manifest.permission.RECORD_AUDIO);
+                    permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
+                }
+            }
             else
                 Helper.showMessage(NoteEdit.this, "Mic Error",
                         "No mic detected on device", MotionToast.TOAST_ERROR);
@@ -733,8 +745,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         addAudioItem.setOnClickListener(view -> {
-            if (Helper.deviceMicExists(this))
-                checkMicrophonePermission();
+            if (Helper.deviceMicExists(this)) {
+                if (isMicrophonePermissionEnabled())
+                    checkMicrophonePermission();
+                else {
+                    InfoSheet permissionInfo = new InfoSheet("Microphone Permission Required", Manifest.permission.RECORD_AUDIO);
+                    permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
+                }
+            }
             else
                 Helper.showMessage(NoteEdit.this, "Mic Error",
                         "No mic detected on device", MotionToast.TOAST_ERROR);
@@ -1301,7 +1319,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     Helper.showMessage(NoteEdit.this, "Alarm Exists",
                             "Delete Reminder to add another one", MotionToast.TOAST_ERROR);
                 } else {
-                    checkNotificationPermission();
+                    if(isNotificationPermissionEnabled())
+                        checkNotificationPermission();
+                    else {
+                        InfoSheet permissionInfo = new InfoSheet("Notification Permission Required", Manifest.permission.POST_NOTIFICATIONS);
+                        permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
+                    }
                 }
             } else if (item.getTitle().equals("Delete")) {
                 dismissDialog = true;
@@ -1356,11 +1379,19 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
     };
 
+    public boolean isNotificationPermissionEnabled(){
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU;
+    }
+
     public void checkNotificationPermission() {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 2);
         } else
             showDatePickerDialog();
+    }
+
+    public boolean isMicrophonePermissionEnabled(){
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void checkMicrophonePermission() {
@@ -1640,7 +1671,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         return true;
     }
 
-    private void showCameraDialog() {
+    public void showCameraDialog() {
         ImagePicker.with(this)
                 .maxResultSize(704, 704)
                 .compress(1024)

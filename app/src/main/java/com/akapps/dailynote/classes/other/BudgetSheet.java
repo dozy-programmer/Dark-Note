@@ -34,7 +34,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
@@ -144,6 +146,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         String leftOverText = "";
 
         int randomColorGenerated = 0;
+        Map<String, Integer> duplicateExpenses = new HashMap<>();
 
         for (CheckListItem currentItem : noteChecklist) {
             double currentExpenseAmount = 0.3141592;
@@ -214,7 +217,17 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                 currentExpenseAmount -= 0.3141592;
                 randomColorGenerated = Helper.getRandomColor();
                 totalExpenses += currentExpenseAmount;
-                currentExpensesList.add(new DonutSection(currentItem.getText().trim(), randomColorGenerated, (float) currentExpenseAmount));
+                String currentItemText = currentItem.getText().trim();
+                if (duplicateExpenses.containsKey(currentItemText)) {
+                    // If the string is already in the map, increment the counter
+                    int count = duplicateExpenses.get(currentItemText) + 1;
+                    duplicateExpenses.put(currentItemText, count);
+                    currentItemText += " ~" + count;
+                } else {
+                    // If the string is not in the map, add it with a count of 1
+                    duplicateExpenses.put(currentItemText, 1);
+                }
+                currentExpensesList.add(new DonutSection(currentItemText, randomColorGenerated, (float) currentExpenseAmount));
                 currentExpenseSubList.add(new SubExpense("Total", currentExpenseAmount));
                 expensesList.add(new Expense(randomColorGenerated, currentItem.getText().trim(),
                         currentExpenseAmount / budget, currentExpenseAmount, currentExpenseSubList));

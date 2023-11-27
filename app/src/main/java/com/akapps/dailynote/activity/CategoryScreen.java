@@ -549,7 +549,7 @@ public class CategoryScreen extends AppCompatActivity {
         setResult(resultCode, home);
         finish();
         if (!AppData.isDisableAnimation)
-            overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
+            overridePendingTransition(R.anim.show_from_bottom, R.anim.hide_to_bottom);
     }
 
     private void showInfoDialog() {

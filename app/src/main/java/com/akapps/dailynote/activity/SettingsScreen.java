@@ -169,6 +169,8 @@ public class SettingsScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_screen);
+        if (!AppData.isDisableAnimation)
+            overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
         context = this;
 
@@ -817,6 +819,10 @@ public class SettingsScreen extends AppCompatActivity {
             grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         else
             staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
+    }
+
+    public boolean isBackupPermissionEnabled(){
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT != Build.VERSION_CODES.TIRAMISU;
     }
 
     public void openBackUpRestoreDialog() {
@@ -1470,13 +1476,15 @@ public class SettingsScreen extends AppCompatActivity {
     private void close() {
         RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in SettingsScreen");
-        Intent intent = new Intent(this, Homepage.class);
+        Intent intent = new Intent(context, Homepage.class);
         startActivity(intent);
         if (currentUser != null)
             currentUser.removeAllChangeListeners();
         finish();
-        if (!AppData.isDisableAnimation)
-            overridePendingTransition(0, R.anim.hide_to_bottom);
+        if (!AppData.isDisableAnimation) {
+            overridePendingTransition(R.anim.show_from_bottom, R.anim.hide_to_bottom);
+            Log.d("Here", "---------------------- Transition --------------------------");
+        }
     }
 
     private void openAppInSettings() {

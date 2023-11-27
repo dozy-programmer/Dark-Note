@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
+import android.Manifest;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.backup_recyclerview;
@@ -77,6 +79,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
     private boolean deleteMultipleNotes;
     private Fragment fragmentActivity;
     private boolean isTrashSelected;
+    private String titleText;
+    private String permission;
 
     public InfoSheet() {
     }
@@ -95,15 +99,21 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         this.position = position;
     }
 
+    public InfoSheet(int message, boolean deleteAllChecklists) {
+        this.message = message;
+        this.deleteAllChecklists = deleteAllChecklists;
+    }
+
     public InfoSheet(int message, String userSecurityWord, boolean isAppLocked) {
         this.message = message;
         this.userSecurityWord = userSecurityWord;
         this.isAppLocked = isAppLocked;
     }
 
-    public InfoSheet(int message, boolean deleteAllChecklists) {
-        this.message = message;
-        this.deleteAllChecklists = deleteAllChecklists;
+    public InfoSheet(String title, String permission){
+        message = 13;
+        this.titleText = title;
+        this.permission = permission;
     }
 
     public InfoSheet(int message, boolean deleteMultipleNotes, Fragment fragmentActivity, boolean isTrashSelected) {
@@ -352,6 +362,24 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
+        } else if(message == 13){
+            title.setText(titleText);
+            backup.setVisibility(View.GONE);
+            securityWord.setVisibility(View.GONE);
+            String feature = "Backup";
+            if(permission.equals(Manifest.permission.POST_NOTIFICATIONS))
+                feature = "Reminders";
+            else if(permission.equals(Manifest.permission.RECORD_AUDIO))
+                feature = "Audio";
+            else if(permission.equals(Manifest.permission.CAMERA))
+                feature = "Photos";
+            info.setText("This permission needs to be enabled so that you can use the " + feature + " feature. " +
+                    "\n\nDark Note will only ever ask for you to allow a permission when it is required by the system " +
+                    "in order for a feature to work.");
+            info.setGravity(Gravity.CENTER);
+            backup.setVisibility(View.VISIBLE);
+            backup.setBackgroundColor(getContext().getColor(R.color.blue));
+            backup.setText("PROCEED");
         }
 
         unlock.setOnClickListener(v -> {
@@ -364,8 +392,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         });
 
         backup.setOnClickListener(v -> {
-            if (message == 1 || message == 2)
-                ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
+            if (message == 1 || message == 2) {
+                if(((SettingsScreen) getActivity()).isBackupPermissionEnabled())
+                    ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
+                else{
+                    InfoSheet permissionInfo = new InfoSheet("Backup Permission Required", Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    permissionInfo.show(getActivity().getSupportFragmentManager(), permissionInfo.getTag());
+                    dismiss();
+                }
+            }
             else if (message == 3 || message == -3) {
                 if (deleteMultipleNotes)
                     ((notes) fragmentActivity).deleteMultipleNotes(false);
@@ -389,9 +424,29 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                         MotionToast.TOAST_SUCCESS);
             } else if (message == 8) {
                 FirebaseAuth.getInstance().signOut();
+                User currentUser = RealmHelper.getUser(getContext(), "");
+                realm.beginTransaction();
+                currentUser.setEmail("");
+                currentUser.setProUser(false);
+                realm.commitTransaction();
+                RealmHelper.updateUser(getContext(), currentUser, "");
                 ((SettingsScreen) getActivity()).restart();
             } else if (message == 9)
                 ((NoteEdit) getActivity()).removeFormatting();
+            else if (message == 13){
+                if(permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                    ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
+                }
+                else if(permission.equals(Manifest.permission.POST_NOTIFICATIONS)){
+                    ((NoteEdit) getActivity()).checkNotificationPermission();
+                }
+                else if(permission.equals(Manifest.permission.RECORD_AUDIO)){
+                    ((NoteEdit) getActivity()).checkMicrophonePermission();
+                }
+                else if(permission.equals(Manifest.permission.CAMERA)){
+                    ((NoteEdit) getActivity()).showCameraDialog();
+                }
+            }
 
             this.dismiss();
         });

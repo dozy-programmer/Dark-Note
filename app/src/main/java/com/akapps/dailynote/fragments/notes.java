@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -519,8 +520,6 @@ public class notes extends Fragment {
         RealmSingleton.setCloseRealm(false);
         startActivity(settings);
         getActivity().finish();
-        if (!AppData.isDisableAnimation)
-            getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
     }
 
     @Override

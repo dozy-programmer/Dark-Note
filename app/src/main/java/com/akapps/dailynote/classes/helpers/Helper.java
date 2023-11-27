@@ -316,7 +316,9 @@ public class Helper {
                                    boolean isChecklist, boolean isChecklistAdded,
                                    LottieAnimationView emptyView) {
         if (isResults) {
-            if (!emptyView.isAnimating())
+            if(RealmSingleton.getUser(context).isDisableAnimation())
+                emptyView.setImageResource(R.drawable.no_results_icon);
+            else if (!emptyView.isAnimating())
                 emptyView.setAnimation(R.raw.waiting_astronaut);
             title.setText("No Results");
             title.setTextSize(20);
@@ -326,7 +328,10 @@ public class Helper {
             title.setText("");
             subTitle.setText("\"Houston, we have a problem...\"");
             subTitle.setTextSize(18);
-            emptyView.setAnimation(R.raw.waiting_astronaut);
+            if(RealmSingleton.getUser(context).isDisableAnimation())
+                emptyView.setImageResource(R.drawable.no_results_icon);
+            else
+                emptyView.setAnimation(R.raw.waiting_astronaut);
             subSubTitle.setText("Tap the bottom right button to add to checklist");
             subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
             subSubTitle.setTextSize(16);
@@ -336,7 +341,10 @@ public class Helper {
             subTitle.setText("Let me do it for you");
             subSubTitle.setText("Tap the bottom right button to create a note");
             subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
-            emptyView.setAnimation(R.raw.astronaut_floating);
+            if(RealmSingleton.getUser(context).isDisableAnimation())
+                emptyView.setImageResource(R.drawable.notebook_icon);
+            else
+                emptyView.setAnimation(R.raw.astronaut_floating);
         }
 
         // verify that the lottie graphic is animating

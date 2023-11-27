@@ -21,6 +21,10 @@
     <!-- Needed for Analytics !-->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
+    <!-- Remove Places API Location Permission !-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove"/>
+
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
