@@ -34,6 +34,7 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -48,9 +49,11 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
@@ -365,6 +368,7 @@ public class notes extends Fragment {
             if (isSearchingNotes) {
                 hideSearchBar();
                 closeMultipleNotesLayout();
+                isListEmpty(0, false);
                 showData();
             } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
                 clearMultipleSelect();
@@ -380,6 +384,7 @@ public class notes extends Fragment {
             if (isSearchingNotes) {
                 hideSearchBar();
                 closeMultipleNotesLayout();
+                isListEmpty(0, false);
                 showData();
             } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
                 clearMultipleSelect();
@@ -621,6 +626,21 @@ public class notes extends Fragment {
                             .isNotEmpty("reminderDateTime").findAll();
 
             filteringAllNotesRealm(queryRemindNotes, true);
+        } else if (resultCode == -16) {
+            RealmResults<Photo> allNotePhotos = realm.where(Photo.class).distinct("noteId").findAll();
+
+            Integer[] allNotePhotosId = new Integer[allNotePhotos.size()];
+
+            // Iterate over RealmResults and populate the array
+            for (int i = 0; i < allNotePhotos.size(); i++) {
+                allNotePhotosId[i] = allNotePhotos.get(i).getNoteId();
+            }
+
+            RealmResults<Note> queryNotesWithPhotos =
+                    realm.where(Note.class)
+                            .in("noteId", allNotePhotosId).findAll();
+
+            filteringAllNotesRealm(queryNotesWithPhotos, true);
         }
     }
 
@@ -1003,7 +1023,8 @@ public class notes extends Fragment {
 
     private void isListEmpty(int size, boolean isResult) {
         Helper.isListEmpty(context, size, empty_Layout, title, subtitle, subSubTitle,
-                isResult, false, false, view.findViewById(R.id.empty_view));
+                isResult, false, false, view.findViewById(R.id.empty_view),
+                view.findViewById(R.id.empty_view_no_animation));
     }
 
     private void savePreferences() {

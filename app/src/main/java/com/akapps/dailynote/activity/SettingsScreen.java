@@ -595,6 +595,7 @@ public class SettingsScreen extends AppCompatActivity {
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
             realmStatus();
             realm.beginTransaction();
+            currentUser.setScreenMode(isChecked  ? 1 : 2);
             currentUser.setModeSettings(isChecked);
             realm.commitTransaction();
             checkModeSettings();

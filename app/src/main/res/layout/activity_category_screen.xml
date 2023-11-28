@@ -161,20 +161,45 @@
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/locked"
+        <LinearLayout
+            android:id="@+id/locked_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:drawableLeft="@drawable/lock_icon"
-            android:drawableTint="@color/ultra_white"
-            app:cornerRadius="15dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
-            android:backgroundTint="@color/blue"
-            android:paddingVertical="2dp"
-            android:text="Locked"
-            android:layout_weight="1"
-            android:textColor="@color/ultra_white"
-            android:textSize="12sp"/>
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/locked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/lock_icon"
+                android:drawableTint="@color/ultra_white"
+                app:cornerRadius="15dp"
+                android:layout_marginRight="5dp"
+                android:backgroundTint="@color/blue"
+                android:paddingVertical="2dp"
+                android:text="Locked"
+                android:layout_weight="1"
+                android:textColor="@color/ultra_white"
+                android:textSize="12sp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_image"
+                app:cornerRadius="15dp"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="@color/light_gray_2"
+                android:paddingVertical="2dp"
+                android:text="   Photos   "
+                android:layout_weight="1"
+                android:textColor="@color/ultra_white"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/unselect_categories"
@@ -202,8 +227,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/empty_category_animation"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="@+id/empty_category"
         app:layout_constraintStart_toStartOf="@+id/empty_category"
@@ -211,7 +236,20 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/spaceman_dj"
-        app:lottie_speed="1.0" />
+        app:lottie_speed="1.0"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/empty_category_no_animation"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="@+id/empty_category"
+        app:layout_constraintStart_toStartOf="@+id/empty_category"
+        app:layout_constraintTop_toBottomOf="@+id/top_layout"
+        android:src="@drawable/category_empty_icon"
+        android:tint="@color/blue"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/empty_category"

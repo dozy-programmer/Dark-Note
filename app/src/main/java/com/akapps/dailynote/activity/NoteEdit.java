@@ -21,6 +21,7 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -38,6 +39,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -561,10 +563,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         scrollView.setOnClickListener(view -> {
-            if (currentNote != null && !currentNote.isCheckList() && !isEditLockedMode) {
-                note.focusEditor();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(note, InputMethodManager.SHOW_IMPLICIT);
+            if (currentNote != null && !currentNote.isCheckList()) {
+                if( (user.isEnableEditableNoteButton()  && !isEditLockedMode) || !user.isEnableEditableNoteButton()) {
+                    note.focusEditor();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(note, InputMethodManager.SHOW_IMPLICIT);
+                }
             }
         });
 
@@ -648,8 +652,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
 
         closeTextLayout.setOnClickListener(v -> {
+            isChangingTextSize = false;
             if (!isSearchingNotes) {
                 hideButtons();
+                if(!RealmSingleton.getUser(context).isShowAudioButton())
+                    addAudioItem.setVisibility(View.VISIBLE);
                 if (currentNote.isCheckList())
                     addCheckListItem.setVisibility(View.VISIBLE);
                 else {
@@ -662,7 +669,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 }
             } else {
                 hideSearchBar();
-                isChangingTextSize = false;
                 noteSearching.clearFocus();
                 title.clearFocus();
             }
@@ -1016,14 +1022,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             currentTextSize = textSizeNumber;
             if (increaseText && currentTextSize + 3 < 50)
                 currentTextSize += 1;
-            else if (!increaseText && currentTextSize - 3 > 10)
+            else if (!increaseText && currentTextSize - 3 > 5)
                 currentTextSize -= 1;
         } else {
             currentTextSize = textSizeNumber;
-            if (increaseText && currentTextSize + 3 < 100)
-                currentTextSize += 2;
-            else if (!increaseText && currentTextSize - 3 > 10)
-                currentTextSize -= 2;
+            if (increaseText && currentTextSize + 3 < 50)
+                currentTextSize += 1;
+            else if (!increaseText && currentTextSize - 3 > 5)
+                currentTextSize -= 1;
             note.setEditorFontSize(currentTextSize);
         }
 
@@ -1366,6 +1372,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             } else if (item.getTitle().contains("Text")) {
                 isChangingTextSize = true;
                 textSizeLayout.setVisibility(View.VISIBLE);
+                addAudioItem.setVisibility(View.GONE);
                 addCheckListItem.setVisibility(View.GONE);
                 decreaseTextSize.setAlpha(new Float(1.0));
                 increaseTextSize.setAlpha(new Float(1.0));
@@ -1731,12 +1738,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void isListEmpty(int size) {
         Helper.isListEmpty(context, size, empty_Layout, empty_title, subtitle, subSubTitle,
-                false, true, false, empty_Layout.getRootView().findViewById(R.id.empty_view));
+                false, true, false, empty_Layout.getRootView().findViewById(R.id.empty_view),
+                empty_Layout.findViewById(R.id.empty_view_no_animation));
     }
 
     public void isListEmpty(int size, boolean isChecklistAdded) {
         Helper.isListEmpty(context, size, empty_Layout, empty_title, subtitle, subSubTitle,
-                false, true, isChecklistAdded, empty_Layout.getRootView().findViewById(R.id.empty_view));
+                false, true, isChecklistAdded, empty_Layout.getRootView().findViewById(R.id.empty_view),
+                empty_Layout.findViewById(R.id.empty_view_no_animation));
     }
 
     public void updateDateEdited() {

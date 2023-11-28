@@ -23,6 +23,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -57,6 +58,7 @@ public class CategoryScreen extends AppCompatActivity {
     private MaterialButton pinned;
     private MaterialButton locked;
     private MaterialButton reminder;
+    private MaterialButton photos;
     private RecyclerView customCategories;
     public RecyclerView.Adapter categoriesAdapter;
     private FloatingActionButton addCategory;
@@ -77,6 +79,7 @@ public class CategoryScreen extends AppCompatActivity {
     private RealmResults<Note> trashAllNotes;
     private RealmResults<Note> lockedAllNotes;
     private RealmResults<Note> reminderAllNotes;
+    private RealmResults<Note> photosAllNotes;
 
     // activity data
     private boolean editingRegularNote;
@@ -89,6 +92,7 @@ public class CategoryScreen extends AppCompatActivity {
     // category empty view
     private TextView showEmptyMessage;
     private LottieAnimationView emptyAnimation;
+    private ImageView emptyNoAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,10 +192,12 @@ public class CategoryScreen extends AppCompatActivity {
         unpinned = findViewById(R.id.un_pinned);
         locked = findViewById(R.id.locked);
         reminder = findViewById(R.id.reminder);
+        photos = findViewById(R.id.photos);
         info = findViewById(R.id.info);
         edit = findViewById(R.id.edit);
         showEmptyMessage = findViewById(R.id.empty_category);
         emptyAnimation = findViewById(R.id.empty_category_animation);
+        emptyNoAnimation = findViewById(R.id.empty_category_no_animation);
         selections = findViewById(R.id.top_layout);
 
         // toolbar
@@ -204,6 +210,7 @@ public class CategoryScreen extends AppCompatActivity {
         // buttons
         locked.setText(locked.getText());
         reminder.setText(reminder.getText());
+        photos.setText(photos.getText());
         pinned.setText(pinned.getText());
 
         if (editingRegularNote) {
@@ -219,6 +226,7 @@ public class CategoryScreen extends AppCompatActivity {
             pinned.setVisibility(View.GONE);
             locked.setVisibility(View.GONE);
             reminder.setVisibility(View.GONE);
+            photos.setVisibility(View.GONE);
         } else {
             int allNotesSize = 0;
             int noCategoryNotesSize = 0;
@@ -256,23 +264,24 @@ public class CategoryScreen extends AppCompatActivity {
                 archived.setCompoundDrawables(null, null, null, null);
 
                 findViewById(R.id.pinned_layout).setVisibility(View.GONE);
-
-                reminder.setVisibility(View.INVISIBLE);
-                locked.setVisibility(View.GONE);
+                findViewById(R.id.locked_layout).setVisibility(View.GONE);
             } else {
                 // text
                 int colorOne = R.color.gray;
                 int colorTwo = R.color.blue;
                 int colorThree = R.color.golden_rod;
+                int colorFour = R.color.ultra_white;
 
                 if (screenMode == User.Mode.Gray) {
                     colorOne = R.color.light_gray_2;
                     colorTwo = R.color.ultra_white;
                     colorThree = R.color.gray;
+                    colorFour = R.color.ultra_white;
                 } else if (screenMode == User.Mode.Light) {
                     colorOne = 0;
                     colorTwo = 0;
                     colorThree = 0;
+                    colorFour = 0;
                 }
 
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
@@ -290,6 +299,8 @@ public class CategoryScreen extends AppCompatActivity {
                         true, R.color.transparent, R.color.green);
                 Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
                         true, R.color.transparent, colorThree);
+                Helper.addNotificationNumber(this, photos, getNumberOfNotesWithPhotos(allNotes), 75,
+                        true, R.color.transparent, colorFour);
 
                 if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
                     pinned.setBackgroundColor(getColor(R.color.darker_mode));
@@ -302,6 +313,10 @@ public class CategoryScreen extends AppCompatActivity {
                     reminder.setBackgroundColor(getColor(R.color.darker_mode));
                     reminder.setStrokeColor(ColorStateList.valueOf(getColor(R.color.green)));
                     reminder.setStrokeWidth(5);
+
+                    photos.setBackgroundColor(getColor(R.color.darker_mode));
+                    photos.setStrokeColor(ColorStateList.valueOf(getColor(R.color.light_gray_2)));
+                    photos.setStrokeWidth(5);
 
                     locked.setBackgroundColor(getColor(R.color.darker_mode));
                     locked.setStrokeColor(ColorStateList.valueOf(getColor(R.color.blue)));
@@ -502,6 +517,16 @@ public class CategoryScreen extends AppCompatActivity {
                 showErrorMessage();
         });
 
+        photos.setOnClickListener(v -> {
+            int notesWithPhotos = getNumberOfNotesWithPhotos(allNotes);
+            if (!isNotesSelected && notesWithPhotos > 0)
+                closeActivity(-16);
+            else if (notesWithPhotos == 0)
+                showEmptyMessage();
+            else
+                showErrorMessage();
+        });
+
         unselectCategories.setOnClickListener(v -> {
             realm.beginTransaction();
             allSelectedNotes.setString("category", "none");
@@ -533,7 +558,10 @@ public class CategoryScreen extends AppCompatActivity {
 
     private void checkEmpty() {
         showEmptyMessage.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-        emptyAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        if(RealmSingleton.getUser(context).isDisableAnimation())
+            emptyNoAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        else
+            emptyAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private void unSelectAllNotes() {
@@ -560,6 +588,15 @@ public class CategoryScreen extends AppCompatActivity {
     private void openNewItemDialog() {
         FolderItemSheet folderItemSheet = new FolderItemSheet();
         folderItemSheet.show(getSupportFragmentManager(), folderItemSheet.getTag());
+    }
+
+    private int getNumberOfNotesWithPhotos(RealmResults<Note> allNotes){
+        int notesWithPhotos = 0;
+        for(Note currentNote : allNotes){
+            if(realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll().size() > 0)
+                notesWithPhotos++;
+        }
+        return notesWithPhotos;
     }
 
 }

@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -314,10 +316,22 @@ public class Helper {
     public static void isListEmpty(Context context, int size, ScrollView empty_Layout, TextView title,
                                    TextView subTitle, TextView subSubTitle, boolean isResults,
                                    boolean isChecklist, boolean isChecklistAdded,
-                                   LottieAnimationView emptyView) {
+                                   LottieAnimationView emptyView, ImageView emptyViewNoAnimation) {
         if (isResults) {
-            if(RealmSingleton.getUser(context).isDisableAnimation())
-                emptyView.setImageResource(R.drawable.no_results_icon);
+            if(RealmSingleton.getUser(context).isDisableAnimation()) {
+                emptyView.setVisibility(View.GONE);
+                emptyViewNoAnimation.setVisibility(View.VISIBLE);
+                if (!emptyView.isAnimating()) {
+                    emptyViewNoAnimation.setVisibility(View.VISIBLE);
+                    emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.no_results_icon));
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0, 0, 0, 0);
+                    params.width = 244;
+                    params.height = 244;
+                    params.gravity = Gravity.CENTER_HORIZONTAL;
+                    emptyViewNoAnimation.setLayoutParams(params);
+                }
+            }
             else if (!emptyView.isAnimating())
                 emptyView.setAnimation(R.raw.waiting_astronaut);
             title.setText("No Results");
@@ -328,11 +342,18 @@ public class Helper {
             title.setText("");
             subTitle.setText("\"Houston, we have a problem...\"");
             subTitle.setTextSize(18);
-            if(RealmSingleton.getUser(context).isDisableAnimation())
-                emptyView.setImageResource(R.drawable.no_results_icon);
-            else
+            if(RealmSingleton.getUser(context).isDisableAnimation()) {
+                emptyView.setVisibility(View.GONE);
+                emptyViewNoAnimation.setVisibility(View.VISIBLE);
+                emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.empty_checklist_icon));
+                subTitle.setText("\"Ah, the loneliness...\"");
+                subSubTitle.setText("Tap the bottom right button to add to checklist and help me be less lonely");
+            }
+            else {
                 emptyView.setAnimation(R.raw.waiting_astronaut);
-            subSubTitle.setText("Tap the bottom right button to add to checklist");
+                subTitle.setText("\"Houston, we have a problem...\"");
+                subSubTitle.setText("Tap the bottom right button to add to checklist");
+            }
             subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
             subSubTitle.setTextSize(16);
         } else {
@@ -341,8 +362,11 @@ public class Helper {
             subTitle.setText("Let me do it for you");
             subSubTitle.setText("Tap the bottom right button to create a note");
             subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
-            if(RealmSingleton.getUser(context).isDisableAnimation())
-                emptyView.setImageResource(R.drawable.notebook_icon);
+            if(RealmSingleton.getUser(context).isDisableAnimation()) {
+                emptyView.setVisibility(View.GONE);
+                emptyViewNoAnimation.setVisibility(View.VISIBLE);
+                emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.notebook_icon));
+            }
             else
                 emptyView.setAnimation(R.raw.astronaut_floating);
         }

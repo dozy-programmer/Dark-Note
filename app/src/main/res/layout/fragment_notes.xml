@@ -223,6 +223,16 @@
                 app:lottie_speed="1.0"
                 android:layout_gravity="center_horizontal|center_vertical" />
 
+            <ImageView
+                android:id="@+id/empty_view_no_animation"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/notebook_icon"
+                android:tint="@color/blue"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="gone"/>
+
             <TextView
                 android:id="@+id/empty_subtitle"
                 android:layout_width="match_parent"
