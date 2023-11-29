@@ -189,6 +189,9 @@ public class RealmDatabase {
 
             if (!schema.get("User").hasField("screenMode"))
                 schema.get("User").addField("screenMode", int.class);
+
+            if (!schema.get("User").hasField("disableLastEditInfo"))
+                schema.get("User").addField("disableLastEditInfo", boolean.class);
         }
     }
 }

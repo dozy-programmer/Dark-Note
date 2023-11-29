@@ -241,6 +241,7 @@
                 android:textColorHint="@color/light_gray"
                 android:textCursorDrawable="@drawable/cursor"
                 android:textSize="26sp"
+                android:inputType="textCapSentences"
                 app:layout_constraintEnd_toStartOf="@id/budget"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/reminderLayout"></EditText>
@@ -329,6 +330,7 @@
                 android:layout_marginBottom="10dp"
                 android:gravity="top|start"
                 android:textColorHint="@color/light_gray"
+                android:inputType="textCapSentences"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

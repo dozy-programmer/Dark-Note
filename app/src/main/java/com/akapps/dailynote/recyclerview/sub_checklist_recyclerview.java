@@ -18,6 +18,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.card.MaterialCardView;
@@ -59,7 +60,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
-        user = RealmSingleton.getUser(context);
+        user = RealmHelper.getUser(context, "in space");
     }
 
     @Override
@@ -85,13 +86,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
-        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(activity.getColor(R.color.gray));
             holder.background.setStrokeWidth(5);
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray) {
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
 

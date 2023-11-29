@@ -27,6 +27,7 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
@@ -69,7 +70,6 @@ public class CategoryScreen extends AppCompatActivity {
     private ImageView edit;
 
     // on-device database
-    public Realm realm;
     private RealmResults<Note> allNotes;
     private RealmResults<Folder> allCategories;
     private RealmResults<Note> allSelectedNotes;
@@ -79,7 +79,6 @@ public class CategoryScreen extends AppCompatActivity {
     private RealmResults<Note> trashAllNotes;
     private RealmResults<Note> lockedAllNotes;
     private RealmResults<Note> reminderAllNotes;
-    private RealmResults<Note> photosAllNotes;
 
     // activity data
     private boolean editingRegularNote;
@@ -87,7 +86,7 @@ public class CategoryScreen extends AppCompatActivity {
     private boolean isNotesSelected;
     public boolean isEditing;
     private String titleBefore;
-    User.Mode screenMode;
+    private User.Mode screenMode;
 
     // category empty view
     private TextView showEmptyMessage;
@@ -103,7 +102,7 @@ public class CategoryScreen extends AppCompatActivity {
 
         context = this;
 
-        screenMode = RealmSingleton.getUser(context).getScreenMode();
+        screenMode = RealmHelper.getUser(context, "in space").getScreenMode();
 
         // if orientation changes, retrieve these values
         if (savedInstanceState != null) {
@@ -114,19 +113,14 @@ public class CategoryScreen extends AppCompatActivity {
             multiSelect = getIntent().getBooleanExtra("multi_select", false);
         }
 
-        // initialize database and get data
-        realm = RealmSingleton.getInstance(context);
+        allCategories = RealmSingleton.getInstance(context).where(Folder.class).sort("positionInList").findAll();
 
-        allCategories = realm.where(Folder.class).sort("positionInList").findAll();
-
-        allNotes = realm.where(Note.class).findAll();
-        archivedAllNotes = realm.where(Note.class)
+        allNotes = RealmSingleton.getInstance(context).where(Note.class).findAll();
+        archivedAllNotes = RealmSingleton.getInstance(context).where(Note.class)
                 .equalTo("trash", false)
                 .equalTo("archived", true)
                 .findAll();
-        pinnedAllNotes = realm.where(Note.class)
-                .equalTo("trash", false)
-                .equalTo("archived", false)
+        pinnedAllNotes = RealmSingleton.getInstance(context).where(Note.class)
                 .equalTo("pin", true)
                 .findAll();
         allSelectedNotes = allNotes.where().equalTo("isSelected", true).findAll();
@@ -214,7 +208,7 @@ public class CategoryScreen extends AppCompatActivity {
         pinned.setText(pinned.getText());
 
         if (editingRegularNote) {
-            allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
+            allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
             title.setText("Current:\n" + allSelectedNotes.get(0).getCategory());
             if (allSelectedNotes.get(0).getCategory().equals("none"))
                 unselectCategories.setVisibility(View.GONE);
@@ -302,7 +296,7 @@ public class CategoryScreen extends AppCompatActivity {
                 Helper.addNotificationNumber(this, photos, getNumberOfNotesWithPhotos(allNotes), 75,
                         true, R.color.transparent, colorFour);
 
-                if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
+                if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
                     pinned.setBackgroundColor(getColor(R.color.darker_mode));
                     pinned.setStrokeColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
                     pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
@@ -324,7 +318,7 @@ public class CategoryScreen extends AppCompatActivity {
                     locked.setIcon(getDrawable(R.drawable.lock_icon));
                     locked.setIconTintResource(R.color.blue);
                     locked.setStrokeWidth(5);
-                } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
+                } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
                 }
             }
@@ -341,7 +335,7 @@ public class CategoryScreen extends AppCompatActivity {
 
                 Folder item = allCategories.get(started);
                 Folder item2 = allCategories.get(ended);
-                realm.beginTransaction();
+                RealmSingleton.getInstance(context).beginTransaction();
                 if (Math.abs(ended - started) > 1) {
                     if (started < ended) {
                         Folder item3 = allCategories.get(started + 1);
@@ -360,7 +354,7 @@ public class CategoryScreen extends AppCompatActivity {
                     item.setPositionInList(ended);
                     item2.setPositionInList(started);
                 }
-                realm.commitTransaction();
+                RealmSingleton.getInstance(context).commitTransaction();
                 categoriesAdapter.notifyItemMoved(started, ended);
                 return false;
             }
@@ -431,9 +425,9 @@ public class CategoryScreen extends AppCompatActivity {
 
         showAllNotes.setOnClickListener(v -> {
             if (multiSelect) {
-                realm.beginTransaction();
+                RealmSingleton.getInstance(context).beginTransaction();
                 allSelectedNotes.setBoolean("archived", true);
-                realm.commitTransaction();
+                RealmSingleton.getInstance(context).commitTransaction();
                 closeActivity(-8);
             } else if (!isNotesSelected)
                 closeActivity(-2);
@@ -443,9 +437,9 @@ public class CategoryScreen extends AppCompatActivity {
 
         noCategory.setOnClickListener(v -> {
             if (multiSelect) {
-                realm.beginTransaction();
+                RealmSingleton.getInstance(context).beginTransaction();
                 allSelectedNotes.setBoolean("archived", false);
-                realm.commitTransaction();
+                RealmSingleton.getInstance(context).commitTransaction();
                 closeActivity(-9);
             } else if (!isNotesSelected)
                 closeActivity(-3);
@@ -464,9 +458,9 @@ public class CategoryScreen extends AppCompatActivity {
 
         archived.setOnClickListener(v -> {
             if (multiSelect) {
-                realm.beginTransaction();
+                RealmSingleton.getInstance(context).beginTransaction();
                 allSelectedNotes.setBoolean("pin", true);
-                realm.commitTransaction();
+                RealmSingleton.getInstance(context).commitTransaction();
                 closeActivity(-13);
             }
             if (!isNotesSelected && archivedAllNotes.size() > 0)
@@ -479,9 +473,9 @@ public class CategoryScreen extends AppCompatActivity {
 
         pinned.setOnClickListener(v -> {
             if (multiSelect) {
-                realm.beginTransaction();
+                RealmSingleton.getInstance(context).beginTransaction();
                 allSelectedNotes.setBoolean("pin", false);
-                realm.commitTransaction();
+                RealmSingleton.getInstance(context).commitTransaction();
                 closeActivity(-12);
             }
             if (!isNotesSelected && pinnedAllNotes.size() > 0)
@@ -493,9 +487,9 @@ public class CategoryScreen extends AppCompatActivity {
         });
 
         unpinned.setOnClickListener(v -> {
-            realm.beginTransaction();
+            RealmSingleton.getInstance(context).beginTransaction();
             allSelectedNotes.setBoolean("pin", false);
-            realm.commitTransaction();
+            RealmSingleton.getInstance(context).commitTransaction();
             closeActivity(-12);
         });
 
@@ -528,9 +522,9 @@ public class CategoryScreen extends AppCompatActivity {
         });
 
         unselectCategories.setOnClickListener(v -> {
-            realm.beginTransaction();
+            RealmSingleton.getInstance(context).beginTransaction();
             allSelectedNotes.setString("category", "none");
-            realm.commitTransaction();
+            RealmSingleton.getInstance(context).commitTransaction();
             unSelectAllNotes();
             closeActivity(-4);
         });
@@ -543,7 +537,7 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     private void populateCategories() {
-        categoriesAdapter = new categories_recyclerview(allCategories, realm, CategoryScreen.this, context);
+        categoriesAdapter = new categories_recyclerview(allCategories, CategoryScreen.this, context);
         customCategories.setAdapter(categoriesAdapter);
     }
 
@@ -558,16 +552,16 @@ public class CategoryScreen extends AppCompatActivity {
 
     private void checkEmpty() {
         showEmptyMessage.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-        if(RealmSingleton.getUser(context).isDisableAnimation())
+        if(RealmHelper.getUser(context, "in space").isDisableAnimation())
             emptyNoAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
         else
             emptyAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private void unSelectAllNotes() {
-        realm.beginTransaction();
+        RealmSingleton.getInstance(context).beginTransaction();
         allSelectedNotes.setBoolean("isSelected", false);
-        realm.commitTransaction();
+        RealmSingleton.getInstance(context).commitTransaction();
     }
 
     private void closeActivity(int resultCode) {
@@ -593,7 +587,8 @@ public class CategoryScreen extends AppCompatActivity {
     private int getNumberOfNotesWithPhotos(RealmResults<Note> allNotes){
         int notesWithPhotos = 0;
         for(Note currentNote : allNotes){
-            if(realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll().size() > 0)
+            if(RealmSingleton.getInstance(context).where(Photo.class)
+                    .equalTo("noteId", currentNote.getNoteId()).findAll().size() > 0)
                 notesWithPhotos++;
         }
         return notesWithPhotos;

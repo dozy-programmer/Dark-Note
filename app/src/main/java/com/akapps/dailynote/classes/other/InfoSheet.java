@@ -429,7 +429,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 currentUser.setEmail("");
                 currentUser.setProUser(false);
                 realm.commitTransaction();
-                RealmHelper.updateUser(getContext(), currentUser, "");
                 ((SettingsScreen) getActivity()).restart();
             } else if (message == 9)
                 ((NoteEdit) getActivity()).removeFormatting();

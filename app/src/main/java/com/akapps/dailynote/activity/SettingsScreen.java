@@ -18,14 +18,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-
+import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Backup;
@@ -53,7 +52,6 @@ import com.google.firebase.storage.UploadTask;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -64,7 +62,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -80,8 +77,6 @@ public class SettingsScreen extends AppCompatActivity {
     private boolean tryAgain;
     private int upgradeToProCounter;
 
-    private User currentUser;
-    public Realm realm;
     private boolean isEditingChecklistSep;
     private boolean isEditingSublistSep;
     private boolean isEditingBudgetSymbol;
@@ -133,6 +128,7 @@ public class SettingsScreen extends AppCompatActivity {
     private SwitchCompat twentyFourHourFormatButton;
     private SwitchCompat editableNoteButton;
     private SwitchCompat enableSqaureStyleForChecklists;
+    private SwitchCompat hideLastEditInfo;
     private TextView about;
     private MaterialButton signUp;
     private MaterialButton logIn;
@@ -160,6 +156,7 @@ public class SettingsScreen extends AppCompatActivity {
     private MaterialCardView reddit;
     private MaterialCardView review;
     private MaterialCardView aboutInfoLayout;
+    private LottieAnimationView coffeeAnimation;
 
     // variables
     private boolean betaBackup = false;
@@ -178,9 +175,6 @@ public class SettingsScreen extends AppCompatActivity {
         all_Notes = getIntent().getIntExtra("size", 0);
         boolean backingUp = getIntent().getBooleanExtra("backup", false);
 
-        realm = RealmSingleton.getInstance(context);
-        currentUser = RealmHelper.getUser(this, "setting oncreate");
-
         populateUserSettings();
 
         if (backingUp)
@@ -190,7 +184,6 @@ public class SettingsScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        realmStatus();
     }
 
     @Override
@@ -202,14 +195,6 @@ public class SettingsScreen extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         close();
-    }
-
-    private void realmStatus() {
-        if (realm.isClosed()) {
-            realm = RealmSingleton.getInstance(context);
-            currentUser = RealmHelper.getUser(this, "settings realmstatus");
-            Log.d("Here", "realm was closed, so it was reopened. SettingsScreen");
-        }
     }
 
     private void initializeLayout() {
@@ -251,6 +236,7 @@ public class SettingsScreen extends AppCompatActivity {
         twentyFourHourFormatButton = findViewById(R.id.twenty_hour_format_switch);
         editableNoteButton = findViewById(R.id.editable_note_switch);
         enableSqaureStyleForChecklists = findViewById(R.id.checkbox_style_switch);
+        hideLastEditInfo = findViewById(R.id.last_edit_info_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -278,6 +264,7 @@ public class SettingsScreen extends AppCompatActivity {
         fabSizeLayout = findViewById(R.id.fab_setting);
         animationLayout = findViewById(R.id.animation_setting);
         aboutInfoLayout = findViewById(R.id.about_info);
+        coffeeAnimation = findViewById(R.id.coffee_moving);
 
         if (!Helper.isTablet(context)) {
             MaterialCardView coffee = findViewById(R.id.coffee_button);
@@ -293,12 +280,16 @@ public class SettingsScreen extends AppCompatActivity {
         }
 
         Helper.moveBee(findViewById(R.id.version_icon), 300f);
+        if(AppData.isDisableAnimation)
+            coffeeAnimation.pauseAnimation();
         logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
 
+        User currentUser = getUser();
+
         if (null == currentUser.getEmail()) {
-            realm.beginTransaction();
+            RealmSingleton.get(this).beginTransaction();
             currentUser.setEmail("");
-            realm.commitTransaction();
+            RealmSingleton.get(this).commitTransaction();
         }
 
         if (currentUser.isUltimateUser()) {
@@ -351,15 +342,14 @@ public class SettingsScreen extends AppCompatActivity {
 
         int modeColor = R.color.darker_mode;
 
-        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray)
+        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
             modeColor = R.color.gray;
-        else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
 
         signUp.setOnClickListener(view -> {
-            realmStatus();
-            if (currentUser.isUltimateUser()) {
+            if (getUser().isUltimateUser()) {
                 if (mAuth.getCurrentUser() == null) {
                     AccountSheet accountLoginSheet = new AccountSheet(mAuth, true);
                     accountLoginSheet.show(getSupportFragmentManager(), accountLoginSheet.getTag());
@@ -368,7 +358,6 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         logIn.setOnClickListener(view -> {
-            realmStatus();
             if (mAuth.getCurrentUser() != null) {
                 showBackupRestoreInfo(8);
             } else {
@@ -378,31 +367,26 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         sync.setOnClickListener(view -> {
-            realmStatus();
-            if (mAuth.getCurrentUser() != null && currentUser.isUltimateUser())
+            if (mAuth.getCurrentUser() != null && getUser().isUltimateUser())
                 showBackupRestoreInfo(7);
         });
 
         upload.setOnClickListener(view -> {
-            realmStatus();
-            if (mAuth.getCurrentUser() != null && currentUser.isUltimateUser())
+            if (mAuth.getCurrentUser() != null && getUser().isUltimateUser())
                 showBackupRestoreInfo(6);
         });
 
         backup.setOnClickListener(v -> {
-            realmStatus();
             betaBackup = false;
             showBackupRestoreInfo(1);
         });
 
         backupBeta.setOnClickListener(view -> {
-            realmStatus();
             betaBackup = true;
             showBackupRestoreInfo(2);
         });
 
         restoreBackup.setOnClickListener(v -> {
-            realmStatus();
             betaRestore = false;
             openFile();
         });
@@ -413,13 +397,11 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         titleLayout.setOnClickListener(v -> {
-            realmStatus();
             isTitleSelected = true;
             showLineNumberMenu(titleLines, null);
         });
 
         previewLayout.setOnClickListener(v -> {
-            realmStatus();
             isTitleSelected = false;
             showLineNumberMenu(previewLines, null);
         });
@@ -428,7 +410,6 @@ public class SettingsScreen extends AppCompatActivity {
             List<IconPowerMenuItem> options = new ArrayList<>();
             options.add(new IconPowerMenuItem(null, ",,"));
             options.add(new IconPowerMenuItem(null, "newline"));
-            realmStatus();
             isEditingChecklistSep = true;
             expandListMenu(options, checklistSeparator);
         });
@@ -437,7 +418,6 @@ public class SettingsScreen extends AppCompatActivity {
             List<IconPowerMenuItem> options = new ArrayList<>();
             options.add(new IconPowerMenuItem(null, "--"));
             options.add(new IconPowerMenuItem(null, "space"));
-            realmStatus();
             isEditingSublistSep = true;
             expandListMenu(options, sublistSeparator);
         });
@@ -449,7 +429,6 @@ public class SettingsScreen extends AppCompatActivity {
             options.add(new IconPowerMenuItem(null, "+£"));
             options.add(new IconPowerMenuItem(null, "+€"));
             options.add(new IconPowerMenuItem(null, "+¥"));
-            realmStatus();
             isEditingBudgetSymbol = true;
             expandListMenu(options, budgetSymbol);
         });
@@ -461,7 +440,6 @@ public class SettingsScreen extends AppCompatActivity {
             options.add(new IconPowerMenuItem(null, "£"));
             options.add(new IconPowerMenuItem(null, "€"));
             options.add(new IconPowerMenuItem(null, "¥"));
-            realmStatus();
             isEditingExpenseSymbol = true;
             expandListMenu(options, expenseSymbol);
         });
@@ -470,10 +448,9 @@ public class SettingsScreen extends AppCompatActivity {
 
         int finalModeColor = modeColor;
         row.setOnClickListener(v -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setLayoutSelected("row");
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setLayoutSelected("row");
+            RealmSingleton.get(this).commitTransaction();
             int otherColor = context.getColor(finalModeColor);
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             grid.setCardBackgroundColor(otherColor);
@@ -481,10 +458,9 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         grid.setOnClickListener(v -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setLayoutSelected("grid");
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setLayoutSelected("grid");
+            RealmSingleton.get(this).commitTransaction();
             int otherColor = context.getColor(finalModeColor);
             grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
             row.setCardBackgroundColor(otherColor);
@@ -492,11 +468,10 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         staggered.setOnClickListener(v -> {
-            realmStatus();
-            if (!currentUser.getLayoutSelected().equals("stag")) {
-                realm.beginTransaction();
-                currentUser.setLayoutSelected("stag");
-                realm.commitTransaction();
+            if (!getUser().getLayoutSelected().equals("stag")) {
+                RealmSingleton.get(this).beginTransaction();
+                getUser().setLayoutSelected("stag");
+                RealmSingleton.get(this).commitTransaction();
                 int otherColor = context.getColor(finalModeColor);
                 staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
                 grid.setCardBackgroundColor(otherColor);
@@ -513,8 +488,7 @@ public class SettingsScreen extends AppCompatActivity {
         close.setOnClickListener(v -> close());
 
         lockApp.setOnClickListener(view -> {
-            realmStatus();
-            if (currentUser.getPinNumber() == 0) {
+            if (getUser().getPinNumber() == 0) {
                 LockSheet lockSheet = new LockSheet(true);
                 lockSheet.show(getSupportFragmentManager(), lockSheet.getTag());
             } else
@@ -522,121 +496,111 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         showPreview.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setShowPreview(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setShowPreview(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         showPreviewNoteInfo.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setShowPreviewNoteInfo(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setShowPreviewNoteInfo(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
             AppData.isAppFirstStarted = false;
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setOpenFoldersOnStart(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setOpenFoldersOnStart(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         showFolderNotes.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setShowFolderNotes(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setShowFolderNotes(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         hideRichTextEditor.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setHideRichTextEditor(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setHideRichTextEditor(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         showAudioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setShowAudioButton(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setShowAudioButton(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         hideBudgetButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setHideBudget(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setHideBudget(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         twentyFourHourFormatButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setTwentyFourHourFormat(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setTwentyFourHourFormat(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         editableNoteButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setEnableEditableNoteButton(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setEnableEditableNoteButton(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         enableSqaureStyleForChecklists.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setShowChecklistCheckbox(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setShowChecklistCheckbox(isChecked);
+            RealmSingleton.get(this).commitTransaction();
+        });
+
+        hideLastEditInfo.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setDisableLastEditInfo(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setScreenMode(isChecked  ? 1 : 2);
-            currentUser.setModeSettings(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setScreenMode(isChecked  ? 1 : 2);
+            getUser().setModeSettings(isChecked);
+            RealmSingleton.get(this).commitTransaction();
             checkModeSettings();
             updateCurrentLayout();
         });
 
         sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setEnableSublists(isChecked);
-            realm.where(Note.class).findAll().setBoolean("enableSublist", isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setEnableSublists(isChecked);
+            RealmSingleton.get(this).where(Note.class).findAll().setBoolean("enableSublist", isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         emptyNoteMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setEnableEmptyNote(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setEnableEmptyNote(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         fabButtonSizeMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setIncreaseFabSize(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setIncreaseFabSize(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         showScreenAnimation.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setDisableAnimation(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setDisableAnimation(isChecked);
+            RealmSingleton.get(this).commitTransaction();
             AppData.isDisableAnimation = isChecked;
         });
 
         showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            realmStatus();
-            realm.beginTransaction();
-            currentUser.setEnableDeleteIcon(isChecked);
-            realm.commitTransaction();
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setEnableDeleteIcon(isChecked);
+            RealmSingleton.get(this).commitTransaction();
         });
 
         about.setOnClickListener(v -> {
@@ -656,9 +620,10 @@ public class SettingsScreen extends AppCompatActivity {
 
     // hidden feature
     private void upgradeToPro() {
-        realm.beginTransaction();
+        User currentUser = getUser();
+        RealmSingleton.get(this).beginTransaction();
         currentUser.setUltimateUser(!currentUser.isUltimateUser());
-        realm.commitTransaction();
+        RealmSingleton.get(this).commitTransaction();
 
         if (currentUser.isUltimateUser())
             Helper.showMessage(SettingsScreen.this, "Upgrade Successful", "" +
@@ -676,6 +641,7 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private void checkModeSettings() {
+        User currentUser = getUser();
         if (currentUser.getScreenMode() == User.Mode.Dark) {
             modeSetting.setText("Dark Mode  ");
             modeSetting.setTextColor(context.getColor(R.color.ultra_white));
@@ -739,7 +705,7 @@ public class SettingsScreen extends AppCompatActivity {
         animationLayout.setStrokeColor(context.getColor(strokeColor));
         animationLayout.setStrokeWidth(width);
 
-        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
             staggered.setCardBackgroundColor(context.getColor(color));
@@ -749,7 +715,7 @@ public class SettingsScreen extends AppCompatActivity {
             row.setStrokeWidth(width);
             staggered.setStrokeColor(context.getColor(strokeColor));
             staggered.setStrokeWidth(width);
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray) {
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
             color = R.color.gray;
             grid.setCardBackgroundColor(context.getColor(color));
             row.setCardBackgroundColor(context.getColor(color));
@@ -757,7 +723,7 @@ public class SettingsScreen extends AppCompatActivity {
             grid.setStrokeWidth(width);
             row.setStrokeWidth(width);
             staggered.setStrokeWidth(width);
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
     }
@@ -784,9 +750,11 @@ public class SettingsScreen extends AppCompatActivity {
         findViewById(R.id.gap_seventeen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_eighteen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_nineteen).setBackgroundColor(gapColor);
+        findViewById(R.id.gap_twenty).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings() {
+        User currentUser = getUser();
         showPreview.setChecked(currentUser.isShowPreview());
         showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
@@ -803,6 +771,7 @@ public class SettingsScreen extends AppCompatActivity {
         twentyFourHourFormatButton.setChecked(currentUser.isTwentyFourHourFormat());
         editableNoteButton.setChecked(currentUser.isEnableEditableNoteButton());
         enableSqaureStyleForChecklists.setChecked(currentUser.isShowChecklistCheckbox());
+        hideLastEditInfo.setChecked(currentUser.isDisableLastEditInfo());
         if (currentUser.getPinNumber() > 0) {
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
             lockApp.setColorFilter(getColor(R.color.blue));
@@ -814,6 +783,7 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private void updateCurrentLayout() {
+        User currentUser = getUser();
         if (currentUser.getLayoutSelected().equals("row"))
             row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
         else if (currentUser.getLayoutSelected().equals("grid"))
@@ -846,11 +816,11 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public void lockNote(int pin, String securityWord, boolean fingerprint) {
-        realm.beginTransaction();
-        currentUser.setPinNumber(pin);
-        currentUser.setSecurityWord(securityWord);
-        currentUser.setFingerprint(fingerprint);
-        realm.commitTransaction();
+        RealmSingleton.get(this).beginTransaction();
+        getUser().setPinNumber(pin);
+        getUser().setSecurityWord(securityWord);
+        getUser().setFingerprint(fingerprint);
+        RealmSingleton.get(this).commitTransaction();
         Helper.showMessage(this, "App Locked", "App has been " +
                 "locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
@@ -858,11 +828,11 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public void unLockNote() {
-        realm.beginTransaction();
-        currentUser.setPinNumber(0);
-        currentUser.setSecurityWord("");
-        currentUser.setFingerprint(false);
-        realm.commitTransaction();
+        RealmSingleton.get(this).beginTransaction();
+        getUser().setPinNumber(0);
+        getUser().setSecurityWord("");
+        getUser().setFingerprint(false);
+        RealmSingleton.get(this).commitTransaction();
         Helper.showMessage(this, "App un-Locked", "App has been " +
                 "un-locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
@@ -873,8 +843,6 @@ public class SettingsScreen extends AppCompatActivity {
         RealmSingleton.setCloseRealm(false);
         Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
         startActivity(intent);
-        if (currentUser != null)
-            currentUser.removeAllChangeListeners();
         finish();
         if (!AppData.isDisableAnimation)
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -889,7 +857,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void backUpData() {
         if (all_Notes != 0) {
-            realm.close();
+            RealmSingleton.get(this).close();
             RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
             realmBackupRestore.update(this, context);
             File exportedFilePath = realmBackupRestore.backup_Share();
@@ -908,14 +876,14 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private String backUpZip() {
-        RealmResults<Note> checklistPhotos = realm.where(Note.class).findAll();
+        RealmResults<Note> checklistPhotos = RealmSingleton.get(this).where(Note.class).findAll();
         ArrayList<String> allFiles = new ArrayList<>();
-        ArrayList<String> allPhotos = getAllFilePaths(realm.where(Photo.class)
+        ArrayList<String> allPhotos = getAllFilePaths(RealmSingleton.get(this).where(Photo.class)
                 .not().isNull("photoLocation").or().equalTo("photoLocation", "")
                 .findAll(), checklistPhotos);
-        ArrayList<String> allRecordings = getAllRecordingsPaths(realm.where(CheckListItem.class).not()
+        ArrayList<String> allRecordings = getAllRecordingsPaths(RealmSingleton.get(this).where(CheckListItem.class).not()
                 .isNull("audioPath").or().equalTo("audioPath", "").findAll());
-        realm.close();
+        RealmSingleton.get(this).close();
         RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
         realmBackupRestore.update(this, context);
         File exportedFilePath = realmBackupRestore.backup_Share();
@@ -925,7 +893,6 @@ public class SettingsScreen extends AppCompatActivity {
         allFiles.add(exportedFilePath.getAbsolutePath());
         // add all recording paths
         allFiles.addAll(allRecordings);
-        realmStatus();
         return zipPhotos(allFiles);
     }
 
@@ -1007,6 +974,7 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public void upLoadData() {
+        User currentUser = getUser();
         File backupFile = new File(backUpZip());
         Uri file = Uri.fromFile(backupFile);
         // file info
@@ -1038,7 +1006,7 @@ public class SettingsScreen extends AppCompatActivity {
         String fileName = currentDate + "_backup.zip";
 
         // check if file exists
-        if (realm.where(Backup.class).equalTo("fileName", fileName).count() == 1) {
+        if (RealmSingleton.get(this).where(Backup.class).equalTo("fileName", fileName).count() == 1) {
             Helper.showLoading("", progressDialog, context, false);
             Helper.showMessage(this, "Upload Failed", "File name exists, " +
                     "please wait a minute and try again", MotionToast.TOAST_ERROR);
@@ -1063,10 +1031,10 @@ public class SettingsScreen extends AppCompatActivity {
             }).addOnSuccessListener(taskSnapshot -> {
                 String bytesTransferredFormatted = Helper.getFormattedFileSize(context, taskSnapshot.getBytesTransferred());
                 if (bytesTransferredFormatted.equals(fileSize)) {
-                    realm.beginTransaction();
-                    realm.insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
+                    RealmSingleton.get(this).beginTransaction();
+                    RealmSingleton.get(this).insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
                     currentUser.setLastUpload(Helper.getCurrentDate());
-                    realm.commitTransaction();
+                    RealmSingleton.get(this).commitTransaction();
                     lastUploadDate.setVisibility(View.VISIBLE);
                     lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload().replaceAll("\n", " "));
                     progressDialog.cancel();
@@ -1101,7 +1069,6 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private void shareFile(File backup) {
-        realmStatus();
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("*/*");
 
@@ -1157,8 +1124,8 @@ public class SettingsScreen extends AppCompatActivity {
         RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
         try {
             // close realm before restoring
-            RealmConfiguration configuration = realm.getConfiguration();
-            realm.close();
+            RealmConfiguration configuration = RealmSingleton.get(this).getConfiguration();
+            RealmSingleton.get(this).close();
             Realm.deleteRealm(configuration);
             // initialize backup object
             realmBackupRestore = new RealmBackupRestore(this);
@@ -1175,7 +1142,7 @@ public class SettingsScreen extends AppCompatActivity {
                     MotionToast.TOAST_SUCCESS);
 
             // update image paths from restored database so it knows where the images are
-            realm = RealmDatabase.setUpDatabase(context);
+            Realm realm = RealmDatabase.setUpDatabase(context);
             updateAlarms(realm.where(Note.class)
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
@@ -1206,8 +1173,8 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
                 try {
                     // close realm before restoring
-                    RealmConfiguration configuration = realm.getConfiguration();
-                    realm.close();
+                    RealmConfiguration configuration = RealmSingleton.get(this).getConfiguration();
+                    RealmSingleton.get(this).close();
                     Realm.deleteRealm(configuration);
 
                     // delete all files first
@@ -1223,7 +1190,7 @@ public class SettingsScreen extends AppCompatActivity {
                     realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
 
                     // update image paths from restored database so it knows where the images are
-                    realm = RealmSingleton.getInstance(context);
+                    Realm realm = RealmSingleton.getInstance(context);
                     updateAlarms(realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
@@ -1272,8 +1239,8 @@ public class SettingsScreen extends AppCompatActivity {
 
             if (fileName.contains(".realm")) {
                 try {
-                    RealmConfiguration configuration = realm.getConfiguration();
-                    realm.close();
+                    RealmConfiguration configuration = RealmSingleton.get(this).getConfiguration();
+                    RealmSingleton.get(this).close();
                     Realm.deleteRealm(configuration);
 
                     RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
@@ -1281,7 +1248,7 @@ public class SettingsScreen extends AppCompatActivity {
                     Helper.showMessage(this, "Restored", "" +
                             "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
-                    realm = RealmSingleton.getInstance(context);
+                    Realm realm = RealmSingleton.getInstance(context);
                     updateAlarms(realm.where(Note.class)
                             .equalTo("archived", false)
                             .equalTo("trash", false).findAll());
@@ -1309,14 +1276,14 @@ public class SettingsScreen extends AppCompatActivity {
         for (int i = 0; i < allNotes.size(); i++) {
             Note currentNote = allNotes.get(i);
             if (null != currentNote.getReminderDateTime() && !currentNote.getReminderDateTime().isEmpty())
-                Helper.startAlarm(this, currentNote, realm);
+                Helper.startAlarm(this, currentNote, RealmSingleton.get(this));
         }
     }
 
     private void resetWidgets() {
-        realm.beginTransaction();
-        realm.where(Note.class).not().equalTo("widgetId", 0).findAll().setInt("widgetId", 0);
-        realm.commitTransaction();
+        RealmSingleton.get(this).beginTransaction();
+        RealmSingleton.get(this).where(Note.class).not().equalTo("widgetId", 0).findAll().setInt("widgetId", 0);
+        RealmSingleton.get(this).commitTransaction();
     }
 
     private void updateImages(ArrayList<String> imagePaths) {
@@ -1324,18 +1291,18 @@ public class SettingsScreen extends AppCompatActivity {
             for (int i = 0; i < imagePaths.size(); i++) {
                 String imagePath = imagePaths.get(i).substring(imagePaths.get(i).lastIndexOf("/") + 1);
                 if (imagePaths.get(i).contains("~")) {
-                    CheckListItem currentChecklistPhoto = realm.where(CheckListItem.class).contains("itemImage", imagePath).findFirst();
+                    CheckListItem currentChecklistPhoto = RealmSingleton.get(this).where(CheckListItem.class).contains("itemImage", imagePath).findFirst();
                     if (currentChecklistPhoto != null) {
-                        realm.beginTransaction();
+                        RealmSingleton.get(this).beginTransaction();
                         currentChecklistPhoto.setItemImage(imagePaths.get(i));
-                        realm.commitTransaction();
+                        RealmSingleton.get(this).commitTransaction();
                     }
                 } else {
-                    Photo currentPhoto = realm.where(Photo.class).contains("photoLocation", imagePath).findFirst();
+                    Photo currentPhoto = RealmSingleton.get(this).where(Photo.class).contains("photoLocation", imagePath).findFirst();
                     if (currentPhoto != null) {
-                        realm.beginTransaction();
+                        RealmSingleton.get(this).beginTransaction();
                         currentPhoto.setPhotoLocation(imagePaths.get(i));
-                        realm.commitTransaction();
+                        RealmSingleton.get(this).commitTransaction();
                     }
                 }
             }
@@ -1347,11 +1314,11 @@ public class SettingsScreen extends AppCompatActivity {
             for (int i = 0; i < recordingsPath.size(); i++) {
                 String fullRecordingPath = recordingsPath.get(i);
                 String recordingPath = fullRecordingPath.substring(fullRecordingPath.lastIndexOf("/") + 1);
-                CheckListItem checkListItem = realm.where(CheckListItem.class).contains("audioPath", recordingPath).findFirst();
+                CheckListItem checkListItem = RealmSingleton.get(this).where(CheckListItem.class).contains("audioPath", recordingPath).findFirst();
                 if (checkListItem != null) {
-                    realm.beginTransaction();
+                    RealmSingleton.get(this).beginTransaction();
                     checkListItem.setAudioPath(fullRecordingPath);
-                    realm.commitTransaction();
+                    RealmSingleton.get(this).commitTransaction();
                 }
             }
         }
@@ -1396,8 +1363,9 @@ public class SettingsScreen extends AppCompatActivity {
     private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
         @Override
         public void onItemClick(int position, IconPowerMenuItem item) {
+            User currentUser = getUser();
             if (checkEditingStatus()) {
-                realm.beginTransaction();
+                RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 String text = item.getTitle();
                 if (isEditingChecklistSep) {
                     currentUser.setItemsSeparator(text);
@@ -1416,7 +1384,7 @@ public class SettingsScreen extends AppCompatActivity {
                     currentUser.setExpenseCharacter(text);
                     expenseSymbol.setText(text);
                 }
-                realm.commitTransaction();
+                RealmSingleton.get(SettingsScreen.this).commitTransaction();
             } else
                 updateSelectedLines(position + 1);
             linesMenu.dismiss();
@@ -1436,17 +1404,22 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private void updateSelectedLines(int position) {
+        User currentUser = getUser();
         if (isTitleSelected) {
-            realm.beginTransaction();
+            RealmSingleton.get(this).beginTransaction();
             currentUser.setTitleLines(position);
-            realm.commitTransaction();
+            RealmSingleton.get(this).commitTransaction();
             titleLines.setText(String.valueOf(position));
         } else {
-            realm.beginTransaction();
+            RealmSingleton.get(this).beginTransaction();
             currentUser.setContentLines(position);
-            realm.commitTransaction();
+            RealmSingleton.get(this).commitTransaction();
             previewLines.setText(String.valueOf(position));
         }
+    }
+
+    private User getUser(){
+        return RealmHelper.getUser(this, "settings");
     }
 
     private void openAppInPlayStore() {
@@ -1479,8 +1452,6 @@ public class SettingsScreen extends AppCompatActivity {
         Log.d("Here", "Keep realm open in SettingsScreen");
         Intent intent = new Intent(context, Homepage.class);
         startActivity(intent);
-        if (currentUser != null)
-            currentUser.removeAllChangeListeners();
         finish();
         if (!AppData.isDisableAnimation) {
             overridePendingTransition(R.anim.show_from_bottom, R.anim.hide_to_bottom);

@@ -271,20 +271,33 @@
 
                 <ImageView
                     android:id="@+id/checklist_icon"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_gravity="bottom"
                     android:layout_weight="10"
                     android:src="@drawable/checklist_icon"
+                    android:tint="@color/darker_mode"
                     android:visibility="gone"></ImageView>
 
                 <ImageView
-                    android:id="@+id/archived_icon"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:id="@+id/trash_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:visibility="gone"
                     android:layout_gravity="bottom"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/delete_icon"
+                    android:tint="@color/ultra_white"
+                    android:layout_weight="10">
+                </ImageView>
+
+                <ImageView
+                    android:id="@+id/archived_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:visibility="gone"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="2dp"
                     android:src="@drawable/archive_icon"
                     android:layout_weight="10">
                 </ImageView>

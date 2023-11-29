@@ -12,13 +12,10 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class Homepage extends FragmentActivity {
 
-    private Realm realm;
-    private User user;
     private boolean isOpenApp;
 
     @Override
@@ -32,32 +29,30 @@ public class Homepage extends FragmentActivity {
 
         if (AppData.isAppFirstStarted) {
             // initialize database and get data
-            realm = RealmSingleton.getInstance(this);
-            user = RealmHelper.getUser(this, "home");
-            realm.beginTransaction();
-            RealmResults<Note> notesWithWidgets = realm.where(Note.class)
+            RealmSingleton.get(this).beginTransaction();
+            RealmResults<Note> notesWithWidgets = RealmSingleton.get(this).where(Note.class)
                     .greaterThan("widgetId", 0).findAll();
             for (Note currentNote : notesWithWidgets)
-                Helper.updateWidget(currentNote, Homepage.this, realm);
-            realm.commitTransaction();
+                Helper.updateWidget(currentNote, Homepage.this, RealmSingleton.get(this));
+            RealmSingleton.get(this).commitTransaction();
 
-            if (user != null) {
-                if (user.getScreenMode().getValue() == 0) {
-                    realm.beginTransaction();
-                    user.setScreenMode(user.isModeSettings() ? 1 : 2);
-                    realm.commitTransaction();
+            if (RealmHelper.getUser(this, "home") != null) {
+                if (RealmHelper.getUser(this, "home").getScreenMode().getValue() == 0) {
+                    RealmSingleton.get(this).beginTransaction();
+                    RealmHelper.getUser(this, "home").setScreenMode(RealmHelper.getUser(this, "home").isModeSettings() ? 1 : 2);
+                    RealmSingleton.get(this).commitTransaction();
                 }
 
-                if (user.isDisableAnimation())
+                if (RealmHelper.getUser(this, "home").isDisableAnimation())
                     AppData.isDisableAnimation = true;
 
-                if (user.getPinNumber() > 0 && !isOpenApp && AppData.isAppFirstStarted) {
+                if (RealmHelper.getUser(this, "home").getPinNumber() > 0 && !isOpenApp && AppData.isAppFirstStarted) {
                     Intent lockScreen = new Intent(this, NoteLockScreen.class);
                     lockScreen.putExtra("id", -11);
                     lockScreen.putExtra("title", "Unlock App");
-                    lockScreen.putExtra("pin", user.getPinNumber());
-                    lockScreen.putExtra("securityWord", user.getSecurityWord());
-                    lockScreen.putExtra("fingerprint", user.isFingerprint());
+                    lockScreen.putExtra("pin", RealmHelper.getUser(this, "home").getPinNumber());
+                    lockScreen.putExtra("securityWord", RealmHelper.getUser(this, "home").getSecurityWord());
+                    lockScreen.putExtra("fingerprint", RealmHelper.getUser(this, "home").isFingerprint());
                     lockScreen.putExtra("isAppLocked", true);
                     startActivity(lockScreen);
                 } else {

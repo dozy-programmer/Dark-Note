@@ -14,6 +14,7 @@ import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -62,7 +63,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         this.realm = realm;
         this.activity = activity;
         this.context = context;
-        currentUser = RealmSingleton.getUser(context);
+        currentUser = RealmHelper.getUser(context, "in space");
     }
 
     @Override
@@ -77,13 +78,13 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         // retrieves current photo object
         Backup currentBackup = allBackups.get(position);
 
-        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(context.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(context.getColor(R.color.light_gray));
             holder.background.setStrokeWidth(5);
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray)
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
             holder.background.setCardBackgroundColor(context.getColor(R.color.light_gray));
-        else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
 

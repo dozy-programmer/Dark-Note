@@ -168,7 +168,7 @@ public class RealmHelper {
 
     public static User getUser(Context context, String location){
         User user = getRealm(context).where(User.class).findFirst();
-        updateUser(context, user == null ? addUser(context) : user, location);
+        if(user == null) return addUser(context);
         return user;
     }
 
@@ -181,14 +181,6 @@ public class RealmHelper {
         realm.commitTransaction();
         AppAnalytics.logNewUser(context, uniqueId);
         return getRealm(context).where(User.class).findFirst();
-    }
-
-    public static void updateUser(Context context, User user, String location) {
-        RealmSingleton.updateUser(getRealm(context).copyFromRealm(user));
-
-        user.addChangeListener((RealmChangeListener<User>) object -> {
-            RealmSingleton.updateUser(getRealm(context).copyFromRealm(user));
-        });
     }
 
 }

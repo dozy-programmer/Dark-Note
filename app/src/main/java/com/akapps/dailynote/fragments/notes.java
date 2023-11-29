@@ -172,7 +172,7 @@ public class notes extends Fragment {
         // initialize database and get data
         realm = RealmSingleton.getInstance(context);
 
-        user = RealmSingleton.getUser(context);
+        user = RealmHelper.getUser(context, "notes fragment");
 
         // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli(context);
@@ -596,11 +596,9 @@ public class notes extends Fragment {
             } else
                 filteringAllNotesRealm(queryArchivedNotes, true);
         } else if (resultCode == -11 || resultCode == -12 || resultCode == -13) {
-            RealmResults<Note> queryArchivedNotes =
+            RealmResults<Note> queryPinnedNotes =
                     realm.where(Note.class)
-                            .equalTo("archived", false)
-                            .equalTo("pin", true)
-                            .equalTo("trash", false).findAll();
+                            .equalTo("pin", true).findAll();
 
             if (resultCode == -13)
                 Helper.showMessage(getActivity(), "Pinned", "All Selected note(s) have " +
@@ -613,7 +611,7 @@ public class notes extends Fragment {
                 closeMultipleNotesLayout();
                 showData();
             } else
-                filteringAllNotesRealm(queryArchivedNotes, true);
+                filteringAllNotesRealm(queryPinnedNotes, true);
         } else if (resultCode == -14) {
             RealmResults<Note> queryLockedNotes =
                     realm.where(Note.class)

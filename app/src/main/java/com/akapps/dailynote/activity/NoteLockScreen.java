@@ -17,6 +17,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.andrognito.pinlockview.IndicatorDots;
@@ -65,11 +66,11 @@ public class NoteLockScreen extends AppCompatActivity {
 
         initializeLayout();
 
-        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.darker_mode));
             lockView.setBackgroundColor(getColor(R.color.black));
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
     }

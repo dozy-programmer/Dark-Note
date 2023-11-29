@@ -91,7 +91,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         this.currentNote = currentNote;
         this.realm = realm;
         this.activity = activity;
-        user = RealmSingleton.getUser(context);
+        user = RealmHelper.getUser(context, "in space");
     }
 
     @Override
@@ -290,10 +290,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private void updateChecklistStatus(CheckListItem checkListItem, boolean isSelected, int position) {
         saveSelected(checkListItem, !isSelected);
         isAllItemsSelected();
-        if (currentNote.getSort() == 3 || currentNote.getSort() == 4)
-            notifyDataSetChanged();
-        else
-            notifyItemChanged(position);
+        notifyDataSetChanged();
     }
 
     // updates select status of note in database

@@ -168,7 +168,6 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
                                 currentUser.setEmail(email);
                                 currentUser.setProUser(true);
                                 realm.commitTransaction();
-                                RealmHelper.updateUser(getContext(), currentUser, "");
                                 dialog.dismiss();
                                 ((SettingsScreen) activity).restart();
                             } else {

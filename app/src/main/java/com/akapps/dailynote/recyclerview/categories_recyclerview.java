@@ -32,9 +32,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     private final Context context;
     private boolean isLightMode;
 
-    // database
-    private final Realm realm;
-
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView item_category;
         private final ImageView folder_icon;
@@ -50,14 +47,13 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         }
     }
 
-    public categories_recyclerview(RealmResults<Folder> allCategories, Realm realm,
+    public categories_recyclerview(RealmResults<Folder> allCategories,
                                    FragmentActivity activity, Context context) {
         this.allCategories = allCategories;
-        this.realm = realm;
         this.activity = activity;
         this.context = context;
-        isLightMode = realm.where(User.class).findFirst().isModeSettings();
-        allSelectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
+        isLightMode = RealmSingleton.getInstance(context).where(User.class).findFirst().isModeSettings();
+        allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
     }
 
     @Override
@@ -75,7 +71,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         holder.background.setBackgroundColor(isLightMode ? context.getColor(R.color.darker_mode) : context.getColor(R.color.gray));
 
         int numberOfNotesInCategory =
-                realm.where(Note.class).equalTo("archived", false)
+                RealmSingleton.getInstance(context).where(Note.class).equalTo("archived", false)
                         .equalTo("trash", false)
                         .equalTo("category", currentFolder.getName())
                         .findAll().size();
@@ -108,10 +104,10 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                     Helper.showMessage(activity, "Folder Empty", "Folder is empty, cannot open",
                             MotionToast.TOAST_ERROR);
                 } else {
-                    realm.beginTransaction();
+                    RealmSingleton.getInstance(context).beginTransaction();
                     allSelectedNotes.setString("category", currentFolder.getName());
                     allSelectedNotes.setBoolean("isSelected", false);
-                    realm.commitTransaction();
+                    RealmSingleton.getInstance(context).commitTransaction();
 
                     RealmSingleton.setCloseRealm(false);
                     Log.d("Here", "keep realm open in categories_recyclerview");

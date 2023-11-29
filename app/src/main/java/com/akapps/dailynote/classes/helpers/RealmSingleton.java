@@ -16,6 +16,10 @@ public class RealmSingleton {
         // Private constructor to prevent instantiation
     }
 
+    public static Realm get(Context context){
+        return getInstance(context);
+    }
+
     public static Realm getInstance(Context context) {
         if (realmInstance == null || realmInstance.isClosed()) {
             // initialize database and get data

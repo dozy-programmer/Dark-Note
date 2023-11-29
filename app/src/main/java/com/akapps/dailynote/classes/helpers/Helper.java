@@ -318,7 +318,7 @@ public class Helper {
                                    boolean isChecklist, boolean isChecklistAdded,
                                    LottieAnimationView emptyView, ImageView emptyViewNoAnimation) {
         if (isResults) {
-            if(RealmSingleton.getUser(context).isDisableAnimation()) {
+            if(RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
                 if (!emptyView.isAnimating()) {
@@ -342,7 +342,7 @@ public class Helper {
             title.setText("");
             subTitle.setText("\"Houston, we have a problem...\"");
             subTitle.setTextSize(18);
-            if(RealmSingleton.getUser(context).isDisableAnimation()) {
+            if(RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
                 emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.empty_checklist_icon));
@@ -362,7 +362,7 @@ public class Helper {
             subTitle.setText("Let me do it for you");
             subSubTitle.setText("Tap the bottom right button to create a note");
             subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
-            if(RealmSingleton.getUser(context).isDisableAnimation()) {
+            if(RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
                 emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.notebook_icon));
@@ -835,12 +835,40 @@ public class Helper {
                     .sort("checked", Sort.DESCENDING);
         else if (currentSort == 5 || currentSort == 6)
             results = results.sort("positionInList");
+        else if (currentSort == 7)
+            results = results.sort("text", Sort.ASCENDING)
+                    .sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.DESCENDING);
+        else if (currentSort == 8)
+            results = results.sort("text", Sort.ASCENDING)
+                    .sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.ASCENDING);
+        else if (currentSort == 9)
+            results = results.sort("text", Sort.DESCENDING)
+                    .sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.DESCENDING);
+        else if (currentSort == 10)
+            results = results.sort("text", Sort.DESCENDING)
+                    .sort("lastCheckedDate", Sort.ASCENDING)
+                    .sort("checked", Sort.ASCENDING);
         else {
             results = results.sort("positionInList");
         }
 
         return results;
     }
+
+    /**
+     *          if aToZ + added bottom = 11
+     *          if aToZ + added bottom = 12
+     *          if zToA + added top = 13
+     *          if zToA + added top = 14
+     *
+     *          if added bottom + checked top = 15
+     *          if added bottom + checked bottom = 16
+     *          if added top + checked top = 17
+     *          if added top + checked bottom = 18
+     */
 
     public static RealmResults<Note> getSelectedNotes(Realm realm, Activity activity) {
         RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();

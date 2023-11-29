@@ -25,6 +25,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.fragments.notes;
@@ -76,6 +77,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         private final ImageView reminder_icon;
         private final ImageView pin_icon;
         private final ImageView checklist_icon;
+        private final ImageView trash_icon;
         private final ImageView archived_icon;
         private final LinearLayout preview_1_layout;
         private final LinearLayout preview_2_layout;
@@ -96,6 +98,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             reminder_icon = v.findViewById(R.id.reminder_icon);
             pin_icon = v.findViewById(R.id.pin_icon);
             checklist_icon = v.findViewById(R.id.checklist_icon);
+            trash_icon = v.findViewById(R.id.trash_icon);
             archived_icon = v.findViewById(R.id.archived_icon);
             category = v.findViewById(R.id.category);
             category_background = v.findViewById(R.id.category_background);
@@ -159,13 +162,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
         }
 
-        if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.black));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 192));
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Gray) {
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
             holder.note_info.setBackgroundColor(activity.getColor(R.color.not_too_dark_gray));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 255));
-        } else if (RealmSingleton.getUser(context).getScreenMode() == User.Mode.Light) {
+        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -207,11 +210,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (currentNote.isSelected())
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
             else
-                holder.note_background.setStrokeColor(RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark ?
+                holder.note_background.setStrokeColor(RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark ?
                         Helper.darkenColor(currentNote.getBackgroundColor(), 0)
                         : currentNote.getBackgroundColor());
             holder.note_background.setStrokeWidth(10);
         }
+
 
         // if a note has a checklist, show an icon so user can differentiate between them
         if (currentNote.isCheckList()) {
@@ -236,15 +240,17 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         } else
             holder.checklist_icon.setVisibility(View.GONE);
 
+        // if a note is in the trash, show user
+        if(currentNote.isTrash()){
+            holder.trash_icon.setVisibility(View.VISIBLE);
+            holder.trash_icon.setImageDrawable(activity.getDrawable(R.drawable.delete_icon));
+        }
+        else
+            holder.trash_icon.setVisibility(View.GONE);
+
         if (currentNote.isArchived()) {
-            if (!currentNote.isCheckList()) {
-                holder.checklist_icon.setVisibility(View.VISIBLE);
-                holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.archive_icon));
-                holder.archived_icon.setVisibility(View.GONE);
-            } else {
-                holder.archived_icon.setVisibility(View.VISIBLE);
-                holder.archived_icon.setImageDrawable(activity.getDrawable(R.drawable.archive_icon));
-            }
+            holder.archived_icon.setVisibility(View.VISIBLE);
+            holder.archived_icon.setImageDrawable(activity.getDrawable(R.drawable.archive_icon));
         } else
             holder.archived_icon.setVisibility(View.GONE);
 
@@ -459,7 +465,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             } else {
                 if (currentNote.isSelected()) {
                     saveSelected(currentNote, false);
-                    holder.note_background.setStrokeColor(RealmSingleton.getUser(context).getScreenMode() == User.Mode.Dark ?
+                    holder.note_background.setStrokeColor(RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark ?
                             Helper.darkenColor(currentNote.getBackgroundColor(), 0)
                             : currentNote.getBackgroundColor());
                     holder.note_background.setStrokeWidth(10);
