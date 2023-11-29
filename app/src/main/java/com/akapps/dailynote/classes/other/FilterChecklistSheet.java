@@ -1,6 +1,5 @@
 package com.akapps.dailynote.classes.other;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,28 +7,24 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-
 import org.jetbrains.annotations.NotNull;
-
 import io.realm.Realm;
 
 public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
-    private Realm realm;
     private Note currentNote;
     private User.Mode screenMode;
 
@@ -63,9 +58,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         CheckBox applyAll = view.findViewById(R.id.apply_all);
         MaterialButton sortButton = view.findViewById(R.id.sort_button);
 
-        realm = RealmSingleton.getInstance(getContext());
-
-        screenMode = RealmSingleton.getUser(getContext()).getScreenMode();
+        screenMode = RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode();
 
         if (screenMode == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
@@ -81,7 +74,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
             darkModeItemLayout(addedTop);
         } else if (screenMode == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -186,13 +179,13 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
         clearFilter.setOnClickListener(v -> {
             if (applyAll.isChecked()) {
-                realm.beginTransaction();
-                realm.where(Note.class).findAll().setInt("sort", 5);
-                realm.commitTransaction();
+                getRealm().beginTransaction();
+                getRealm().where(Note.class).findAll().setInt("sort", 5);
+                getRealm().commitTransaction();
             } else {
-                realm.beginTransaction();
+                getRealm().beginTransaction();
                 currentNote.setSort(5);
-                realm.commitTransaction();
+                getRealm().commitTransaction();
             }
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
@@ -201,13 +194,13 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         sortButton.setOnClickListener(view1 -> {
             int selectedSort = getSelectedSort();
             if (applyAll.isChecked()) {
-                realm.beginTransaction();
-                realm.where(Note.class).findAll().setInt("sort", selectedSort);
-                realm.commitTransaction();
+                getRealm().beginTransaction();
+                getRealm().where(Note.class).findAll().setInt("sort", selectedSort);
+                getRealm().commitTransaction();
             } else {
-                realm.beginTransaction();
+                getRealm().beginTransaction();
                 currentNote.setSort(selectedSort);
-                realm.commitTransaction();
+                getRealm().commitTransaction();
             }
             ((NoteEdit) getActivity()).sortChecklist();
             dismiss();
@@ -316,6 +309,10 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         return -1;
     }
 
+    private Realm getRealm(){
+        return RealmSingleton.getInstance(getContext());
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -323,11 +320,11 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

@@ -29,12 +29,8 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
 
     // project data
     private final RealmResults<Backup> allBackups;
-    private final User currentUser;
     private final FragmentActivity activity;
     private final Context context;
-
-    // database
-    private final Realm realm;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView file_name;
@@ -57,13 +53,10 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         }
     }
 
-    public backup_recyclerview(RealmResults<Backup> allBackups, Realm realm,
-                               FragmentActivity activity, Context context) {
+    public backup_recyclerview(RealmResults<Backup> allBackups, FragmentActivity activity, Context context) {
         this.allBackups = allBackups;
-        this.realm = realm;
         this.activity = activity;
         this.context = context;
-        currentUser = RealmHelper.getUser(context, "in space");
     }
 
     @Override
@@ -132,15 +125,15 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
         StorageReference storageRef = storage.getReference().child("users")
-                .child(currentUser.getEmail())
+                .child(RealmHelper.getUser(context, "backup_recyclerview").getEmail())
                 .child(currentBackup.getFileName());
 
         // Delete the file
         storageRef.delete().addOnSuccessListener(aVoid -> {
             // File deleted successfully
-            realm.beginTransaction();
+            RealmSingleton.getInstance(context).beginTransaction();
             currentBackup.deleteFromRealm();
-            realm.commitTransaction();
+            RealmSingleton.getInstance(context).commitTransaction();
             notifyDataSetChanged();
         }).addOnFailureListener(exception -> {
             Helper.showMessage(activity, "Backup Error", "Not Deleted. Try again", MotionToast.TOAST_ERROR);

@@ -17,6 +17,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -34,7 +35,6 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
     private int numNotesSelected;
     private Fragment fragment;
     private boolean isOneNoteSelected;
-    private Realm realm;
     private String noteText;
 
     public ExportNotesSheet() {
@@ -65,9 +65,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         MaterialButton exportNote = view.findViewById(R.id.export_note);
         ImageButton info = view.findViewById(R.id.export_info);
 
-        realm = RealmSingleton.getInstance(getContext());
-
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             exportText.setBackgroundColor(getContext().getColor(R.color.darker_mode));
             exportMarkdown.setBackgroundColor(getContext().getColor(R.color.darker_mode));
@@ -84,10 +82,10 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
             exportTextString.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.golden_rod)));
             exportTextStringFormatted.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.gumbo)));
             exportNote.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.money_green)));
-        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray) {
+        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray) {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
             exportTextString.setTextColor(getContext().getColor(R.color.gray));
-        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -126,7 +124,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         });
 
         exportNote.setOnClickListener(view15 -> {
-            Helper.shareNote(getActivity(), numNotesSelected, realm);
+            Helper.shareNote(getActivity(), numNotesSelected, RealmSingleton.getInstance(getContext()));
             dismiss();
         });
 
@@ -153,27 +151,27 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private void exportNotes(String extension) {
-        RealmResults<Note> results = Helper.getSelectedNotes(((notes) fragment).realm,
+        RealmResults<Note> results = Helper.getSelectedNotes(RealmSingleton.getInstance(getContext()),
                 getActivity());
         if (results != null && results.size() != 0)
-            Helper.exportFiles(extension, getActivity(), results, ((notes) fragment).realm);
+            Helper.exportFiles(extension, getActivity(), results, RealmSingleton.getInstance(getContext()));
         ((notes) fragment).clearMultipleSelect();
         dismiss();
     }
 
     private void exportNote(String extension) {
-        Helper.exportFiles(extension, getActivity(), realm.where(Note.class)
-                .equalTo("noteId", numNotesSelected).findAll(), realm);
+        Helper.exportFiles(extension, getActivity(), RealmSingleton.getInstance(getContext()).where(Note.class)
+                .equalTo("noteId", numNotesSelected).findAll(), RealmSingleton.getInstance(getContext()));
         dismiss();
     }
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

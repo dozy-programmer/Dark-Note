@@ -1,7 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
 import static android.app.Activity.RESULT_OK;
-
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -20,12 +19,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.akapps.dailynote.BuildConfig;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
@@ -55,16 +52,13 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-
 import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
 
@@ -76,7 +70,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private RecyclerView.Adapter adapter;
     private int position;
 
-    private Realm realm;
     private User user;
     private Place selectedPlace;
     private boolean isTextPastedDetected;
@@ -138,9 +131,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         if (savedInstanceState != null)
             this.dismiss();
 
-        currentNote = ((NoteEdit) getActivity()).currentNote;
-        realm = RealmSingleton.getInstance(getContext());
-        user = RealmSingleton.getUser(getContext());
+        currentNote = ((NoteEdit) getActivity()).getCurrentNote();
+        user = RealmHelper.getUser(getContext(), "bottom sheet");
 
         // Initialize the SDK
         if (!Places.isInitialized())
@@ -189,16 +181,16 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             }
         });
 
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemName.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemNameLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
             itemName.setTextColor(getContext().getColor(R.color.ultra_white));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -316,9 +308,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         });
 
         itemImageLayout.setOnLongClickListener(view14 -> {
-            realm.beginTransaction();
+            getRealm().beginTransaction();
             currentItem.setItemImage("");
-            realm.commitTransaction();
+            getRealm().commitTransaction();
 
             Glide.with(getContext()).load(getContext().getDrawable(R.drawable.icon_image)).into(itemImage);
             photo_info.setVisibility(View.GONE);
@@ -338,10 +330,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     // updates select status of note in database
     private void updateItem(CheckListItem checkListItem, String text) {
         // save status to database
-        realm.beginTransaction();
+        getRealm().beginTransaction();
         checkListItem.setText(text);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        realm.commitTransaction();
+        getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyItemChanged(position);
     }
@@ -349,11 +341,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     // updates place of checklist item in database
     private void updateItem(CheckListItem checkListItem, Place place) {
         // save status to database
-        realm.beginTransaction();
-        Place newPlace = realm.copyToRealm(place);
+        getRealm().beginTransaction();
+        Place newPlace = getRealm().copyToRealm(place);
         checkListItem.setPlace(newPlace);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        realm.commitTransaction();
+        getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyItemChanged(position);
     }
@@ -361,10 +353,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     // updates select status of note in database
     private void updateItem(SubCheckListItem checkListItem, String text) {
         // save status to database
-        realm.beginTransaction();
+        getRealm().beginTransaction();
         checkListItem.setText(text);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        realm.commitTransaction();
+        getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyItemChanged(position);
     }
@@ -372,9 +364,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     // updates select status of note in database
     private void deleteItem(CheckListItem checkListItem) {
         RealmHelper.deleteChecklistItem(checkListItem, getContext(), false);
-        realm.beginTransaction();
+        getRealm().beginTransaction();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        realm.commitTransaction();
+        getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyDataSetChanged();
         ((NoteEdit) getActivity()).isListEmpty(currentNote.getChecklist().size(), true);
@@ -384,10 +376,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private void deleteItem(SubCheckListItem checkListItem) {
         // save status to database
         RealmHelper.deleteSublistItem(checkListItem, getContext());
-        realm.beginTransaction();
+        getRealm().beginTransaction();
         //checkListItem.deleteFromRealm();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-        realm.commitTransaction();
+        getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyDataSetChanged();
     }
@@ -418,13 +410,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                                 for (int i = 1; i < currentSublistItems.length; i++) {
                                     String currentSublistItem = currentSublistItems[i];
                                     if (!currentSublistItem.equals(currentItem.getText()))
-                                        ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                                        ((NoteEdit) getActivity()).addSubCheckList(getRealm().where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
                                 }
                             }
                         } else if (item.startsWith(" ") && sublistItemsSeparator.equals("\n")) {
                             if (currentItem == null)
                                 currentItem = ((NoteEdit) getActivity()).addCheckList("", new Place());
-                            ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), item);
+                            ((NoteEdit) getActivity()).addSubCheckList(getRealm().where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), item);
                         } else {
                             currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0], selectedPlace);
                             selectedPlace = new Place();
@@ -433,7 +425,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                                 for (int i = 1; i < currentSublistItems.length; i++) {
                                     String currentSublistItem = currentSublistItems[i];
                                     if (!currentSublistItem.equals(currentItem.getText()))
-                                        ((NoteEdit) getActivity()).addSubCheckList(realm.where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
+                                        ((NoteEdit) getActivity()).addSubCheckList(getRealm().where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), currentSublistItem);
                                 }
                             }
                         }
@@ -479,9 +471,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     fdelete.delete();
             }
 
-            realm.beginTransaction();
+            getRealm().beginTransaction();
             currentItem.setItemImage(newFile.getPath());
-            realm.commitTransaction();
+            getRealm().commitTransaction();
 
             Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
             photo_info.setVisibility(View.VISIBLE);
@@ -593,12 +585,16 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         if (isAdding)
             selectedPlace = new Place();
         else {
-            realm.beginTransaction();
-            currentItem.setPlace(realm.copyToRealm(new Place()));
-            realm.commitTransaction();
+            getRealm().beginTransaction();
+            currentItem.setPlace(getRealm().copyToRealm(new Place()));
+            getRealm().commitTransaction();
             adapter.notifyItemChanged(position);
         }
         locationLayout.setVisibility(View.GONE);
+    }
+
+    private Realm getRealm(){
+        return RealmSingleton.getInstance(getContext());
     }
 
     @Override
@@ -611,11 +607,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

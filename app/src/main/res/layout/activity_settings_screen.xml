@@ -1341,7 +1341,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Enable 24 Hour Date Format"
+                        android:text="24 Hour Date Format"
                         android:textColor="@color/ultra_white"
                         android:textSize="16sp"
                         android:textStyle="bold"></TextView>

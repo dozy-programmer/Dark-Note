@@ -79,7 +79,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
@@ -89,9 +89,9 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
             passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             passwordInput.setTextColor(getContext().getColor(R.color.light_light_gray));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -217,11 +217,11 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
         return 0;

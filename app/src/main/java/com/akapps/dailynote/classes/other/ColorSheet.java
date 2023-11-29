@@ -17,6 +17,7 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.flask.colorpicker.ColorPickerView;
@@ -49,11 +50,11 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_color, container, false);
 
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -65,7 +66,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         ImageView textColorIcon = view.findViewById(R.id.text_color_icon);
         backgroundText = view.findViewById(R.id.background_text);
 
-        currentNote = ((NoteEdit) getActivity()).currentNote;
+        currentNote = ((NoteEdit) getActivity()).getCurrentNote();
 
         backgroundIcon.setOnClickListener(v -> {
             openDialog("b");
@@ -141,11 +142,11 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

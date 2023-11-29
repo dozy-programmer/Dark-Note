@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -26,7 +24,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
@@ -46,14 +43,10 @@ import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
-
 import io.realm.Case;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
@@ -84,10 +77,8 @@ public class notes extends Fragment {
     private FloatingActionMenu addMenuLarge;
 
     // on-device database
-    public Realm realm;
     private RealmResults<Note> allNotes;
     private RealmResults<Note> filteredNotes;
-    public User user;
 
     // activity data
     private boolean isSearchingNotes;
@@ -97,6 +88,7 @@ public class notes extends Fragment {
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
     private int lightColor;
+    private int populatedNotesSize;
 
     // dialog
     private boolean isNotesFiltered;
@@ -169,22 +161,14 @@ public class notes extends Fragment {
         };
         thread.start();
 
-        // initialize database and get data
-        realm = RealmSingleton.getInstance(context);
-
-        user = RealmHelper.getUser(context, "notes fragment");
-
         // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli(context);
         updateDateEditedMilli();
         unSelectAllNotes();
 
-        allNotes = realm.where(Note.class)
-                .equalTo("archived", false)
-                .equalTo("trash", false)
-                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+        allNotes = getAllNotes();
 
-        if (user.isShowFolderNotes())
+        if (getUser().isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
@@ -195,7 +179,7 @@ public class notes extends Fragment {
                     hideSearchBar();
                     closeMultipleNotesLayout();
                     showData();
-                    isListEmpty(allNotes.size(), false);
+                    isListEmpty(getAllNotes().size(), false);
                 } else {
                     getActivity().moveTaskToBack(true);
                 }
@@ -208,7 +192,7 @@ public class notes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        if (user.getScreenMode() == User.Mode.Dark) {
+        if (getUser().getScreenMode() == User.Mode.Dark) {
             lightColor = context.getColor(R.color.darker_mode);
             view.setBackgroundColor(lightColor);
             getActivity().getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
@@ -221,7 +205,7 @@ public class notes extends Fragment {
 
         updateToolbarColors();
 
-        if (user.isOpenFoldersOnStart() && AppData.isAppFirstStarted) {
+        if (getUser().isOpenFoldersOnStart() && AppData.isAppFirstStarted) {
             AppData.isAppFirstStarted = false;
             Helper.saveBooleanPreference(context, true, "app_started");
             Intent category = new Intent(getActivity(), CategoryScreen.class);
@@ -239,7 +223,7 @@ public class notes extends Fragment {
         Helper.unSetOrientation(getActivity(), context);
         if (isSearchingNotes) return;
 
-        if (realm.isClosed())
+        if (getRealm().isClosed())
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
         else {
             adapterNotes.notifyDataSetChanged();
@@ -264,7 +248,7 @@ public class notes extends Fragment {
     }
 
     private void updateToolbarColors() {
-        if (user.getScreenMode() == User.Mode.Dark) {
+        if (getUser().getScreenMode() == User.Mode.Dark) {
             searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             filterNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             settings.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
@@ -284,14 +268,14 @@ public class notes extends Fragment {
         if (Helper.isTablet(context))
             span = 3;
 
-        if (user.getLayoutSelected().equals("stag")) {
+        if (getUser().getLayoutSelected().equals("stag")) {
             StaggeredGridLayoutManager layout = new StaggeredGridLayoutManager(span, LinearLayoutManager.VERTICAL);
             layout.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
             recyclerViewNotes.setLayoutManager(layout);
-        } else if (user.getLayoutSelected().equals("grid")) {
+        } else if (getUser().getLayoutSelected().equals("grid")) {
             GridLayoutManager layout = new GridLayoutManager(context, span);
             recyclerViewNotes.setLayoutManager(layout);
-        } else if (user.getLayoutSelected().equals("row")) {
+        } else if (getUser().getLayoutSelected().equals("row")) {
             LinearLayoutManager layout = new LinearLayoutManager(context);
             recyclerViewNotes.setLayoutManager(layout);
         }
@@ -329,7 +313,7 @@ public class notes extends Fragment {
     private void initializeLayout() {
         setRecyclerviewLayout();
 
-        if (user.isIncreaseFabSize()) {
+        if (getUser().isIncreaseFabSize()) {
             addMenuLarge.setVisibility(View.VISIBLE);
             addMenu.setVisibility(View.GONE);
         } else {
@@ -342,7 +326,7 @@ public class notes extends Fragment {
                 .getIdentifier("android:id/search_plate", null, null);
         View searchPlateView = searchEditText.findViewById(searchPlateId);
         if (searchPlateView != null) {
-            if (user.getScreenMode() == User.Mode.Dark) {
+            if (getUser().getScreenMode() == User.Mode.Dark) {
                 searchPlateView.setBackgroundColor(getActivity().getColor(R.color.darker_mode));
                 int id = searchEditText.getContext()
                         .getResources()
@@ -421,7 +405,7 @@ public class notes extends Fragment {
             } else {
                 showSearchBar();
                 isListEmpty(0, true);
-                populateAdapter(realm.where(Note.class).equalTo("title", "~~test~~").findAll());
+                populateAdapter(getRealm().where(Note.class).equalTo("title", "~~test~~").findAll());
             }
 
         });
@@ -464,7 +448,7 @@ public class notes extends Fragment {
             public boolean onQueryTextChange(String s) {
                 if (isSearchingNotes) {
                     if (s.length() == 0) {
-                        RealmResults<Note> showEmptyLayout = realm.where(Note.class).equalTo("pinNumber", -1).findAll();
+                        RealmResults<Note> showEmptyLayout = getRealm().where(Note.class).equalTo("pinNumber", -1).findAll();
                         isListEmpty(0, true);
                         populateAdapter(showEmptyLayout);
                     } else
@@ -476,29 +460,29 @@ public class notes extends Fragment {
     }
 
     private void updateDateEditedMilli() {
-        RealmResults<Note> resultsCreated = realm.where(Note.class)
+        RealmResults<Note> resultsCreated = getRealm().where(Note.class)
                 .equalTo("dateCreatedMilli", 0)
                 .findAll();
 
-        RealmResults<Note> resultsEdited = realm.where(Note.class)
+        RealmResults<Note> resultsEdited = getRealm().where(Note.class)
                 .equalTo("dateEditedMilli", 0)
                 .findAll();
 
         if (resultsCreated.size() != 0) {
             for (int i = 0; i < resultsCreated.size(); i++) {
-                realm.beginTransaction();
+                getRealm().beginTransaction();
                 Note currentNote = resultsCreated.get(i);
                 currentNote.setDateCreatedMilli(Helper.dateToCalender(currentNote.getDateCreated()).getTimeInMillis());
-                realm.commitTransaction();
+                getRealm().commitTransaction();
             }
         }
 
         if (resultsEdited.size() != 0) {
             for (int i = 0; i < resultsEdited.size(); i++) {
-                realm.beginTransaction();
+                getRealm().beginTransaction();
                 Note currentNote = resultsEdited.get(i);
                 currentNote.setDateEditedMilli(Helper.dateToCalender(currentNote.getDateEdited()).getTimeInMillis());
-                realm.commitTransaction();
+                getRealm().commitTransaction();
             }
         }
 
@@ -517,11 +501,11 @@ public class notes extends Fragment {
 
     private void openSettings() {
         savePreferences();
-        int size = realm.where(Note.class).findAll().size();
-        String userId = String.valueOf(user.getUserId());
+        int size = getRealm().where(Note.class).findAll().size();
+        String userId = String.valueOf(getUser().getUserId());
         Intent settings = new Intent(context, SettingsScreen.class);
         settings.putExtra("size", size);
-        settings.putExtra("user", userId);
+        settings.putExtra("getUser()", userId);
         RealmSingleton.setCloseRealm(false);
         startActivity(settings);
         getActivity().finish();
@@ -535,9 +519,9 @@ public class notes extends Fragment {
             boolean viewCategoryNotes = data.getBooleanExtra("viewing", false);
 
             if (id != -1) {
-                String currentCategory = realm.where(Folder.class).equalTo("id", id)
+                String currentCategory = getRealm().where(Folder.class).equalTo("id", id)
                         .findFirst().getName();
-                RealmResults<Note> category = realm.where(Note.class)
+                RealmResults<Note> category = getRealm().where(Note.class)
                         .equalTo("trash", false)
                         .equalTo("archived", false)
                         .equalTo("category", currentCategory).findAll();
@@ -550,7 +534,7 @@ public class notes extends Fragment {
             }
         } else if (resultCode == -4 || resultCode == -2) {
             if (resultCode == -2) {
-                filteringByCategory(realm.where(Note.class).findAll(), true);
+                filteringByCategory(getRealm().where(Note.class).findAll(), true);
                 restoreNotes.setVisibility(View.GONE);
             } else {
                 closeMultipleNotesLayout();
@@ -560,13 +544,13 @@ public class notes extends Fragment {
             }
         } else if (resultCode == -3) {
             restoreNotes.setVisibility(View.GONE);
-            RealmResults<Note> category = realm.where(Note.class)
+            RealmResults<Note> category = getRealm().where(Note.class)
                     .equalTo("trash", false)
                     .equalTo("archived", false)
                     .equalTo("category", "none").findAll();
             filteringByCategory(category, true);
         } else if (resultCode == -5) {
-            RealmResults<Note> queryDeletedNotes = realm.where(Note.class).equalTo("trash", true).findAll();
+            RealmResults<Note> queryDeletedNotes = getRealm().where(Note.class).equalTo("trash", true).findAll();
             isListEmpty(queryDeletedNotes.size(), false);
             populateAdapter(queryDeletedNotes);
             if (queryDeletedNotes.size() == 0)
@@ -579,7 +563,7 @@ public class notes extends Fragment {
             closeFilter();
         } else if (resultCode == -10 || resultCode == -9 || resultCode == -8) {
             RealmResults<Note> queryArchivedNotes =
-                    realm.where(Note.class)
+                    getRealm().where(Note.class)
                             .equalTo("archived", true)
                             .equalTo("trash", false).findAll();
 
@@ -597,7 +581,7 @@ public class notes extends Fragment {
                 filteringAllNotesRealm(queryArchivedNotes, true);
         } else if (resultCode == -11 || resultCode == -12 || resultCode == -13) {
             RealmResults<Note> queryPinnedNotes =
-                    realm.where(Note.class)
+                    getRealm().where(Note.class)
                             .equalTo("pin", true).findAll();
 
             if (resultCode == -13)
@@ -614,18 +598,18 @@ public class notes extends Fragment {
                 filteringAllNotesRealm(queryPinnedNotes, true);
         } else if (resultCode == -14) {
             RealmResults<Note> queryLockedNotes =
-                    realm.where(Note.class)
+                    getRealm().where(Note.class)
                             .greaterThan("pinNumber", 0).findAll();
 
             filteringAllNotesRealm(queryLockedNotes, true);
         } else if (resultCode == -15) {
             RealmResults<Note> queryRemindNotes =
-                    realm.where(Note.class)
+                    getRealm().where(Note.class)
                             .isNotEmpty("reminderDateTime").findAll();
 
             filteringAllNotesRealm(queryRemindNotes, true);
         } else if (resultCode == -16) {
-            RealmResults<Photo> allNotePhotos = realm.where(Photo.class).distinct("noteId").findAll();
+            RealmResults<Photo> allNotePhotos = getRealm().where(Photo.class).distinct("noteId").findAll();
 
             Integer[] allNotePhotosId = new Integer[allNotePhotos.size()];
 
@@ -635,7 +619,7 @@ public class notes extends Fragment {
             }
 
             RealmResults<Note> queryNotesWithPhotos =
-                    realm.where(Note.class)
+                    getRealm().where(Note.class)
                             .in("noteId", allNotePhotosId).findAll();
 
             filteringAllNotesRealm(queryNotesWithPhotos, true);
@@ -651,7 +635,7 @@ public class notes extends Fragment {
                                    boolean newestToOldest, boolean aToZ, boolean zToA) {
         isNotesFiltered = true;
 
-        RealmResults<Note> result = realm.where(Note.class)
+        RealmResults<Note> result = getRealm().where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
                 .findAll();
@@ -707,11 +691,8 @@ public class notes extends Fragment {
 
     public void showDefaultSort() {
         sortedBy.setVisibility(View.GONE);
-        allNotes = realm.where(Note.class)
-                .equalTo("archived", false)
-                .equalTo("trash", false)
-                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
-        if (user.isShowFolderNotes())
+        allNotes = getAllNotes();
+        if (getUser().isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
         populateAdapter(allNotes);
@@ -730,39 +711,39 @@ public class notes extends Fragment {
 
         if (dateType != null || aToZ || zToA) {
             if (oldestToNewest) {
-                allNotes = realm.where(Note.class)
+                allNotes = getRealm().where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.ASCENDING).findAll();
 
-                if (user.isShowFolderNotes())
+                if (getUser().isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             } else if (newestToOldest) {
-                allNotes = realm.where(Note.class)
+                allNotes = getRealm().where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort(dateType, Sort.DESCENDING).findAll();
 
-                if (user.isShowFolderNotes())
+                if (getUser().isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             } else if (aToZ) {
-                allNotes = realm.where(Note.class)
+                allNotes = getRealm().where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title").findAll();
 
-                if (user.isShowFolderNotes())
+                if (getUser().isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             } else if (zToA) {
-                allNotes = realm.where(Note.class)
+                allNotes = getRealm().where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .sort("title", Sort.DESCENDING).findAll();
 
-                if (user.isShowFolderNotes())
+                if (getUser().isShowFolderNotes())
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             }
@@ -775,8 +756,9 @@ public class notes extends Fragment {
     private void populateAdapter(RealmResults<Note> allNotes) {
         filteredNotes = allNotes;
         adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes : allNotes, context, getActivity(),
-                notes.this, user.isShowPreview(), user.isShowPreviewNoteInfo());
+                notes.this, getUser().isShowPreview(), getUser().isShowPreviewNoteInfo());
         recyclerViewNotes.setAdapter(adapterNotes);
+        populatedNotesSize = isNotesFiltered ? filteredNotes.size() : allNotes.size();
     }
 
     private void closeFilter() {
@@ -790,7 +772,7 @@ public class notes extends Fragment {
 
 
     private void searchNotesAndUpdate(String target) {
-        RealmResults<Note> queryNotes = realm.where(Note.class)
+        RealmResults<Note> queryNotes = getRealm().where(Note.class)
                 .contains("note", target, Case.INSENSITIVE).or()
                 .contains("title", target, Case.INSENSITIVE).or()
                 .contains("checklistConvertedToString", target, Case.INSENSITIVE)
@@ -819,7 +801,7 @@ public class notes extends Fragment {
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
 
-        searchEditText.setBackgroundColor(context.getColor(user.getScreenMode() == User.Mode.Dark ? R.color.darker_mode : R.color.gray));
+        searchEditText.setBackgroundColor(context.getColor(getUser().getScreenMode() == User.Mode.Dark ? R.color.darker_mode : R.color.gray));
 
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
@@ -894,8 +876,8 @@ public class notes extends Fragment {
     }
 
     public void deleteMultipleNotes(boolean deleteNotes) {
-        RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();
-        RealmResults<Note> lockedNotes = realm.where(Note.class).equalTo("isSelected", true)
+        RealmResults<Note> selectedNotes = getRealm().where(Note.class).equalTo("isSelected", true).findAll();
+        RealmResults<Note> lockedNotes = getRealm().where(Note.class).equalTo("isSelected", true)
                 .greaterThan("pinNumber", 0)
                 .findAll();
 
@@ -908,20 +890,20 @@ public class notes extends Fragment {
                 if (isTrashSelected || deleteNotes) {
                     for (Note deleteCurrentNote : selectedNotes)
                         RealmHelper.deleteNote(getContext(), deleteCurrentNote.getNoteId());
-                    isListEmpty(allNotes.size(), false);
+                    isListEmpty(getAllNotes().size(), false);
                     numberSelected(0, 0, 0);
                     Helper.showMessage(getActivity(), "Deleted", number + " selected " +
                             "have been deleted", MotionToast.TOAST_SUCCESS);
                     closeMultipleNotesLayout();
                     showData();
 
-                    if (allNotes.size() == 0)
+                    if (getAllNotes().size() == 0)
                         Helper.deleteAppFiles(context);
                 } else {
-                    realm.beginTransaction();
+                    getRealm().beginTransaction();
                     selectedNotes.setBoolean("trash", true);
-                    realm.commitTransaction();
-                    isListEmpty(allNotes.size(), false);
+                    getRealm().commitTransaction();
+                    isListEmpty(getAllNotes().size(), false);
                     Helper.showMessage(getActivity(), "Sent to trash", number + " selected " +
                             "have been sent to trash", MotionToast.TOAST_SUCCESS);
                     numberSelected(0, 0, 0);
@@ -935,14 +917,14 @@ public class notes extends Fragment {
     }
 
     public void restoreMultipleNotes() {
-        RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true)
+        RealmResults<Note> selectedNotes = getRealm().where(Note.class).equalTo("isSelected", true)
                 .equalTo("trash", true).findAll();
 
         if (selectedNotes.size() != 0) {
             int number = selectedNotes.size();
-            realm.beginTransaction();
+            getRealm().beginTransaction();
             selectedNotes.setBoolean("trash", false);
-            realm.commitTransaction();
+            getRealm().commitTransaction();
             adapterNotes.notifyDataSetChanged();
             Helper.showMessage(getActivity(), "Restored", number + " selected " +
                     "have been restored", MotionToast.TOAST_SUCCESS);
@@ -969,32 +951,32 @@ public class notes extends Fragment {
     }
 
     public void unSelectAllNotes() {
-        if (realm.isClosed()) {
+        if (getRealm().isClosed()) {
             refreshFragment(true);
             return;
         }
-        RealmResults<Note> realmResults = realm.where(Note.class).equalTo("isSelected", true).findAll();
+        RealmResults<Note> realmResults = getRealm().where(Note.class).equalTo("isSelected", true).findAll();
         if (realmResults.size() != 0) {
-            realm.beginTransaction();
+            getRealm().beginTransaction();
             realmResults.setBoolean("isSelected", false);
-            realm.commitTransaction();
+            getRealm().commitTransaction();
         }
     }
 
     private void selectAllNotes() {
         isAllSelected = !isAllSelected;
         if (isTrashSelected) {
-            RealmResults<Note> realmResults = realm.where(Note.class).equalTo("trash", true).findAll();
+            RealmResults<Note> realmResults = getRealm().where(Note.class).equalTo("trash", true).findAll();
             if (realmResults.size() != 0) {
-                realm.beginTransaction();
+                getRealm().beginTransaction();
                 realmResults.setBoolean("isSelected", isAllSelected);
-                realm.commitTransaction();
+                getRealm().commitTransaction();
             }
         } else {
             if (filteredNotes.size() != 0) {
-                realm.beginTransaction();
+                getRealm().beginTransaction();
                 filteredNotes.setBoolean("isSelected", isAllSelected);
-                realm.commitTransaction();
+                getRealm().commitTransaction();
             }
         }
         numberSelected(0, 0, isAllSelected ? adapterNotes.getItemCount() : 0);
@@ -1019,6 +1001,25 @@ public class notes extends Fragment {
         isAllSelected = false;
     }
 
+    private Realm getRealm(){
+        return RealmSingleton.get(getActivity());
+    }
+
+    private User getUser(){
+        return RealmHelper.getUser(context, "notes fragment");
+    }
+
+    private RealmResults<Note> getAllNotes(){
+        return getRealm().where(Note.class)
+                .equalTo("archived", false)
+                .equalTo("trash", false)
+                .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+    }
+
+    public int getPopulatedNoteSize(){
+        return populatedNotesSize;
+    }
+
     private void isListEmpty(int size, boolean isResult) {
         Helper.isListEmpty(context, size, empty_Layout, title, subtitle, subSubTitle,
                 isResult, false, false, view.findViewById(R.id.empty_view),
@@ -1026,10 +1027,9 @@ public class notes extends Fragment {
     }
 
     private void savePreferences() {
-        if (realm.isClosed() || user == null) return;
-        // text size saved by user
-        int savedSize = user.getTextSize();
-        // text size set by user
+        // text size saved by getUser()
+        int savedSize = getUser().getTextSize();
+        // text size set by getUser()
         String textSize = Helper.getPreference(context, "size");
         int currentSize = Integer.parseInt(textSize == null ? "0" : textSize);
 
@@ -1039,9 +1039,9 @@ public class notes extends Fragment {
         }
         // if text size save
         else if (savedSize != currentSize) {
-            realm.beginTransaction();
-            user.setTextSize(currentSize);
-            realm.commitTransaction();
+            getRealm().beginTransaction();
+            getUser().setTextSize(currentSize);
+            getRealm().commitTransaction();
         }
     }
 

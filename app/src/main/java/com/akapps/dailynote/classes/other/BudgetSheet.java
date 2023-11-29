@@ -19,32 +19,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Expense;
-import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.recyclerview.expenses_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
 import io.realm.RealmList;
 
 public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
-    private Note currentNote;
+    private RealmList<CheckListItem> checkListItems;
     private final ArrayList<Expense> expensesList = new ArrayList<>();
     private List<DonutSection> expensesListGraph = new ArrayList<>();
 
@@ -61,8 +57,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
     public BudgetSheet() {
     }
 
-    public BudgetSheet(Note currentNote, String budgetKey, String expenseKey) {
-        this.currentNote = currentNote;
+    public BudgetSheet(RealmList<CheckListItem> checkListItems, String budgetKey, String expenseKey) {
+        this.checkListItems = checkListItems;
         this.budgetKey = budgetKey;
         this.expenseKey = expenseKey;
     }
@@ -72,11 +68,11 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_budget, container, false);
 
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -90,9 +86,9 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         expensesRecyclerview = view.findViewById(R.id.expenses_recyclerview);
         expensesRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        budget = getBudgetAmount(currentNote.getChecklist());
+        budget = getBudgetAmount(checkListItems);
         if (budget == 0) {
-            List<DonutSection> list = getListOfExpenses(currentNote.getChecklist(), errorMessage, budget);
+            List<DonutSection> list = getListOfExpenses(checkListItems, errorMessage, budget);
 
             if(list != null) {
                 if (list.size() > 1) {
@@ -106,7 +102,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         } else if (budget > 0) {
             errorMessage.setVisibility(View.GONE);
             budgetProgress.setCap((float) budget);
-            expensesListGraph = getListOfExpenses(currentNote.getChecklist(), errorMessage, budget);
+            expensesListGraph = getListOfExpenses(checkListItems, errorMessage, budget);
             if (expensesListGraph != null) {
                 // sort by highest to lowest expense
                 expensesListGraph.sort(Comparator.comparing(DonutSection::getAmount, Comparator.reverseOrder()));
@@ -318,11 +314,11 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

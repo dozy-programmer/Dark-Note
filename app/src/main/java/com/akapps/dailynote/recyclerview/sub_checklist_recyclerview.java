@@ -34,8 +34,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     private final Note currentNote;
     private Context context;
     private final FragmentActivity activity;
-    private final Realm realm;
-    private final User user;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -55,12 +53,10 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     }
 
     public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote,
-                                      Realm realm, FragmentActivity activity) {
+                                      FragmentActivity activity) {
         this.checkList = checkList;
         this.currentNote = currentNote;
-        this.realm = realm;
         this.activity = activity;
-        user = RealmHelper.getUser(context, "in space");
     }
 
     @Override
@@ -86,13 +82,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
             holder.background.setStrokeColor(activity.getColor(R.color.gray));
             holder.background.setStrokeWidth(5);
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
+        } else if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Gray) {
             holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
+        } else if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -101,7 +97,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         if (isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
-            if (user.isShowChecklistCheckbox()) {
+            if (RealmHelper.getUser(context, "sub_checklist_recyclerview").isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_checked));
             } else {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.checked_icon));
@@ -109,7 +105,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         } else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
             holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 200));
-            if (user.isShowChecklistCheckbox()) {
+            if (RealmHelper.getUser(context, "sub_checklist_recyclerview").isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_unchecked));
             } else {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.unchecked_icon));
@@ -148,9 +144,9 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     // updates select status of note in database
     private void saveSelected(SubCheckListItem checkListItem, boolean status) {
         // save status to database
-        realm.beginTransaction();
+        RealmSingleton.getInstance(context).beginTransaction();
         checkListItem.setChecked(status);
-        realm.commitTransaction();
+        RealmSingleton.getInstance(context).commitTransaction();
         ((NoteEdit) context).updateSaveDateEdited();
     }
 

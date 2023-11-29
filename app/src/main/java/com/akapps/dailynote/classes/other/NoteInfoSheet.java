@@ -14,12 +14,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
@@ -29,19 +27,17 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -49,11 +45,8 @@ import www.sanju.motiontoast.MotionToast;
 public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;
-    private RealmResults<Photo> allPhotos;
     boolean showOpenButton;
-    private User user;
     String noteTitle;
-    private Realm realm;
 
     public NoteInfoSheet() {
     }
@@ -61,7 +54,6 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
     public NoteInfoSheet(Note currentNote, boolean showOpenButton) {
         this.currentNote = currentNote;
         this.showOpenButton = showOpenButton;
-        this.user = RealmSingleton.getUser(getContext());
     }
 
     @SuppressLint("SetTextI18n")
@@ -69,16 +61,15 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_note_info, container, false);
 
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
-        realm = RealmSingleton.getInstance(getContext());
-        allPhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
+        RealmResults<Photo> allPhotos = getRealm().where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
 
         TextView noteName = view.findViewById(R.id.note_name);
         TextView dateCreated = view.findViewById(R.id.date_created);
@@ -147,13 +138,13 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
-                            "<font color='#e65c00'>" + (user.isTwentyFourHourFormat() ?
+                            "<font color='#e65c00'>" + (getUser().isTwentyFourHourFormat() ?
                             Helper.convertToTwentyFourHour(currentNote.getDateCreated()).replace("\n", " ")
                             : currentNote.getDateCreated().replace("\n", " ")) + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateEdited.setText(Html.fromHtml(dateEdited.getText() + "<br>" +
-                            "<font color='#e65c00'>" + (user.isTwentyFourHourFormat() ?
+                            "<font color='#e65c00'>" + (getUser().isTwentyFourHourFormat() ?
                             Helper.convertToTwentyFourHour(currentNote.getDateEdited()).replace("\n", " ")
                             : currentNote.getDateEdited().replace("\n", " ")) + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
@@ -231,8 +222,8 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
 
     private String copyChecklist(Note currentNote) {
         String checklistString = "";
-        String checklistSeparator = user.getItemsSeparator().equals("newline") ? "\n" : user.getItemsSeparator();
-        String sublistSeparator = user.getSublistSeparator().equals("space") ? "\n " : user.getSublistSeparator();
+        String checklistSeparator = getUser().getItemsSeparator().equals("newline") ? "\n" : getUser().getItemsSeparator();
+        String sublistSeparator = getUser().getSublistSeparator().equals("space") ? "\n " : getUser().getSublistSeparator();
 
         for (CheckListItem checkListItem : currentNote.getChecklist()) {
             checklistString += checkListItem.getText();
@@ -267,13 +258,21 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
         }
     }
 
+    private Realm getRealm(){
+        return RealmSingleton.getInstance(getContext());
+    }
+
+    private User getUser(){
+        return RealmHelper.getUser(getContext(), "noteInfoSheet");
+    }
+
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }

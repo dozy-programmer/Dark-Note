@@ -73,10 +73,10 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         // retrieves current photo object
         Photo currentPhoto = allPhotos.get(position);
 
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(context, "photos_recyclerview").getScreenMode() == User.Mode.Dark)
             holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
-        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(context, "photos_recyclerview").getScreenMode() == User.Mode.Gray) {
+        } else if (RealmHelper.getUser(context, "photos_recyclerview").getScreenMode() == User.Mode.Light) {
 
         }
 

@@ -54,7 +54,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final boolean isTwentyFourHourFormat;
 
     // database
-    private final Realm realm;
+    private User currentUser;
     private final Context context;
 
     // multi select
@@ -117,8 +117,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         this.noteFragment = fragment;
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
-        realm = RealmSingleton.getInstance(context);
-        isTwentyFourHourFormat = ((notes) noteFragment).user.isTwentyFourHourFormat();
+        currentUser = RealmHelper.getUser(context, "notes_recyclerview");
+        isTwentyFourHourFormat = currentUser.isTwentyFourHourFormat();
     }
 
     @Override
@@ -134,14 +134,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         Note currentNote = allNotes.get(position);
 
         // retrieves all photos that belong to note
-        RealmResults<Photo> allPhotos = realm.where(Photo.class)
+        RealmResults<Photo> allPhotos = RealmSingleton.getInstance(context).where(Photo.class)
                 .equalTo("noteId", currentNote.getNoteId()).findAll();
 
         // retrieves note text, the lock status of note and reminder status
         noteText = currentNote.getNote() == null ? "" : currentNote.getNote();
         boolean isNoteLocked = currentNote.getPinNumber() > 0;
         boolean hasReminder = currentNote.getReminderDateTime().length() > 0;
-        Note currentNoteUnmanaged = realm.copyFromRealm(currentNote);
+        Note currentNoteUnmanaged = RealmSingleton.getInstance(context).copyFromRealm(currentNote);
 
         // populates note data into the recyclerview
         holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));
@@ -173,8 +173,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
 
         // changes the number of lines title and preview occupy depending on user setting
-        int titleLines = ((notes) noteFragment).user.getTitleLines();
-        int contentLines = ((notes) noteFragment).user.getContentLines();
+        int titleLines = currentUser.getTitleLines();
+        int contentLines = currentUser.getContentLines();
         holder.note_title.setMaxLines(titleLines);
         holder.note_preview.setMaxLines(contentLines);
 
@@ -192,7 +192,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if (currentNote.getCategory().equals("none"))
             holder.category_background.setVisibility(View.GONE);
         else {
-            Folder folderColor = realm.where(Folder.class)
+            Folder folderColor = RealmSingleton.getInstance(context).where(Folder.class)
                     .equalTo("name", currentNote.getCategory())
                     .findFirst();
 
@@ -222,7 +222,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setVisibility(View.VISIBLE);
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
-            RealmResults<CheckListItem> checklist = Helper.sortChecklist(currentNote, realm);
+            RealmResults<CheckListItem> checklist = Helper.sortChecklist(currentNote, RealmSingleton.getInstance(context));
             if (!isNoteLocked) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText(checklist.size() + " items");
@@ -231,9 +231,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
             }
 
-            realm.beginTransaction();
+            RealmSingleton.getInstance(context).beginTransaction();
             currentNote.setChecklistConvertedToString(checkListString.toString());
-            realm.commitTransaction();
+            RealmSingleton.getInstance(context).commitTransaction();
             holder.note_preview.setText(checkListString.toString());
             holder.note_preview.setTextSize(13);
             holder.note_preview.setGravity(Gravity.LEFT);
@@ -525,7 +525,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     @Override
     public int getItemCount() {
-        return allNotes.size();
+        return ((notes) noteFragment).getPopulatedNoteSize();
     }
 
     // Checks to see if note is locked, if it is then user is sent to lock screen activity
@@ -550,8 +550,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     // updates select status of note in database
     private void saveSelected(Note currentNote, boolean status) {
         // save status to database
-        realm.beginTransaction();
+        RealmSingleton.getInstance(context).beginTransaction();
         currentNote.setSelected(status);
-        realm.commitTransaction();
+        RealmSingleton.getInstance(context).commitTransaction();
     }
 }

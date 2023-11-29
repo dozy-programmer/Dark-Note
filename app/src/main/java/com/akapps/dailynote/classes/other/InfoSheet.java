@@ -62,7 +62,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
     private int message;
     private boolean deleteAllChecklists;
 
-    private Realm realm;
     private int position;
     private Photo currentPhoto;
     private RealmResults<Photo> allNotePhotos;
@@ -144,17 +143,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         ImageView budgetChecklist = view.findViewById(R.id.budget_checklist);
         ImageView budgetGraph = view.findViewById(R.id.budget_graph);
 
-        realm = RealmSingleton.getInstance(getContext());
-
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark) {
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
             securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWord.setTextColor(getContext().getColor(R.color.gray));
             view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-        } else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }
 
@@ -219,7 +216,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setGravity(Gravity.CENTER);
         } else if (message == 4) {
             // initialize data
-            allNotePhotos = ((NoteEdit) getActivity()).allNotePhotos;
+            allNotePhotos = ((NoteEdit) getActivity()).getPhotos();
             currentPhoto = allNotePhotos.get(position);
             adapter = ((NoteEdit) getActivity()).scrollAdapter;
             // initialize layout
@@ -239,8 +236,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setText("Enter Security Word to Unlock " + (isAppLocked ? "App" : "Note"));
             info.setGravity(Gravity.CENTER);
         } else if (message == 6) {
-            User currentUser = RealmSingleton.getUser(getContext());
-            allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+            User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
+            allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
             if (allBackups.size() <= 50) {
                 ((SettingsScreen) getActivity()).upLoadData();
@@ -258,9 +255,9 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
 
-            User currentUser = RealmSingleton.getUser(getContext());
+            User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
             // recyclerview
-            allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+            allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
             info.setText("Select file\n\nLoading...");
             backupRecyclerview = view.findViewById(R.id.backup_recyclerview);
             backupRecyclerview.setVisibility(View.VISIBLE);
@@ -271,22 +268,22 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
             backupFiles.listAll()
                     .addOnSuccessListener(listResult -> {
-                        realm.beginTransaction();
-                        realm.where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
-                        realm.commitTransaction();
+                        RealmSingleton.getInstance(getContext()).beginTransaction();
+                        RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
+                        RealmSingleton.getInstance(getContext()).commitTransaction();
                         for (StorageReference item : listResult.getItems()) {
-                            realm.beginTransaction();
-                            realm.insert(new Backup(currentUser.getUserId(), item.getName(), addDate(item.getName()), 0));
-                            realm.commitTransaction();
+                            RealmSingleton.getInstance(getContext()).beginTransaction();
+                            RealmSingleton.getInstance(getContext()).insert(new Backup(currentUser.getUserId(), item.getName(), addDate(item.getName()), 0));
+                            RealmSingleton.getInstance(getContext()).commitTransaction();
                         }
-                        allBackups = realm.where(Backup.class).equalTo("userId", currentUser.getUserId())
+                        allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId())
                                 .sort("upLoadTime", Sort.DESCENDING).findAll();
 
                         if (allBackups.size() == 0)
                             info.setText("No files to sync");
                         else {
                             info.setVisibility(View.GONE);
-                            backupAdapter = new backup_recyclerview(allBackups, realm, getActivity(), getContext());
+                            backupAdapter = new backup_recyclerview(allBackups, getActivity(), getContext());
                             backupRecyclerview.setAdapter(backupAdapter);
                         }
                     })
@@ -416,19 +413,19 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 if (fileDelete.exists())
                     fileDelete.delete();
                 // delete from database
-                realm.beginTransaction();
-                ((NoteEdit) getActivity()).allNotePhotos.get(position).deleteFromRealm();
-                realm.commitTransaction();
+                RealmSingleton.getInstance(getContext()).beginTransaction();
+                ((NoteEdit) getActivity()).getPhotos().get(position).deleteFromRealm();
+                RealmSingleton.getInstance(getContext()).commitTransaction();
                 adapter.notifyDataSetChanged();
                 Helper.showMessage(getActivity(), "Delete Status", "Photo has been deleted",
                         MotionToast.TOAST_SUCCESS);
             } else if (message == 8) {
                 FirebaseAuth.getInstance().signOut();
                 User currentUser = RealmHelper.getUser(getContext(), "");
-                realm.beginTransaction();
+                RealmSingleton.getInstance(getContext()).beginTransaction();
                 currentUser.setEmail("");
                 currentUser.setProUser(false);
-                realm.commitTransaction();
+                RealmSingleton.getInstance(getContext()).commitTransaction();
                 ((SettingsScreen) getActivity()).restart();
             } else if (message == 9)
                 ((NoteEdit) getActivity()).removeFormatting();
@@ -488,11 +485,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Dark)
+        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
             return R.style.BaseBottomSheetDialogLight;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Gray)
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             return R.style.BaseBottomSheetDialog;
-        else if (RealmSingleton.getUser(getContext()).getScreenMode() == User.Mode.Light) {
+        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
         }
         return 0;
     }
