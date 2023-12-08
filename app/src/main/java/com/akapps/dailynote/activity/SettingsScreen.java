@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +16,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +46,7 @@ import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
@@ -116,7 +119,7 @@ public class SettingsScreen extends AppCompatActivity {
     private SwitchCompat showPreviewNoteInfo;
     private SwitchCompat openFoldersOnStart;
     private SwitchCompat showFolderNotes;
-    private SwitchCompat modeSetting;
+    private MaterialButtonToggleGroup themeToggle;
     private SwitchCompat sublistMode;
     private SwitchCompat emptyNoteMode;
     private SwitchCompat fabButtonSizeMode;
@@ -134,11 +137,15 @@ public class SettingsScreen extends AppCompatActivity {
     private MaterialButton logIn;
     private MaterialButton sync;
     private MaterialButton upload;
+    private MaterialButton darkMode;
+    private MaterialButton grayMode;
+    private MaterialButton lightMode;
     private TextView accountInfo;
     private TextView lastUploadDate;
     private Dialog progressDialog;
     private ImageView spaceOne;
     private ImageView spaceTwo;
+    private MaterialCardView themeToggleLayout;
     private MaterialCardView grid;
     private MaterialCardView row;
     private MaterialCardView staggered;
@@ -149,6 +156,7 @@ public class SettingsScreen extends AppCompatActivity {
     private MaterialCardView listTypeLayout;
     private MaterialCardView folderSettingsLayout;
     private MaterialCardView noteSettingLayout;
+    private MaterialCardView checklistSettingLayout;
     private MaterialCardView appSettingsLayout;
     private MaterialCardView fabSizeLayout;
     private MaterialCardView animationLayout;
@@ -224,7 +232,11 @@ public class SettingsScreen extends AppCompatActivity {
         showPreviewNoteInfo = findViewById(R.id.show_info_switch);
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
         showFolderNotes = findViewById(R.id.show_folder_switch);
-        modeSetting = findViewById(R.id.mode_setting);
+        themeToggle = findViewById(R.id.theme_mode_toggle_group);
+        themeToggleLayout = findViewById(R.id.theme_mode_toggle_group_layout);
+        darkMode = findViewById(R.id.dark_mode);
+        grayMode = findViewById(R.id.gray_mode);
+        lightMode = findViewById(R.id.light_mode);
         sublistMode = findViewById(R.id.sublists_switch);
         emptyNoteMode = findViewById(R.id.empty_note_switch);
         fabButtonSizeMode = findViewById(R.id.fab_switch);
@@ -255,11 +267,12 @@ public class SettingsScreen extends AppCompatActivity {
         accountText = findViewById(R.id.account_settings);
         buyMeCoffeeLayout = findViewById(R.id.buy_me_coffee_layout);
         accountLayout = findViewById(R.id.account_layout);
-        backupRestoreLayout = findViewById(R.id.materialCardView);
-        notePreviewSettingsLayout = findViewById(R.id.materialCardView5);
+        backupRestoreLayout = findViewById(R.id.back_up_layout);
+        notePreviewSettingsLayout = findViewById(R.id.note_preview_settings_layout);
         listTypeLayout = findViewById(R.id.view_layout);
-        folderSettingsLayout = findViewById(R.id.materialCardView3);
-        noteSettingLayout = findViewById(R.id.note_setting_layout);
+        folderSettingsLayout = findViewById(R.id.folder_settings_layout);
+        noteSettingLayout = findViewById(R.id.checklist_setting_layout);
+        checklistSettingLayout = findViewById(R.id.note_setting_layout);
         appSettingsLayout = findViewById(R.id.materialCardView2);
         fabSizeLayout = findViewById(R.id.fab_setting);
         animationLayout = findViewById(R.id.animation_setting);
@@ -562,13 +575,23 @@ public class SettingsScreen extends AppCompatActivity {
             RealmSingleton.get(this).commitTransaction();
         });
 
-        modeSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            RealmSingleton.get(this).beginTransaction();
-            getUser().setScreenMode(isChecked  ? 1 : 2);
-            getUser().setModeSettings(isChecked);
-            RealmSingleton.get(this).commitTransaction();
-            checkModeSettings();
-            updateCurrentLayout();
+        themeToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            User.Mode currentMode = User.Mode.Dark;
+            if (isChecked) {
+                if(checkedId == R.id.gray_mode){
+                    currentMode = User.Mode.Gray;
+                }
+                else if(checkedId == R.id.light_mode){
+                    currentMode = User.Mode.Light;
+                }
+                RealmSingleton.get(SettingsScreen.this).beginTransaction();
+                getUser().setScreenMode(currentMode.getValue());
+                RealmSingleton.get(SettingsScreen.this).commitTransaction();
+                checkModeSettings();
+                updateCurrentLayout();
+                Helper.showMessage(SettingsScreen.this, "Updated Theme", "" +
+                        "New theme is " + currentMode, MotionToast.TOAST_SUCCESS);
+            }
         });
 
         sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -643,21 +666,40 @@ public class SettingsScreen extends AppCompatActivity {
     private void checkModeSettings() {
         User currentUser = getUser();
         if (currentUser.getScreenMode() == User.Mode.Dark) {
-            modeSetting.setText("Dark Mode  ");
-            modeSetting.setTextColor(context.getColor(R.color.ultra_white));
+            toggleCurrentTheme(currentUser, darkMode.getId());
             updateGapLayoutColor(context.getColor(R.color.gray));
             changeBackgroundColors(R.color.darker_mode, R.color.gray, 6);
             getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
         } else if (currentUser.getScreenMode() == User.Mode.Gray) {
-            modeSetting.setText("Gray Mode  ");
-            modeSetting.setTextColor(context.getColor(R.color.light_light_gray));
+            toggleCurrentTheme(currentUser, grayMode.getId());
             getWindow().setStatusBarColor(context.getColor(R.color.gray));
             updateGapLayoutColor(context.getColor(R.color.gray));
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
             changeBackgroundColors(R.color.light_gray, R.color.light_gray, 0);
         } else if (currentUser.getScreenMode() == User.Mode.Light) {
+            toggleCurrentTheme(currentUser, lightMode.getId());
+            updateGapLayoutColor(context.getColor(R.color.ultra_white));
+            changeBackgroundColors(R.color.white, R.color.white, 6);
+            getWindow().setStatusBarColor(context.getColor(R.color.ultra_white));
+            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.ultra_white));
+        }
+    }
 
+    private void toggleCurrentTheme(User currentUser, int toToggle){
+        themeToggle.check(toToggle);
+        if (currentUser.getScreenMode() == User.Mode.Dark) {
+            darkMode.setIconTint(ColorStateList.valueOf(getColor(R.color.ultra_white)));
+            grayMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
+            lightMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
+        } else if (currentUser.getScreenMode() == User.Mode.Gray) {
+            grayMode.setIconTint(ColorStateList.valueOf(getColor(R.color.ultra_white)));
+            darkMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
+            lightMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
+        } else if (currentUser.getScreenMode() == User.Mode.Light) {
+            lightMode.setIconTint(ColorStateList.valueOf(getColor(R.color.darker_mode)));
+            grayMode.setIconTint(ColorStateList.valueOf(getColor(R.color.light_light_gray)));
+            darkMode.setIconTint(ColorStateList.valueOf(getColor(R.color.light_light_gray)));
         }
     }
 
@@ -683,6 +725,9 @@ public class SettingsScreen extends AppCompatActivity {
         noteSettingLayout.setCardBackgroundColor(context.getColor(color));
         noteSettingLayout.setStrokeColor(context.getColor(strokeColor));
         noteSettingLayout.setStrokeWidth(width);
+        checklistSettingLayout.setCardBackgroundColor(context.getColor(color));
+        checklistSettingLayout.setStrokeColor(context.getColor(strokeColor));
+        checklistSettingLayout.setStrokeWidth(width);
         appSettingsLayout.setCardBackgroundColor(context.getColor(color));
         appSettingsLayout.setStrokeColor(context.getColor(strokeColor));
         appSettingsLayout.setStrokeWidth(width);
@@ -704,6 +749,9 @@ public class SettingsScreen extends AppCompatActivity {
         animationLayout.setCardBackgroundColor(context.getColor(color));
         animationLayout.setStrokeColor(context.getColor(strokeColor));
         animationLayout.setStrokeWidth(width);
+        themeToggleLayout.setCardBackgroundColor(context.getColor(color));
+        themeToggleLayout.setStrokeColor(context.getColor(strokeColor));
+        themeToggleLayout.setStrokeWidth(width);
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
             grid.setCardBackgroundColor(context.getColor(color));
@@ -715,6 +763,7 @@ public class SettingsScreen extends AppCompatActivity {
             row.setStrokeWidth(width);
             staggered.setStrokeColor(context.getColor(strokeColor));
             staggered.setStrokeWidth(width);
+            about.setTextColor(context.getColor(R.color.ultra_white));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
             color = R.color.gray;
             grid.setCardBackgroundColor(context.getColor(color));
@@ -723,6 +772,7 @@ public class SettingsScreen extends AppCompatActivity {
             grid.setStrokeWidth(width);
             row.setStrokeWidth(width);
             staggered.setStrokeWidth(width);
+            about.setTextColor(context.getColor(R.color.ultra_white));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
@@ -750,7 +800,6 @@ public class SettingsScreen extends AppCompatActivity {
         findViewById(R.id.gap_seventeen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_eighteen).setBackgroundColor(gapColor);
         findViewById(R.id.gap_nineteen).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_twenty).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings() {
@@ -759,7 +808,12 @@ public class SettingsScreen extends AppCompatActivity {
         showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
-        modeSetting.setChecked(currentUser.isModeSettings());
+        int getSelectTheme = R.id.dark_mode;
+        if(currentUser.getScreenMode() == User.Mode.Gray)
+            getSelectTheme = R.id.gray_mode;
+        else if(currentUser.getScreenMode() == User.Mode.Light)
+            getSelectTheme = R.id.light_mode;
+        themeToggle.check(getSelectTheme);
         sublistMode.setChecked(currentUser.isEnableSublists());
         emptyNoteMode.setChecked(currentUser.isEnableEmptyNote());
         fabButtonSizeMode.setChecked(currentUser.isIncreaseFabSize());

@@ -88,7 +88,6 @@ public class notes extends Fragment {
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
     private int lightColor;
-    private int populatedNotesSize;
 
     // dialog
     private boolean isNotesFiltered;
@@ -758,7 +757,6 @@ public class notes extends Fragment {
         adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes : allNotes, context, getActivity(),
                 notes.this, getUser().isShowPreview(), getUser().isShowPreviewNoteInfo());
         recyclerViewNotes.setAdapter(adapterNotes);
-        populatedNotesSize = isNotesFiltered ? filteredNotes.size() : allNotes.size();
     }
 
     private void closeFilter() {
@@ -1014,10 +1012,6 @@ public class notes extends Fragment {
                 .equalTo("archived", false)
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
-    }
-
-    public int getPopulatedNoteSize(){
-        return populatedNotesSize;
     }
 
     private void isListEmpty(int size, boolean isResult) {

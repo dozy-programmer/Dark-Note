@@ -38,8 +38,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.MyViewHolder> {
@@ -525,7 +523,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     @Override
     public int getItemCount() {
-        return ((notes) noteFragment).getPopulatedNoteSize();
+        return allNotes.size();
     }
 
     // Checks to see if note is locked, if it is then user is sent to lock screen activity

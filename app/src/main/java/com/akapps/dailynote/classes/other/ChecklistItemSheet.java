@@ -431,8 +431,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                         }
                     }
                 }
-            } else if (isAdding)
-                ((NoteEdit) getActivity()).addCheckList(itemName.getText().toString(), selectedPlace);
+            } else if (isAdding) {
+                if(isSubChecklist)
+                    ((NoteEdit) getActivity()).addSubCheckList(checkListItem, itemName.getText().toString());
+                else
+                    ((NoteEdit) getActivity()).addCheckList(itemName.getText().toString(), selectedPlace);
+            }
             else {
                 if (isSubChecklist)
                     updateItem(currentSubItem, itemName.getText().toString());
