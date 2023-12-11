@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,8 +17,8 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -80,15 +79,15 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
         realm = RealmSingleton.getInstance(getContext());
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
+            emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
             emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             emailInput.setTextColor(getContext().getColor(R.color.light_light_gray));
-            passwordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
+            passwordLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
             passwordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
             passwordInput.setTextColor(getContext().getColor(R.color.light_light_gray));
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
         else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
@@ -217,30 +216,14 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    dialog = (BottomSheetDialog) getDialog();
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        dialog = (BottomSheetDialog) getDialog();
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

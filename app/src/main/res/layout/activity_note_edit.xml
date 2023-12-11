@@ -94,7 +94,7 @@
                                 android:backgroundTint="@android:color/transparent"
                                 android:hint="Search inside note"
                                 android:maxLines="1"
-                                android:textColor="@color/ultra_white"
+                                android:textColor="@color/white"
                                 android:textColorHint="@color/light_gray"
                                 android:visibility="gone"></EditText>
 
@@ -237,7 +237,7 @@
                 android:hint="Title"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="-10dp"
-                android:textColor="@color/ultra_white"
+                android:textColor="@color/white"
                 android:textColorHint="@color/light_gray"
                 android:textCursorDrawable="@drawable/cursor"
                 android:textSize="26sp"
@@ -303,7 +303,7 @@
                     android:layout_marginBottom="5dp"
                     android:gravity="left"
                     android:text="Folder:"
-                    android:textColor="@color/orange"
+                    android:textColor="@color/azure"
                     android:textSize="15sp"
                     android:visibility="gone"></TextView>
 
@@ -347,7 +347,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:gravity="top|start"
                 android:hint="Type something..."
-                android:textColor="@color/ultra_white"
+                android:textColor="@color/white"
                 android:textColorHint="@color/light_gray"
                 android:textSize="20sp"
                 android:visibility="gone"
@@ -437,7 +437,7 @@
                         android:layout_marginTop="20dp"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="Let me do it for you"
-                        android:textColor="@color/ultra_white"
+                        android:textColor="@color/white"
                         android:textSize="18sp" />
 
                     <TextView

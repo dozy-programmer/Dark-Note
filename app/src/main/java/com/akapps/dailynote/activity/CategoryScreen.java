@@ -35,7 +35,6 @@ import com.akapps.dailynote.recyclerview.categories_recyclerview;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
@@ -141,8 +140,8 @@ public class CategoryScreen extends AppCompatActivity {
 
 
         if (screenMode == User.Mode.Dark) {
-            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
-            getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
+            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.black));
+            getWindow().setStatusBarColor(context.getColor(R.color.black));
         } else if (screenMode == User.Mode.Gray)
             ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
         else if (screenMode == User.Mode.Light) {
@@ -253,7 +252,7 @@ public class CategoryScreen extends AppCompatActivity {
                 noCategory.setTextColor(getColor(R.color.chetwode_blue));
                 unpinned.setTextColor(getColor(R.color.chardonnay));
                 unpinned.setVisibility(View.VISIBLE);
-                archived.setTextColor(getColor(R.color.orange));
+                archived.setTextColor(getColor(R.color.azure));
                 archived.setText("Pin");
                 archived.setCompoundDrawables(null, null, null, null);
 
@@ -264,28 +263,28 @@ public class CategoryScreen extends AppCompatActivity {
                 int colorOne = R.color.gray;
                 int colorTwo = R.color.blue;
                 int colorThree = R.color.golden_rod;
-                int colorFour = R.color.ultra_white;
+                int colorFour = R.color.white;
 
                 if (screenMode == User.Mode.Gray) {
                     colorOne = R.color.light_gray_2;
-                    colorTwo = R.color.ultra_white;
+                    colorTwo = R.color.white;
                     colorThree = R.color.gray;
-                    colorFour = R.color.ultra_white;
+                    colorFour = R.color.white;
                 } else if (screenMode == User.Mode.Light) {
-                    colorOne = 0;
-                    colorTwo = 0;
-                    colorThree = 0;
-                    colorFour = 0;
+                    colorOne = R.color.light_gray_2;
+                    colorTwo = R.color.white;
+                    colorThree = R.color.gray;
+                    colorFour = R.color.white;
                 }
 
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
-                        true, colorOne, R.color.ultra_white);
+                        true, colorOne, R.color.white);
                 Helper.addNotificationNumber(this, showAllNotes, allNotesSize, 0,
-                        true, colorOne, R.color.ultra_white);
+                        true, colorOne, R.color.white);
                 Helper.addNotificationNumber(this, archived, archivedAllNotes.size(), 0,
-                        true, colorOne, R.color.ultra_white);
+                        true, colorOne, R.color.white);
                 Helper.addNotificationNumber(this, trash, trashAllNotes.size(), 0,
-                        true, colorOne, R.color.ultra_white);
+                        true, colorOne, R.color.white);
                 // buttons
                 Helper.addNotificationNumber(this, locked, lockedAllNotes.size(), 75,
                         true, R.color.transparent, colorTwo);
@@ -297,22 +296,22 @@ public class CategoryScreen extends AppCompatActivity {
                         true, R.color.transparent, colorFour);
 
                 if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-                    pinned.setBackgroundColor(getColor(R.color.darker_mode));
+                    pinned.setBackgroundColor(getColor(R.color.black));
                     pinned.setStrokeColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
                     pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
                     pinned.setIconTintResource(R.color.golden_rod);
                     pinned.setTextColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
                     pinned.setStrokeWidth(5);
 
-                    reminder.setBackgroundColor(getColor(R.color.darker_mode));
+                    reminder.setBackgroundColor(getColor(R.color.black));
                     reminder.setStrokeColor(ColorStateList.valueOf(getColor(R.color.green)));
                     reminder.setStrokeWidth(5);
 
-                    photos.setBackgroundColor(getColor(R.color.darker_mode));
+                    photos.setBackgroundColor(getColor(R.color.black));
                     photos.setStrokeColor(ColorStateList.valueOf(getColor(R.color.light_gray_2)));
                     photos.setStrokeWidth(5);
 
-                    locked.setBackgroundColor(getColor(R.color.darker_mode));
+                    locked.setBackgroundColor(getColor(R.color.black));
                     locked.setStrokeColor(ColorStateList.valueOf(getColor(R.color.blue)));
                     locked.setTextColor(ColorStateList.valueOf(getColor(R.color.blue)));
                     locked.setIcon(getDrawable(R.drawable.lock_icon));

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -24,9 +23,9 @@ import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.recyclerview.expenses_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.bottom_sheet_budget, container, false);
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
         else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
         else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
@@ -314,13 +313,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
@@ -332,19 +325,10 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    dialog = (BottomSheetDialog) getDialog();
-                    dialog.setCancelable(false);
-                    dialog.setCanceledOnTouchOutside(true);
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        dialog = (BottomSheetDialog) getDialog();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(true);
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

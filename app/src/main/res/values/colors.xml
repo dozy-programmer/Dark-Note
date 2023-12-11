@@ -3,28 +3,28 @@
     <color name="darker_blue">#008ae6</color>
     <color name="blue">#619eea</color>
     <color name="colorPrimaryDark">#0099ff</color>
-    <color name="red">#cc0000</color>
     <color name="green">#0AFF19</color>
     <color name="main">#435c6c</color>
-    <color name="ultra_white">#ffffff</color>
-    <color name="white">#D9D9D3</color>
-    <color name="black">#000000</color>
-    <color name="light_gray">#54545f</color>
     <color name="light_gray_2">#60606c</color>
-    <color name="gray">#3c3c44</color>
+    <color name="light_gray_300">#cccccc</color>
     <color name="pressed_blue">#0099ff</color>
-    <color name="orange_red">#e65c00</color>
-    <color name="orange">#b0c4de</color>
-    <color name="orange_dark">#ff8533</color>
-    <color name="money_green">#85bb65</color>
     <color name="light_light_gray">#adadad</color>
-    <color name="semi_gray">#808080</color>
-    <color name="darker_mode">#000000</color>
-    <color name="dark_gold">#eebc1d</color>
+    <color name="semi_gray">#f4f6fc</color>
     <color name="not_too_dark_gray">#323334</color>
     <color name="transparent">#00000000</color>
 
-    <color name="gray_five">#C7CACC</color>
+    <color name="black">#000000</color>
+    <color name="gray">#3c3c44</color>
+    <color name="light_gray">#54545f</color>
+    <color name="azure">#b0c4de</color>
+    <color name="azure_100">#7a9cc7</color>
+    <color name="white">#ffffff</color>
+    <color name="white_100">#f2f3f4</color>
+    <color name="white_200">#e3e4e8</color>
+    <color name="orange">#e65c00</color>
+    <color name="money_green">#85bb65</color>
+    <color name="red">#cc0000</color>
+    <color name="gold">#eebc1d</color>
 
     <!-- Override TextInputLayout Box Stroke Color !-->
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/darker_blue</color>
@@ -101,7 +101,7 @@
     </array>
 
     <color name="havelock_blue">#4792D8</color>
-    <color name="gold">#FFDF00</color>
+    <color name="gold_100">#FFDF00</color>
     <color name="cornflower_blue">#619eea</color>
     <color name="golden_rod">#fcd176</color>
     <color name="mint_tulip">#bdf2e6</color>

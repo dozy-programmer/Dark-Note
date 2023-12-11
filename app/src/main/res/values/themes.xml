@@ -8,11 +8,178 @@
         <item name="colorSecondaryVariant">@color/blue</item>
         <item name="colorOnSecondary">@color/gray</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- this includes titles !-->
+        <item name="primaryTextColor">@color/black</item>
+        <!-- this includes body, subtitle, subHeadings !-->
+        <item name="secondaryTextColor">@color/azure</item>
+        <!-- this includes body !-->
+        <item name="tertiaryTextColor">@color/white</item>
+
+        <!-- actual background color !-->
+        <item name="primaryBackgroundColor">@color/white</item>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <item name="secondaryBackgroundColor">@color/white_100</item>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <item name="tertiaryBackgroundColor">@color/white_200</item>
+
+        <!-- 99% if icons should be the same !-->
+        <item name="primaryIconTintColor">@color/black</item>
+        <!-- for second most used icon color !-->
+        <item name="secondaryIconTintColor">@color/orange</item>
+        <!-- for third most used icon color !-->
+        <item name="tertiaryIconTintColor">@color/red</item>
+
+        <!-- for add note/checklist, and folder button !-->
+        <item name="primaryButtonColor">@color/azure</item>
+        <!-- for audio note !-->
+        <item name="secondaryButtonColor">@color/golden_rod</item>
+        <!-- for close button !-->
+        <item name="tertiaryButtonColor">@color/red</item>
+    </style>
+
+    <style name="Theme.DailyDay.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/not_too_dark_gray</item>
+        <item name="colorPrimaryVariant">@color/gray</item>
+        <item name="colorOnPrimary">@color/gray</item>
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondaryVariant">@color/blue</item>
+        <item name="colorOnSecondary">@color/gray</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- this includes titles !-->
+        <item name="primaryTextColor">@color/black</item>
+        <!-- this includes subtitle !-->
+        <item name="secondaryTextColor">@color/azure_100</item>
+        <!-- this includes body, text buttons !-->
+        <item name="tertiaryTextColor">@color/black</item>
+
+        <!-- actual background color !-->
+        <item name="primaryBackgroundColor">@color/white</item>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <item name="secondaryBackgroundColor">@color/white_100</item>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <item name="tertiaryBackgroundColor">@color/white_200</item>
+
+        <!-- 99% if icons should be the same !-->
+        <item name="primaryIconTintColor">@color/black</item>
+        <!-- for second most used icon color !-->
+        <item name="secondaryIconTintColor">@color/orange</item>
+        <!-- for third most used icon color !-->
+        <item name="tertiaryIconTintColor">@color/red</item>
+
+        <!-- for add note/checklist, and folder button !-->
+        <item name="primaryButtonColor">@color/azure_100</item>
+        <!-- for audio note !-->
+        <item name="secondaryButtonColor">@color/golden_rod</item>
+        <!-- for close button !-->
+        <item name="tertiaryButtonColor">@color/red</item>
+
+        <!-- for layout selection !-->
+        <item name="primarySelectionColor">@color/azure_100</item>
+
+        <!-- for theme selected !-->
+        <item name="primarySelectedIconColor">@color/black</item>
+        <!-- for theme not selected !-->
+        <item name="primaryUnSelectedIconColor">@color/light_light_gray</item>
+
+    </style>
+
+    <style name="Theme.DailyDay.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/not_too_dark_gray</item>
+        <item name="colorPrimaryVariant">@color/gray</item>
+        <item name="colorOnPrimary">@color/gray</item>
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondaryVariant">@color/blue</item>
+        <item name="colorOnSecondary">@color/gray</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- this includes titles !-->
+        <item name="primaryTextColor">@color/black</item>
+        <!-- this includes subtitle !-->
+        <item name="secondaryTextColor">@color/azure_100</item>
+        <!-- this includes body, text buttons !-->
+        <item name="tertiaryTextColor">@color/black</item>
+
+        <!-- actual background color !-->
+        <item name="primaryBackgroundColor">@color/white</item>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <item name="secondaryBackgroundColor">@color/white_100</item>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <item name="tertiaryBackgroundColor">@color/white_200</item>
+
+        <!-- 99% if icons should be the same !-->
+        <item name="primaryIconTintColor">@color/black</item>
+        <!-- for second most used icon color !-->
+        <item name="secondaryIconTintColor">@color/orange</item>
+        <!-- for third most used icon color !-->
+        <item name="tertiaryIconTintColor">@color/red</item>
+
+        <!-- for add note/checklist, and folder button !-->
+        <item name="primaryButtonColor">@color/azure_100</item>
+        <!-- for audio note !-->
+        <item name="secondaryButtonColor">@color/golden_rod</item>
+        <!-- for close button !-->
+        <item name="tertiaryButtonColor">@color/red</item>
+
+        <!-- for layout selection !-->
+        <item name="primarySelectionColor">@color/azure_100</item>
+
+        <!-- for theme selected !-->
+        <item name="primarySelectedIconColor">@color/black</item>
+        <!-- for theme not selected !-->
+        <item name="primaryUnSelectedIconColor">@color/light_light_gray</item>
+    </style>
+
+    <style name="Theme.DailyDay.Gray" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/not_too_dark_gray</item>
+        <item name="colorPrimaryVariant">@color/gray</item>
+        <item name="colorOnPrimary">@color/gray</item>
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondaryVariant">@color/blue</item>
+        <item name="colorOnSecondary">@color/gray</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- this includes titles !-->
+        <item name="primaryTextColor">@color/black</item>
+        <!-- this includes subtitle !-->
+        <item name="secondaryTextColor">@color/azure_100</item>
+        <!-- this includes body, text buttons !-->
+        <item name="tertiaryTextColor">@color/black</item>
+
+        <!-- actual background color !-->
+        <item name="primaryBackgroundColor">@color/white</item>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <item name="secondaryBackgroundColor">@color/white_100</item>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <item name="tertiaryBackgroundColor">@color/white_200</item>
+
+        <!-- 99% if icons should be the same !-->
+        <item name="primaryIconTintColor">@color/black</item>
+        <!-- for second most used icon color !-->
+        <item name="secondaryIconTintColor">@color/orange</item>
+        <!-- for third most used icon color !-->
+        <item name="tertiaryIconTintColor">@color/red</item>
+
+        <!-- for add note/checklist, and folder button !-->
+        <item name="primaryButtonColor">@color/azure_100</item>
+        <!-- for audio note !-->
+        <item name="secondaryButtonColor">@color/golden_rod</item>
+        <!-- for close button !-->
+        <item name="tertiaryButtonColor">@color/red</item>
+
+        <!-- for layout selection !-->
+        <item name="primarySelectionColor">@color/azure_100</item>
+
+        <!-- for theme selected !-->
+        <item name="primarySelectedIconColor">@color/black</item>
+        <!-- for theme not selected !-->
+        <item name="primaryUnSelectedIconColor">@color/light_light_gray</item>
     </style>
 
     <style name="ColorPickerDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/dialog_corner</item>
-        <item name="android:textColor">@color/orange</item>
+        <item name="android:textColor">@color/azure</item>
         <item name="buttonBarPositiveButtonStyle">@style/ColorPickerButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/ColorPickerButton</item>
     </style>
@@ -20,20 +187,26 @@
     <style name="ColorPickerButton" parent="Theme.AppCompat">
         <item name="backgroundTint">@color/gray</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="android:textColor">@color/ultra_white</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+    <style name="BottomSheetGray" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
         <item name="android:backgroundTint">@color/gray</item>
     </style>
-    <style name="BottomSheetLight" parent="@style/Widget.Design.BottomSheet.Modal">
+
+    <style name="BottomSheetDark" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">@color/darker_mode</item>
+        <item name="android:backgroundTint">@color/black</item>
     </style>
 
-    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    <style name="BottomSheetLight" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
+        <item name="android:backgroundTint">@color/white</item>
+    </style>
+
+    <style name="BaseBottomSheetDialogGray" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetGray</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -46,16 +219,17 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="ThemeOverlay.MySwitchCompat" parent="">
-        <item name="colorControlActivated">@color/orange</item>
-        <item name="colorSwitchThumbNormal">@color/ultra_white</item>
-        <item name="android:colorForeground">#42221f1f</item>
+    <style name="BaseBottomSheetDialogDark" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetDark</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="ThemeOverlay.Mode" parent="">
-        <item name="colorControlActivated">@color/ultra_white</item>
-        <item name="colorSwitchThumbNormal">@color/light_light_gray</item>
-        <item name="android:colorForeground">@color/light_light_gray</item>
+    <style name="ThemeOverlay.SwitchTheme" parent="">
+        <item name="colorControlActivated">?primaryButtonColor</item>
+        <item name="colorSwitchThumbNormal">?primaryBackgroundColor</item>
+        <item name="android:colorForeground">#42221f1f</item>
     </style>
 
     <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar" >
@@ -63,7 +237,7 @@
         <item name="searchHintIcon">@null</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorHint">@color/greyish</item>
-        <item name="android:tint">@color/orange_red</item>
+        <item name="android:tint">@color/orange</item>
     </style>
 
     <style name="circular">
@@ -74,7 +248,7 @@
     <style name="slider" parent="Widget.AppCompat.SeekBar">
         <item name="android:progressBackgroundTint">@color/light_light_gray</item>
         <item name="android:progressTint">@color/light_gray</item>
-        <item name="android:thumbTint">@color/ultra_white</item>
+        <item name="android:thumbTint">@color/white</item>
     </style>
 
 </resources>

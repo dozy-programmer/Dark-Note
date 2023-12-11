@@ -19,7 +19,7 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
-import io.realm.Realm;
+
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
@@ -68,7 +68,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         // retrieves current photo object
         Folder currentFolder = allCategories.get(position);
 
-        holder.background.setBackgroundColor(isLightMode ? context.getColor(R.color.darker_mode) : context.getColor(R.color.gray));
+        holder.background.setBackgroundColor(isLightMode ? context.getColor(R.color.black) : context.getColor(R.color.gray));
 
         int numberOfNotesInCategory =
                 RealmSingleton.getInstance(context).where(Note.class).equalTo("archived", false)
@@ -78,12 +78,12 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
 
         holder.item_category.setText(currentFolder.getName());
         Helper.addNotificationNumber(activity, holder.folder_icon, numberOfNotesInCategory,
-                20, false, R.color.blue, R.color.ultra_white);
+                20, false, R.color.blue, R.color.white);
 
         if(currentFolder.getColor()!=0)
             holder.folder_icon.setColorFilter(currentFolder.getColor());
         else
-            holder.folder_icon.setColorFilter(context.getColor(R.color.orange));
+            holder.folder_icon.setColorFilter(context.getColor(R.color.azure));
 
         holder.view.setOnClickListener(v -> {
             if(((CategoryScreen)activity).isEditing) {

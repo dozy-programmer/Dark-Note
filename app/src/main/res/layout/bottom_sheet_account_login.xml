@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbarThumbVertical="@color/orange_red"
+    android:scrollbarThumbVertical="@color/orange"
     android:scrollbarSize="2dp"
     android:scrollbars="vertical"
     android:background="@android:color/transparent">
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:paddingVertical="10dp"
             android:text="Sign up"
-            android:textColor="@color/orange_red"
+            android:textColor="@color/orange"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -15,7 +15,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +35,7 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -43,7 +43,6 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -182,12 +181,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         });
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
-            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
-            itemName.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
-            itemNameLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
-            itemName.setTextColor(getContext().getColor(R.color.ultra_white));
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
+            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
+            itemName.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
+            itemNameLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
+            itemName.setTextColor(getContext().getColor(R.color.white));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
         else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
@@ -611,13 +610,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
@@ -641,17 +634,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

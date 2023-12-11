@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gray">
+    android:background="?primaryBackgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:text="Item"
             android:gravity="center"
             android:textSize="17sp"
-            android:textColor="@color/ultra_white">
+            android:textColor="?primaryTextColor">
         </TextView>
 
     </LinearLayout>

@@ -1,5 +1,8 @@
 package com.akapps.dailynote.activity;
 
+import static com.akapps.dailynote.classes.helpers.UiHelper.getColorFromTheme;
+import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
+
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
@@ -15,8 +18,6 @@ import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -172,13 +173,13 @@ public class SettingsScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_screen);
         if (!AppData.isDisableAnimation)
             overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
         context = this;
-
         mAuth = FirebaseAuth.getInstance();
         all_Notes = getIntent().getIntExtra("size", 0);
         boolean backingUp = getIntent().getBooleanExtra("backup", false);
@@ -295,7 +296,7 @@ public class SettingsScreen extends AppCompatActivity {
         Helper.moveBee(findViewById(R.id.version_icon), 300f);
         if(AppData.isDisableAnimation)
             coffeeAnimation.pauseAnimation();
-        logIn.setBackgroundColor(context.getColor(R.color.darker_blue));
+        logIn.setBackgroundColor(context.getColor(R.color.azure));
 
         User currentUser = getUser();
 
@@ -314,8 +315,8 @@ public class SettingsScreen extends AppCompatActivity {
                     logIn.setText("Log Out");
                     syncLayout.setVisibility(View.VISIBLE);
                     logIn.setBackgroundColor(context.getColor(R.color.red));
-                    sync.setBackgroundColor(context.getColor(R.color.darker_blue));
-                    upload.setBackgroundColor(context.getColor(R.color.gold));
+                    sync.setBackgroundColor(context.getColor(R.color.azure));
+                    upload.setBackgroundColor(context.getColor(R.color.gold_100));
                     upload.setTextColor(context.getColor(R.color.gray));
                     accountInfo.setVisibility(View.VISIBLE);
                     accountInfo.setText(mAuth.getCurrentUser().getEmail());
@@ -352,14 +353,6 @@ public class SettingsScreen extends AppCompatActivity {
         // toolbar
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-
-        int modeColor = R.color.darker_mode;
-
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
-            modeColor = R.color.gray;
-        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
-        }
 
         signUp.setOnClickListener(view -> {
             if (getUser().isUltimateUser()) {
@@ -459,25 +452,18 @@ public class SettingsScreen extends AppCompatActivity {
 
         appSettings.setOnClickListener(v -> openAppInSettings());
 
-        int finalModeColor = modeColor;
         row.setOnClickListener(v -> {
             RealmSingleton.get(this).beginTransaction();
             getUser().setLayoutSelected("row");
             RealmSingleton.get(this).commitTransaction();
-            int otherColor = context.getColor(finalModeColor);
-            row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            grid.setCardBackgroundColor(otherColor);
-            staggered.setCardBackgroundColor(otherColor);
+            toggleLayoutSelected();
         });
 
         grid.setOnClickListener(v -> {
             RealmSingleton.get(this).beginTransaction();
             getUser().setLayoutSelected("grid");
             RealmSingleton.get(this).commitTransaction();
-            int otherColor = context.getColor(finalModeColor);
-            grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            row.setCardBackgroundColor(otherColor);
-            staggered.setCardBackgroundColor(otherColor);
+            toggleLayoutSelected();
         });
 
         staggered.setOnClickListener(v -> {
@@ -485,10 +471,7 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmSingleton.get(this).beginTransaction();
                 getUser().setLayoutSelected("stag");
                 RealmSingleton.get(this).commitTransaction();
-                int otherColor = context.getColor(finalModeColor);
-                staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-                grid.setCardBackgroundColor(otherColor);
-                row.setCardBackgroundColor(otherColor);
+                toggleLayoutSelected();
             }
         });
 
@@ -583,14 +566,13 @@ public class SettingsScreen extends AppCompatActivity {
                 }
                 else if(checkedId == R.id.light_mode){
                     currentMode = User.Mode.Light;
+                    Helper.showMessage(SettingsScreen.this, "Light Mode", "" +
+                            "This theme is in progress, I would recommend not to use", MotionToast.TOAST_SUCCESS);
                 }
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 getUser().setScreenMode(currentMode.getValue());
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
-                checkModeSettings();
-                updateCurrentLayout();
-                Helper.showMessage(SettingsScreen.this, "Updated Theme", "" +
-                        "New theme is " + currentMode, MotionToast.TOAST_SUCCESS);
+                updateTheme();
             }
         });
 
@@ -663,43 +645,48 @@ public class SettingsScreen extends AppCompatActivity {
         initializeSettings();
     }
 
-    private void checkModeSettings() {
-        User currentUser = getUser();
-        if (currentUser.getScreenMode() == User.Mode.Dark) {
-            toggleCurrentTheme(currentUser, darkMode.getId());
-            updateGapLayoutColor(context.getColor(R.color.gray));
-            changeBackgroundColors(R.color.darker_mode, R.color.gray, 6);
-            getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
-            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.darker_mode));
-        } else if (currentUser.getScreenMode() == User.Mode.Gray) {
-            toggleCurrentTheme(currentUser, grayMode.getId());
-            getWindow().setStatusBarColor(context.getColor(R.color.gray));
-            updateGapLayoutColor(context.getColor(R.color.gray));
-            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
-            changeBackgroundColors(R.color.light_gray, R.color.light_gray, 0);
-        } else if (currentUser.getScreenMode() == User.Mode.Light) {
-            toggleCurrentTheme(currentUser, lightMode.getId());
-            updateGapLayoutColor(context.getColor(R.color.ultra_white));
-            changeBackgroundColors(R.color.white, R.color.white, 6);
-            getWindow().setStatusBarColor(context.getColor(R.color.ultra_white));
-            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.ultra_white));
+    private void updateTheme() {
+        getWindow().setStatusBarColor(getColorFromTheme(this, R.attr.secondaryBackgroundColor));
+        User.Mode currentTheme = getUser().getScreenMode();
+        if (currentTheme == User.Mode.Dark) {
+            toggleCurrentTheme(currentTheme, darkMode.getId());
+        } else if (currentTheme == User.Mode.Gray) {
+            toggleCurrentTheme(currentTheme, grayMode.getId());
+        } else if (currentTheme == User.Mode.Light) {
+            toggleCurrentTheme(currentTheme, lightMode.getId());
         }
+        toggleLayoutSelected();
     }
 
-    private void toggleCurrentTheme(User currentUser, int toToggle){
+    private void toggleLayoutSelected() {
+        String selectedLayout = getUser().getLayoutSelected();
+        int unSelectedBackgroundColor = getColorFromTheme(this, R.attr.tertiaryBackgroundColor);
+        int selectedBackgroundColor = getColorFromTheme(this, R.attr.primarySelectionColor);
+        row.setCardBackgroundColor(unSelectedBackgroundColor);
+        grid.setCardBackgroundColor(unSelectedBackgroundColor);
+        staggered.setCardBackgroundColor(unSelectedBackgroundColor);
+        if (selectedLayout.equals("row"))
+            row.setCardBackgroundColor(selectedBackgroundColor);
+        else if (selectedLayout.equals("grid"))
+            grid.setCardBackgroundColor(selectedBackgroundColor);
+        else
+            staggered.setCardBackgroundColor(selectedBackgroundColor);
+    }
+
+    private void toggleCurrentTheme(User.Mode currentTheme, int toToggle){
         themeToggle.check(toToggle);
-        if (currentUser.getScreenMode() == User.Mode.Dark) {
-            darkMode.setIconTint(ColorStateList.valueOf(getColor(R.color.ultra_white)));
-            grayMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
-            lightMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
-        } else if (currentUser.getScreenMode() == User.Mode.Gray) {
-            grayMode.setIconTint(ColorStateList.valueOf(getColor(R.color.ultra_white)));
-            darkMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
-            lightMode.setIconTint(ColorStateList.valueOf(getColor(R.color.gray)));
-        } else if (currentUser.getScreenMode() == User.Mode.Light) {
-            lightMode.setIconTint(ColorStateList.valueOf(getColor(R.color.darker_mode)));
-            grayMode.setIconTint(ColorStateList.valueOf(getColor(R.color.light_light_gray)));
-            darkMode.setIconTint(ColorStateList.valueOf(getColor(R.color.light_light_gray)));
+        if (currentTheme == User.Mode.Dark) {
+            darkMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primarySelectedIconColor)));
+            grayMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
+            lightMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
+        } else if (currentTheme == User.Mode.Gray) {
+            grayMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primarySelectedIconColor)));
+            darkMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
+            lightMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
+        } else if (currentTheme == User.Mode.Light) {
+            lightMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primarySelectedIconColor)));
+            grayMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
+            darkMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
         }
     }
 
@@ -763,7 +750,7 @@ public class SettingsScreen extends AppCompatActivity {
             row.setStrokeWidth(width);
             staggered.setStrokeColor(context.getColor(strokeColor));
             staggered.setStrokeWidth(width);
-            about.setTextColor(context.getColor(R.color.ultra_white));
+            about.setTextColor(context.getColor(R.color.white));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
             color = R.color.gray;
             grid.setCardBackgroundColor(context.getColor(color));
@@ -772,9 +759,15 @@ public class SettingsScreen extends AppCompatActivity {
             grid.setStrokeWidth(width);
             row.setStrokeWidth(width);
             staggered.setStrokeWidth(width);
-            about.setTextColor(context.getColor(R.color.ultra_white));
+            about.setTextColor(context.getColor(R.color.white));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
+            color = R.color.light_gray;
+            grid.setCardBackgroundColor(context.getColor(color));
+            row.setCardBackgroundColor(context.getColor(color));
+            staggered.setCardBackgroundColor(context.getColor(color));
+            grid.setStrokeWidth(0);
+            row.setStrokeWidth(0);
+            staggered.setStrokeWidth(0);
         }
     }
 
@@ -831,19 +824,7 @@ public class SettingsScreen extends AppCompatActivity {
             lockApp.setColorFilter(getColor(R.color.blue));
         } else
             lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
-        checkModeSettings();
-
-        updateCurrentLayout();
-    }
-
-    private void updateCurrentLayout() {
-        User currentUser = getUser();
-        if (currentUser.getLayoutSelected().equals("row"))
-            row.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-        else if (currentUser.getLayoutSelected().equals("grid"))
-            grid.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-        else
-            staggered.setCardBackgroundColor(context.getColor(R.color.darker_blue));
+        updateTheme();
     }
 
     public boolean isBackupPermissionEnabled(){
@@ -890,7 +871,7 @@ public class SettingsScreen extends AppCompatActivity {
         Helper.showMessage(this, "App un-Locked", "App has been " +
                 "un-locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
-        lockApp.setColorFilter(getColor(R.color.ultra_white));
+        lockApp.setColorFilter(getColor(R.color.white));
     }
 
     public void restart() {
@@ -1388,7 +1369,6 @@ public class SettingsScreen extends AppCompatActivity {
                 .addItem(new IconPowerMenuItem(null, "6"))
                 .addItem(new IconPowerMenuItem(null, "7"))
                 .addItem(new IconPowerMenuItem(null, "8"))
-                .setBackgroundColor(getColor(R.color.light_gray))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.SHOW_UP_CENTER)
                 .setWidth(300)
@@ -1402,7 +1382,6 @@ public class SettingsScreen extends AppCompatActivity {
     private void expandListMenu(List<IconPowerMenuItem> list, TextView textView) {
         linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
                 .addItemList(list)
-                .setBackgroundColor(getColor(R.color.light_gray))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.SHOW_UP_CENTER)
                 .setWidth(300)

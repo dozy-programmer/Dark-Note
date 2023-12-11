@@ -49,7 +49,7 @@
             android:background="@drawable/round_corner"
             android:paddingVertical="8dp"
             android:paddingLeft="5dp"
-            android:textColor="@color/ultra_white"/>
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 

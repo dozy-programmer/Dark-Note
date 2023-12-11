@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,10 +20,10 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -93,10 +92,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         itemName.requestFocusFromTouch();
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
-            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.ultra_white)));
-            itemName.setTextColor(getContext().getColor(R.color.ultra_white));
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
+            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
+            itemName.setTextColor(getContext().getColor(R.color.white));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray) {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
             delete.setBackgroundColor(getContext().getColor(R.color.light_gray));
@@ -107,12 +106,12 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         if (isAdding) {
             title.setText("Adding");
             delete.setVisibility(View.GONE);
-            folderColor.setCardBackgroundColor(getContext().getColor(R.color.orange));
+            folderColor.setCardBackgroundColor(getContext().getColor(R.color.azure));
         } else {
             title.setText("Editing");
             try {
                 itemName.setText(currentItem.getName());
-                folderColor.setCardBackgroundColor(currentItem.getColor() == 0 ? getContext().getColor(R.color.orange) : currentItem.getColor());
+                folderColor.setCardBackgroundColor(currentItem.getColor() == 0 ? getContext().getColor(R.color.azure) : currentItem.getColor());
                 itemName.setSelection(itemName.getText().toString().length());
                 delete.setVisibility(View.VISIBLE);
                 next.setVisibility(View.GONE);
@@ -147,7 +146,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     private void editColorDialog(Folder current) {
         int initialColor;
         if (current == null || current.getColor() == 0)
-            initialColor = getContext().getColor(R.color.orange_red);
+            initialColor = getContext().getColor(R.color.orange);
         else
             initialColor = current.getColor();
 
@@ -262,29 +261,14 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

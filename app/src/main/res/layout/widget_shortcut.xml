@@ -28,7 +28,7 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:src="@drawable/note_icon"
-            android:backgroundTint="@color/orange"
+            android:backgroundTint="@color/azure"
             android:background="@drawable/round_button"
             android:layout_gravity="center"
             android:layout_marginRight="5dp"/>
@@ -55,7 +55,7 @@
             android:layout_height="40dp"
             android:src="@drawable/checklist_icon"
             android:tint="@color/black"
-            android:backgroundTint="@color/orange"
+            android:backgroundTint="@color/azure"
             android:background="@drawable/round_button"
             android:layout_marginHorizontal="5dp"
             tools:ignore="UseAppTint">

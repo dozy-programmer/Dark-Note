@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:scrollbarSize="2dp"
-    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbarThumbVertical="@color/azure"
     android:scrollbars="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,7 +34,7 @@
             android:gravity="center"
             android:paddingVertical="10dp"
             android:text="Color"
-            android:textColor="@color/orange"
+            android:textColor="@color/azure"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +103,7 @@
                         android:gravity="left|center_vertical"
                         android:paddingHorizontal="20dp"
                         android:text="Title"
-                        android:textColor="@color/ultra_white"
+                        android:textColor="@color/white"
                         android:textSize="25sp" />
 
                     <ImageView
@@ -138,7 +138,7 @@
                         android:gravity="left|center_vertical"
                         android:paddingHorizontal="20dp"
                         android:text="Text Color"
-                        android:textColor="@color/ultra_white"
+                        android:textColor="@color/white"
                         android:textSize="25sp" />
 
                     <ImageView

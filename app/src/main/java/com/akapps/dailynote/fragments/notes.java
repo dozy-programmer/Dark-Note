@@ -192,9 +192,9 @@ public class notes extends Fragment {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
 
         if (getUser().getScreenMode() == User.Mode.Dark) {
-            lightColor = context.getColor(R.color.darker_mode);
+            lightColor = context.getColor(R.color.black);
             view.setBackgroundColor(lightColor);
-            getActivity().getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
+            getActivity().getWindow().setStatusBarColor(context.getColor(R.color.black));
         }
 
         // shows all realm notes (offline) aka notes and checklists
@@ -326,14 +326,14 @@ public class notes extends Fragment {
         View searchPlateView = searchEditText.findViewById(searchPlateId);
         if (searchPlateView != null) {
             if (getUser().getScreenMode() == User.Mode.Dark) {
-                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.darker_mode));
+                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.black));
                 int id = searchEditText.getContext()
                         .getResources()
                         .getIdentifier("android:id/search_src_text", null, null);
                 TextView textView = searchEditText.findViewById(id);
                 textView.setTextColor(getActivity().getColor(R.color.black));
-                ((EditText) searchEditText.findViewById(id)).setHintTextColor(context.getColor(R.color.ultra_white));
-                ((EditText) searchEditText.findViewById(id)).setTextColor(context.getColor(R.color.ultra_white));
+                ((EditText) searchEditText.findViewById(id)).setHintTextColor(context.getColor(R.color.white));
+                ((EditText) searchEditText.findViewById(id)).setTextColor(context.getColor(R.color.white));
             } else
                 searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray));
         }
@@ -799,7 +799,7 @@ public class notes extends Fragment {
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
 
-        searchEditText.setBackgroundColor(context.getColor(getUser().getScreenMode() == User.Mode.Dark ? R.color.darker_mode : R.color.gray));
+        searchEditText.setBackgroundColor(context.getColor(getUser().getScreenMode() == User.Mode.Dark ? R.color.black : R.color.gray));
 
         addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
@@ -847,7 +847,7 @@ public class notes extends Fragment {
         search.setImageDrawable(context.getDrawable(R.drawable.delete_icon));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.select_all_icon));
         settingsIcon.setImageDrawable(context.getDrawable(R.drawable.export_icon));
-        settingsIcon.setColorFilter(context.getColor(R.color.ultra_white));
+        settingsIcon.setColorFilter(context.getColor(R.color.white));
         deletingMultipleNotes = true;
     }
 

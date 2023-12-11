@@ -21,7 +21,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
@@ -72,7 +71,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         Backup currentBackup = allBackups.get(position);
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-            holder.background.setCardBackgroundColor(context.getColor(R.color.darker_mode));
+            holder.background.setCardBackgroundColor(context.getColor(R.color.black));
             holder.background.setStrokeColor(context.getColor(R.color.light_gray));
             holder.background.setStrokeWidth(5);
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)

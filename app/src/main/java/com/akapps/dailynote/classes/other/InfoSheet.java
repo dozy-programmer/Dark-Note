@@ -8,7 +8,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,11 +27,11 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.fragments.notes;
 import com.akapps.dailynote.recyclerview.backup_recyclerview;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -52,7 +51,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
@@ -144,11 +142,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         ImageView budgetGraph = view.findViewById(R.id.budget_graph);
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.darker_mode));
+            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
             securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
             securityWord.setTextColor(getContext().getColor(R.color.gray));
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));
         else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
@@ -205,7 +203,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 if (message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
                     backup.setText("TRASH");
-                    backup.setBackgroundColor(getContext().getColor(R.color.orange));
+                    backup.setBackgroundColor(getContext().getColor(R.color.azure));
                     info.setVisibility(View.GONE);
                 } else if (message == -3) {
                     backup.setText("DELETE");
@@ -485,29 +483,14 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

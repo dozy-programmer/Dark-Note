@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -17,10 +16,9 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
-import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -65,11 +63,11 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
         MaterialCardView zToAButton = view.findViewById(R.id.z_a);
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            sortByDate.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
+            sortByDate.setCardBackgroundColor(getContext().getColor(R.color.black));
             sortByDate.setStrokeColor(getContext().getColor(R.color.light_gray_2));
             sortByDate.setStrokeWidth(5);
-            sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+            sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.black));
             sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.light_gray_2));
             sortByAlphabetical.setStrokeWidth(5);
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
@@ -286,29 +284,14 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

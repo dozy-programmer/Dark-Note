@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="10dp"
                         android:text="Date"
-                        android:textColor="@color/ultra_white"
+                        android:textColor="@color/white"
                         android:textSize="15sp"></TextView>
 
                 </LinearLayout>
@@ -78,7 +78,7 @@
                     android:layout_marginRight="20dp"
                     android:gravity="right|center_vertical"
                     android:text="0 MB"
-                    android:textColor="@color/ultra_white"
+                    android:textColor="@color/white"
                     android:textSize="15sp"></TextView>
 
             </LinearLayout>

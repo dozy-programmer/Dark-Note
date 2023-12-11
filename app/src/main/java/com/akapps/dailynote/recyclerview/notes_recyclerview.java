@@ -148,9 +148,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
         if (Helper.isColorDark(currentNote.getBackgroundColor())) {
-            holder.note_title.setTextColor(activity.getColor(R.color.ultra_white));
+            holder.note_title.setTextColor(activity.getColor(R.color.white));
             holder.note_edited.setTextColor(activity.getColor(R.color.white));
-            holder.note_preview.setTextColor(activity.getColor(R.color.ultra_white));
+            holder.note_preview.setTextColor(activity.getColor(R.color.white));
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.white));
             holder.checklist_icon.setColorFilter(activity.getColor(R.color.white));
         } else {
@@ -197,9 +197,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.category_background.setVisibility(View.VISIBLE);
             holder.category.setText(currentNote.getCategory());
             holder.category.setTextColor(folderColor.getColor() == 0 ?
-                    activity.getColor(R.color.orange) : folderColor.getColor());
+                    activity.getColor(R.color.azure) : folderColor.getColor());
             holder.category_background.setStrokeColor(folderColor.getColor() == 0 ?
-                    activity.getColor(R.color.orange) : folderColor.getColor());
+                    activity.getColor(R.color.azure) : folderColor.getColor());
         }
 
         // if selecting multiple notes, it changes the color of the note outline

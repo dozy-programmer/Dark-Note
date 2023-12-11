@@ -82,7 +82,7 @@ public class AppWidget extends AppWidgetProvider {
                 if (currentNote.getTitleColor() != currentNote.getBackgroundColor())
                     views.setTextColor(R.id.appwidget_text, currentNote.getTitleColor());
                 else
-                    views.setTextColor(R.id.appwidget_text, context.getColor(R.color.ultra_white));
+                    views.setTextColor(R.id.appwidget_text, context.getColor(R.color.white));
 
                 ArrayList<String> list = new ArrayList<>();
                 if (currentNote.isCheckList()) {

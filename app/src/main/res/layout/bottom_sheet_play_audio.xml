@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbarThumbVertical="@color/azure"
     android:scrollbarSize="2dp"
     android:scrollbars="vertical"
     android:background="@android:color/transparent">
@@ -50,7 +50,7 @@
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconSize="28dp"
-            app:iconTint="@color/ultra_white"
+            app:iconTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

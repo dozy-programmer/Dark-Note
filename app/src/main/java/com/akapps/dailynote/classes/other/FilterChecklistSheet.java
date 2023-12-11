@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,8 +14,8 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -61,8 +60,8 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         screenMode = RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode();
 
         if (screenMode == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            background.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
+            background.setCardBackgroundColor(getContext().getColor(R.color.black));
             background.setStrokeColor(getContext().getColor(R.color.gray));
             background.setStrokeWidth(8);
 
@@ -243,7 +242,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private void darkModeItemLayout(MaterialCardView view) {
-        view.setCardBackgroundColor(getContext().getColor(R.color.darker_mode));
+        view.setCardBackgroundColor(getContext().getColor(R.color.black));
         view.setStrokeColor(getContext().getColor(R.color.gray));
         view.setStrokeWidth(8);
     }
@@ -320,29 +319,14 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

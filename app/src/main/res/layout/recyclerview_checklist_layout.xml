@@ -61,7 +61,7 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="5dp"
                     android:text="Note"
-                    android:textColor="@color/ultra_white"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:autoLink="web"/>
 

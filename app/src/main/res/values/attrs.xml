@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="themes">
+        <!-- this includes titles !-->
+        <attr name="primaryTextColor" format="reference"/>
+        <!-- this includes body, subtitle, subHeadings !-->
+        <attr name="secondaryTextColor" format="reference"/>
+        <!-- this includes body !-->
+        <attr name="tertiaryTextColor" format="reference"/>
+        <!-- actual background color !-->
+        <attr name="primaryBackgroundColor" format="reference"/>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <attr name="secondaryBackgroundColor" format="reference"/>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <attr name="tertiaryBackgroundColor" format="reference"/>
+        <!-- 99% if icons should be the same !-->
+        <attr name="primaryIconTintColor" format="reference"/>
+        <!-- for second most used icon color !-->
+        <attr name="secondaryIconTintColor" format="reference"/>
+        <!-- for third most used icon color !-->
+        <attr name="tertiaryIconTintColor" format="reference"/>
+        <!-- for add note/checklist, and folder button !-->
+        <attr name="primaryButtonColor" format="reference"/>
+        <!-- for audio note !-->
+        <attr name="secondaryButtonColor" format="reference"/>
+        <!-- for close button !-->
+        <attr name="tertiaryButtonColor" format="reference"/>
+        <!-- for  layout selection!-->
+        <attr name="primarySelectionColor" format="reference"/>
+        <!-- for  theme selected!-->
+        <attr name="primarySelectedIconColor" format="reference"/>
+        <!-- for  theme not select!-->
+        <attr name="primaryUnSelectedIconColor" format="reference"/>
+    </declare-styleable>
+</resources>

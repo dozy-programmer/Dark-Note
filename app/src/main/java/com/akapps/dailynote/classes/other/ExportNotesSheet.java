@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -19,15 +18,14 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
@@ -66,19 +64,19 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         ImageButton info = view.findViewById(R.id.export_info);
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            exportText.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            exportMarkdown.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            exportTextString.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            exportTextStringFormatted.setBackgroundColor(getContext().getColor(R.color.darker_mode));
-            exportNote.setBackgroundColor(getContext().getColor(R.color.darker_mode));
+            view.setBackgroundColor(getContext().getColor(R.color.black));
+            exportText.setBackgroundColor(getContext().getColor(R.color.black));
+            exportMarkdown.setBackgroundColor(getContext().getColor(R.color.black));
+            exportTextString.setBackgroundColor(getContext().getColor(R.color.black));
+            exportTextStringFormatted.setBackgroundColor(getContext().getColor(R.color.black));
+            exportNote.setBackgroundColor(getContext().getColor(R.color.black));
             exportText.setStrokeWidth(5);
             exportMarkdown.setStrokeWidth(5);
             exportTextString.setStrokeWidth(5);
             exportTextStringFormatted.setStrokeWidth(5);
             exportNote.setStrokeWidth(5);
             exportText.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.blue)));
-            exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.orange)));
+            exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.azure)));
             exportTextString.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.golden_rod)));
             exportTextStringFormatted.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.gumbo)));
             exportNote.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.money_green)));
@@ -167,29 +165,14 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public int getTheme() {
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark)
-            return R.style.BaseBottomSheetDialogLight;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            return R.style.BaseBottomSheetDialog;
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-        }
-        return 0;
+        return UiHelper.getBottomSheetTheme(getContext());
     }
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.getViewTreeObserver()
-                .addOnGlobalLayoutListener(() -> {
-                    BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
-                    if (dialog != null) {
-                        FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-                        if (bottomSheet != null) {
-                            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        }
-                    }
-                });
+        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
 }

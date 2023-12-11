@@ -219,11 +219,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         initializeLayout(savedInstanceState);
 
         if (user.getScreenMode() == User.Mode.Dark) {
-            getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
-            scrollView.setBackgroundColor(context.getColor(R.color.darker_mode));
-            richtextEditorScrollView.setBackgroundColor(getColor(R.color.darker_mode));
-            note.setBackgroundColor(context.getColor(R.color.darker_mode));
-            searchEditText.setTextColor(context.getColor(R.color.ultra_white));
+            getWindow().setStatusBarColor(context.getColor(R.color.black));
+            scrollView.setBackgroundColor(context.getColor(R.color.black));
+            richtextEditorScrollView.setBackgroundColor(getColor(R.color.black));
+            note.setBackgroundColor(context.getColor(R.color.black));
+            searchEditText.setTextColor(context.getColor(R.color.white));
             date.setTextColor(context.getColor(R.color.light_light_gray));
             title.setHintTextColor(context.getColor(R.color.light_gray_2));
             closeNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
@@ -231,7 +231,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             pinNoteButton.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             expandMenu.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             searchLayout.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            palleteIconColor.setColorFilter(getColor(R.color.ultra_white));
+            palleteIconColor.setColorFilter(getColor(R.color.white));
             budget.setColorNormal(getColor(R.color.not_too_dark_gray));
             formatMenu.setBackgroundColor(getColor(R.color.not_too_dark_gray));
         } else if (user.getScreenMode() == User.Mode.Gray) {
@@ -242,7 +242,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
             if (noteId != -1 && !isNewNote)
                 if (getCurrentNote().getTextColor() <= 0)
-                    note.setEditorFontColor(context.getColor(R.color.ultra_white));
+                    note.setEditorFontColor(context.getColor(R.color.white));
         } else if (user.getScreenMode() == User.Mode.Light) {
 
         }
@@ -399,7 +399,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         note.setEditorFontSize(20);
         note.setPlaceholder("Type something...");
-        note.setEditorFontColor(context.getColor(R.color.ultra_white));
+        note.setEditorFontColor(context.getColor(R.color.white));
         note.setPadding(5, 10, 0, 100);
         note.setBackgroundColor(context.getColor(R.color.gray));
         note.focusEditor();
@@ -434,7 +434,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         category.setText(getCategoryName());
         category.setVisibility(View.VISIBLE);
         folderText.setVisibility(View.VISIBLE);
-        category.setTextColor(context.getColor(R.color.orange));
+        category.setTextColor(context.getColor(R.color.azure));
         searchLayout.setVisibility(View.VISIBLE);
 
         initializeEditor();
@@ -812,9 +812,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark)
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.darker_mode));
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.black));
         else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
-            searchEditText.setTextColor(context.getColor(R.color.ultra_white));
+            searchEditText.setTextColor(context.getColor(R.color.white));
             searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
@@ -1066,7 +1066,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             int randomInt = (int) (Math.random() * (randomColor.length));
             newNote.setBackgroundColor(randomColor[randomInt]);
             newNote.setTitleColor(randomColor[randomInt]);
-            newNote.setTextColor(getColor(R.color.ultra_white));
+            newNote.setTextColor(getColor(R.color.white));
             // insert data to database
             getRealm().beginTransaction();
             getRealm().insert(newNote);
@@ -1236,7 +1236,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         int backgroundColor = R.color.light_gray;
         if (user.getScreenMode() == User.Mode.Dark)
-            backgroundColor = R.color.darker_mode;
+            backgroundColor = R.color.black;
         else if (user.getScreenMode() == User.Mode.Light) {
 
         }
@@ -1889,7 +1889,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             // opens dialog to choose a color
             updateSaveDateEdited();
             if (isChanged)
-                note.setTextColor(context.getColor(R.color.ultra_white));
+                note.setTextColor(context.getColor(R.color.white));
             else {
                 colorPickerView = ColorPickerDialogBuilder
                         .with(context, R.style.ColorPickerDialogTheme)

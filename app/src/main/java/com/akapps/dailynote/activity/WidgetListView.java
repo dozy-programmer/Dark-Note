@@ -66,13 +66,13 @@ public class WidgetListView extends RemoteViewsService {
                     remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.checked_icon);
                 } else {
                     remoteView.setInt(R.id.checklist_text, "setPaintFlags", 0);
-                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.ultra_white));
+                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.white));
                     remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.unchecked_icon);
                 }
 
                 if(currentItem.contains("⤷")) {
                     currentItem = currentItem.replace("⤷", "");
-                    remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(R.color.ultra_white), 200));
+                    remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(R.color.white), 200));
                     remoteView.setViewVisibility(R.id.sublist_spacing, View.VISIBLE);
                 }
                 else

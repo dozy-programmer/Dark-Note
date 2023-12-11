@@ -62,8 +62,8 @@ public class NoteLockScreen extends AppCompatActivity {
         initializeLayout();
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-            getWindow().setStatusBarColor(context.getColor(R.color.darker_mode));
-            findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.darker_mode));
+            getWindow().setStatusBarColor(context.getColor(R.color.black));
+            findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.black));
             lockView.setBackgroundColor(getColor(R.color.black));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 

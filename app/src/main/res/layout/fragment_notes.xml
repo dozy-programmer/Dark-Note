@@ -35,7 +35,7 @@
                 android:fontFamily="@font/baloo_bhai"
                 android:gravity="bottom"
                 android:text="Dark Note"
-                android:textColor="@color/ultra_white"
+                android:textColor="@color/white"
                 android:textSize="28sp">
             </TextView>
 
@@ -163,7 +163,7 @@
         android:layout_height="wrap_content"
         android:text="Sorted by: "
         android:visibility="gone"
-        android:textColor="@color/ultra_white"
+        android:textColor="@color/white"
         android:gravity="right"
         android:layout_marginHorizontal="15dp"
         android:textSize="10sp"
@@ -241,7 +241,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="Let me do it for you"
-                android:textColor="@color/ultra_white"
+                android:textColor="@color/white"
                 android:textSize="18sp">
             </TextView>
 
@@ -292,7 +292,7 @@
         fab:menu_labels_position="left"
         fab:menu_labels_showShadow="true"
         fab:menu_labels_singleLine="false"
-        fab:menu_labels_textColor="@color/orange"
+        fab:menu_labels_textColor="@color/azure"
         fab:menu_labels_textSize="16sp"
         fab:menu_openDirection="up"
         fab:menu_shadowColor="#66000000"
@@ -355,7 +355,7 @@
         fab:menu_labels_position="left"
         fab:menu_labels_showShadow="true"
         fab:menu_labels_singleLine="false"
-        fab:menu_labels_textColor="@color/orange"
+        fab:menu_labels_textColor="@color/azure"
         fab:menu_labels_textSize="16sp"
         fab:menu_openDirection="up"
         fab:menu_shadowColor="#66000000"

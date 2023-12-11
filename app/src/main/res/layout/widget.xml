@@ -15,7 +15,7 @@
         android:gravity="center"
         android:maxLines="2"
         android:text="Loading..."
-        android:textColor="@color/ultra_white"
+        android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -30,6 +30,6 @@
         android:dividerHeight="1dp"
         android:padding="3dp"
         android:scrollbarSize="2dp"
-        android:scrollbarThumbVertical="@color/orange"/>
+        android:scrollbarThumbVertical="@color/azure"/>
 
 </LinearLayout>

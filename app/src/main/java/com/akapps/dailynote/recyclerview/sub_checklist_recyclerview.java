@@ -24,7 +24,6 @@ import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checklist_recyclerview.MyViewHolder> {
@@ -83,7 +82,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
 
         if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Dark) {
-            holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
+            holder.background.setCardBackgroundColor(activity.getColor(R.color.black));
             holder.background.setStrokeColor(activity.getColor(R.color.gray));
             holder.background.setStrokeWidth(5);
         } else if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Gray) {

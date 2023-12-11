@@ -137,7 +137,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.deleteIcon.setVisibility(View.GONE);
 
         if (RealmHelper.getUser(context, "checklist_recyclerview").getScreenMode() == User.Mode.Dark) {
-            holder.background.setCardBackgroundColor(activity.getColor(R.color.darker_mode));
+            holder.background.setCardBackgroundColor(activity.getColor(R.color.black));
             holder.background.setStrokeColor(activity.getColor(R.color.light_gray));
             holder.background.setStrokeWidth(5);
         } else if (RealmHelper.getUser(context, "checklist_recyclerview").getScreenMode() == User.Mode.Light) {

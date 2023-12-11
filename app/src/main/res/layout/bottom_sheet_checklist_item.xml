@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbarThumbVertical="@color/orange"
+    android:scrollbarThumbVertical="@color/azure"
     android:scrollbarSize="2dp"
     android:scrollbars="vertical">
 
@@ -37,7 +37,7 @@
             android:layout_marginTop="10dp"
             android:padding="5dp"
             android:fontFamily="@font/baloo_bhai"
-            android:textColor="@color/orange"
+            android:textColor="@color/azure"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:hint=""
                 android:textColor="@color/white"
-                android:textColorHint="@color/ultra_white"
+                android:textColorHint="@color/white"
                 android:windowSoftInputMode="adjustPan|adjustResize" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -126,7 +126,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text=""
-            android:textColor="@color/ultra_white"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_marginTop="5dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -141,8 +141,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="5dp"
             android:padding="10dp"
-            android:textColor="@color/ultra_white"
-            app:backgroundTint="@color/orange"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/azure"
             app:cornerRadius="15dp"
             app:icon="@drawable/add_location"
             app:iconGravity="textStart"
@@ -157,7 +157,7 @@
             android:layout_marginHorizontal="10dp"
             android:padding="10dp"
             android:layout_marginTop="5dp"
-            android:textColor="@color/ultra_white"
+            android:textColor="@color/white"
             app:backgroundTint="@color/havelock_blue"
             app:cornerRadius="15dp"
             app:icon="@drawable/ic_check_green"

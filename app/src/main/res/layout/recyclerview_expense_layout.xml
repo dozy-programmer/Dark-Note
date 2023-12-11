@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/expense_percentage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/expense_percentage"
-        app:tint="@color/ultra_white" />
+        app:tint="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sub_expenses"

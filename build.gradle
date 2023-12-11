@@ -10,6 +10,7 @@ buildscript {
         // Realm DB
         classpath "io.realm:realm-gradle-plugin:10.10.1"
         classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
     }
 }
 
