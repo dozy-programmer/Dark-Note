@@ -65,10 +65,10 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             view.setBackgroundColor(getContext().getColor(R.color.black));
             sortByDate.setCardBackgroundColor(getContext().getColor(R.color.black));
-            sortByDate.setStrokeColor(getContext().getColor(R.color.light_gray_2));
+            sortByDate.setStrokeColor(getContext().getColor(R.color.gray_200));
             sortByDate.setStrokeWidth(5);
             sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.black));
-            sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.light_gray_2));
+            sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.gray_200));
             sortByAlphabetical.setStrokeWidth(5);
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
             view.setBackgroundColor(getContext().getColor(R.color.gray));

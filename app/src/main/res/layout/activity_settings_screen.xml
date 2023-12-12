@@ -55,6 +55,8 @@
             android:paddingHorizontal="10sp"
             android:layout_marginTop="10dp"
             app:cardElevation="5dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -130,6 +132,8 @@
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="20dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:layout_constraintEnd_toEndOf="@+id/account_settings"
             app:layout_constraintStart_toStartOf="@+id/account_settings"
             app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -171,6 +175,8 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -237,7 +243,7 @@
                     android:id="@+id/space_one"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"
+                    android:background="?primaryStrokeColor"
                     android:visibility="gone"></ImageView>
 
                 <LinearLayout
@@ -288,7 +294,7 @@
                     android:id="@+id/space_two"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"
+                    android:background="?primaryStrokeColor"
                     android:visibility="gone"></ImageView>
 
                 <LinearLayout
@@ -339,6 +345,8 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -379,10 +387,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_one"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryDividerColor" />
 
                 <LinearLayout
                     android:id="@+id/backup_beta"
@@ -413,10 +420,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_two"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryDividerColor" />
 
                 <LinearLayout
                     android:id="@+id/restore_backup"
@@ -447,10 +453,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_three"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/restore_beta_backup"
@@ -507,6 +512,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -561,11 +568,10 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_four"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryStrokeColor" />
 
                 <LinearLayout
                     android:id="@+id/preview_layout"
@@ -609,11 +615,10 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_five"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryStrokeColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/show_preview"
@@ -646,11 +651,10 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_six"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryStrokeColor" />
 
                 <LinearLayout
                     android:id="@+id/show_note_info"
@@ -708,6 +712,8 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="15dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -729,8 +735,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_weight="33"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="?tertiaryBackgroundColor"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="15dp">
 
                     <ImageView
@@ -750,8 +755,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_weight="33"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="?tertiaryBackgroundColor"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="15dp">
 
                     <ImageView
@@ -771,8 +775,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_weight="33"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="?tertiaryBackgroundColor"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="15dp">
 
                     <ImageView
@@ -811,6 +814,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -865,10 +870,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_eight"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryDividerColor" />
 
                 <LinearLayout
                     android:id="@+id/sublist_item_sep_layout"
@@ -912,10 +916,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_nine"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryDividerColor" />
 
                 <LinearLayout
                     android:id="@+id/budget_char_layout"
@@ -959,10 +962,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_ten"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryDividerColor" />
 
                 <LinearLayout
                     android:id="@+id/expense_char_layout"
@@ -1006,10 +1008,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_eleven"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/checklist_sublist"
@@ -1042,10 +1043,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_twelve"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor" />
+                    android:background="?primaryDividerColor" />
 
                 <LinearLayout
                     android:id="@+id/add_delete_icon"
@@ -1078,10 +1078,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_fourteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/show_audio_button"
@@ -1114,10 +1113,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_sixteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/hide_budget_button"
@@ -1150,10 +1148,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_seventeen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/change_checkbox_style_layout"
@@ -1213,6 +1210,8 @@
             android:layout_marginTop="5dp"
             android:padding="15dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
@@ -1254,7 +1253,6 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_seven"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="2"
@@ -1335,6 +1333,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             app:cardElevation="3dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -1378,10 +1378,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_thirteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/rich_text_visibility"
@@ -1414,10 +1413,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_fifteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/twenty_four_hour_button"
@@ -1450,10 +1448,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_eighteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/editable_note_button_layout"
@@ -1486,10 +1483,9 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/gap_nineteen"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryBackgroundColor"></ImageView>
+                    android:background="?primaryDividerColor"></ImageView>
 
                 <LinearLayout
                     android:id="@+id/last_edit_info_layout"
@@ -1546,7 +1542,9 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            app:cardElevation="3dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
@@ -1590,7 +1588,9 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            app:cardElevation="3dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
@@ -1634,7 +1634,9 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            app:cardElevation="3dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
@@ -1676,7 +1678,7 @@
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_marginTop="-10dp"
-            android:elevation="2dp"
+            android:elevation="1dp"
             app:layout_constraintBottom_toBottomOf="@+id/about_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -1691,7 +1693,9 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="20dp"
-            app:cardElevation="3dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -1739,7 +1743,9 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            app:cardElevation="3dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -1781,7 +1787,9 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            app:cardElevation="3dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -1824,7 +1832,9 @@
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
-            app:cardElevation="3dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"

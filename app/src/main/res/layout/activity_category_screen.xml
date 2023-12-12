@@ -192,7 +192,7 @@
                 android:drawableLeft="@drawable/icon_image"
                 app:cornerRadius="15dp"
                 android:layout_marginLeft="5dp"
-                android:backgroundTint="@color/light_gray_2"
+                android:backgroundTint="@color/gray_200"
                 android:paddingVertical="2dp"
                 android:text="   Photos   "
                 android:layout_weight="1"

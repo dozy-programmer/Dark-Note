@@ -224,8 +224,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             richtextEditorScrollView.setBackgroundColor(getColor(R.color.black));
             note.setBackgroundColor(context.getColor(R.color.black));
             searchEditText.setTextColor(context.getColor(R.color.white));
-            date.setTextColor(context.getColor(R.color.light_light_gray));
-            title.setHintTextColor(context.getColor(R.color.light_gray_2));
+            date.setTextColor(context.getColor(R.color.gray_300));
+            title.setHintTextColor(context.getColor(R.color.gray_200));
             closeNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             pinNoteButton.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
@@ -236,9 +236,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             formatMenu.setBackgroundColor(getColor(R.color.not_too_dark_gray));
         } else if (user.getScreenMode() == User.Mode.Gray) {
             scrollView.setBackgroundColor(context.getColor(R.color.gray));
-            searchEditText.setTextColor(context.getColor(R.color.light_gray));
+            searchEditText.setTextColor(context.getColor(R.color.gray_100));
             richtextEditorScrollView.setBackgroundColor(getColor(R.color.gray));
-            budget.setColorNormal(getColor(R.color.light_gray));
+            budget.setColorNormal(getColor(R.color.gray_100));
 
             if (noteId != -1 && !isNewNote)
                 if (getCurrentNote().getTextColor() <= 0)
@@ -863,7 +863,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark)
             searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
         else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
         else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }
@@ -1234,7 +1234,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (getCurrentNote().getPinNumber() != 0)
             lockStatus += "ed";
 
-        int backgroundColor = R.color.light_gray;
+        int backgroundColor = R.color.gray_100;
         if (user.getScreenMode() == User.Mode.Dark)
             backgroundColor = R.color.black;
         else if (user.getScreenMode() == User.Mode.Light) {
@@ -1489,7 +1489,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark)
                 photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
             else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
-                photosNote.setCardBackgroundColor(getColor(R.color.light_gray));
+                photosNote.setCardBackgroundColor(getColor(R.color.gray_100));
             else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
             }
@@ -1525,9 +1525,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 false
         );
         timer.setThemeDark(true);
-        timer.setAccentColor(getColor(R.color.light_gray_2));
+        timer.setAccentColor(getColor(R.color.gray_200));
         timer.setOkColor(getColor(R.color.blue));
-        timer.setCancelColor(getColor(R.color.light_gray_2));
+        timer.setCancelColor(getColor(R.color.gray_200));
         timer.show(getSupportFragmentManager(), "Datepickerdialog");
     }
 
@@ -1551,9 +1551,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     now.get(Calendar.DAY_OF_MONTH) // Inital day selection
             );
             datePickerDialog.setThemeDark(true);
-            datePickerDialog.setAccentColor(getColor(R.color.light_gray_2));
+            datePickerDialog.setAccentColor(getColor(R.color.gray_200));
             datePickerDialog.setOkColor(getColor(R.color.blue));
-            datePickerDialog.setCancelColor(getColor(R.color.light_gray_2));
+            datePickerDialog.setCancelColor(getColor(R.color.gray_200));
             datePickerDialog.show(getSupportFragmentManager(), "Datepickerdialog");
         } else
             Helper.showMessage(this, "Reminder Issue", "Reminders do not work on Android 7 devices", MotionToast.TOAST_ERROR);

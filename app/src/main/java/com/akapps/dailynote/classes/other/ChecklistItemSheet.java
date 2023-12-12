@@ -503,7 +503,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         noteMenu = new CustomPowerMenu.Builder<>(getContext(), new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.copy_icon), "Copy Text"))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.send_icon), "Send"))
-                .setBackgroundColor(getContext().getColor(R.color.light_gray))
+                .setBackgroundColor(getContext().getColor(R.color.gray_100))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.DROP_DOWN)
                 .setMenuRadius(15f)

@@ -98,7 +98,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             view.setBackgroundColor(getContext().getColor(R.color.black));
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray) {
             view.setBackgroundColor(getContext().getColor(R.color.gray));
-            delete.setBackgroundColor(getContext().getColor(R.color.light_gray));
+            delete.setBackgroundColor(getContext().getColor(R.color.gray_100));
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
 
         }

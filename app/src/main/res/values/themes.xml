@@ -8,34 +8,6 @@
         <item name="colorSecondaryVariant">@color/blue</item>
         <item name="colorOnSecondary">@color/gray</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-
-        <!-- this includes titles !-->
-        <item name="primaryTextColor">@color/black</item>
-        <!-- this includes body, subtitle, subHeadings !-->
-        <item name="secondaryTextColor">@color/azure</item>
-        <!-- this includes body !-->
-        <item name="tertiaryTextColor">@color/white</item>
-
-        <!-- actual background color !-->
-        <item name="primaryBackgroundColor">@color/white</item>
-        <!-- this works in tandem with the background color, its a lighter color !-->
-        <item name="secondaryBackgroundColor">@color/white_100</item>
-        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
-        <item name="tertiaryBackgroundColor">@color/white_200</item>
-
-        <!-- 99% if icons should be the same !-->
-        <item name="primaryIconTintColor">@color/black</item>
-        <!-- for second most used icon color !-->
-        <item name="secondaryIconTintColor">@color/orange</item>
-        <!-- for third most used icon color !-->
-        <item name="tertiaryIconTintColor">@color/red</item>
-
-        <!-- for add note/checklist, and folder button !-->
-        <item name="primaryButtonColor">@color/azure</item>
-        <!-- for audio note !-->
-        <item name="secondaryButtonColor">@color/golden_rod</item>
-        <!-- for close button !-->
-        <item name="tertiaryButtonColor">@color/red</item>
     </style>
 
     <style name="Theme.DailyDay.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -61,6 +33,9 @@
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
         <item name="tertiaryBackgroundColor">@color/white_200</item>
 
+        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <item name="primaryStrokeColor">@color/white_100</item>
+
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/black</item>
         <!-- for second most used icon color !-->
@@ -78,11 +53,16 @@
         <!-- for layout selection !-->
         <item name="primarySelectionColor">@color/azure_100</item>
 
+        <!-- for switch !-->
+        <item name="primarySwitchColor">@color/white</item>
+
+        <!-- for divider color - settings !-->
+        <item name="primaryDividerColor">@color/white</item>
+
         <!-- for theme selected !-->
         <item name="primarySelectedIconColor">@color/black</item>
         <!-- for theme not selected !-->
-        <item name="primaryUnSelectedIconColor">@color/light_light_gray</item>
-
+        <item name="primaryUnSelectedIconColor">@color/gray_300</item>
     </style>
 
     <style name="Theme.DailyDay.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -95,40 +75,49 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
         <!-- this includes titles !-->
-        <item name="primaryTextColor">@color/black</item>
+        <item name="primaryTextColor">@color/white</item>
         <!-- this includes subtitle !-->
-        <item name="secondaryTextColor">@color/azure_100</item>
+        <item name="secondaryTextColor">@color/azure</item>
         <!-- this includes body, text buttons !-->
-        <item name="tertiaryTextColor">@color/black</item>
+        <item name="tertiaryTextColor">@color/white</item>
 
         <!-- actual background color !-->
-        <item name="primaryBackgroundColor">@color/white</item>
+        <item name="primaryBackgroundColor">@color/black</item>
         <!-- this works in tandem with the background color, its a lighter color !-->
-        <item name="secondaryBackgroundColor">@color/white_100</item>
+        <item name="secondaryBackgroundColor">@color/black</item>
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
-        <item name="tertiaryBackgroundColor">@color/white_200</item>
+        <item name="tertiaryBackgroundColor">@color/black</item>
+
+        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <item name="primaryStrokeColor">@color/gray</item>
 
         <!-- 99% if icons should be the same !-->
-        <item name="primaryIconTintColor">@color/black</item>
+        <item name="primaryIconTintColor">@color/white</item>
         <!-- for second most used icon color !-->
         <item name="secondaryIconTintColor">@color/orange</item>
         <!-- for third most used icon color !-->
         <item name="tertiaryIconTintColor">@color/red</item>
 
         <!-- for add note/checklist, and folder button !-->
-        <item name="primaryButtonColor">@color/azure_100</item>
+        <item name="primaryButtonColor">@color/azure</item>
         <!-- for audio note !-->
         <item name="secondaryButtonColor">@color/golden_rod</item>
         <!-- for close button !-->
         <item name="tertiaryButtonColor">@color/red</item>
 
         <!-- for layout selection !-->
-        <item name="primarySelectionColor">@color/azure_100</item>
+        <item name="primarySelectionColor">@color/azure</item>
+
+        <!-- for switch !-->
+        <item name="primarySwitchColor">@color/gray</item>
+
+        <!-- for divider color - settings !-->
+        <item name="primaryDividerColor">@color/gray</item>
 
         <!-- for theme selected !-->
-        <item name="primarySelectedIconColor">@color/black</item>
+        <item name="primarySelectedIconColor">@color/white</item>
         <!-- for theme not selected !-->
-        <item name="primaryUnSelectedIconColor">@color/light_light_gray</item>
+        <item name="primaryUnSelectedIconColor">@color/gray</item>
     </style>
 
     <style name="Theme.DailyDay.Gray" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -141,40 +130,49 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
         <!-- this includes titles !-->
-        <item name="primaryTextColor">@color/black</item>
+        <item name="primaryTextColor">@color/white</item>
         <!-- this includes subtitle !-->
-        <item name="secondaryTextColor">@color/azure_100</item>
+        <item name="secondaryTextColor">@color/azure</item>
         <!-- this includes body, text buttons !-->
-        <item name="tertiaryTextColor">@color/black</item>
+        <item name="tertiaryTextColor">@color/white</item>
 
         <!-- actual background color !-->
-        <item name="primaryBackgroundColor">@color/white</item>
+        <item name="primaryBackgroundColor">@color/gray</item>
         <!-- this works in tandem with the background color, its a lighter color !-->
-        <item name="secondaryBackgroundColor">@color/white_100</item>
+        <item name="secondaryBackgroundColor">@color/gray_100</item>
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
-        <item name="tertiaryBackgroundColor">@color/white_200</item>
+        <item name="tertiaryBackgroundColor">@color/gray_200</item>
+
+        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <item name="primaryStrokeColor">@color/gray_100</item>
 
         <!-- 99% if icons should be the same !-->
-        <item name="primaryIconTintColor">@color/black</item>
+        <item name="primaryIconTintColor">@color/white</item>
         <!-- for second most used icon color !-->
         <item name="secondaryIconTintColor">@color/orange</item>
         <!-- for third most used icon color !-->
         <item name="tertiaryIconTintColor">@color/red</item>
 
         <!-- for add note/checklist, and folder button !-->
-        <item name="primaryButtonColor">@color/azure_100</item>
+        <item name="primaryButtonColor">@color/azure</item>
         <!-- for audio note !-->
         <item name="secondaryButtonColor">@color/golden_rod</item>
         <!-- for close button !-->
         <item name="tertiaryButtonColor">@color/red</item>
 
         <!-- for layout selection !-->
-        <item name="primarySelectionColor">@color/azure_100</item>
+        <item name="primarySelectionColor">@color/azure</item>
+
+        <!-- for switch !-->
+        <item name="primarySwitchColor">@color/gray_300</item>
+
+        <!-- for divider color - settings !-->
+        <item name="primaryDividerColor">@color/gray</item>
 
         <!-- for theme selected !-->
-        <item name="primarySelectedIconColor">@color/black</item>
+        <item name="primarySelectedIconColor">@color/white</item>
         <!-- for theme not selected !-->
-        <item name="primaryUnSelectedIconColor">@color/light_light_gray</item>
+        <item name="primaryUnSelectedIconColor">@color/gray</item>
     </style>
 
     <style name="ColorPickerDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -228,7 +226,7 @@
 
     <style name="ThemeOverlay.SwitchTheme" parent="">
         <item name="colorControlActivated">?primaryButtonColor</item>
-        <item name="colorSwitchThumbNormal">?primaryBackgroundColor</item>
+        <item name="colorSwitchThumbNormal">?primarySwitchColor</item>
         <item name="android:colorForeground">#42221f1f</item>
     </style>
 
@@ -246,8 +244,8 @@
     </style>
 
     <style name="slider" parent="Widget.AppCompat.SeekBar">
-        <item name="android:progressBackgroundTint">@color/light_light_gray</item>
-        <item name="android:progressTint">@color/light_gray</item>
+        <item name="android:progressBackgroundTint">@color/gray_300</item>
+        <item name="android:progressTint">@color/gray_100</item>
         <item name="android:thumbTint">@color/white</item>
     </style>
 

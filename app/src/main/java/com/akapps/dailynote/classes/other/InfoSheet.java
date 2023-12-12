@@ -143,8 +143,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
-            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_gray)));
+            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_100)));
+            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_100)));
             securityWord.setTextColor(getContext().getColor(R.color.gray));
             view.setBackgroundColor(getContext().getColor(R.color.black));
         } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)

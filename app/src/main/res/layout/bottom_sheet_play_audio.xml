@@ -22,7 +22,7 @@
             android:layout_height="10dp"
             android:layout_marginTop="10dp"
             android:padding="13dp"
-            app:cardBackgroundColor="@color/light_gray_2"
+            app:cardBackgroundColor="@color/gray_200"
             app:cardCornerRadius="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,14 +37,14 @@
             app:layout_constraintBottom_toBottomOf="@+id/info_recording"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/info_recording"
-            app:tint="@color/light_gray" />
+            app:tint="@color/gray_100" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/info_recording"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_margin="5dp"
-            app:backgroundTint="@color/light_gray"
+            app:backgroundTint="@color/gray_100"
             app:cornerRadius="15dp"
             app:icon="@drawable/info_icon"
             app:iconGravity="textStart"
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="0:00"
-            android:textColor="@color/light_light_gray"
+            android:textColor="@color/gray_300"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/audio_seekbar"
@@ -128,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="15dp"
             android:text="0:00"
-            android:textColor="@color/light_light_gray"
+            android:textColor="@color/gray_300"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/audio_seekbar"

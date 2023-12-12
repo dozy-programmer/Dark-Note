@@ -29,6 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/round_corner"
-        android:backgroundTint="@color/light_gray"/>
+        android:backgroundTint="@color/gray_100"/>
 
 </LinearLayout>

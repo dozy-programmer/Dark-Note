@@ -62,7 +62,7 @@ public class WidgetListView extends RemoteViewsService {
 
                 if (currentItem.contains("~~")) {
                     remoteView.setInt(R.id.checklist_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
-                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.light_light_gray));
+                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.gray_300));
                     remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.checked_icon);
                 } else {
                     remoteView.setInt(R.id.checklist_text, "setPaintFlags", 0);

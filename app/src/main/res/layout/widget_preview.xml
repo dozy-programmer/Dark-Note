@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/light_gray"
+    android:background="@color/gray_100"
     android:orientation="vertical"
     android:focusable="true">
 
@@ -26,6 +26,6 @@
         android:layout_marginVertical="5dp"
         android:gravity="center"
         android:textSize="10sp"
-        android:textColor="@color/light_light_gray"/>
+        android:textColor="@color/gray_300"/>
 
 </LinearLayout>

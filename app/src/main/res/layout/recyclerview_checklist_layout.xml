@@ -8,7 +8,7 @@
     android:layout_marginVertical="5dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="@color/light_gray"
+    app:cardBackgroundColor="@color/gray_100"
     app:cardCornerRadius="10dp">
 
     <LinearLayout

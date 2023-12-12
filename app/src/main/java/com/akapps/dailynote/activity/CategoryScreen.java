@@ -266,12 +266,12 @@ public class CategoryScreen extends AppCompatActivity {
                 int colorFour = R.color.white;
 
                 if (screenMode == User.Mode.Gray) {
-                    colorOne = R.color.light_gray_2;
+                    colorOne = R.color.gray_200;
                     colorTwo = R.color.white;
                     colorThree = R.color.gray;
                     colorFour = R.color.white;
                 } else if (screenMode == User.Mode.Light) {
-                    colorOne = R.color.light_gray_2;
+                    colorOne = R.color.gray_200;
                     colorTwo = R.color.white;
                     colorThree = R.color.gray;
                     colorFour = R.color.white;
@@ -308,7 +308,7 @@ public class CategoryScreen extends AppCompatActivity {
                     reminder.setStrokeWidth(5);
 
                     photos.setBackgroundColor(getColor(R.color.black));
-                    photos.setStrokeColor(ColorStateList.valueOf(getColor(R.color.light_gray_2)));
+                    photos.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray_200)));
                     photos.setStrokeWidth(5);
 
                     locked.setBackgroundColor(getColor(R.color.black));

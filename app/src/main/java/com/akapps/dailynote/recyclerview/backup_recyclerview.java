@@ -72,10 +72,10 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
             holder.background.setCardBackgroundColor(context.getColor(R.color.black));
-            holder.background.setStrokeColor(context.getColor(R.color.light_gray));
+            holder.background.setStrokeColor(context.getColor(R.color.gray_100));
             holder.background.setStrokeWidth(5);
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
-            holder.background.setCardBackgroundColor(context.getColor(R.color.light_gray));
+            holder.background.setCardBackgroundColor(context.getColor(R.color.gray_100));
         else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
 
         }

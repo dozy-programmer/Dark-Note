@@ -13,6 +13,8 @@
         <attr name="secondaryBackgroundColor" format="reference"/>
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
         <attr name="tertiaryBackgroundColor" format="reference"/>
+        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <attr name="primaryStrokeColor" format="reference"/>
         <!-- 99% if icons should be the same !-->
         <attr name="primaryIconTintColor" format="reference"/>
         <!-- for second most used icon color !-->
@@ -24,6 +26,10 @@
         <!-- for audio note !-->
         <attr name="secondaryButtonColor" format="reference"/>
         <!-- for close button !-->
+        <!-- For switches !-->
+        <attr name="primarySwitchColor" format="reference"/>
+        <!-- divider color - for settings !-->
+        <attr name="primaryDividerColor" format="reference"/>
         <attr name="tertiaryButtonColor" format="reference"/>
         <!-- for  layout selection!-->
         <attr name="primarySelectionColor" format="reference"/>

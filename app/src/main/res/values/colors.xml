@@ -5,17 +5,17 @@
     <color name="colorPrimaryDark">#0099ff</color>
     <color name="green">#0AFF19</color>
     <color name="main">#435c6c</color>
-    <color name="light_gray_2">#60606c</color>
     <color name="light_gray_300">#cccccc</color>
     <color name="pressed_blue">#0099ff</color>
-    <color name="light_light_gray">#adadad</color>
     <color name="semi_gray">#f4f6fc</color>
     <color name="not_too_dark_gray">#323334</color>
     <color name="transparent">#00000000</color>
 
     <color name="black">#000000</color>
     <color name="gray">#3c3c44</color>
-    <color name="light_gray">#54545f</color>
+    <color name="gray_100">#54545f</color>
+    <color name="gray_200">#60606c</color>
+    <color name="gray_300">#adadad</color>
     <color name="azure">#b0c4de</color>
     <color name="azure_100">#7a9cc7</color>
     <color name="white">#ffffff</color>

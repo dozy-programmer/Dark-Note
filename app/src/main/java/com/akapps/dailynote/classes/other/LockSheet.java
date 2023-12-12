@@ -59,7 +59,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
             pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.light_light_gray)));
+            pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_300)));
             pinLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
             pin.setTextColor(getContext().getColor(R.color.white));
             securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));

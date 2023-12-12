@@ -561,18 +561,13 @@ public class SettingsScreen extends AppCompatActivity {
         themeToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             User.Mode currentMode = User.Mode.Dark;
             if (isChecked) {
-                if(checkedId == R.id.gray_mode){
+                if(checkedId == R.id.gray_mode)
                     currentMode = User.Mode.Gray;
-                }
-                else if(checkedId == R.id.light_mode){
+                else if(checkedId == R.id.light_mode)
                     currentMode = User.Mode.Light;
-                    Helper.showMessage(SettingsScreen.this, "Light Mode", "" +
-                            "This theme is in progress, I would recommend not to use", MotionToast.TOAST_SUCCESS);
-                }
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 getUser().setScreenMode(currentMode.getValue());
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
-                updateTheme();
             }
         });
 
@@ -660,7 +655,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void toggleLayoutSelected() {
         String selectedLayout = getUser().getLayoutSelected();
-        int unSelectedBackgroundColor = getColorFromTheme(this, R.attr.tertiaryBackgroundColor);
+        int unSelectedBackgroundColor = getColorFromTheme(this, R.attr.secondaryBackgroundColor);
         int selectedBackgroundColor = getColorFromTheme(this, R.attr.primarySelectionColor);
         row.setCardBackgroundColor(unSelectedBackgroundColor);
         grid.setCardBackgroundColor(unSelectedBackgroundColor);
@@ -688,111 +683,6 @@ public class SettingsScreen extends AppCompatActivity {
             grayMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
             darkMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
         }
-    }
-
-    private void changeBackgroundColors(int color, int strokeColor, int width) {
-        buyMeCoffeeLayout.setCardBackgroundColor(context.getColor(color));
-        buyMeCoffeeLayout.setStrokeColor(context.getColor(strokeColor));
-        buyMeCoffeeLayout.setStrokeWidth(width);
-        accountLayout.setCardBackgroundColor(context.getColor(color));
-        accountLayout.setStrokeColor(context.getColor(strokeColor));
-        accountLayout.setStrokeWidth(width);
-        backupRestoreLayout.setCardBackgroundColor(context.getColor(color));
-        backupRestoreLayout.setStrokeColor(context.getColor(strokeColor));
-        backupRestoreLayout.setStrokeWidth(width);
-        notePreviewSettingsLayout.setCardBackgroundColor(context.getColor(color));
-        notePreviewSettingsLayout.setStrokeColor(context.getColor(strokeColor));
-        notePreviewSettingsLayout.setStrokeWidth(width);
-        listTypeLayout.setCardBackgroundColor(context.getColor(color));
-        listTypeLayout.setStrokeColor(context.getColor(strokeColor));
-        listTypeLayout.setStrokeWidth(width);
-        folderSettingsLayout.setCardBackgroundColor(context.getColor(color));
-        folderSettingsLayout.setStrokeColor(context.getColor(strokeColor));
-        folderSettingsLayout.setStrokeWidth(width);
-        noteSettingLayout.setCardBackgroundColor(context.getColor(color));
-        noteSettingLayout.setStrokeColor(context.getColor(strokeColor));
-        noteSettingLayout.setStrokeWidth(width);
-        checklistSettingLayout.setCardBackgroundColor(context.getColor(color));
-        checklistSettingLayout.setStrokeColor(context.getColor(strokeColor));
-        checklistSettingLayout.setStrokeWidth(width);
-        appSettingsLayout.setCardBackgroundColor(context.getColor(color));
-        appSettingsLayout.setStrokeColor(context.getColor(strokeColor));
-        appSettingsLayout.setStrokeWidth(width);
-        aboutInfoLayout.setCardBackgroundColor(context.getColor(color));
-        aboutInfoLayout.setStrokeColor(context.getColor(strokeColor));
-        aboutInfoLayout.setStrokeWidth(width);
-        contact.setCardBackgroundColor(context.getColor(color));
-        contact.setStrokeColor(context.getColor(strokeColor));
-        contact.setStrokeWidth(width);
-        reddit.setCardBackgroundColor(context.getColor(color));
-        reddit.setStrokeColor(context.getColor(strokeColor));
-        reddit.setStrokeWidth(width);
-        review.setCardBackgroundColor(context.getColor(color));
-        review.setStrokeColor(context.getColor(strokeColor));
-        review.setStrokeWidth(width);
-        fabSizeLayout.setCardBackgroundColor(context.getColor(color));
-        fabSizeLayout.setStrokeColor(context.getColor(strokeColor));
-        fabSizeLayout.setStrokeWidth(width);
-        animationLayout.setCardBackgroundColor(context.getColor(color));
-        animationLayout.setStrokeColor(context.getColor(strokeColor));
-        animationLayout.setStrokeWidth(width);
-        themeToggleLayout.setCardBackgroundColor(context.getColor(color));
-        themeToggleLayout.setStrokeColor(context.getColor(strokeColor));
-        themeToggleLayout.setStrokeWidth(width);
-
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-            grid.setCardBackgroundColor(context.getColor(color));
-            row.setCardBackgroundColor(context.getColor(color));
-            staggered.setCardBackgroundColor(context.getColor(color));
-            grid.setStrokeColor(context.getColor(strokeColor));
-            grid.setStrokeWidth(width);
-            row.setStrokeColor(context.getColor(strokeColor));
-            row.setStrokeWidth(width);
-            staggered.setStrokeColor(context.getColor(strokeColor));
-            staggered.setStrokeWidth(width);
-            about.setTextColor(context.getColor(R.color.white));
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
-            color = R.color.gray;
-            grid.setCardBackgroundColor(context.getColor(color));
-            row.setCardBackgroundColor(context.getColor(color));
-            staggered.setCardBackgroundColor(context.getColor(color));
-            grid.setStrokeWidth(width);
-            row.setStrokeWidth(width);
-            staggered.setStrokeWidth(width);
-            about.setTextColor(context.getColor(R.color.white));
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-            color = R.color.light_gray;
-            grid.setCardBackgroundColor(context.getColor(color));
-            row.setCardBackgroundColor(context.getColor(color));
-            staggered.setCardBackgroundColor(context.getColor(color));
-            grid.setStrokeWidth(0);
-            row.setStrokeWidth(0);
-            staggered.setStrokeWidth(0);
-        }
-    }
-
-    private void updateGapLayoutColor(int gapColor) {
-        findViewById(R.id.space_one).setBackgroundColor(gapColor);
-        findViewById(R.id.space_two).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_one).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_two).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_three).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_four).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_five).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_six).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_seven).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_eight).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_nine).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_ten).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_eleven).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_twelve).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_thirteen).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_fourteen).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_fifteen).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_sixteen).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_seventeen).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_eighteen).setBackgroundColor(gapColor);
-        findViewById(R.id.gap_nineteen).setBackgroundColor(gapColor);
     }
 
     private void initializeSettings() {

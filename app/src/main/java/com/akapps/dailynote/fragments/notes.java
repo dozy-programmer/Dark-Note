@@ -254,11 +254,11 @@ public class notes extends Fragment {
             restoreNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
             categoryNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
         } else {
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
-            filterNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
-            settings.setCardBackgroundColor(context.getColor(R.color.light_gray));
-            restoreNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
-            categoryNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
+            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
+            filterNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
+            settings.setCardBackgroundColor(context.getColor(R.color.gray_100));
+            restoreNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
+            categoryNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
         }
     }
 
@@ -812,7 +812,7 @@ public class notes extends Fragment {
     private void hideSearchBar() {
         searchEditText.setQuery("", false);
         search.setVisibility(View.VISIBLE);
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
         fragmentTitle.setVisibility(View.VISIBLE);
         filterNotes.setVisibility(View.VISIBLE);
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -827,7 +827,7 @@ public class notes extends Fragment {
         LinearLayout.LayoutParams params = (new LinearLayout.LayoutParams(filterNotes.getWidth(), filterNotes.getHeight()));
         params.setMargins(0, 0, 24, 0);
         searchLayout.setLayoutParams(params);
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
         searchLayout.setPadding(filterNotes.getPaddingLeft(), filterNotes.getPaddingTop(), filterNotes.getPaddingRight(), filterNotes.getPaddingBottom());
         searchEditText.setVisibility(View.GONE);
         searchEditText.setVisibility(View.GONE);
@@ -865,10 +865,10 @@ public class notes extends Fragment {
         addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
         search.setImageDrawable(context.getDrawable(R.drawable.search_icon));
-        filterNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        filterNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));
         settingsIcon.setImageDrawable(context.getDrawable(R.drawable.settings_icon));
-        categoryNotes.setCardBackgroundColor(context.getColor(R.color.light_gray));
+        categoryNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
         settings.setVisibility(View.VISIBLE);
         updateToolbarColors();
     }

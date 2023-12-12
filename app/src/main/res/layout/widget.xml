@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:background="@drawable/round_corner"
-        android:divider="@color/light_gray"
+        android:divider="@color/gray_100"
         android:layout_gravity="center"
         android:dividerHeight="1dp"
         android:padding="3dp"

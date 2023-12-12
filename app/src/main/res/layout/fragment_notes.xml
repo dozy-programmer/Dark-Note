@@ -52,7 +52,7 @@
                     android:layout_gravity="end"
                     android:visibility="gone"
                     android:layout_marginRight="15dp"
-                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardBackgroundColor="@color/gray_100"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
                     <ImageView
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginRight="9dp"
-                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardBackgroundColor="@color/gray_100"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
                     <ImageView
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginRight="9dp"
-                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardBackgroundColor="@color/gray_100"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
                     <ImageView
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginEnd="9dp"
-                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardBackgroundColor="@color/gray_100"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
 
@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginRight="15dp"
-                    app:cardBackgroundColor="@color/light_gray"
+                    app:cardBackgroundColor="@color/gray_100"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="0dp">
                     <ImageView
@@ -253,7 +253,7 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:text="Tap the bottom right button to create a note"
-                android:textColor="@color/light_gray"
+                android:textColor="@color/gray_100"
                 android:textSize="18sp">
             </TextView>
 

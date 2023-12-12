@@ -52,7 +52,7 @@
                             android:id="@+id/close_note"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/gray_100"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -82,7 +82,7 @@
                             android:layout_marginRight="8dp"
                             android:layout_weight="5"
                             android:visibility="gone"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/gray_100"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -95,7 +95,7 @@
                                 android:hint="Search inside note"
                                 android:maxLines="1"
                                 android:textColor="@color/white"
-                                android:textColorHint="@color/light_gray"
+                                android:textColorHint="@color/gray_100"
                                 android:visibility="gone"></EditText>
 
                             <ImageView
@@ -115,7 +115,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="8dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/gray_100"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -134,7 +134,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="8dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/gray_100"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -154,7 +154,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="8dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/gray_100"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -173,7 +173,7 @@
                             android:layout_gravity="end"
                             android:layout_marginRight="8dp"
                             android:layout_weight="5"
-                            app:cardBackgroundColor="@color/light_gray"
+                            app:cardBackgroundColor="@color/gray_100"
                             app:cardCornerRadius="15dp"
                             app:cardElevation="0dp">
 
@@ -238,7 +238,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="-10dp"
                 android:textColor="@color/white"
-                android:textColorHint="@color/light_gray"
+                android:textColorHint="@color/gray_100"
                 android:textCursorDrawable="@drawable/cursor"
                 android:textSize="26sp"
                 android:inputType="textCapSentences"
@@ -259,7 +259,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/toolbar"
                 app:fab_colorNormal="@color/not_too_dark_gray"
                 app:fab_colorPressed="@color/gray"
-                app:fab_colorRipple="@color/light_gray"
+                app:fab_colorRipple="@color/gray_100"
                 app:fab_label="Budget"
                 app:fab_size="mini"
                 app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
@@ -329,7 +329,7 @@
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="top|start"
-                android:textColorHint="@color/light_gray"
+                android:textColorHint="@color/gray_100"
                 android:inputType="textCapSentences"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -348,7 +348,7 @@
                 android:gravity="top|start"
                 android:hint="Type something..."
                 android:textColor="@color/white"
-                android:textColorHint="@color/light_gray"
+                android:textColorHint="@color/gray_100"
                 android:textSize="20sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -448,7 +448,7 @@
                         android:layout_marginVertical="44dp"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="Tap the bottom right button to create a note"
-                        android:textColor="@color/light_gray"
+                        android:textColor="@color/gray_100"
                         android:textSize="18sp" />
 
                 </LinearLayout>
@@ -545,7 +545,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="15dp"
-            app:cardBackgroundColor="@color/light_gray"
+            app:cardBackgroundColor="@color/gray_100"
             android:layout_margin="2dp">
 
             <LinearLayout
