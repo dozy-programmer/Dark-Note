@@ -176,8 +176,6 @@ public class SettingsScreen extends AppCompatActivity {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_screen);
-        if (!AppData.isDisableAnimation)
-            overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
         context = this;
         mAuth = FirebaseAuth.getInstance();
@@ -353,7 +351,9 @@ public class SettingsScreen extends AppCompatActivity {
         // toolbar
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+    }
 
+    private void initializeButtonListeners(){
         signUp.setOnClickListener(view -> {
             if (getUser().isUltimateUser()) {
                 if (mAuth.getCurrentUser() == null) {
@@ -475,6 +475,20 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+        themeToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            User.Mode currentMode = User.Mode.Dark;
+            if (isChecked) {
+                if(checkedId == R.id.gray_mode)
+                    currentMode = User.Mode.Gray;
+                else if(checkedId == R.id.light_mode)
+                    currentMode = User.Mode.Light;
+                RealmSingleton.get(SettingsScreen.this).beginTransaction();
+                getUser().setScreenMode(currentMode.getValue());
+                RealmSingleton.get(SettingsScreen.this).commitTransaction();
+                restart();
+            }
+        });
+
         contact.setOnClickListener(v -> contactMe());
 
         reddit.setOnClickListener(v -> openReddit());
@@ -558,19 +572,6 @@ public class SettingsScreen extends AppCompatActivity {
             RealmSingleton.get(this).commitTransaction();
         });
 
-        themeToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            User.Mode currentMode = User.Mode.Dark;
-            if (isChecked) {
-                if(checkedId == R.id.gray_mode)
-                    currentMode = User.Mode.Gray;
-                else if(checkedId == R.id.light_mode)
-                    currentMode = User.Mode.Light;
-                RealmSingleton.get(SettingsScreen.this).beginTransaction();
-                getUser().setScreenMode(currentMode.getValue());
-                RealmSingleton.get(SettingsScreen.this).commitTransaction();
-            }
-        });
-
         sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             RealmSingleton.get(this).beginTransaction();
             getUser().setEnableSublists(isChecked);
@@ -638,6 +639,7 @@ public class SettingsScreen extends AppCompatActivity {
     private void populateUserSettings() {
         initializeLayout();
         initializeSettings();
+        initializeButtonListeners();
     }
 
     private void updateTheme() {
