@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?primaryBackgroundColor">
+    android:background="?primaryDividerColor">
 
     <ImageView
         android:id="@+id/item_icon"
