@@ -291,9 +291,12 @@ public class SettingsScreen extends AppCompatActivity {
             });
         }
 
-        Helper.moveAnimation(findViewById(R.id.version_icon), 300f);
-        if(AppData.isDisableAnimation)
+        if(AppData.isDisableAnimation) {
             coffeeAnimation.pauseAnimation();
+            ((LottieAnimationView)findViewById(R.id.version_icon)).pauseAnimation();
+        }
+        else
+            Helper.moveAnimation(findViewById(R.id.version_icon), 300f);
         logIn.setBackgroundColor(context.getColor(R.color.azure));
 
         User currentUser = getUser();
@@ -596,6 +599,7 @@ public class SettingsScreen extends AppCompatActivity {
             getUser().setDisableAnimation(isChecked);
             RealmSingleton.get(this).commitTransaction();
             AppData.isDisableAnimation = isChecked;
+            restart();
         });
 
         showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
