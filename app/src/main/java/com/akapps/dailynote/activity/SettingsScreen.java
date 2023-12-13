@@ -291,7 +291,7 @@ public class SettingsScreen extends AppCompatActivity {
             });
         }
 
-        Helper.moveBee(findViewById(R.id.version_icon), 300f);
+        Helper.moveAnimation(findViewById(R.id.version_icon), 300f);
         if(AppData.isDisableAnimation)
             coffeeAnimation.pauseAnimation();
         logIn.setBackgroundColor(context.getColor(R.color.azure));

@@ -76,7 +76,8 @@
                     android:layout_margin="10dp"
                     app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="20dp"
-                    app:strokeColor="#05fbcd"
+                    app:cardElevation="5dp"
+                    app:strokeColor="?primaryButtonColor"
                     app:strokeWidth="1dp">
 
                     <com.airbnb.lottie.LottieAnimationView
@@ -1678,17 +1679,17 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/version_icon"
-            android:layout_width="100dp"
-            android:layout_height="70dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_marginTop="-10dp"
-            android:elevation="1dp"
+            android:elevation="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/about_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/about_info"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/walking_dog"
+            app:lottie_rawRes="@raw/walking_coffee_mug"
             app:lottie_speed="0.7" />
 
         <com.google.android.material.card.MaterialCardView

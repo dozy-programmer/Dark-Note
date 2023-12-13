@@ -457,27 +457,27 @@ public class Helper {
         return progressDialog;
     }
 
-    public static void moveBee(LottieAnimationView bee, float max) {
+    public static void moveAnimation(LottieAnimationView animation, float max) {
         new Handler().postDelayed(() -> {
-            ObjectAnimator animator = ObjectAnimator.ofFloat(bee, "translationX", max);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(animation, "translationX", max);
             animator.setDuration(6000);
             animator.start();
             new Handler().postDelayed(() -> {
-                bee.setRotationY(180);
-                ObjectAnimator animator2 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
+                animation.setRotationY(180);
+                ObjectAnimator animator2 = ObjectAnimator.ofFloat(animation, "translationX", 0f);
                 animator2.setDuration(6000);
                 animator2.start();
                 new Handler().postDelayed(() -> {
-                    ObjectAnimator animator3 = ObjectAnimator.ofFloat(bee, "translationX", -1 * max);
+                    ObjectAnimator animator3 = ObjectAnimator.ofFloat(animation, "translationX", -1 * max);
                     animator3.setDuration(6000);
                     animator3.start();
                     new Handler().postDelayed(() -> {
-                        bee.setRotationY(0);
-                        ObjectAnimator animator4 = ObjectAnimator.ofFloat(bee, "translationX", 0f);
+                        animation.setRotationY(0);
+                        ObjectAnimator animator4 = ObjectAnimator.ofFloat(animation, "translationX", 0f);
                         animator4.setDuration(6000);
                         animator4.start();
                         new Handler().postDelayed(() -> {
-                            moveBee(bee, max);
+                            moveAnimation(animation, max);
                         }, 0);
                     }, 5000);
                 }, 0);
