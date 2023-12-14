@@ -1,5 +1,6 @@
 package com.akapps.dailynote.activity;
 
+import static com.akapps.dailynote.classes.helpers.UiHelper.getColorFromTheme;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.annotation.SuppressLint;
@@ -31,6 +32,7 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.categories_recyclerview;
@@ -140,16 +142,7 @@ public class CategoryScreen extends AppCompatActivity {
                 .isNotEmpty("reminderDateTime").findAll();
 
         initializeLayout();
-
-
-        if (screenMode == User.Mode.Dark) {
-            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.black));
-            getWindow().setStatusBarColor(context.getColor(R.color.black));
-        } else if (screenMode == User.Mode.Gray)
-            ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setBackgroundColor(context.getColor(R.color.gray));
-        else if (screenMode == User.Mode.Light) {
-
-        }
+        UiHelper.setStatusBarColor(this);
     }
 
     @Override
@@ -245,84 +238,45 @@ public class CategoryScreen extends AppCompatActivity {
             title.setPadding(0, 20, 0, 0);
 
             if (multiSelect) {
+                int textColor = UiHelper.getColorFromTheme(this, R.attr.primaryTextColor);
                 showAllNotes.setVisibility(View.VISIBLE);
                 noCategory.setVisibility(View.VISIBLE);
                 trash.setVisibility(View.GONE);
                 archived.setVisibility(View.VISIBLE);
+                unpinned.setVisibility(View.VISIBLE);
                 showAllNotes.setText("Archive");
                 noCategory.setText("Un-Archive");
-                showAllNotes.setTextColor(getColor(R.color.darker_blue));
-                noCategory.setTextColor(getColor(R.color.chetwode_blue));
-                unpinned.setTextColor(getColor(R.color.chardonnay));
-                unpinned.setVisibility(View.VISIBLE);
-                archived.setTextColor(getColor(R.color.azure));
                 archived.setText("Pin");
+                archived.setTextColor(textColor);
+                showAllNotes.setTextColor(textColor);
+                noCategory.setTextColor(textColor);
+                unpinned.setTextColor(textColor);
+
                 archived.setCompoundDrawables(null, null, null, null);
 
                 findViewById(R.id.pinned_layout).setVisibility(View.GONE);
                 findViewById(R.id.locked_layout).setVisibility(View.GONE);
             } else {
-                // text
-                int colorOne = R.color.gray;
-                int colorTwo = R.color.blue;
-                int colorThree = R.color.golden_rod;
-                int colorFour = R.color.white;
-
-                if (screenMode == User.Mode.Gray) {
-                    colorOne = R.color.gray_200;
-                    colorTwo = R.color.white;
-                    colorThree = R.color.gray;
-                    colorFour = R.color.white;
-                } else if (screenMode == User.Mode.Light) {
-                    colorOne = R.color.gray_200;
-                    colorTwo = R.color.white;
-                    colorThree = R.color.gray;
-                    colorFour = R.color.white;
-                }
-
+                int backgroundColor = getColorFromTheme(this, R.attr.primaryStrokeColor);
+                int noBackgroundColor = getColorFromTheme(this, R.attr.secondaryBackgroundColor);
+                int textColor = getColorFromTheme(this, R.attr.primaryTextColor);
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
-                        true, colorOne, R.color.white);
+                        true, backgroundColor, textColor);
                 Helper.addNotificationNumber(this, showAllNotes, allNotesSize, 0,
-                        true, colorOne, R.color.white);
+                        true, backgroundColor, textColor);
                 Helper.addNotificationNumber(this, archived, archivedAllNotes.size(), 0,
-                        true, colorOne, R.color.white);
+                        true, backgroundColor, textColor);
                 Helper.addNotificationNumber(this, trash, trashAllNotes.size(), 0,
-                        true, colorOne, R.color.white);
+                        true, backgroundColor, textColor);
                 // buttons
                 Helper.addNotificationNumber(this, locked, lockedAllNotes.size(), 75,
-                        true, R.color.transparent, colorTwo);
+                        true, noBackgroundColor, textColor);
                 Helper.addNotificationNumber(this, reminder, reminderAllNotes.size(), 75,
-                        true, R.color.transparent, R.color.green);
+                        true, noBackgroundColor, textColor);
                 Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
-                        true, R.color.transparent, colorThree);
+                        true, noBackgroundColor, textColor);
                 Helper.addNotificationNumber(this, photos, getNumberOfNotesWithPhotos(allNotes), 75,
-                        true, R.color.transparent, colorFour);
-
-                if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-                    pinned.setBackgroundColor(getColor(R.color.black));
-                    pinned.setStrokeColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
-                    pinned.setIcon(getDrawable(R.drawable.pin_filled_icon));
-                    pinned.setIconTintResource(R.color.golden_rod);
-                    pinned.setTextColor(ColorStateList.valueOf(getColor(R.color.golden_rod)));
-                    pinned.setStrokeWidth(5);
-
-                    reminder.setBackgroundColor(getColor(R.color.black));
-                    reminder.setStrokeColor(ColorStateList.valueOf(getColor(R.color.green)));
-                    reminder.setStrokeWidth(5);
-
-                    photos.setBackgroundColor(getColor(R.color.black));
-                    photos.setStrokeColor(ColorStateList.valueOf(getColor(R.color.gray_200)));
-                    photos.setStrokeWidth(5);
-
-                    locked.setBackgroundColor(getColor(R.color.black));
-                    locked.setStrokeColor(ColorStateList.valueOf(getColor(R.color.blue)));
-                    locked.setTextColor(ColorStateList.valueOf(getColor(R.color.blue)));
-                    locked.setIcon(getDrawable(R.drawable.lock_icon));
-                    locked.setIconTintResource(R.color.blue);
-                    locked.setStrokeWidth(5);
-                } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
-                }
+                        true, noBackgroundColor, textColor);
             }
         }
 
@@ -404,23 +358,29 @@ public class CategoryScreen extends AppCompatActivity {
             }
         });
 
-        info.setOnClickListener(v -> showInfoDialog());
+        info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isEditing)
+                    showInfoDialog();
+                else {
+                    isEditing = false;
+                    title.setText(titleBefore);
+                    info.setImageDrawable(getDrawable(R.drawable.info_icon));
+                    edit.setVisibility(View.VISIBLE);
+                    selections.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         edit.setOnClickListener(v -> {
-            isEditing = !isEditing;
-            if (isEditing) {
-                titleBefore = title.getText().toString();
-                title.setText("Editing");
-                Helper.showMessage(this, "Editing", "Click on item to edit", MotionToast.TOAST_SUCCESS);
-                edit.setImageDrawable(getDrawable(R.drawable.cancel));
-                info.setVisibility(View.GONE);
-                selections.setVisibility(View.GONE);
-            } else {
-                title.setText(titleBefore);
-                edit.setImageDrawable(getDrawable(R.drawable.edit_icon));
-                info.setVisibility(View.VISIBLE);
-                selections.setVisibility(View.VISIBLE);
-            }
+            isEditing = true;
+            selections.setVisibility(View.GONE);
+            edit.setVisibility(View.GONE);
+            titleBefore = title.getText().toString();
+            title.setText("Editing");
+            Helper.showMessage(this, "Editing", "Click on item to edit", MotionToast.TOAST_SUCCESS);
+            info.setImageDrawable(getDrawable(R.drawable.cancel));
         });
 
         addCategory.setOnClickListener(v -> openNewItemDialog());

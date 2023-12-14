@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray">
+    android:background="?primaryBackgroundColor">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -65,7 +65,7 @@
         android:fontFamily="@font/baloo_bhai"
         android:gravity="top|center_horizontal"
         android:text="Beautiful &amp; Intuitive"
-        android:textColor="@color/white"
+        android:textColor="?primaryTextColor"
         android:textSize="16sp"
         android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +80,7 @@
         android:fontFamily="@font/baloo_bhai"
         android:gravity="center"
         android:text="App Restart Required..."
-        android:textColor="@color/pressed_blue"
+        android:textColor="?primaryTextColor"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

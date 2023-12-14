@@ -91,22 +91,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
         itemName.requestFocusFromTouch();
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
-            itemName.setTextColor(getContext().getColor(R.color.white));
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray) {
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-            delete.setBackgroundColor(getContext().getColor(R.color.gray_100));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-
         if (isAdding) {
             title.setText("Adding");
             delete.setVisibility(View.GONE);
-            folderColor.setCardBackgroundColor(getContext().getColor(R.color.azure));
         } else {
             title.setText("Editing");
             try {
@@ -217,7 +204,6 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout) {
-
         if (!itemName.getText().toString().isEmpty()) {
             if (isAdding)
                 addCategory(itemName.getText().toString(), color);

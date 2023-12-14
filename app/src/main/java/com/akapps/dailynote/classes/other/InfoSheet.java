@@ -164,7 +164,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             title.setText("Guide");
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
-            info.setTextColor(getContext().getColor(R.color.pressed_blue));
             info.setText("Change folder name/color/delete" +
                     " by clicking on edit icon on the top right and then select desired folder.\n\n" +
                     "2 ways to add notes to a folder:\n\n" +
@@ -315,7 +314,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             title.setText("Budget $ Guide");
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
-            info.setTextColor(getContext().getColor(R.color.pressed_blue));
             info.setText(getContext().getString(R.string.try_out_budget)
                     .replaceAll("\\$", Matcher.quoteReplacement(expenseChar))
                     .replaceAll("\\+" + expenseChar, Matcher.quoteReplacement(budgetChar)));

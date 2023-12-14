@@ -18,6 +18,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
 
 import io.realm.RealmResults;
@@ -30,7 +31,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     private RealmResults<Note> allSelectedNotes;
     private final FragmentActivity activity;
     private final Context context;
-    private boolean isLightMode;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView item_category;
@@ -52,7 +52,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         this.allCategories = allCategories;
         this.activity = activity;
         this.context = context;
-        isLightMode = RealmSingleton.getInstance(context).where(User.class).findFirst().isModeSettings();
         allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
     }
 
@@ -67,9 +66,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current photo object
         Folder currentFolder = allCategories.get(position);
-
-        holder.background.setBackgroundColor(isLightMode ? context.getColor(R.color.black) : context.getColor(R.color.gray));
-
         int numberOfNotesInCategory =
                 RealmSingleton.getInstance(context).where(Note.class).equalTo("archived", false)
                         .equalTo("trash", false)
@@ -77,13 +73,15 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                         .findAll().size();
 
         holder.item_category.setText(currentFolder.getName());
+        int background = UiHelper.getColorFromTheme(activity, R.attr.primaryStrokeColor);
+        int textColor = UiHelper.getColorFromTheme(activity, R.attr.primaryTextColor);
         Helper.addNotificationNumber(activity, holder.folder_icon, numberOfNotesInCategory,
-                20, false, R.color.blue, R.color.white);
+                20, false, background, textColor);
 
-        if(currentFolder.getColor()!=0)
+        if(currentFolder.getColor() != 0)
             holder.folder_icon.setColorFilter(currentFolder.getColor());
         else
-            holder.folder_icon.setColorFilter(context.getColor(R.color.azure));
+            holder.folder_icon.setColorFilter(UiHelper.getColorFromTheme(activity, R.attr.primaryButtonColor));
 
         holder.view.setOnClickListener(v -> {
             if(((CategoryScreen)activity).isEditing) {

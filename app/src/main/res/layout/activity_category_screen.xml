@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray">
+    android:background="?primaryBackgroundColor">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -20,7 +20,8 @@
             android:id="@+id/close_activity"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/arrow_down"/>
+            android:src="@drawable/arrow_down"
+            android:tint="?primaryIconTintColor"/>
 
         <TextView
             android:id="@+id/title"
@@ -33,7 +34,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:text="Folders"
             android:maxLines="2"
-            android:textColor="@color/white"
+            android:textColor="?secondaryTextColor"
             android:textSize="24sp"></TextView>
 
         <ImageView
@@ -42,14 +43,16 @@
             android:layout_height="30dp"
             android:layout_gravity="right"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/info_icon"></ImageView>
+            android:src="@drawable/info_icon"
+            android:tint="?primaryIconTintColor"></ImageView>
 
         <ImageView
             android:id="@+id/edit"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="right"
-            android:src="@drawable/edit_icon"></ImageView>
+            android:src="@drawable/edit_icon"
+            android:tint="?secondaryIconTintColor"></ImageView>
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -70,7 +73,7 @@
             android:paddingVertical="2dp"
             android:paddingRight="15dp"
             android:text="All Notes"
-            android:textColor="@color/white"
+            android:textColor="?primaryTextColor"
             android:textSize="18sp" />
 
         <TextView
@@ -81,7 +84,7 @@
             android:paddingVertical="2dp"
             android:paddingRight="15dp"
             android:text="Uncategorized Notes"
-            android:textColor="@color/white"
+            android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
         <TextView
@@ -91,10 +94,11 @@
             android:layout_marginHorizontal="12dp"
             android:paddingRight="15dp"
             android:drawableLeft="@drawable/delete_icon"
+            android:drawableTint="?tertiaryIconTintColor"
             android:drawablePadding="10dp"
             android:paddingVertical="2dp"
             android:text="Trash"
-            android:textColor="@color/red"
+            android:textColor="?primaryTextColor"
             android:textSize="20sp"></TextView>
 
         <TextView
@@ -105,10 +109,10 @@
             android:paddingRight="15dp"
             android:drawableLeft="@drawable/archive_icon"
             android:drawablePadding="10dp"
-            android:drawableTint="@color/cornflower_blue"
+            android:drawableTint="?primaryButtonColor"
             android:paddingVertical="2dp"
             android:text="Archived"
-            android:textColor="@color/cornflower_blue"
+            android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
         <TextView
@@ -119,7 +123,7 @@
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
             android:text="Un-Pin"
-            android:textColor="@color/gold_100"
+            android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
         <LinearLayout
@@ -136,13 +140,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/pin_filled_icon"
-                android:drawableTint="@color/black"
+                android:drawableTint="?primaryIconTintColor"
                 android:layout_marginRight="5dp"
-                android:backgroundTint="@color/gold_100"
+                android:backgroundTint="?secondaryBackgroundColor"
                 app:cornerRadius="15dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="?primaryStrokeColor"
                 android:layout_weight="1"
                 android:text="Pinned"
-                android:textColor="@color/black"
+                android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
 
             <com.google.android.material.button.MaterialButton
@@ -150,13 +156,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/reminder_icon"
+                android:drawableTint="?primaryIconTintColor"
                 app:cornerRadius="15dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="?primaryStrokeColor"
                 android:layout_marginLeft="5dp"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="?secondaryBackgroundColor"
                 android:paddingVertical="2dp"
                 android:text="Reminders"
                 android:layout_weight="1"
-                android:textColor="#0AFF19"
+                android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
 
         </LinearLayout>
@@ -175,14 +184,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/lock_icon"
-                android:drawableTint="@color/white"
+                android:drawableTint="?primaryIconTintColor"
                 app:cornerRadius="15dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="?primaryStrokeColor"
                 android:layout_marginRight="5dp"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="?secondaryBackgroundColor"
                 android:paddingVertical="2dp"
                 android:text="Locked"
                 android:layout_weight="1"
-                android:textColor="@color/white"
+                android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
 
             <com.google.android.material.button.MaterialButton
@@ -190,13 +201,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/icon_image"
+                android:drawableTint="?primaryIconTintColor"
                 app:cornerRadius="15dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="?primaryStrokeColor"
                 android:layout_marginLeft="5dp"
-                android:backgroundTint="@color/gray_200"
+                android:backgroundTint="?secondaryBackgroundColor"
                 android:paddingVertical="2dp"
                 android:text="   Photos   "
                 android:layout_weight="1"
-                android:textColor="@color/white"
+                android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
 
         </LinearLayout>
@@ -208,7 +222,7 @@
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
             android:text="Unselect Category"
-            android:textColor="@color/white"
+            android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
     </LinearLayout>
@@ -248,7 +262,7 @@
         app:layout_constraintStart_toStartOf="@+id/empty_category"
         app:layout_constraintTop_toBottomOf="@+id/top_layout"
         android:src="@drawable/category_empty_icon"
-        android:tint="@color/blue"
+        android:tint="?primaryButtonColor"
         android:visibility="gone"/>
 
     <TextView
@@ -258,7 +272,7 @@
         android:layout_margin="20dp"
         android:gravity="center"
         android:text="Don't mind me, just passing some time...\n\nIn the meantime, press the add button to add a folder"
-        android:textColor="@color/blue"
+        android:textColor="?secondaryTextColor"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/add_category"
         app:layout_constraintEnd_toEndOf="parent"
@@ -270,7 +284,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        app:backgroundTint="@color/colorPrimaryDark"
+        app:backgroundTint="?primaryButtonColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

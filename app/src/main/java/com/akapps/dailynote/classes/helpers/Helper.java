@@ -596,8 +596,8 @@ public class Helper {
                 // change position of Badge
                 badgeDrawable.setHorizontalOffset(hOffset);
                 badgeDrawable.setVerticalOffset(center ? view.getHeight() / 2 : 25);
-                badgeDrawable.setBackgroundColor(activity.getColor(badgeColor));
-                badgeDrawable.setBadgeTextColor(activity.getColor(badgeTextColor));
+                badgeDrawable.setBackgroundColor(badgeColor);
+                badgeDrawable.setBadgeTextColor(badgeTextColor);
 
                 BadgeUtils.attachBadgeDrawable(badgeDrawable, view, null);
                 view.getViewTreeObserver().removeOnGlobalLayoutListener(this);

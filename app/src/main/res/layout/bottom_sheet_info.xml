@@ -22,7 +22,7 @@
             android:layout_height="10dp"
             android:layout_marginTop="10dp"
             android:padding="13dp"
-            app:cardBackgroundColor="@color/gray_200"
+            app:cardBackgroundColor="?primaryStrokeColor"
             app:cardCornerRadius="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:text="Info"
-            android:textColor="@color/azure"
+            android:textColor="?secondaryTextColor"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="@+id/materialCardView8"
             app:layout_constraintStart_toStartOf="@+id/materialCardView8"
@@ -68,7 +68,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:text="Info"
-                android:textColor="@color/darker_blue"
+                android:textColor="?primaryTextColor"
                 android:textSize="16sp" />
 
         </androidx.core.widget.NestedScrollView>
