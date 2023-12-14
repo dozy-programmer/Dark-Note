@@ -1,5 +1,7 @@
 package com.akapps.dailynote.activity;
 
+import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -94,6 +96,7 @@ public class CategoryScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_screen);
         if (!AppData.isDisableAnimation)

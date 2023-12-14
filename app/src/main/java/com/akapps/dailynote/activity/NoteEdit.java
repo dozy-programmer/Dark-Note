@@ -1,6 +1,8 @@
 package com.akapps.dailynote.activity;
 
 import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
+import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
+
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -180,6 +182,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
 

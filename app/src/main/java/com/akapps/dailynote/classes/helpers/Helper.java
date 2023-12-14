@@ -354,14 +354,12 @@ public class Helper {
                 subTitle.setText("\"Houston, we have a problem...\"");
                 subSubTitle.setText("Tap the bottom right button to add to checklist");
             }
-            subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
             subSubTitle.setTextSize(16);
         } else {
             title.setTextSize(18);
             title.setText("Avoid getting lost in the universe trying to remember");
             subTitle.setText("Let me do it for you");
             subSubTitle.setText("Tap the bottom right button to create a note");
-            subSubTitle.setTextColor(context.getColor(R.color.semi_gray));
             if(RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);

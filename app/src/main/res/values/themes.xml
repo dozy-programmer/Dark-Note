@@ -233,9 +233,9 @@
     <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar" >
         <item name="android:textSize">@dimen/dimen_16</item>
         <item name="searchHintIcon">@null</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorHint">@color/greyish</item>
-        <item name="android:tint">@color/orange</item>
+        <item name="android:textColorPrimary">?primaryTextColor</item>
+        <item name="android:textColorHint">?secondaryTextColor</item>
+        <item name="android:tint">?primaryButtonColor</item>
     </style>
 
     <style name="circular">

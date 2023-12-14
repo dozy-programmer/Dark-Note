@@ -1,5 +1,7 @@
 package com.akapps.dailynote.activity;
 
+import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
+
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.FragmentActivity;
@@ -20,6 +22,7 @@ public class Homepage extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage_screen);
 

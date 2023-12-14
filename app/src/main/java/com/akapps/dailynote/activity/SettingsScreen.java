@@ -41,6 +41,7 @@ import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.AccountSheet;
 import com.akapps.dailynote.classes.other.CreditsSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
@@ -647,7 +648,7 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private void updateTheme() {
-        getWindow().setStatusBarColor(getColorFromTheme(this, R.attr.secondaryBackgroundColor));
+        UiHelper.setStatusBarColor(this);
         User.Mode currentTheme = getUser().getScreenMode();
         if (currentTheme == User.Mode.Dark) {
             toggleCurrentTheme(currentTheme, darkMode.getId());

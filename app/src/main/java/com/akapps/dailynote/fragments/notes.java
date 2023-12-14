@@ -1,5 +1,6 @@
 package com.akapps.dailynote.fragments;
 
+import static com.akapps.dailynote.classes.helpers.UiHelper.getColorFromTheme;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,14 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
@@ -37,14 +39,18 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.material.card.MaterialCardView;
+
 import java.io.File;
 import java.util.ArrayList;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -58,11 +64,11 @@ public class notes extends Fragment {
     private Context context;
     private TextView fragmentTitle;
     private TextView sortedBy;
-    private CardView searchLayout;
-    private CardView filterNotes;
-    private CardView settings;
-    private CardView restoreNotes;
-    private CardView categoryNotes;
+    private MaterialCardView searchLayout;
+    private MaterialCardView filterNotes;
+    private MaterialCardView settings;
+    private MaterialCardView restoreNotes;
+    private MaterialCardView categoryNotes;
     private SearchView searchEditText;
     private ImageView search;
     private ImageView filterIcon;
@@ -107,7 +113,6 @@ public class notes extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         context = getContext();
 
         Thread thread = new Thread() {
@@ -175,7 +180,6 @@ public class notes extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 if (isSearchingNotes) {
-                    hideSearchBar();
                     closeMultipleNotesLayout();
                     showData();
                     isListEmpty(getAllNotes().size(), false);
@@ -191,18 +195,11 @@ public class notes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        if (getUser().getScreenMode() == User.Mode.Dark) {
-            lightColor = context.getColor(R.color.black);
-            view.setBackgroundColor(lightColor);
-            getActivity().getWindow().setStatusBarColor(context.getColor(R.color.black));
-        }
-
+        UiHelper.setStatusBarColor(getActivity());
         // shows all realm notes (offline) aka notes and checklists
         initializeUi();
         initializeLayout();
         showData();
-
-        updateToolbarColors();
 
         if (getUser().isOpenFoldersOnStart() && AppData.isAppFirstStarted) {
             AppData.isAppFirstStarted = false;
@@ -227,8 +224,12 @@ public class notes extends Fragment {
         else {
             adapterNotes.notifyDataSetChanged();
 
-            // if list is empty, then it shows an empty layout
-            isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
+            try {
+                // if list is empty, then it shows an empty layout
+                isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
+            } catch (Exception e) {
+                new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
+            }
 
             if (RealmSingleton.getInstance(context).where(Note.class).findAll().size() == 0)
                 Helper.deleteAppFiles(context);
@@ -244,22 +245,6 @@ public class notes extends Fragment {
 
         Helper.deleteCache(context);
         super.onDestroy();
-    }
-
-    private void updateToolbarColors() {
-        if (getUser().getScreenMode() == User.Mode.Dark) {
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-            filterNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-            settings.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-            restoreNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-            categoryNotes.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-        } else {
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
-            filterNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
-            settings.setCardBackgroundColor(context.getColor(R.color.gray_100));
-            restoreNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
-            categoryNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
-        }
     }
 
     private void setRecyclerviewLayout() {
@@ -325,17 +310,13 @@ public class notes extends Fragment {
                 .getIdentifier("android:id/search_plate", null, null);
         View searchPlateView = searchEditText.findViewById(searchPlateId);
         if (searchPlateView != null) {
-            if (getUser().getScreenMode() == User.Mode.Dark) {
-                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.black));
-                int id = searchEditText.getContext()
-                        .getResources()
-                        .getIdentifier("android:id/search_src_text", null, null);
-                TextView textView = searchEditText.findViewById(id);
-                textView.setTextColor(getActivity().getColor(R.color.black));
-                ((EditText) searchEditText.findViewById(id)).setHintTextColor(context.getColor(R.color.white));
-                ((EditText) searchEditText.findViewById(id)).setTextColor(context.getColor(R.color.white));
-            } else
-                searchPlateView.setBackgroundColor(getActivity().getColor(R.color.gray));
+            searchPlateView.setBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor));
+            int id = searchEditText.getContext().getResources()
+                    .getIdentifier("android:id/search_src_text", null, null);
+            TextView textView = searchEditText.findViewById(id);
+            textView.setTextColor(getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor));
+            ((EditText) searchEditText.findViewById(id)).setHintTextColor(getColorFromTheme(getActivity(), R.attr.primaryTextColor));
+            ((EditText) searchEditText.findViewById(id)).setTextColor(getColorFromTheme(getActivity(), R.attr.primaryTextColor));
         }
 
         settings.setOnClickListener(v -> {
@@ -349,7 +330,6 @@ public class notes extends Fragment {
 
         addMenuLarge.setOnMenuButtonClickListener(v -> {
             if (isSearchingNotes) {
-                hideSearchBar();
                 closeMultipleNotesLayout();
                 isListEmpty(0, false);
                 showData();
@@ -365,7 +345,6 @@ public class notes extends Fragment {
 
         addMenu.setOnMenuButtonClickListener(v -> {
             if (isSearchingNotes) {
-                hideSearchBar();
                 closeMultipleNotesLayout();
                 isListEmpty(0, false);
                 showData();
@@ -491,9 +470,7 @@ public class notes extends Fragment {
 
     public void clearMultipleSelect() {
         numMultiSelect = -1;
-        unSelectAllNotes();
         enableSelectMultiple = isNotesFiltered = false;
-        settings.setVisibility(View.VISIBLE);
         closeMultipleNotesLayout();
         showData();
     }
@@ -558,6 +535,8 @@ public class notes extends Fragment {
             isTrashSelected = true;
             restoreNotes.setVisibility(View.VISIBLE);
             settings.setVisibility(View.GONE);
+            filterNotes.setVisibility(View.GONE);
+            searchLayout.setVisibility(View.GONE);
             unSelectAllNotes();
             isNotesFiltered = true;
             closeFilter();
@@ -663,13 +642,9 @@ public class notes extends Fragment {
         populateAdapter(query);
         if (query.size() == 0)
             isListEmpty(query.size(), true);
-        if (!isCategory) {
-            filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
-            addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-            addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
-            addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-        } else
+        if (!isCategory)
+            setCategoryIconColors();
+        else
             closeFilter();
     }
 
@@ -679,14 +654,18 @@ public class notes extends Fragment {
         populateAdapter(query);
         if (query.size() == 0)
             isListEmpty(query.size(), true);
-        if (!isCategory) {
-            filterNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-            addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
-            addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-            addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
-            addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-        } else
+        if (!isCategory)
+            setCategoryIconColors();
+        else
             closeFilter();
+    }
+
+    public void setCategoryIconColors(){
+        filterNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
+        addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+        addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
     }
 
     public void showDefaultSort() {
@@ -747,9 +726,10 @@ public class notes extends Fragment {
                     allNotes = allNotes.where().equalTo("category", "none").findAll();
                 allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
             }
-        }
-        populateAdapter(allNotes);
-        isListEmpty(allNotes.size(), false);
+            populateAdapter(allNotes);
+            isListEmpty(allNotes.size(), false);
+        } else
+            showDefaultSort();
     }
 
     // populates the recyclerview
@@ -762,10 +742,10 @@ public class notes extends Fragment {
 
     private void closeFilter() {
         isNotesFiltered = true;
-        categoryNotes.setCardBackgroundColor(context.getColor(R.color.darker_blue));
-        addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+        categoryNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
+        addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
     }
 
@@ -789,7 +769,7 @@ public class notes extends Fragment {
         categoryNotes.setVisibility(View.GONE);
         restoreNotes.setVisibility(View.GONE);
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
+        searchLayout.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor));
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 0, 0);
         searchEditText.setLayoutParams(params);
@@ -799,56 +779,61 @@ public class notes extends Fragment {
         searchEditText.setQuery("", false);
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
+        searchEditText.setBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor));
 
-        searchEditText.setBackgroundColor(context.getColor(getUser().getScreenMode() == User.Mode.Dark ? R.color.black : R.color.gray));
-
-        addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
-        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
         ((LottieAnimationView) view.findViewById(R.id.empty_view)).pauseAnimation();
-        updateToolbarColors();
     }
 
     private void hideSearchBar() {
+        fragmentTitle.setText("Dark Note");
+        fragmentTitle.setTextSize(28);
         searchEditText.setQuery("", false);
-        search.setVisibility(View.VISIBLE);
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
-        fragmentTitle.setVisibility(View.VISIBLE);
-        filterNotes.setVisibility(View.VISIBLE);
-        searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
         searchEditText.setVisibility(View.GONE);
-        if (isTrashSelected)
-            restoreNotes.setVisibility(View.VISIBLE);
+        fragmentTitle.setVisibility(View.VISIBLE);
+        settings.setVisibility(View.VISIBLE);
+        settingsIcon.setImageDrawable(context.getDrawable(R.drawable.settings_icon));
+        restoreNotes.setVisibility(View.GONE);
+        if (isTrashSelected) restoreNotes.setVisibility(View.VISIBLE);
+        restoreNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor));
         search.setVisibility(View.VISIBLE);
+        searchLayout.setVisibility(View.VISIBLE);
+        search.setImageDrawable(context.getDrawable(R.drawable.search_icon));
+        filterNotes.setVisibility(View.VISIBLE);
+        filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));
+        filterNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor));
         categoryNotes.setVisibility(View.VISIBLE);
-        searchEditText.clearFocus();
+        categoryNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor));
 
         LinearLayout.LayoutParams params = (new LinearLayout.LayoutParams(filterNotes.getWidth(), filterNotes.getHeight()));
         params.setMargins(0, 0, 24, 0);
         searchLayout.setLayoutParams(params);
-        searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
+        searchLayout.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor));
         searchLayout.setPadding(filterNotes.getPaddingLeft(), filterNotes.getPaddingTop(), filterNotes.getPaddingRight(), filterNotes.getPaddingBottom());
-        searchEditText.setVisibility(View.GONE);
-        searchEditText.setVisibility(View.GONE);
         searchEditText.clearFocus();
-        addMenu.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
+
+        addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
-        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
+        addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
     }
 
     public void deleteMultipleNotesLayout() {
         enableSelectMultiple = true;
-        addMenu.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.red));
+        addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+
         search.setImageDrawable(context.getDrawable(R.drawable.delete_icon));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.select_all_icon));
         settingsIcon.setImageDrawable(context.getDrawable(R.drawable.export_icon));
-        settingsIcon.setColorFilter(context.getColor(R.color.white));
+        settingsIcon.setColorFilter(getColorFromTheme(getActivity(), R.attr.primaryIconTintColor));
+        settings.setVisibility(View.VISIBLE);
+        filterNotes.setVisibility(View.VISIBLE);
         deletingMultipleNotes = true;
     }
 
@@ -857,21 +842,7 @@ public class notes extends Fragment {
         deletingMultipleNotes = false;
         unSelectAllNotes();
         clearVariables();
-
-        restoreNotes.setVisibility(View.GONE);
-        fragmentTitle.setText("Dark Note");
-        fragmentTitle.setTextSize(28);
-        addMenu.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
-        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
-        addMenuLarge.setMenuButtonColorNormal(context.getColor(R.color.darker_blue));
-        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
-        search.setImageDrawable(context.getDrawable(R.drawable.search_icon));
-        filterNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
-        filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));
-        settingsIcon.setImageDrawable(context.getDrawable(R.drawable.settings_icon));
-        categoryNotes.setCardBackgroundColor(context.getColor(R.color.gray_100));
-        settings.setVisibility(View.VISIBLE);
-        updateToolbarColors();
+        hideSearchBar();
     }
 
     public void deleteMultipleNotes(boolean deleteNotes) {
@@ -1000,15 +971,15 @@ public class notes extends Fragment {
         isAllSelected = false;
     }
 
-    private Realm getRealm(){
+    private Realm getRealm() {
         return RealmSingleton.get(getActivity());
     }
 
-    private User getUser(){
+    private User getUser() {
         return RealmHelper.getUser(context, "notes fragment");
     }
 
-    private RealmResults<Note> getAllNotes(){
+    private RealmResults<Note> getAllNotes() {
         return getRealm().where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)

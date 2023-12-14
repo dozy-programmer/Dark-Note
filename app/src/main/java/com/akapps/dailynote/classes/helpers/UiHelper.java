@@ -37,6 +37,10 @@ public class UiHelper {
         return ContextCompat.getColor(activity, typedValue.resourceId);
     }
 
+    public static void setStatusBarColor(Activity activity){
+        activity.getWindow().setStatusBarColor(getColorFromTheme(activity, R.attr.secondaryBackgroundColor));
+    }
+
     public static int getBottomSheetTheme(Context context) {
         User.Mode themeMode = RealmHelper.getUser(context, "bottom sheet").getScreenMode();
         if (themeMode == User.Mode.Dark)
