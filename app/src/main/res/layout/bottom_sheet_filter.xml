@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -60,8 +61,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="100dp"
-            app:cardBackgroundColor="?tertiaryBackgroundColor"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="15dp"
+            app:strokeColor="?primaryStrokeColor"
+            app:strokeWidth="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title">
@@ -99,7 +102,7 @@
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="5dp"
-                        app:cardBackgroundColor="?primaryStrokeColor"
+                        app:cardBackgroundColor="?primaryBackgroundColor"
                         app:cardCornerRadius="15dp"
                         app:strokeColor="?primaryStrokeColor"
                         app:strokeWidth="2dp">
@@ -126,7 +129,7 @@
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="5dp"
-                        app:cardBackgroundColor="?primaryStrokeColor"
+                        app:cardBackgroundColor="?primaryBackgroundColor"
                         app:cardCornerRadius="15dp"
                         app:strokeColor="?primaryStrokeColor"
                         app:strokeWidth="2dp">
@@ -160,7 +163,7 @@
                         android:layout_gravity="center"
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="8dp"
-                        app:cardBackgroundColor="?primaryStrokeColor"
+                        app:cardBackgroundColor="?primaryBackgroundColor"
                         app:cardCornerRadius="15dp"
                         app:strokeColor="?primaryStrokeColor"
                         app:strokeWidth="2dp">
@@ -187,7 +190,7 @@
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        app:cardBackgroundColor="?primaryStrokeColor"
+                        app:cardBackgroundColor="?primaryBackgroundColor"
                         app:cardCornerRadius="15dp"
                         app:strokeColor="?primaryStrokeColor"
                         app:strokeWidth="2dp">
@@ -218,8 +221,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginVertical="10dp"
-            app:cardBackgroundColor="?tertiaryBackgroundColor"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="15dp"
+            app:strokeColor="?primaryStrokeColor"
+            app:strokeWidth="2dp"
             app:layout_constraintEnd_toEndOf="@+id/sort_by_date"
             app:layout_constraintStart_toStartOf="@+id/sort_by_date"
             app:layout_constraintTop_toBottomOf="@+id/sort_by_date">
@@ -250,7 +255,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    app:cardBackgroundColor="?primaryStrokeColor"
+                    app:cardBackgroundColor="?primaryBackgroundColor"
                     app:cardCornerRadius="15dp"
                     app:strokeColor="?primaryStrokeColor"
                     app:strokeWidth="2dp">
@@ -276,7 +281,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    app:cardBackgroundColor="?primaryStrokeColor"
+                    app:cardBackgroundColor="?primaryBackgroundColor"
                     app:cardCornerRadius="15dp"
                     app:strokeColor="?primaryStrokeColor"
                     app:strokeWidth="2dp">

@@ -6,7 +6,7 @@
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
     <string name="app_version">v14.0</string>
-    <string name="app_version_int">14.0</string>F
+    <string name="app_version_int">14.0</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>

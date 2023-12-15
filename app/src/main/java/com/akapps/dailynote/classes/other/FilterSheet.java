@@ -6,25 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
-
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.fragments.notes;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-
 import org.jetbrains.annotations.NotNull;
-
 import www.sanju.motiontoast.MotionToast;
 
 public class FilterSheet extends RoundedBottomSheetDialogFragment {
@@ -38,6 +32,10 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
     private boolean aToZ, zToA;
     private boolean isAlphabeticalChosen;
     private String dateTypeSelected = "";
+
+    private int primaryButtonColor;
+    private int secondaryButtonColor;
+    private int backgroundColor;
 
     public FilterSheet() {
     }
@@ -53,8 +51,6 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
         ImageView resetFilter = view.findViewById(R.id.reset_filter);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         SwitchCompat saveSort = view.findViewById(R.id.save_sort);
-        MaterialCardView sortByDate = view.findViewById(R.id.sort_by_date);
-        MaterialCardView sortByAlphabetical = view.findViewById(R.id.alphabetical_sort);
         MaterialCardView createdDateButton = view.findViewById(R.id.created_date);
         MaterialCardView editedDateButton = view.findViewById(R.id.edited_date);
         MaterialCardView oldToNewButton = view.findViewById(R.id.old_new);
@@ -62,111 +58,101 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
         MaterialCardView aToZButton = view.findViewById(R.id.a_z);
         MaterialCardView zToAButton = view.findViewById(R.id.z_a);
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-            sortByDate.setCardBackgroundColor(getContext().getColor(R.color.black));
-            sortByDate.setStrokeColor(getContext().getColor(R.color.gray_200));
-            sortByDate.setStrokeWidth(5);
-            sortByAlphabetical.setCardBackgroundColor(getContext().getColor(R.color.black));
-            sortByAlphabetical.setStrokeColor(getContext().getColor(R.color.gray_200));
-            sortByAlphabetical.setStrokeWidth(5);
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
+        primaryButtonColor = UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor);
+        secondaryButtonColor = UiHelper.getColorFromTheme(getActivity(), R.attr.secondaryButtonColor);
+        backgroundColor = UiHelper.getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor);
 
         // set current filter
         String dateType = Helper.getPreference(getContext(), "_dateType");
-        boolean oldestToNewest = Helper.getBooleanPreference(getContext(), "_oldestToNewest");
-        boolean newestToOldest = Helper.getBooleanPreference(getContext(), "_newestToOldest");
-
-        boolean aToZSaved = Helper.getBooleanPreference(getContext(), "_aToZ");
-        boolean zToASaved = Helper.getBooleanPreference(getContext(), "_zToA");
-
-
+        oldestToLatest = Helper.getBooleanPreference(getContext(), "_oldestToNewest");
+        latestToOldest = Helper.getBooleanPreference(getContext(), "_newestToOldest");
+        aToZ = Helper.getBooleanPreference(getContext(), "_aToZ");
+        zToA = Helper.getBooleanPreference(getContext(), "_zToA");
         if (null != dateType) {
-            if (dateType.equals("dateCreatedMilli"))
-                createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
-            else if (dateType.equals("dateEditedMilli"))
-                editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+            if (dateType.equals("dateCreatedMilli")) {
+                setColor(createdDateButton, primaryButtonColor);
+                createdDate = true;
+            }
+            else if (dateType.equals("dateEditedMilli")) {
+                setColor(editedDateButton, primaryButtonColor);
+                editedDate = true;
+            }
 
-
-            if (oldestToNewest)
-                oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
-            else if (newestToOldest)
-                newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
-        } else if (aToZSaved || zToASaved) {
-            if (aToZSaved)
-                aToZButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
-            else if (zToASaved)
-                zToAButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+            if (oldestToLatest)
+                setColor(oldToNewButton, secondaryButtonColor);
+            else if (latestToOldest)
+                setColor(newToOldButton, secondaryButtonColor);
+        } else if (aToZ || zToA) {
+            if (aToZ)
+                setColor(aToZButton, primaryButtonColor);
+            else
+                setColor(zToAButton, primaryButtonColor);
         }
 
         createdDateButton.setOnClickListener(v -> {
             createdDate = !createdDate;
             unSelectAlphabetical(aToZButton, zToAButton);
             if (createdDate) {
-                createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+                setColor(createdDateButton, primaryButtonColor);
                 editedDate = false;
-                editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(editedDateButton, backgroundColor);
             } else
-                createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(createdDateButton, backgroundColor);
         });
 
         editedDateButton.setOnClickListener(v -> {
             editedDate = !editedDate;
             unSelectAlphabetical(aToZButton, zToAButton);
             if (editedDate) {
-                editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+                setColor(editedDateButton, primaryButtonColor);
                 createdDate = false;
-                createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(createdDateButton, backgroundColor);
             } else
-                editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(editedDateButton, backgroundColor);
         });
 
         oldToNewButton.setOnClickListener(v -> {
             oldestToLatest = !oldestToLatest;
             unSelectAlphabetical(aToZButton, zToAButton);
             if (oldestToLatest) {
-                oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
+                setColor(oldToNewButton, secondaryButtonColor);
                 latestToOldest = false;
-                newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(newToOldButton, backgroundColor);
             } else
-                oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(oldToNewButton, backgroundColor);
         });
 
         newToOldButton.setOnClickListener(v -> {
             latestToOldest = !latestToOldest;
             unSelectAlphabetical(aToZButton, zToAButton);
             if (latestToOldest) {
-                newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.golden_rod));
+                setColor(newToOldButton, secondaryButtonColor);
                 oldestToLatest = false;
-                oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(oldToNewButton, backgroundColor);
             } else
-                newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(newToOldButton, backgroundColor);
         });
 
         aToZButton.setOnClickListener(v -> {
             aToZ = !aToZ;
             unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton);
             if (aToZ) {
-                aToZButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+                setColor(aToZButton, primaryButtonColor);
                 zToA = false;
-                zToAButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(zToAButton, backgroundColor);
             } else
-                aToZButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(aToZButton, backgroundColor);
         });
 
         zToAButton.setOnClickListener(v -> {
             zToA = !zToA;
             unSelectDate(oldToNewButton, newToOldButton, createdDateButton, editedDateButton);
             if (zToA) {
-                zToAButton.setCardBackgroundColor(getContext().getColor(R.color.darker_blue));
+                setColor(zToAButton, primaryButtonColor);
                 aToZ = false;
-                aToZButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(aToZButton, backgroundColor);
             } else
-                zToAButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+                setColor(zToAButton, backgroundColor);
         });
 
         resetFilter.setOnClickListener(v -> {
@@ -203,7 +189,6 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
                 Helper.showMessage(getActivity(), "Error", "Choose to sort either by " +
                         "date or by alphabetical", MotionToast.TOAST_ERROR);
             } else if (isDateCorrectlySelected) {
-
                 if (saveSort.isChecked()) {
                     if (isAlphabeticalChosen || (!dateTypeSelected.equals("null") && isDateCorrectlySelected)) {
                         saveSortData(dateTypeSelected,
@@ -233,9 +218,8 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
         return view;
     }
 
-    private void saveSortData(String dateType, boolean oldestToNewest,
-                              boolean newestToOldest, boolean aToZ, boolean zToA, boolean clearSortData) {
-
+    private void saveSortData(String dateType, boolean oldestToNewest, boolean newestToOldest,
+                              boolean aToZ, boolean zToA, boolean clearSortData) {
         if (!clearSortData) {
             if (!dateType.equals("null")) {
                 Helper.savePreference(getContext(), dateType, "_dateType");
@@ -264,16 +248,20 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
                               MaterialCardView createdDateButton, MaterialCardView editedDateButton) {
         oldestToLatest = latestToOldest = false;
         createdDate = editedDate = false;
-        newToOldButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        oldToNewButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        createdDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        editedDateButton.setCardBackgroundColor(getContext().getColor(R.color.gray));
+        setColor(newToOldButton, backgroundColor);
+        setColor(oldToNewButton, backgroundColor);
+        setColor(createdDateButton, backgroundColor);
+        setColor(editedDateButton, backgroundColor);
     }
 
     private void unSelectAlphabetical(MaterialCardView aZ, MaterialCardView zA) {
         zToA = aToZ = false;
-        aZ.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        zA.setCardBackgroundColor(getContext().getColor(R.color.gray));
+        setColor(aZ, backgroundColor);
+        setColor(zA, backgroundColor);
+    }
+
+    private void setColor(View view, int color) {
+        ((MaterialCardView) view).setCardBackgroundColor(color);
     }
 
     @Override
