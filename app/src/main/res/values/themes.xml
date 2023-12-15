@@ -190,17 +190,17 @@
 
     <style name="BottomSheetGray" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">@color/gray</item>
+        <item name="android:backgroundTint">?primaryBackgroundColor</item>
     </style>
 
     <style name="BottomSheetDark" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">@color/black</item>
+        <item name="android:backgroundTint">?primaryBackgroundColor</item>
     </style>
 
     <style name="BottomSheetLight" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:backgroundTint">?primaryBackgroundColor</item>
     </style>
 
     <style name="BaseBottomSheetDialogGray" parent="@style/Theme.Design.Light.BottomSheetDialog">

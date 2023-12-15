@@ -141,18 +141,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         ImageView budgetChecklist = view.findViewById(R.id.budget_checklist);
         ImageView budgetGraph = view.findViewById(R.id.budget_graph);
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_100)));
-            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_100)));
-            securityWord.setTextColor(getContext().getColor(R.color.gray));
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-
         if (message == -1) {
             title.setText("Info");
             backup.setVisibility(View.GONE);
@@ -192,7 +180,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         } else if (message == 3 || message == -3) {
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(getContext().getColor(R.color.red));
+            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             backup.setText("DELETE");
             if (deleteAllChecklists) {
@@ -202,7 +190,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 if (message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
                     backup.setText("TRASH");
-                    backup.setBackgroundColor(getContext().getColor(R.color.azure));
+                    backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
                     info.setVisibility(View.GONE);
                 } else if (message == -3) {
                     backup.setText("DELETE");
@@ -219,7 +207,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             // initialize layout
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(getContext().getColor(R.color.red));
+            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             backup.setText("DELETE");
             info.setText("Are you sure?");
             info.setGravity(Gravity.CENTER);
@@ -295,7 +283,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             // initialize layout
             title.setText("Logout");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(getContext().getColor(R.color.red));
+            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             backup.setText("LOGOUT");
             info.setText("Are you sure?");
             info.setGravity(Gravity.CENTER);
@@ -303,7 +291,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         } else if (message == 9) {
             title.setText("Remove Formatting");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(getContext().getColor(R.color.red));
+            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             backup.setText("REMOVE");
             info.setText("Are you sure?");
@@ -326,7 +314,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
             budgetChecklist.setOnClickListener(view12 -> new StfalconImageViewer.Builder<>(getContext(), imageList, (imageView, image) ->
                     Glide.with(getContext()).load(image).into(imageView))
-                    .withBackgroundColor(getContext().getColor(R.color.gray))
+                    .withBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor))
                     .allowZooming(true)
                     .allowSwipeToDismiss(true)
                     .withHiddenStatusBar(false)
@@ -336,7 +324,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
             budgetGraph.setOnClickListener(view13 -> new StfalconImageViewer.Builder<>(getContext(), imageList, (imageView, image) ->
                     Glide.with(getContext()).load(image).into(imageView))
-                    .withBackgroundColor(getContext().getColor(R.color.gray))
+                    .withBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor))
                     .allowZooming(true)
                     .allowSwipeToDismiss(true)
                     .withHiddenStatusBar(false)
@@ -345,13 +333,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     .show());
         } else if (message == 11) {
             title.setText("Audio Info");
-            backup.setBackgroundColor(getContext().getColor(R.color.red));
+            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
         } else if (message == 12) {
             title.setText("Export Info");
-            backup.setBackgroundColor(getContext().getColor(R.color.red));
+            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
@@ -371,7 +359,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     "in order for a feature to work.");
             info.setGravity(Gravity.CENTER);
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(getContext().getColor(R.color.blue));
+            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
             backup.setText("PROCEED");
         }
 
