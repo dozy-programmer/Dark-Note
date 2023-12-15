@@ -955,7 +955,7 @@ public class notes extends Fragment {
 
     private void refreshFragment(boolean refresh) {
         if (refresh) {
-            Helper.refreshActivity(getActivity());
+            Helper.restart(getActivity());
         } else {
             getActivity().getSupportFragmentManager().beginTransaction().detach(this).attach(this).commit();
             clearVariables();

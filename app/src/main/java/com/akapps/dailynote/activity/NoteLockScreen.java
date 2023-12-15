@@ -1,5 +1,7 @@
 package com.akapps.dailynote.activity;
 
+import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
@@ -51,6 +54,7 @@ public class NoteLockScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_lock_screen);
 
@@ -59,15 +63,8 @@ public class NoteLockScreen extends AppCompatActivity {
 
         context = this;
 
+        UiHelper.setStatusBarColor(this);
         initializeLayout();
-
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-            getWindow().setStatusBarColor(context.getColor(R.color.black));
-            findViewById(R.id.layout).setBackgroundColor(context.getColor(R.color.black));
-            lockView.setBackgroundColor(getColor(R.color.black));
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
-        }
     }
 
     @Override
@@ -102,7 +99,7 @@ public class NoteLockScreen extends AppCompatActivity {
         lockView.setDeleteButtonSize(75);
         lockView.setPinLength(String.valueOf(notePinNumber).length());
         lockView.setDeleteButtonDrawable(getDrawable(R.drawable.icon_backspace));
-        lockView.setDeleteButtonPressedColor(getColor(R.color.red));
+        lockView.setDeleteButtonPressedColor(UiHelper.getColorFromTheme(this, R.attr.tertiaryButtonColor));
 
         // if there is no pin number/it is 0, then just open note
         if (notePinNumber == 0)
@@ -120,7 +117,7 @@ public class NoteLockScreen extends AppCompatActivity {
                 if (Integer.parseInt(pin) == notePinNumber)
                     openNote();
                 else
-                    changeLottieAnimationColor(lockIcon, R.color.red);
+                    changeLottieAnimationColor(lockIcon, UiHelper.getColorFromTheme(NoteLockScreen.this, R.attr.tertiaryButtonColor));
             }
 
             @Override
@@ -133,7 +130,7 @@ public class NoteLockScreen extends AppCompatActivity {
                 if (pinEmpty.getVisibility() == View.VISIBLE)
                     pinEmpty.setVisibility(View.INVISIBLE);
 
-                changeLottieAnimationColor(lockIcon, R.color.cornflower_blue);
+                changeLottieAnimationColor(lockIcon, UiHelper.getColorFromTheme(NoteLockScreen.this, R.attr.primaryButtonColor));
             }
         });
 
@@ -165,7 +162,7 @@ public class NoteLockScreen extends AppCompatActivity {
     }
 
     private void changeLottieAnimationColor(ImageView icon, int newColor) {
-        icon.setColorFilter(context.getResources().getColor(newColor));
+        icon.setColorFilter(newColor);
     }
 
     // if pin is correct, note is opened

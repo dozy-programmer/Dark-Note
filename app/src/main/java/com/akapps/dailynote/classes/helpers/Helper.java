@@ -41,6 +41,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
@@ -1001,12 +1002,12 @@ public class Helper {
         return decimalFormat.format(number);
     }
 
-    public static void refreshActivity(Activity activity){
-        RealmSingleton.getInstance(activity);
+    public static void restart(Activity activity){
+        RealmSingleton.setCloseRealm(false);
+        Intent intent = new Intent(activity, activity.getClass());
+        activity.startActivity(intent);
         activity.finish();
-        Intent refreshActivity = new Intent(activity, activity.getClass());
-        activity.startActivity(refreshActivity);
-        if(!AppData.isDisableAnimation)
+        if (!AppData.isDisableAnimation)
             activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

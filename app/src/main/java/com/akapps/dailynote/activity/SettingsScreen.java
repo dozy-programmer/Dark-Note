@@ -489,7 +489,7 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 getUser().setScreenMode(currentMode.getValue());
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
-                restart();
+                Helper.restart(this);
             }
         });
 
@@ -600,7 +600,7 @@ public class SettingsScreen extends AppCompatActivity {
             getUser().setDisableAnimation(isChecked);
             RealmSingleton.get(this).commitTransaction();
             AppData.isDisableAnimation = isChecked;
-            restart();
+            Helper.restart(this);
         });
 
         showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -638,7 +638,7 @@ public class SettingsScreen extends AppCompatActivity {
             Helper.showMessage(SettingsScreen.this, "Downgrade Successful", "" +
                     "Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
 
-        restart();
+        Helper.restart(this);
     }
 
     private void populateUserSettings() {
@@ -769,15 +769,6 @@ public class SettingsScreen extends AppCompatActivity {
                 "un-locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
         lockApp.setColorFilter(getColor(R.color.white));
-    }
-
-    public void restart() {
-        RealmSingleton.setCloseRealm(false);
-        Intent intent = new Intent(SettingsScreen.this, SettingsScreen.class);
-        startActivity(intent);
-        finish();
-        if (!AppData.isDisableAnimation)
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void openBackup() {
@@ -959,7 +950,7 @@ public class SettingsScreen extends AppCompatActivity {
                 Helper.showMessage(this, "Upload error",
                         "Error Uploading data, try again",
                         MotionToast.TOAST_ERROR);
-                restart();
+                Helper.restart(this);
             }).addOnSuccessListener(taskSnapshot -> {
                 String bytesTransferredFormatted = Helper.getFormattedFileSize(context, taskSnapshot.getBytesTransferred());
                 if (bytesTransferredFormatted.equals(fileSize)) {

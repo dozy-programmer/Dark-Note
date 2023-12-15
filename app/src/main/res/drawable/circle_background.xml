@@ -2,5 +2,6 @@
     android:shape="oval">
     <stroke
         android:width="2dp"
-        android:color="@color/gray_100"/>
+        android:color="@color/azure"/>
+    <solid android:color="@color/azure"/>
 </shape>

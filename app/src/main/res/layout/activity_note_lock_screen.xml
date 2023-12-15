@@ -12,7 +12,7 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray"
+        android:background="?primaryBackgroundColor"
         android:orientation="vertical"
         android:weightSum="100">
 
@@ -21,7 +21,7 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:src="@drawable/lock_icon"
-            app:tint="@color/blue"
+            app:tint="?primaryButtonColor"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
             android:fontFamily="@font/overpass"
             android:gravity="center"
             android:text="Enter your PIN to unlock"
-            android:textColor="@color/white"
+            android:textColor="?primaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,22 +51,34 @@
             android:gravity="center"
             android:maxLines="2"
             android:text="[ Note Title ]"
-            android:textColor="@color/blue"
+            android:textColor="?secondaryTextColor"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lock_icon"></TextView>
 
-        <com.andrognito.pinlockview.IndicatorDots
-            android:id="@+id/indicator_dots"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:gravity="center_horizontal"
-            app:indicatorType="fillWithAnimation"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/indicator_dots_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
+            android:padding="10dp"
+            app:cardCornerRadius="20dp"
+            android:gravity="center"
             app:layout_constraintBottom_toTopOf="@+id/pin_lock_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/instruction" />
+            app:layout_constraintTop_toBottomOf="@+id/instruction">
+
+            <com.andrognito.pinlockview.IndicatorDots
+                android:id="@+id/indicator_dots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                app:indicatorType="fillWithAnimation" />
+
+        </com.google.android.material.card.MaterialCardView>
+
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/pin_empty"
@@ -74,7 +86,7 @@
             android:layout_height="55dp"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_colorFilter="@color/cornflower_blue"
+            app:lottie_colorFilter="?primaryButtonColor"
             app:lottie_rawRes="@raw/pin_empty"
             app:lottie_speed="0.7"
             app:layout_constraintBottom_toTopOf="@+id/pin_lock_view"
@@ -86,12 +98,12 @@
             android:id="@+id/pin_lock_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:dotFilledBackground="@color/cornflower_blue"
-            app:keypadButtonSize="70dp"
+            app:dotFilledBackground="?primaryIconTintColor"
+            app:keypadButtonSize="60dp"
             app:keypadButtonBackgroundDrawable="@drawable/circle_background"
             app:keypadHorizontalSpacing="40dp"
-            app:keypadTextColor="@color/white"
-            app:keypadTextSize="16dp"
+            app:keypadTextColor="?primaryTextColor"
+            app:keypadTextSize="20dp"
             app:keypadVerticalSpacing="24dp"
             app:layout_constraintBottom_toTopOf="@+id/forgot_password"
             app:layout_constraintEnd_toEndOf="parent"
@@ -107,6 +119,7 @@
             android:layout_marginLeft="5dp"
             android:paddingVertical="12dp"
             android:src="@drawable/fingerprint_icon"
+            android:tint="?primaryIconTintColor"
             app:layout_constraintBottom_toBottomOf="@+id/pin_lock_view"
             app:layout_constraintStart_toStartOf="@+id/pin_lock_view"></ImageView>
 
@@ -117,7 +130,7 @@
             android:gravity="center"
             android:paddingVertical="10dp"
             android:text="Forgot Passcode\n😔"
-            android:textColor="@color/blue"
+            android:textColor="?secondaryTextColor"
             android:fontFamily="@font/overpass"
             android:textStyle="bold"
             android:textSize="14sp"

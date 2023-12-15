@@ -523,6 +523,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     @Override
     public int getItemCount() {
+        try{
+            return allNotes.size();
+        } catch (Exception e){
+            Helper.restart(activity);
+        }
         return allNotes.size();
     }
 

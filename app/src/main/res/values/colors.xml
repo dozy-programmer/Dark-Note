@@ -27,7 +27,7 @@
     <color name="gold">#eebc1d</color>
 
     <!-- Override TextInputLayout Box Stroke Color !-->
-    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/darker_blue</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/blue</color>
 
     <array name="randomColor">
         <item>@color/cornflower_blue</item>
