@@ -56,6 +56,7 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.RepeatListener;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
@@ -149,7 +150,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private Handler handler;
     private boolean dismissNotification;
     // dialog
-    // dialog
     private AlertDialog colorPickerView;
     private CustomPowerMenu noteMenu;
     private boolean hideRichTextStatus;
@@ -220,35 +220,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         user = RealmHelper.getUser(context, "in space");
         initializeLayout(savedInstanceState);
+        UiHelper.setStatusBarColor(this);
 
-        if (user.getScreenMode() == User.Mode.Dark) {
-            getWindow().setStatusBarColor(context.getColor(R.color.black));
-            scrollView.setBackgroundColor(context.getColor(R.color.black));
-            richtextEditorScrollView.setBackgroundColor(getColor(R.color.black));
-            note.setBackgroundColor(context.getColor(R.color.black));
-            searchEditText.setTextColor(context.getColor(R.color.white));
-            date.setTextColor(context.getColor(R.color.gray_300));
-            title.setHintTextColor(context.getColor(R.color.gray_200));
-            closeNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            pinNoteButton.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            expandMenu.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            searchLayout.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            palleteIconColor.setColorFilter(getColor(R.color.white));
-            budget.setColorNormal(getColor(R.color.not_too_dark_gray));
-            formatMenu.setBackgroundColor(getColor(R.color.not_too_dark_gray));
-        } else if (user.getScreenMode() == User.Mode.Gray) {
-            scrollView.setBackgroundColor(context.getColor(R.color.gray));
-            searchEditText.setTextColor(context.getColor(R.color.gray_100));
-            richtextEditorScrollView.setBackgroundColor(getColor(R.color.gray));
-            budget.setColorNormal(getColor(R.color.gray_100));
-
-            if (noteId != -1 && !isNewNote)
-                if (getCurrentNote().getTextColor() <= 0)
-                    note.setEditorFontColor(context.getColor(R.color.white));
-        } else if (user.getScreenMode() == User.Mode.Light) {
-
-        }
+        scrollView.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
+        note.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
+        richtextEditorScrollView.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor));
+        searchEditText.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
+        budget.setColorNormal(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor));
 
         hideRichTextStatus = user.isHideRichTextEditor();
         if (user.isHideRichTextEditor())
@@ -437,7 +415,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         category.setText(getCategoryName());
         category.setVisibility(View.VISIBLE);
         folderText.setVisibility(View.VISIBLE);
-        category.setTextColor(context.getColor(R.color.azure));
         searchLayout.setVisibility(View.VISIBLE);
 
         initializeEditor();
@@ -484,7 +461,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             Date now = new Date();
             if (now.after(reminderDate)) {
-                remindNoteDate.setTextColor(getColor(R.color.red));
+                remindNoteDate.setTextColor(UiHelper.getColorFromTheme(this, R.attr.tertiaryButtonColor));
                 Helper.showMessage(NoteEdit.this, "Reminder Passed", "Please delete reminder to " +
                         "get rid of this message!", MotionToast.TOAST_WARNING);
             }
@@ -814,15 +791,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark)
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.black));
-        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
-            searchEditText.setTextColor(context.getColor(R.color.white));
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray));
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
-        }
-
         searchEditText.setVisibility(View.VISIBLE);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 8, 0);
@@ -1069,7 +1037,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             int randomInt = (int) (Math.random() * (randomColor.length));
             newNote.setBackgroundColor(randomColor[randomInt]);
             newNote.setTitleColor(randomColor[randomInt]);
-            newNote.setTextColor(getColor(R.color.white));
+            newNote.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
             // insert data to database
             getRealm().beginTransaction();
             getRealm().insert(newNote);
@@ -1768,10 +1736,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         try {
                             if (Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote().getDateEdited().replace("\n", " ")), false).length() > 0) {
                                 if (user.isTwentyFourHourFormat()) {
-                                    date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + Helper.convertToTwentyFourHour(getCurrentNote().getDateEdited()).replace("\n", " ") +
+                                    date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(getCurrentNote().getDateEdited()).replace("\n", " ") +
                                             "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote().getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                                 } else {
-                                    date.setText(Html.fromHtml("<font color='#FFFFFF'>Last Edit:</font> " + getCurrentNote().getDateEdited().replace("\n", " ") +
+                                    date.setText(Html.fromHtml("Last Edit: " + getCurrentNote().getDateEdited().replace("\n", " ") +
                                             "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote().getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                                 }
                             } else {
@@ -1892,7 +1860,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             // opens dialog to choose a color
             updateSaveDateEdited();
             if (isChanged)
-                note.setTextColor(context.getColor(R.color.white));
+                note.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
             else {
                 colorPickerView = ColorPickerDialogBuilder
                         .with(context, R.style.ColorPickerDialogTheme)
