@@ -62,9 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="?secondaryBackgroundColor"
-            android:padding="10dp"
+            app:cardElevation="-2dp"
             app:cardCornerRadius="20dp"
-            android:gravity="center"
+            android:layout_gravity="center"
             app:layout_constraintBottom_toTopOf="@+id/pin_lock_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,8 +73,9 @@
             <com.andrognito.pinlockview.IndicatorDots
                 android:id="@+id/indicator_dots"
                 android:layout_width="wrap_content"
+                android:layout_marginVertical="15dp"
+                android:layout_marginHorizontal="25dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 app:indicatorType="fillWithAnimation" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -82,8 +83,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/pin_empty"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_colorFilter="?primaryButtonColor"
