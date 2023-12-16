@@ -35,6 +35,8 @@
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/white_100</item>
+        <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
+        <item name="secondaryStrokeColor">@color/white_200</item>
 
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/black</item>
@@ -90,6 +92,8 @@
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/gray</item>
+        <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
+        <item name="secondaryStrokeColor">@color/gray</item>
 
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/white</item>
@@ -145,6 +149,8 @@
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/gray_100</item>
+        <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
+        <item name="secondaryStrokeColor">@color/gray_200</item>
 
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/white</item>

@@ -298,7 +298,6 @@ public class SettingsScreen extends AppCompatActivity {
         }
         else
             Helper.moveAnimation(findViewById(R.id.version_icon), 300f);
-        logIn.setBackgroundColor(context.getColor(R.color.azure));
 
         User currentUser = getUser();
 
@@ -316,10 +315,6 @@ public class SettingsScreen extends AppCompatActivity {
                     signUp.setVisibility(View.GONE);
                     logIn.setText("Log Out");
                     syncLayout.setVisibility(View.VISIBLE);
-                    logIn.setBackgroundColor(context.getColor(R.color.red));
-                    sync.setBackgroundColor(context.getColor(R.color.azure));
-                    upload.setBackgroundColor(context.getColor(R.color.gold_100));
-                    upload.setTextColor(context.getColor(R.color.gray));
                     accountInfo.setVisibility(View.VISIBLE);
                     accountInfo.setText(mAuth.getCurrentUser().getEmail());
                     spaceOne.setVisibility(View.VISIBLE);
@@ -716,10 +711,9 @@ public class SettingsScreen extends AppCompatActivity {
         editableNoteButton.setChecked(currentUser.isEnableEditableNoteButton());
         enableSqaureStyleForChecklists.setChecked(currentUser.isShowChecklistCheckbox());
         hideLastEditInfo.setChecked(currentUser.isDisableLastEditInfo());
-        if (currentUser.getPinNumber() > 0) {
+        if (currentUser.getPinNumber() > 0)
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
-            lockApp.setColorFilter(getColor(R.color.blue));
-        } else
+        else
             lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
         updateTheme();
     }
@@ -756,7 +750,7 @@ public class SettingsScreen extends AppCompatActivity {
         Helper.showMessage(this, "App Locked", "App has been " +
                 "locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
-        lockApp.setColorFilter(getColor(R.color.blue));
+        lockApp.setColorFilter(UiHelper.getColorFromTheme(this, R.attr.primaryIconTintColor));
     }
 
     public void unLockNote() {
@@ -768,7 +762,7 @@ public class SettingsScreen extends AppCompatActivity {
         Helper.showMessage(this, "App un-Locked", "App has been " +
                 "un-locked", MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
-        lockApp.setColorFilter(getColor(R.color.white));
+        lockApp.setColorFilter(UiHelper.getColorFromTheme(this, R.attr.primaryIconTintColor));
     }
 
     private void openBackup() {
@@ -1135,7 +1129,7 @@ public class SettingsScreen extends AppCompatActivity {
                     if (tryAgain) {
                         Helper.showMessage(this, "Error", "Clear storage via App Settings",
                                 MotionToast.TOAST_ERROR);
-                        appSettings.setBackgroundColor(getColor(R.color.flamingo));
+                        appSettings.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryButtonColor));
                         tryAgain = false;
                     } else {
                         Helper.showMessage(this, "Error", "attempting to fix error...try again",
@@ -1182,7 +1176,7 @@ public class SettingsScreen extends AppCompatActivity {
                 } catch (Exception e) {
                     if (tryAgain) {
                         Helper.showMessage(this, "Error", "Clear storage via App Settings", MotionToast.TOAST_ERROR);
-                        appSettings.setBackgroundColor(getColor(R.color.flamingo));
+                        appSettings.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryButtonColor));
                         tryAgain = false;
                     } else {
                         Helper.showMessage(this, "Error", "attempting to fix error...try again", MotionToast.TOAST_ERROR);

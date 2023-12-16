@@ -13,8 +13,10 @@
         <attr name="secondaryBackgroundColor" format="reference"/>
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
         <attr name="tertiaryBackgroundColor" format="reference"/>
-        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <!-- for dark mode, so that the inside of cards can be dark !-->
         <attr name="primaryStrokeColor" format="reference"/>
+        <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
+        <attr name="secondaryStrokeColor" format="reference"/>
         <!-- 99% if icons should be the same !-->
         <attr name="primaryIconTintColor" format="reference"/>
         <!-- for second most used icon color !-->

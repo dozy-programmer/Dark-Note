@@ -200,7 +200,7 @@
                     android:gravity="center"
                     android:maxLines="3"
                     android:text=""
-                    android:textColor="@color/cornflower_blue"
+                    android:textColor="?secondaryTextColor"
                     android:textSize="16sp"
                     android:visibility="gone" />
 
@@ -217,10 +217,12 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
                         android:layout_weight="50"
-                        android:backgroundTint="@color/gray"
+                        android:backgroundTint="?tertiaryBackgroundColor"
+                        app:strokeColor="?secondaryStrokeColor"
+                        app:strokeWidth="2dp"
                         android:gravity="center"
                         android:text="Sign Up"
-                        android:textColor="@color/white"
+                        android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp" />
 
@@ -231,10 +233,12 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginHorizontal="10dp"
                         android:layout_weight="50"
-                        android:backgroundTint="@color/gray"
+                        android:backgroundTint="?tertiaryBackgroundColor"
+                        app:strokeColor="?secondaryStrokeColor"
+                        app:strokeWidth="2dp"
                         android:gravity="center"
                         android:text="Login"
-                        android:textColor="@color/white"
+                        android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp" />
 
@@ -262,13 +266,16 @@
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="10dp"
                         android:layout_weight="50"
-                        android:backgroundTint="@color/gray"
+                        android:backgroundTint="?tertiaryBackgroundColor"
+                        app:strokeColor="?secondaryStrokeColor"
+                        app:strokeWidth="2dp"
                         android:gravity="center"
                         android:text="Sync"
-                        android:textColor="@color/white"
+                        android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp"
                         app:icon="@drawable/sync_icon"
+                        app:iconTint="?primaryIconTintColor"
                         app:iconGravity="textEnd"
                         app:iconPadding="0dp" />
 
@@ -278,16 +285,18 @@
                         android:layout_height="match_parent"
                         android:layout_marginHorizontal="10dp"
                         android:layout_weight="50"
-                        android:backgroundTint="@color/gray"
+                        android:backgroundTint="?tertiaryBackgroundColor"
+                        app:strokeColor="?secondaryStrokeColor"
+                        app:strokeWidth="2dp"
                         android:gravity="center"
                         android:text="Upload"
-                        android:textColor="@color/white"
+                        android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp"
                         app:icon="@drawable/upload_icon"
                         app:iconGravity="textEnd"
                         app:iconPadding="5dp"
-                        app:iconTint="@color/gray" />
+                        app:iconTint="?primaryIconTintColor" />
 
                 </LinearLayout>
 
@@ -314,7 +323,7 @@
                         android:fontFamily="@font/baloo_bhai"
                         android:gravity="center"
                         android:text=""
-                        android:textColor="@color/cornflower_blue"
+                        android:textColor="?primaryTextColor"
                         android:textSize="16sp"
                         android:visibility="gone" />
 
