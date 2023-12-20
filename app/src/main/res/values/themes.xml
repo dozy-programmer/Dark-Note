@@ -34,6 +34,8 @@
         <item name="tertiaryBackgroundColor">@color/white_200</item>
         <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
         <item name="quaternaryBackgroundColor">@color/white_200</item>
+        <!-- specialize for checklist items and sublist !-->
+        <item name="quinaryBackgroundColor">@color/white_200</item>
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/white_100</item>
@@ -93,6 +95,8 @@
         <item name="tertiaryBackgroundColor">@color/black_100</item>
         <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
         <item name="quaternaryBackgroundColor">@color/black_200</item>
+        <!-- specialize for checklist items and sublist !-->
+        <item name="quinaryBackgroundColor">@color/black</item>
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/gray</item>
@@ -152,6 +156,8 @@
         <item name="tertiaryBackgroundColor">@color/gray_200</item>
         <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
         <item name="quaternaryBackgroundColor">@color/gray_300</item>
+        <!-- specialize for checklist items and sublist !-->
+        <item name="quinaryBackgroundColor">@color/gray_200</item>
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/gray_100</item>

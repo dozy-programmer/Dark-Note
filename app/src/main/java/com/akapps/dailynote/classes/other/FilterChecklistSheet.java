@@ -12,6 +12,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -25,7 +26,6 @@ import io.realm.Realm;
 public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;
-    private User.Mode screenMode;
 
     // layout
     private MaterialCardView aZ;
@@ -56,26 +56,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         ImageView clearFilter = view.findViewById(R.id.clear_filter);
         CheckBox applyAll = view.findViewById(R.id.apply_all);
         MaterialButton sortButton = view.findViewById(R.id.sort_button);
-
-        screenMode = RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode();
-
-        if (screenMode == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-            background.setCardBackgroundColor(getContext().getColor(R.color.black));
-            background.setStrokeColor(getContext().getColor(R.color.gray));
-            background.setStrokeWidth(8);
-
-            darkModeItemLayout(aZ);
-            darkModeItemLayout(zA);
-            darkModeItemLayout(checkedBottom);
-            darkModeItemLayout(checkedTop);
-            darkModeItemLayout(addedBottom);
-            darkModeItemLayout(addedTop);
-        } else if (screenMode == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
 
         int sort = 0;
         try {
@@ -178,13 +158,13 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
         clearFilter.setOnClickListener(v -> {
             if (applyAll.isChecked()) {
-                getRealm().beginTransaction();
-                getRealm().where(Note.class).findAll().setInt("sort", 5);
-                getRealm().commitTransaction();
+                RealmHelper.getRealm(getContext()).beginTransaction();
+                RealmHelper.getRealm(getContext()).where(Note.class).findAll().setInt("sort", 5);
+                RealmHelper.getRealm(getContext()).commitTransaction();
             } else {
-                getRealm().beginTransaction();
+                RealmHelper.getRealm(getContext()).beginTransaction();
                 currentNote.setSort(5);
-                getRealm().commitTransaction();
+                RealmHelper.getRealm(getContext()).commitTransaction();
             }
             ((NoteEdit) getActivity()).sortChecklist();
             this.dismiss();
@@ -193,13 +173,13 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         sortButton.setOnClickListener(view1 -> {
             int selectedSort = getSelectedSort();
             if (applyAll.isChecked()) {
-                getRealm().beginTransaction();
-                getRealm().where(Note.class).findAll().setInt("sort", selectedSort);
-                getRealm().commitTransaction();
+                RealmHelper.getRealm(getContext()).beginTransaction();
+                RealmHelper.getRealm(getContext()).where(Note.class).findAll().setInt("sort", selectedSort);
+                RealmHelper.getRealm(getContext()).commitTransaction();
             } else {
-                getRealm().beginTransaction();
+                RealmHelper.getRealm(getContext()).beginTransaction();
                 currentNote.setSort(selectedSort);
-                getRealm().commitTransaction();
+                RealmHelper.getRealm(getContext()).commitTransaction();
             }
             ((NoteEdit) getActivity()).sortChecklist();
             dismiss();
@@ -209,68 +189,32 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private boolean isViewSelected(MaterialCardView view){
-        int selectionColor = getContext().getColor(R.color.havelock_blue);
+        int selectionColor = UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor);
         return view.getCardBackgroundColor().getDefaultColor() == selectionColor ||
                 view.getStrokeColorStateList().getDefaultColor() == selectionColor;
     }
 
     private void selectView(MaterialCardView view, boolean select){
-        int selectionColor = getContext().getColor(R.color.havelock_blue);
-        if(screenMode == User.Mode.Dark){
-            if(select)
-                view.setStrokeColor(selectionColor);
-            else
-                darkModeItemLayout(view);
-        }
-        else if(screenMode == User.Mode.Gray){
-            if(select) {
-                view.setCardBackgroundColor(selectionColor);
-                view.setStrokeColor(selectionColor);
-            }
-            else
-                grayModeItemLayout(view);
-        }
-        else {
-
-        }
+        if(select)
+            view.setStrokeColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
+        else
+            modeItemLayout(view);
     }
 
-    private void grayModeItemLayout(MaterialCardView view) {
-        view.setCardBackgroundColor(getContext().getColor(R.color.gray));
-        view.setStrokeColor(getContext().getColor(R.color.gray));
-        view.setStrokeWidth(8);
-    }
-
-    private void darkModeItemLayout(MaterialCardView view) {
-        view.setCardBackgroundColor(getContext().getColor(R.color.black));
-        view.setStrokeColor(getContext().getColor(R.color.gray));
-        view.setStrokeWidth(8);
+    private void modeItemLayout(MaterialCardView view) {
+        view.setCardBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor));
+        view.setStrokeColor(UiHelper.getColorFromTheme(getActivity(), R.attr.secondaryStrokeColor));
     }
 
     private void unSelectAll(boolean deselectAll){
-        if(screenMode == User.Mode.Dark){
-            if(deselectAll) {
-                darkModeItemLayout(aZ);
-                darkModeItemLayout(zA);
-                darkModeItemLayout(checkedTop);
-                darkModeItemLayout(checkedBottom);
-            }
-            darkModeItemLayout(addedTop);
-            darkModeItemLayout(addedBottom);
+        if(deselectAll) {
+            modeItemLayout(aZ);
+            modeItemLayout(zA);
+            modeItemLayout(checkedTop);
+            modeItemLayout(checkedBottom);
         }
-        else if(screenMode == User.Mode.Gray){
-            if(deselectAll) {
-                grayModeItemLayout(aZ);
-                grayModeItemLayout(zA);
-                grayModeItemLayout(checkedTop);
-                grayModeItemLayout(checkedBottom);
-            }
-            grayModeItemLayout(addedTop);
-            grayModeItemLayout(addedBottom);
-        }
-        else{
-
-        }
+        modeItemLayout(addedTop);
+        modeItemLayout(addedBottom);
     }
 
     private int getSelectedSort(){
@@ -306,10 +250,6 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         }
 
         return -1;
-    }
-
-    private Realm getRealm(){
-        return RealmSingleton.getInstance(getContext());
     }
 
     @Override

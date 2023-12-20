@@ -132,7 +132,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current note object
-        Note currentNote = allNotes.get(position);
+        Note currentNote;
+        try {
+            currentNote = allNotes.get(position);
+        }catch (Exception e){
+            Helper.restart(activity);
+            return;
+        }
 
         // retrieves all photos that belong to note
         RealmResults<Photo> allPhotos = RealmSingleton.getInstance(context).where(Photo.class)

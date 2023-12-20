@@ -13,9 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="15dp"
-        app:cardBackgroundColor="@color/gray_100"
+        android:layout_marginHorizontal="15dp"
+        app:cardBackgroundColor="?primaryBackgroundColor"
         app:cardCornerRadius="15dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title">
@@ -25,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:paddingHorizontal="10dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/a_z"
@@ -33,7 +34,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/gray"
+                app:cardBackgroundColor="?secondaryBackgroundColor"
+                app:strokeColor="?secondaryStrokeColor"
+                app:strokeWidth="2dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread"
@@ -49,7 +52,7 @@
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
                     android:text="A - Z"
-                    android:textColor="@color/white"
+                    android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
@@ -61,7 +64,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/gray"
+                app:cardBackgroundColor="?secondaryBackgroundColor"
+                app:strokeColor="?secondaryStrokeColor"
+                app:strokeWidth="2dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/a_z"
@@ -76,7 +81,7 @@
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
                     android:text="Alphabetical ➙ Z - A"
-                    android:textColor="@color/white"
+                    android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
@@ -88,7 +93,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/gray"
+                app:cardBackgroundColor="?secondaryBackgroundColor"
+                app:strokeColor="?secondaryStrokeColor"
+                app:strokeWidth="2dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="@+id/checked_top"
                 app:layout_constraintStart_toStartOf="@+id/checked_top"
@@ -103,7 +110,7 @@
                     android:gravity="bottom|center"
                     android:paddingVertical="10dp"
                     android:text="Checked Items ➙ Bottom"
-                    android:textColor="@color/white"
+                    android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
@@ -115,7 +122,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/gray"
+                app:cardBackgroundColor="?secondaryBackgroundColor"
+                app:strokeColor="?secondaryStrokeColor"
+                app:strokeWidth="2dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +139,7 @@
                     android:gravity="bottom|center"
                     android:paddingVertical="10dp"
                     android:text="Checked Items ➙ Top"
-                    android:textColor="@color/white"
+                    android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
@@ -142,7 +151,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/gray"
+                app:cardBackgroundColor="?secondaryBackgroundColor"
+                app:strokeColor="?secondaryStrokeColor"
+                app:strokeWidth="2dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="@+id/add_bottom"
                 app:layout_constraintStart_toStartOf="@+id/add_bottom"
@@ -157,7 +168,7 @@
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
                     android:text="New Items ➙ Top"
-                    android:textColor="@color/white"
+                    android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
@@ -169,7 +180,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                app:cardBackgroundColor="@color/gray"
+                app:cardBackgroundColor="?secondaryBackgroundColor"
+                app:strokeColor="?secondaryStrokeColor"
+                app:strokeWidth="2dp"
                 app:cardCornerRadius="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/checked_bottom"
@@ -180,12 +193,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
-                    android:layout_marginBottom="2dp"
                     android:gravity="bottom|center"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
                     android:text="New Items ➙ Bottom"
-                    android:textColor="@color/white"
+                    android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
@@ -203,7 +215,7 @@
         android:gravity="center"
         android:text="Sort"
         android:layout_marginTop="10dp"
-        android:textColor="@color/azure"
+        android:textColor="?secondaryTextColor"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -215,7 +227,7 @@
         android:layout_height="10dp"
         android:layout_marginTop="10dp"
         android:padding="13dp"
-        app:cardBackgroundColor="@color/gray_200"
+        app:cardBackgroundColor="?primaryStrokeColor"
         app:cardCornerRadius="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -223,11 +235,12 @@
 
     <ImageView
         android:id="@+id/clear_filter"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginRight="24dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="36dp"
         android:rotationY="180"
         android:src="@drawable/reset_icon"
+        android:tint="?primaryIconTintColor"
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
@@ -236,13 +249,13 @@
         android:id="@+id/sort_button"
         android:layout_width="wrap_content"
         android:layout_height="55dp"
-        android:backgroundTint="@color/havelock_blue"
+        android:backgroundTint="?primaryButtonColor"
         android:paddingHorizontal="40dp"
         android:text="Sort"
-        android:textColor="@color/white"
+        android:textColor="?primaryTextColor"
         android:textSize="14sp"
         app:cornerRadius="15dp"
-        android:layout_marginVertical="10dp"
+        android:layout_marginVertical="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/background"
         app:layout_constraintTop_toBottomOf="@+id/background" />
@@ -261,9 +274,9 @@
             android:id="@+id/apply_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/azure"
+            android:buttonTint="?primaryButtonColor"
             android:text="Apply to All Checklists"
-            android:textColor="@color/cornflower_blue" />
+            android:textColor="?secondaryTextColor" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
