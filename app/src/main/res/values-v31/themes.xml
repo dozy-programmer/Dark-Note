@@ -1,16 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <style name="Theme.DailyDay" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/not_too_dark_gray</item>
+    <style name="Theme.DailyDay.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">?secondaryBackgroundColor</item>
         <item name="colorPrimaryVariant">@color/gray</item>
         <item name="colorOnPrimary">@color/gray</item>
         <item name="colorSecondary">@color/blue</item>
         <item name="colorSecondaryVariant">@color/blue</item>
         <item name="colorOnSecondary">@color/gray</item>
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
         <item name="android:dialogCornerRadius">20dp</item>
         <item name="android:windowSplashScreenBackground">?primaryBackgroundColor</item>
+
+        <!-- this includes titles !-->
+        <item name="primaryTextColor">@color/black</item>
+        <!-- this includes subtitle !-->
+        <item name="secondaryTextColor">@color/azure_100</item>
+        <!-- this includes body, text buttons !-->
+        <item name="tertiaryTextColor">@color/black</item>
+
+        <!-- actual background color !-->
+        <item name="primaryBackgroundColor">@color/white</item>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <item name="secondaryBackgroundColor">@color/white_100</item>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <item name="tertiaryBackgroundColor">@color/white_200</item>
+        <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
+        <item name="quaternaryBackgroundColor">@color/white_200</item>
+        <!-- specialize for checklist items and sublist !-->
+        <item name="quinaryBackgroundColor">@color/white_200</item>
+
+        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <item name="primaryStrokeColor">@color/white_100</item>
+        <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
+        <item name="secondaryStrokeColor">@color/white_200</item>
+
+        <!-- 99% if icons should be the same !-->
+        <item name="primaryIconTintColor">@color/black</item>
+        <!-- for second most used icon color !-->
+        <item name="secondaryIconTintColor">@color/orange</item>
+        <!-- for third most used icon color !-->
+        <item name="tertiaryIconTintColor">@color/red</item>
+
+        <!-- for add note/checklist, and folder button !-->
+        <item name="primaryButtonColor">@color/azure_100</item>
+        <!-- for audio note !-->
+        <item name="secondaryButtonColor">@color/golden_rod</item>
+        <!-- for close button !-->
+        <item name="tertiaryButtonColor">@color/red</item>
+
+        <!-- for layout selection !-->
+        <item name="primarySelectionColor">@color/azure_100</item>
+
+        <!-- for switch !-->
+        <item name="primarySwitchColor">@color/white</item>
+
+        <!-- for divider color - settings !-->
+        <item name="primaryDividerColor">@color/white</item>
+
+        <!-- for theme selected !-->
+        <item name="primarySelectedIconColor">@color/black</item>
+        <!-- for theme not selected !-->
+        <item name="primaryUnSelectedIconColor">@color/gray_300</item>
+    </style>
+
+    <style name="Theme.DailyDay.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">?secondaryBackgroundColor</item>
+        <item name="colorPrimaryVariant">@color/gray</item>
+        <item name="colorOnPrimary">@color/gray</item>
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondaryVariant">@color/blue</item>
+        <item name="colorOnSecondary">@color/gray</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <item name="android:dialogCornerRadius">20dp</item>
+        <item name="android:windowSplashScreenBackground">?primaryBackgroundColor</item>
+
+        <!-- this includes titles !-->
+        <item name="primaryTextColor">@color/white</item>
+        <!-- this includes subtitle !-->
+        <item name="secondaryTextColor">@color/azure</item>
+        <!-- this includes body, text buttons !-->
+        <item name="tertiaryTextColor">@color/white</item>
+
+        <!-- actual background color !-->
+        <item name="primaryBackgroundColor">@color/black</item>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <item name="secondaryBackgroundColor">@color/black</item>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <item name="tertiaryBackgroundColor">@color/black_100</item>
+        <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
+        <item name="quaternaryBackgroundColor">@color/black_200</item>
+        <!-- specialize for checklist items and sublist !-->
+        <item name="quinaryBackgroundColor">@color/black</item>
+
+        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <item name="primaryStrokeColor">@color/gray</item>
+        <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
+        <item name="secondaryStrokeColor">@color/black_100</item>
+
+        <!-- 99% if icons should be the same !-->
+        <item name="primaryIconTintColor">@color/white</item>
+        <!-- for second most used icon color !-->
+        <item name="secondaryIconTintColor">@color/orange</item>
+        <!-- for third most used icon color !-->
+        <item name="tertiaryIconTintColor">@color/red</item>
+
+        <!-- for add note/checklist, and folder button !-->
+        <item name="primaryButtonColor">@color/azure</item>
+        <!-- for audio note !-->
+        <item name="secondaryButtonColor">@color/golden_rod</item>
+        <!-- for close button !-->
+        <item name="tertiaryButtonColor">@color/red</item>
+
+        <!-- for layout selection !-->
+        <item name="primarySelectionColor">@color/azure</item>
+
+        <!-- for switch !-->
+        <item name="primarySwitchColor">@color/gray</item>
+
+        <!-- for divider color - settings !-->
+        <item name="primaryDividerColor">@color/gray</item>
+
+        <!-- for theme selected !-->
+        <item name="primarySelectedIconColor">@color/white</item>
+        <!-- for theme not selected !-->
+        <item name="primaryUnSelectedIconColor">@color/gray</item>
+    </style>
+
+    <style name="Theme.DailyDay.Gray" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">?secondaryBackgroundColor</item>
+        <item name="colorPrimaryVariant">@color/gray</item>
+        <item name="colorOnPrimary">@color/gray</item>
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondaryVariant">@color/blue</item>
+        <item name="colorOnSecondary">@color/gray</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <item name="android:dialogCornerRadius">20dp</item>
+        <item name="android:windowSplashScreenBackground">?primaryBackgroundColor</item>
+
+        <!-- this includes titles !-->
+        <item name="primaryTextColor">@color/white</item>
+        <!-- this includes subtitle !-->
+        <item name="secondaryTextColor">@color/azure</item>
+        <!-- this includes body, text buttons !-->
+        <item name="tertiaryTextColor">@color/white</item>
+
+        <!-- actual background color !-->
+        <item name="primaryBackgroundColor">@color/gray</item>
+        <!-- this works in tandem with the background color, its a lighter color !-->
+        <item name="secondaryBackgroundColor">@color/gray_100</item>
+        <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
+        <item name="tertiaryBackgroundColor">@color/gray_200</item>
+        <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
+        <item name="quaternaryBackgroundColor">@color/gray_300</item>
+        <!-- specialize for checklist items and sublist !-->
+        <item name="quinaryBackgroundColor">@color/gray_200</item>
+
+        <!-- this is for dark mode, so that the inside of cards can be dark !-->
+        <item name="primaryStrokeColor">@color/gray_100</item>
+        <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
+        <item name="secondaryStrokeColor">@color/gray_200</item>
+
+        <!-- 99% if icons should be the same !-->
+        <item name="primaryIconTintColor">@color/white</item>
+        <!-- for second most used icon color !-->
+        <item name="secondaryIconTintColor">@color/orange</item>
+        <!-- for third most used icon color !-->
+        <item name="tertiaryIconTintColor">@color/red</item>
+
+        <!-- for add note/checklist, and folder button !-->
+        <item name="primaryButtonColor">@color/azure</item>
+        <!-- for audio note !-->
+        <item name="secondaryButtonColor">@color/golden_rod</item>
+        <!-- for close button !-->
+        <item name="tertiaryButtonColor">@color/red</item>
+
+        <!-- for layout selection !-->
+        <item name="primarySelectionColor">@color/azure</item>
+
+        <!-- for switch !-->
+        <item name="primarySwitchColor">@color/gray_300</item>
+
+        <!-- for divider color - settings !-->
+        <item name="primaryDividerColor">@color/gray</item>
+
+        <!-- for theme selected !-->
+        <item name="primarySelectedIconColor">@color/white</item>
+        <!-- for theme not selected !-->
+        <item name="primaryUnSelectedIconColor">@color/gray</item>
     </style>
 </resources>

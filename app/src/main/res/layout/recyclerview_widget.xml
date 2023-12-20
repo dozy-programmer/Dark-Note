@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gray">
+    android:background="?primaryTextColor">
 
     <LinearLayout
         android:id="@+id/checkItem"
@@ -28,7 +28,7 @@
             android:src="@drawable/mic_icon"
             android:layout_marginLeft="2dp"
             app:tint="@color/golden_rod"
-            android:tint="@color/golden_rod"/>
+            android:tint="?secondaryIconTintColor"/>
 
         <ImageView
             android:id="@+id/widget_check_status"
@@ -37,7 +37,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginVertical="5dp"
             android:layout_marginLeft="2dp"
-            android:src="@drawable/unchecked_icon"></ImageView>
+            android:src="@drawable/unchecked_icon"
+            android:tint="?primaryButtonColor"></ImageView>
 
         <TextView
             android:id="@+id/checklist_text"
@@ -49,7 +50,7 @@
             android:background="@drawable/round_corner"
             android:paddingVertical="8dp"
             android:paddingLeft="5dp"
-            android:textColor="@color/white"/>
+            android:textColor="?primaryTextColor"/>
 
     </LinearLayout>
 
