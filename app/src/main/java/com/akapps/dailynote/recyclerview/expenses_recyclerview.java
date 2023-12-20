@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.google.android.material.card.MaterialCardView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -67,11 +68,11 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         holder.expensePercentage.setText(formatDouble(currentExpense.getExpenseAmountPercentage()));
 
         if(expenseName.equals("Over Budget"))
-            holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.amaranth));
+            holder.expenseName.setTextColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.tertiaryButtonColor));
         else if(expenseName.equals("Under Budget"))
             holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.money_green));
         else
-            holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.pressed_blue));
+            holder.expenseName.setTextColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.primaryTextColor));
 
         holder.dropDown.setOnClickListener(view -> {
             if(holder.subExpensesRecyclerview.getVisibility() == View.VISIBLE){

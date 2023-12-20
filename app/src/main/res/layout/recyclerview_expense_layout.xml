@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="false">
+    android:animateLayoutChanges="false"
+    android:background="?primaryBackgroundColor">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/color"
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:text="Expense"
-        android:textColor="@color/pressed_blue"
+        android:textColor="?primaryTextColor"
         android:textSize="16sp"
         android:textStyle="bold"
         android:maxLines="2"
@@ -40,7 +41,7 @@
         android:layout_marginHorizontal="5dp"
         android:gravity="bottom"
         android:text="100%"
-        android:textColor="@color/flamingo"
+        android:textColor="?secondaryTextColor"
         android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/expense_name"
@@ -59,7 +60,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/expense_percentage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/expense_percentage"
-        app:tint="@color/white" />
+        app:tint="?primaryIconTintColor" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sub_expenses"

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.google.android.material.card.MaterialCardView;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
         holder.expensePercentage.setText(formatPercentage(currentExpense.getTotalExpenseAmount() / totalBudget));
 
         if(currentExpense.getExpenseName().toLowerCase().contains("total"))
-            holder.background.setStrokeColor(holder.view.getContext().getColor(R.color.pressed_blue));
+            holder.background.setStrokeColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.primaryButtonColor));
     }
 
     @Override

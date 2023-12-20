@@ -49,6 +49,12 @@ public class UiHelper {
         return ContextCompat.getColor(activity, typedValue.resourceId);
     }
 
+    public static int getColorFromTheme(Context context, int colorAttr) {
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(colorAttr, typedValue, true);
+        return ContextCompat.getColor(context, typedValue.resourceId);
+    }
+
     public static int getBottomSheetTheme(Context context) {
         User.Mode themeMode = RealmHelper.getUser(context, "bottom sheet").getScreenMode();
         if (themeMode == User.Mode.Dark)
