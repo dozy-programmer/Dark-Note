@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -96,8 +95,8 @@
                                 android:backgroundTint="@android:color/transparent"
                                 android:hint="Search inside note"
                                 android:maxLines="1"
-                                android:textColor="@color/white"
-                                android:textColorHint="@color/gray_100"
+                                android:textColor="?primaryTextColor"
+                                android:textColorHint="?secondaryTextColor"
                                 android:visibility="gone"></EditText>
 
                             <ImageView
@@ -247,7 +246,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="-10dp"
                 android:textColor="?primaryTextColor"
-                android:textColorHint="?secondaryBackgroundColor"
+                android:textColorHint="?quaternaryBackgroundColor"
                 android:textCursorDrawable="@drawable/cursor"
                 android:textSize="26sp"
                 android:inputType="textCapSentences"
@@ -340,7 +339,7 @@
                 android:layout_marginBottom="10dp"
                 android:gravity="top|start"
                 android:backgroundTint="?primaryBackgroundColor"
-                android:textColorHint="?secondaryTextColor"
+                android:textColorHint="?quaternaryBackgroundColor"
                 android:inputType="textCapSentences"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -438,7 +437,7 @@
                         android:src="@drawable/no_results_icon"
                         android:tint="?primaryIconTintColor"
                         android:layout_gravity="center_horizontal|center_vertical"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/empty_subtitle"
@@ -487,7 +486,7 @@
             android:layout_height="wrap_content"
             app:backgroundTint="?tertiaryButtonColor"
             app:srcCompat="@drawable/close_icon"
-            android:tint="?primaryIconTintColor"/>
+            android:tint="?primaryIconTintColor" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/increase_textsize"
@@ -496,7 +495,7 @@
             android:layout_marginVertical="10dp"
             app:backgroundTint="?primaryButtonColor"
             app:srcCompat="@drawable/arrow_up"
-            android:tint="?primaryIconTintColor"/>
+            android:tint="?primaryIconTintColor" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/decrease_textsize"
@@ -504,7 +503,7 @@
             android:layout_height="wrap_content"
             app:backgroundTint="?primaryButtonColor"
             app:srcCompat="@drawable/arrow_down"
-            android:tint="?primaryIconTintColor"/>
+            android:tint="?primaryIconTintColor" />
 
     </LinearLayout>
 
@@ -520,7 +519,7 @@
         app:layout_constraintBottom_toTopOf="@+id/add_checklist_item"
         app:layout_constraintEnd_toEndOf="@+id/add_checklist_item"
         app:srcCompat="@drawable/money_icon"
-        android:tint="?primaryIconTintColor"/>
+        android:tint="?primaryIconTintColor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_checklist_item"
@@ -533,7 +532,7 @@
         app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/add_icon"
-        android:tint="?primaryButtonColor"/>
+        android:tint="?primaryButtonColor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_audio_note"
@@ -547,7 +546,7 @@
         app:layout_constraintEnd_toStartOf="@+id/add_checklist_item"
         app:layout_constraintTop_toTopOf="@+id/add_checklist_item"
         app:srcCompat="@drawable/mic_icon"
-        android:tint="?secondaryButtonColor"/>
+        android:tint="?secondaryButtonColor" />
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
@@ -579,7 +578,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/undoi_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_redo"
@@ -587,7 +586,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/redo_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_bold"
@@ -595,7 +594,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/bold_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_italic"
@@ -603,7 +602,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/italic_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_strikethrough"
@@ -611,7 +610,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/strikethrough_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_underline"
@@ -619,7 +618,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/underline_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_insert_bullets"
@@ -627,7 +626,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/bullets_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_insert_numbers"
@@ -635,7 +634,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/numbers_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_text_size"
@@ -643,7 +642,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/format_size_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_txt_color"
@@ -651,7 +650,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/color_text_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_format_clear"
@@ -659,7 +658,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/format_clear_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_indent"
@@ -667,7 +666,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/indent_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_outdent"
@@ -675,7 +674,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/outdent_icon"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_align_left"
@@ -683,7 +682,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/justify_left"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_align_center"
@@ -691,7 +690,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/justify_center"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_align_right"
@@ -699,7 +698,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:src="@drawable/justify_right"
-                    android:tint="?primaryIconTintColor"/>
+                    android:tint="?primaryIconTintColor" />
 
             </LinearLayout>
 

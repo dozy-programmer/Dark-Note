@@ -32,6 +32,8 @@
         <item name="secondaryBackgroundColor">@color/white_100</item>
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
         <item name="tertiaryBackgroundColor">@color/white_200</item>
+        <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
+        <item name="quaternaryBackgroundColor">@color/white_200</item>
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/white_100</item>
@@ -88,12 +90,14 @@
         <!-- this works in tandem with the background color, its a lighter color !-->
         <item name="secondaryBackgroundColor">@color/black</item>
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
-        <item name="tertiaryBackgroundColor">@color/black</item>
+        <item name="tertiaryBackgroundColor">@color/black_100</item>
+        <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
+        <item name="quaternaryBackgroundColor">@color/black_200</item>
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/gray</item>
         <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
-        <item name="secondaryStrokeColor">@color/gray</item>
+        <item name="secondaryStrokeColor">@color/black_100</item>
 
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/white</item>
@@ -146,6 +150,8 @@
         <item name="secondaryBackgroundColor">@color/gray_100</item>
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
         <item name="tertiaryBackgroundColor">@color/gray_200</item>
+        <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
+        <item name="quaternaryBackgroundColor">@color/gray_300</item>
 
         <!-- this is for dark mode, so that the inside of cards can be dark !-->
         <item name="primaryStrokeColor">@color/gray_100</item>
@@ -194,26 +200,16 @@
         <item name="android:textColor">?primaryTextColor</item>
     </style>
 
-    <style name="BottomSheetGray" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">?primaryBackgroundColor</item>
-    </style>
-
-    <style name="BottomSheetDark" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">?primaryBackgroundColor</item>
-    </style>
-
-    <style name="BottomSheetLight" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
-        <item name="android:backgroundTint">?primaryBackgroundColor</item>
-    </style>
-
     <style name="BaseBottomSheetDialogGray" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetGray</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomSheetGray" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
+        <item name="android:backgroundTint">?primaryBackgroundColor</item>
     </style>
 
     <style name="BaseBottomSheetDialogLight" parent="@style/Theme.Design.Light.BottomSheetDialog">
@@ -223,11 +219,21 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="BottomSheetLight" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
+        <item name="android:backgroundTint">?primaryBackgroundColor</item>
+    </style>
+
     <style name="BaseBottomSheetDialogDark" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetDark</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomSheetDark" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_rounded_bottom_sheet</item>
+        <item name="android:backgroundTint">?primaryBackgroundColor</item>
     </style>
 
     <style name="ThemeOverlay.SwitchTheme" parent="">
@@ -236,7 +242,7 @@
         <item name="android:colorForeground">#42221f1f</item>
     </style>
 
-    <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar" >
+    <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar">
         <item name="android:textSize">@dimen/dimen_16</item>
         <item name="searchHintIcon">@null</item>
         <item name="android:textColorPrimary">?primaryTextColor</item>

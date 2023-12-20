@@ -2,12 +2,11 @@
 
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:scrollbarSize="2dp"
-    android:scrollbarThumbVertical="@color/azure"
+    android:scrollbarThumbVertical="?primaryIconTintColor"
     android:scrollbars="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +19,7 @@
             android:layout_height="10dp"
             android:layout_marginTop="10dp"
             android:padding="13dp"
-            app:cardBackgroundColor="@color/gray_200"
+            app:cardBackgroundColor="?primaryStrokeColor"
             app:cardCornerRadius="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +33,7 @@
             android:gravity="center"
             android:paddingVertical="10dp"
             android:text="Color"
-            android:textColor="@color/azure"
+            android:textColor="?secondaryTextColor"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/darker_blue"
+            app:cardBackgroundColor="?primaryButtonColor"
+            app:strokeWidth="2dp"
             app:cardCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -65,7 +65,7 @@
                     android:layout_marginHorizontal="20dp"
                     android:gravity="left|center_vertical"
                     android:text="Background"
-                    android:textColor="@color/gray"
+                    android:textColor="?primaryTextColor"
                     android:textSize="23sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/background_color_icon"
@@ -81,7 +81,8 @@
                     android:padding="15dp"
                     android:src="@drawable/color_icon"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:tint="?primaryIconTintColor" />
 
 
                 <com.google.android.material.card.MaterialCardView
@@ -90,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp"
-                    app:cardBackgroundColor="@color/gray"
+                    app:cardBackgroundColor="?primaryBackgroundColor"
                     app:cardCornerRadius="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +104,7 @@
                         android:gravity="left|center_vertical"
                         android:paddingHorizontal="20dp"
                         android:text="Title"
-                        android:textColor="@color/white"
+                        android:textColor="?primaryTextColor"
                         android:textSize="25sp" />
 
                     <ImageView
@@ -112,7 +113,8 @@
                         android:layout_height="55dp"
                         android:layout_gravity="end"
                         android:padding="15dp"
-                        android:src="@drawable/color_icon" />
+                        android:src="@drawable/color_icon"
+                        android:tint="?primaryIconTintColor" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -122,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="20dp"
-                    app:cardBackgroundColor="@color/gray"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +140,7 @@
                         android:gravity="left|center_vertical"
                         android:paddingHorizontal="20dp"
                         android:text="Text Color"
-                        android:textColor="@color/white"
+                        android:textColor="?primaryTextColor"
                         android:textSize="25sp" />
 
                     <ImageView
@@ -147,7 +149,8 @@
                         android:layout_height="55dp"
                         android:layout_gravity="end"
                         android:padding="15dp"
-                        android:src="@drawable/color_icon" />
+                        android:src="@drawable/color_icon"
+                        android:tint="?primaryIconTintColor" />
 
                 </com.google.android.material.card.MaterialCardView>
 

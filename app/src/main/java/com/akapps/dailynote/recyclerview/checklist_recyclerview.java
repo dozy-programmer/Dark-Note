@@ -9,15 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -28,11 +29,13 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
+
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -135,13 +138,6 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.deleteIcon.setVisibility(View.VISIBLE);
         else
             holder.deleteIcon.setVisibility(View.GONE);
-
-        if (RealmHelper.getUser(context, "checklist_recyclerview").getScreenMode() == User.Mode.Dark) {
-            holder.background.setCardBackgroundColor(activity.getColor(R.color.black));
-            holder.background.setStrokeColor(activity.getColor(R.color.gray_100));
-            holder.background.setStrokeWidth(5);
-        } else if (RealmHelper.getUser(context, "checklist_recyclerview").getScreenMode() == User.Mode.Light) {
-        }
 
         holder.subChecklist.setAdapter(null);
         RecyclerView.Adapter subChecklistAdapter = null;

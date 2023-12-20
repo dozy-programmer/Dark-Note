@@ -15,6 +15,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 public class UiHelper {
 
+    public static int color(Context context, int colorName) {
+        return context.getColor(colorName);
+    }
+
+//    public static int determineTextColor(Context ctx, int textColor){
+//        boolean isDarkMode = getThemeMode(ctx) != User.Mode.Light;
+//        double whiteContrast = ColorUtils.calculateContrast(Color.WHITE, textColor);
+//        double blackContrast = ColorUtils.calculateContrast(Color.BLACK, textColor);
+//
+//        return (blackContrast > whiteContrast) && isDarkMode ? color(ctx, R.color.white) : color(ctx, R.color.black);
+//    }
+
     public static User.Mode getThemeMode(Context context) {
         return RealmHelper.getUser(context, "getting theme").getScreenMode();
     }
@@ -31,14 +43,10 @@ public class UiHelper {
         return 0;
     }
 
-    public static int getColorFromTheme(Activity activity, int colorAttr){
+    public static int getColorFromTheme(Activity activity, int colorAttr) {
         TypedValue typedValue = new TypedValue();
         activity.getTheme().resolveAttribute(colorAttr, typedValue, true);
         return ContextCompat.getColor(activity, typedValue.resourceId);
-    }
-
-    public static void setStatusBarColor(Activity activity){
-        activity.getWindow().setStatusBarColor(getColorFromTheme(activity, R.attr.secondaryBackgroundColor));
     }
 
     public static int getBottomSheetTheme(Context context) {
@@ -51,6 +59,10 @@ public class UiHelper {
             return R.style.BaseBottomSheetDialogLight;
         }
         return 0;
+    }
+
+    public static void setStatusBarColor(Activity activity) {
+        activity.getWindow().setStatusBarColor(getColorFromTheme(activity, R.attr.secondaryBackgroundColor));
     }
 
     public static void setBottomSheetBehavior(View view, final Dialog dialog) {

@@ -12,15 +12,18 @@
     <color name="transparent">#00000000</color>
 
     <color name="black">#000000</color>
+    <color name="black_100">#252525</color>
+    <color name="black_200">#323232</color>
     <color name="gray">#3c3c44</color>
     <color name="gray_100">#54545f</color>
     <color name="gray_200">#60606c</color>
-    <color name="gray_300">#adadad</color>
-    <color name="azure">#b0c4de</color>
-    <color name="azure_100">#7a9cc7</color>
+    <color name="gray_300">#7c7c8b</color>
+    <color name="azure">#8CA9CF</color>
+    <color name="azure_100">#7A9CC7</color>
     <color name="white">#ffffff</color>
     <color name="white_100">#f2f3f4</color>
     <color name="white_200">#e3e4e8</color>
+    <color name="white_300">#e0e0e0</color>
     <color name="orange">#e65c00</color>
     <color name="money_green">#85bb65</color>
     <color name="red">#cc0000</color>

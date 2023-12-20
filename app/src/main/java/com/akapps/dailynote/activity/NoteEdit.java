@@ -27,12 +27,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
@@ -42,6 +42,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
@@ -78,7 +79,9 @@ import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,6 +89,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import jp.wasabeef.richeditor.RichEditor;
@@ -115,7 +119,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private TextView folderText;
     private ConstraintLayout scrollView;
     private FloatingActionButton budget;
-    private HorizontalScrollView richtextEditorScrollView;
     // search
     private EditText searchEditText;
     private ImageView searchClose;
@@ -224,7 +227,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         scrollView.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
         note.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
-        richtextEditorScrollView.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor));
         searchEditText.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
         budget.setColorNormal(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor));
 
@@ -364,7 +366,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         empty_Layout = findViewById(R.id.empty_Layout);
         empty_title = findViewById(R.id.empty_title);
         budget = findViewById(R.id.budget);
-        richtextEditorScrollView = findViewById(R.id.horizontalScrollView);
         subtitle = findViewById(R.id.empty_subtitle);
         subSubTitle = findViewById(R.id.empty_sub_subtitle);
         category = findViewById(R.id.category);
@@ -380,9 +381,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         note.setEditorFontSize(20);
         note.setPlaceholder("Type something...");
-        note.setEditorFontColor(context.getColor(R.color.white));
+        note.setEditorFontColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
         note.setPadding(5, 10, 0, 100);
-        note.setBackgroundColor(context.getColor(R.color.gray));
+        note.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
         note.focusEditor();
 
         photosScrollView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -410,7 +411,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (textSize == null)
             textSize = "20";
         note.setEditorFontSize(Integer.parseInt(textSize));
-        note.setEditorFontColor(getCurrentNote().getTextColor());
+        note.setEditorFontColor(getCurrentNote().getTextColor() == 0 ? R.attr.primaryTextColor : getCurrentNote().getTextColor());
         title.setTextColor(getCurrentNote().getTitleColor());
         category.setText(getCategoryName());
         category.setVisibility(View.VISIBLE);
@@ -520,7 +521,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         scrollView.setOnClickListener(view -> {
             if (getCurrentNote() != null && !getCurrentNote().isCheckList()) {
-                if( (user.isEnableEditableNoteButton()  && !isEditLockedMode) || !user.isEnableEditableNoteButton()) {
+                if (!user.isEnableEditableNoteButton() || !isEditLockedMode) {
                     note.focusEditor();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(note, InputMethodManager.SHOW_IMPLICIT);
@@ -611,11 +612,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isChangingTextSize = false;
             if (!isSearchingNotes) {
                 hideButtons();
-                if(!RealmHelper.getUser(context, "in space").isShowAudioButton())
-                    addAudioItem.setVisibility(View.VISIBLE);
-                if (getCurrentNote().isCheckList())
+                if (getCurrentNote().isCheckList()) {
                     addCheckListItem.setVisibility(View.VISIBLE);
-                else {
+                    if (!RealmHelper.getUser(context, "in space").isShowAudioButton())
+                        addAudioItem.setVisibility(View.VISIBLE);
+                } else {
                     // TO DO, see if do not edit note toggle is enabled and then run the following
                     if (user.isEnableEditableNoteButton()) {
                         addCheckListItem.setVisibility(View.VISIBLE);
@@ -675,14 +676,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (getCurrentNote().isCheckList() && !isShowingPhotos)
                 openNewItemDialog();
             else if (isShowingPhotos) {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
                     InfoSheet permissionInfo = new InfoSheet("Camera Permission Required", Manifest.permission.CAMERA);
                     permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
-                }
-                else
+                } else
                     showCameraDialog();
-            }
-            else {
+            } else {
                 note.setInputEnabled(isEditLockedMode);
                 isEditLockedMode = !isEditLockedMode;
                 // TO DO, see if do not edit note toggle is enabled and then run the following
@@ -693,14 +692,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         addCheckListItem.setOnLongClickListener(view -> {
             if (Helper.deviceMicExists(this)) {
-                if(isMicrophonePermissionEnabled())
+                if (isMicrophonePermissionEnabled())
                     checkMicrophonePermission();
-                else{
+                else {
                     InfoSheet permissionInfo = new InfoSheet("Microphone Permission Required", Manifest.permission.RECORD_AUDIO);
                     permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
                 }
-            }
-            else
+            } else
                 Helper.showMessage(NoteEdit.this, "Mic Error",
                         "No mic detected on device", MotionToast.TOAST_ERROR);
             return false;
@@ -714,8 +712,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     InfoSheet permissionInfo = new InfoSheet("Microphone Permission Required", Manifest.permission.RECORD_AUDIO);
                     permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
                 }
-            }
-            else
+            } else
                 Helper.showMessage(NoteEdit.this, "Mic Error",
                         "No mic detected on device", MotionToast.TOAST_ERROR);
         });
@@ -788,15 +785,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         photosNote.setVisibility(View.GONE);
         pinNoteButton.setVisibility(View.GONE);
         search.setVisibility(View.GONE);
-
-        searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
+        searchClose.setVisibility(View.VISIBLE);
         searchEditText.setVisibility(View.VISIBLE);
+
+        searchLayout.setCardBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
+        searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        searchLayout.setPadding(100, 100, 8, 100);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(0, 0, 8, 0);
         searchEditText.setLayoutParams(params);
-        searchLayout.setPadding(100, 100, 8, 100);
-        searchClose.setVisibility(View.VISIBLE);
         searchEditText.requestFocusFromTouch();
 
         if (searchEditText.requestFocus()) {
@@ -812,6 +809,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         String textSize = Helper.getPreference(context, "size");
         if (textSize == null)
             textSize = "20";
+
         note.setVisibility(View.GONE);
         noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(textSize));
         noteSearching.setVisibility(View.VISIBLE);
@@ -821,44 +819,35 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void hideSearchBar() {
+        isSearchingNotes = false;
         noteSearching.setText("");
         searchEditText.setText("");
-        isSearchingNotes = false;
         closeNote.setVisibility(View.VISIBLE);
         expandMenu.setVisibility(View.VISIBLE);
         noteColor.setVisibility(View.VISIBLE);
         photosNote.setVisibility(View.VISIBLE);
         pinNoteButton.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
-
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark)
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.not_too_dark_gray));
-        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
-            searchLayout.setCardBackgroundColor(context.getColor(R.color.gray_100));
-        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
-        }
-
-        ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) photosNote.getLayoutParams();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        searchLayout.setLayoutParams(params);
-        params.setMargins(0, 0, vlp.rightMargin, 0);
-        searchLayout.setLayoutParams(params);
         searchEditText.setVisibility(View.GONE);
         searchEditText.setVisibility(View.GONE);
         searchClose.setVisibility(View.GONE);
         searchEditText.clearFocus();
 
+        ViewGroup.MarginLayoutParams vlp = (ViewGroup.MarginLayoutParams) photosNote.getLayoutParams();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, vlp.rightMargin, 0);
+        searchLayout.setLayoutParams(params);
+        searchLayout.setCardBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor));
+
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-
         note.setHtml(getCurrentNote().getNote());
 
         if (isShowingPhotos) {
             addCheckListItem.setVisibility(View.VISIBLE);
             photosScrollView.setVisibility(View.VISIBLE);
         }
+
         note.setVisibility(View.VISIBLE);
         noteSearching.setVisibility(View.GONE);
 
@@ -892,7 +881,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         noteColor.setCardBackgroundColor(getCurrentNote().getBackgroundColor());
         category.setTextColor(getCurrentNote().getBackgroundColor());
         title.setTextColor(getCurrentNote().getTitleColor());
-        note.setEditorFontColor(getCurrentNote().getTextColor());
+        note.setEditorFontColor(getCurrentNote().getTextColor() == -1 ? R.attr.primaryTextColor : getCurrentNote().getTextColor());
         if (checklistAdapter != null && getCurrentNote().isCheckList())
             checklistAdapter.notifyDataSetChanged();
 
@@ -1037,7 +1026,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             int randomInt = (int) (Math.random() * (randomColor.length));
             newNote.setBackgroundColor(randomColor[randomInt]);
             newNote.setTitleColor(randomColor[randomInt]);
-            newNote.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
+            newNote.setTextColor(0);
             // insert data to database
             getRealm().beginTransaction();
             getRealm().insert(newNote);
@@ -1224,7 +1213,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 .addItem(restoreFromTrash)
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.info_icon), "Info"))
-                .setBackgroundColor(getColor(backgroundColor))
+                .setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.SHOW_UP_CENTER)
                 .setMenuRadius(15f)
@@ -1257,7 +1246,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         }
 
-        if(!getCurrentNote().isTrash())
+        if (!getCurrentNote().isTrash())
             noteMenu.removeItem(restoreFromTrash);
 
         noteMenu.showAsDropDown(expandMenu);
@@ -1278,7 +1267,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     Helper.showMessage(NoteEdit.this, "Alarm Exists",
                             "Delete Reminder to add another one", MotionToast.TOAST_ERROR);
                 } else {
-                    if(isNotificationPermissionEnabled())
+                    if (isNotificationPermissionEnabled())
                         checkNotificationPermission();
                     else {
                         InfoSheet permissionInfo = new InfoSheet("Notification Permission Required", Manifest.permission.POST_NOTIFICATIONS);
@@ -1338,7 +1327,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 getRealm().beginTransaction();
                 getCurrentNote().setTrash(false);
                 getRealm().commitTransaction();
-                Helper.showMessage(NoteEdit.this,  "Note Restored",
+                Helper.showMessage(NoteEdit.this, "Note Restored",
                         "Note restored from trash", MotionToast.TOAST_SUCCESS);
             }
 
@@ -1346,7 +1335,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
     };
 
-    public boolean isNotificationPermissionEnabled(){
+    public boolean isNotificationPermissionEnabled() {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU;
     }
 
@@ -1357,7 +1346,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             showDatePickerDialog();
     }
 
-    public boolean isMicrophonePermissionEnabled(){
+    public boolean isMicrophonePermissionEnabled() {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -1454,16 +1443,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void showPhotos(int visibility) {
         if (visibility == View.VISIBLE) {
             isShowingPhotos = true;
-            photosNote.setCardBackgroundColor(getColor(R.color.blue));
+            photosNote.setCardBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryButtonColor));
         } else {
             isShowingPhotos = false;
-            if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark)
-                photosNote.setCardBackgroundColor(getColor(R.color.not_too_dark_gray));
-            else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
-                photosNote.setCardBackgroundColor(getColor(R.color.gray_100));
-            else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
-            }
+            photosNote.setCardBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor));
         }
 
         photosScrollView.setVisibility(visibility);
@@ -1495,11 +1478,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 now.get(Calendar.MINUTE),
                 false
         );
-        timer.setThemeDark(true);
-        timer.setAccentColor(getColor(R.color.gray_200));
-        timer.setOkColor(getColor(R.color.blue));
-        timer.setCancelColor(getColor(R.color.gray_200));
-        timer.show(getSupportFragmentManager(), "Datepickerdialog");
+        timer.setThemeDark(RealmHelper.getUser(context, "in edit").getScreenMode() != User.Mode.Light);
+        timer.setAccentColor(UiHelper.getColorFromTheme(this, R.attr.quaternaryBackgroundColor));
+        timer.setOkColor(UiHelper.getColorFromTheme(this, R.attr.secondaryTextColor));
+        timer.setCancelColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
+        timer.show(getSupportFragmentManager(), "TimePickerDialog");
     }
 
     @Override
@@ -1521,11 +1504,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     now.get(Calendar.MONTH), // Initial month selection
                     now.get(Calendar.DAY_OF_MONTH) // Inital day selection
             );
-            datePickerDialog.setThemeDark(true);
-            datePickerDialog.setAccentColor(getColor(R.color.gray_200));
-            datePickerDialog.setOkColor(getColor(R.color.blue));
-            datePickerDialog.setCancelColor(getColor(R.color.gray_200));
-            datePickerDialog.show(getSupportFragmentManager(), "Datepickerdialog");
+            datePickerDialog.setThemeDark(RealmHelper.getUser(context, "in edit").getScreenMode() != User.Mode.Light);
+            datePickerDialog.setAccentColor(UiHelper.getColorFromTheme(this, R.attr.quaternaryBackgroundColor));
+            datePickerDialog.setOkColor(UiHelper.getColorFromTheme(this, R.attr.secondaryTextColor));
+            datePickerDialog.setCancelColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
+            datePickerDialog.show(getSupportFragmentManager(), "DatePickerDialog");
         } else
             Helper.showMessage(this, "Reminder Issue", "Reminders do not work on Android 7 devices", MotionToast.TOAST_ERROR);
     }
@@ -1673,10 +1656,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         info.show(getSupportFragmentManager(), info.getTag());
     }
 
-    private String getCategoryName(){
-        if(getCurrentNote().getCategory().equals("none") && getCurrentNote().isTrash())
+    private String getCategoryName() {
+        if (getCurrentNote().getCategory().equals("none") && getCurrentNote().isTrash())
             return "Trash";
-        else if(getCurrentNote().isTrash())
+        else if (getCurrentNote().isTrash())
             return getCurrentNote().getCategory() + " [Now in Trash]";
         else
             return getCurrentNote().getCategory();
@@ -1751,8 +1734,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     }
                 }
             }, 0);
-        }
-        else {
+        } else {
             LinearLayout categoryLayout = findViewById(R.id.category_layout);
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) categoryLayout.getLayoutParams();
             params.topMargin = -10;
@@ -1762,15 +1744,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     }
 
-    private Realm getRealm(){
+    private Realm getRealm() {
         return RealmSingleton.get(NoteEdit.this);
     }
 
-    public Note getCurrentNote(){
+    public Note getCurrentNote() {
         return getRealm().where(Note.class).equalTo("noteId", noteId).findFirst();
     }
 
-    public RealmResults<Photo> getPhotos(){
+    public RealmResults<Photo> getPhotos() {
         return getRealm().where(Photo.class).equalTo("noteId", noteId).findAll();
     }
 

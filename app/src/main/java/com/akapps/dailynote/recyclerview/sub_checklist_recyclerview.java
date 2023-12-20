@@ -16,7 +16,6 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -80,16 +79,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         if (textSize == null)
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
-
-        if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Dark) {
-            holder.background.setCardBackgroundColor(activity.getColor(R.color.black));
-            holder.background.setStrokeColor(activity.getColor(R.color.gray));
-            holder.background.setStrokeWidth(5);
-        } else if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Gray) {
-            holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
-        } else if (RealmHelper.getUser(context, "sub_checklist_recyclerview").getScreenMode() == User.Mode.Light) {
-
-        }
 
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray

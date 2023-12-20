@@ -38,12 +38,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import io.realm.RealmResults;
 
 public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.MyViewHolder> {
 
     // project data
     private final RealmResults<Note> allNotes;
+    private final int notesSize;
     private String noteText;
     private final Activity activity;
     private final Fragment noteFragment;
@@ -52,7 +54,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final boolean isTwentyFourHourFormat;
 
     // database
-    private User currentUser;
+    private final User currentUser;
     private final Context context;
 
     // multi select
@@ -117,6 +119,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         this.showPreviewNotesInfo = showPreviewNotesInfo;
         currentUser = RealmHelper.getUser(context, "notes_recyclerview");
         isTwentyFourHourFormat = currentUser.isTwentyFourHourFormat();
+        notesSize = allNotes.size();
     }
 
     @Override
@@ -239,11 +242,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setVisibility(View.GONE);
 
         // if a note is in the trash, show user
-        if(currentNote.isTrash()){
+        if (currentNote.isTrash()) {
             holder.trash_icon.setVisibility(View.VISIBLE);
             holder.trash_icon.setImageDrawable(activity.getDrawable(R.drawable.delete_icon));
-        }
-        else
+        } else
             holder.trash_icon.setVisibility(View.GONE);
 
         if (currentNote.isArchived()) {
@@ -523,12 +525,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     @Override
     public int getItemCount() {
-        try{
+        try {
             return allNotes.size();
-        } catch (Exception e){
+        } catch (Exception e) {
             Helper.restart(activity);
+            return notesSize;
         }
-        return allNotes.size();
     }
 
     // Checks to see if note is locked, if it is then user is sent to lock screen activity

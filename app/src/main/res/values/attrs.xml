@@ -2,42 +2,44 @@
 <resources>
     <declare-styleable name="themes">
         <!-- this includes titles !-->
-        <attr name="primaryTextColor" format="reference"/>
+        <attr name="primaryTextColor" format="reference" />
         <!-- this includes body, subtitle, subHeadings !-->
-        <attr name="secondaryTextColor" format="reference"/>
+        <attr name="secondaryTextColor" format="reference" />
         <!-- this includes body !-->
-        <attr name="tertiaryTextColor" format="reference"/>
+        <attr name="tertiaryTextColor" format="reference" />
         <!-- actual background color !-->
-        <attr name="primaryBackgroundColor" format="reference"/>
+        <attr name="primaryBackgroundColor" format="reference" />
         <!-- this works in tandem with the background color, its a lighter color !-->
-        <attr name="secondaryBackgroundColor" format="reference"/>
+        <attr name="secondaryBackgroundColor" format="reference" />
         <!-- this works in tandem with the secondaryBackground color, its an even lighter color !-->
-        <attr name="tertiaryBackgroundColor" format="reference"/>
+        <attr name="tertiaryBackgroundColor" format="reference" />
+        <!-- this works in tandem with the tertiaryBackgroundColor color, its an even lighter color !-->
+        <attr name="quaternaryBackgroundColor" format="reference" />
         <!-- for dark mode, so that the inside of cards can be dark !-->
-        <attr name="primaryStrokeColor" format="reference"/>
+        <attr name="primaryStrokeColor" format="reference" />
         <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
-        <attr name="secondaryStrokeColor" format="reference"/>
+        <attr name="secondaryStrokeColor" format="reference" />
         <!-- 99% if icons should be the same !-->
-        <attr name="primaryIconTintColor" format="reference"/>
+        <attr name="primaryIconTintColor" format="reference" />
         <!-- for second most used icon color !-->
-        <attr name="secondaryIconTintColor" format="reference"/>
+        <attr name="secondaryIconTintColor" format="reference" />
         <!-- for third most used icon color !-->
-        <attr name="tertiaryIconTintColor" format="reference"/>
+        <attr name="tertiaryIconTintColor" format="reference" />
         <!-- for add note/checklist, and folder button !-->
-        <attr name="primaryButtonColor" format="reference"/>
+        <attr name="primaryButtonColor" format="reference" />
         <!-- for audio note !-->
-        <attr name="secondaryButtonColor" format="reference"/>
+        <attr name="secondaryButtonColor" format="reference" />
         <!-- for close button !-->
         <!-- For switches !-->
-        <attr name="primarySwitchColor" format="reference"/>
+        <attr name="primarySwitchColor" format="reference" />
         <!-- divider color - for settings !-->
-        <attr name="primaryDividerColor" format="reference"/>
-        <attr name="tertiaryButtonColor" format="reference"/>
+        <attr name="primaryDividerColor" format="reference" />
+        <attr name="tertiaryButtonColor" format="reference" />
         <!-- for  layout selection!-->
-        <attr name="primarySelectionColor" format="reference"/>
+        <attr name="primarySelectionColor" format="reference" />
         <!-- for  theme selected!-->
-        <attr name="primarySelectedIconColor" format="reference"/>
+        <attr name="primarySelectedIconColor" format="reference" />
         <!-- for  theme not select!-->
-        <attr name="primaryUnSelectedIconColor" format="reference"/>
+        <attr name="primaryUnSelectedIconColor" format="reference" />
     </declare-styleable>
 </resources>

@@ -13,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
@@ -33,10 +35,13 @@ import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -133,27 +138,27 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
                 noteTitle = currentNote.getTitle();
 
             noteName.setText(Html.fromHtml(noteName.getText() + "<br>" +
-                            "<font color='#e65c00'>" + noteTitle + "</font>",
+                            "<font color='#7A9CC7'>" + noteTitle + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
-                            "<font color='#e65c00'>" + (getUser().isTwentyFourHourFormat() ?
+                            "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
                             Helper.convertToTwentyFourHour(currentNote.getDateCreated()).replace("\n", " ")
                             : currentNote.getDateCreated().replace("\n", " ")) + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             dateEdited.setText(Html.fromHtml(dateEdited.getText() + "<br>" +
-                            "<font color='#e65c00'>" + (getUser().isTwentyFourHourFormat() ?
+                            "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
                             Helper.convertToTwentyFourHour(currentNote.getDateEdited()).replace("\n", " ")
                             : currentNote.getDateEdited().replace("\n", " ")) + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             folderName.setText(Html.fromHtml(folderName.getText() + "<br>" +
-                            "<font color='#e65c00'>" + currentNote.getCategory() + "</font>",
+                            "<font color='#7A9CC7'>" + currentNote.getCategory() + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             numPhotos.setText(Html.fromHtml(numPhotos.getText() + "<br>" +
-                            "<font color='#e65c00'>" + allPhotos.size() + "</font>",
+                            "<font color='#7A9CC7'>" + allPhotos.size() + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
 
             String getNoteString = sanitizeWord(currentNote.getNote());
@@ -179,7 +184,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
                 noteSize = getNoteString.split(" ").length;
 
             numWords.setText(Html.fromHtml(numWords.getText() + "<br>" +
-                            "<font color='#e65c00'>" +
+                            "<font color='#7A9CC7'>" +
                             (currentNote.isCheckList() ? checklistSize + " list items<br>" +
                                     subChecklistSize + " sub-list items<br>" +
                                     getChecklistString.split(" ").length :
@@ -187,7 +192,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
                     Html.FROM_HTML_MODE_COMPACT));
 
             numChars.setText(Html.fromHtml(numChars.getText() + "<br>" +
-                            "<font color='#e65c00'>" + (currentNote.isCheckList() ?
+                            "<font color='#7A9CC7'>" + (currentNote.isCheckList() ?
                             getChecklistString.length() :
                             getNoteString.length()) + " characters" + "</font>",
                     Html.FROM_HTML_MODE_COMPACT));
@@ -257,11 +262,11 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
         }
     }
 
-    private Realm getRealm(){
+    private Realm getRealm() {
         return RealmSingleton.getInstance(getContext());
     }
 
-    private User getUser(){
+    private User getUser() {
         return RealmHelper.getUser(getContext(), "noteInfoSheet");
     }
 

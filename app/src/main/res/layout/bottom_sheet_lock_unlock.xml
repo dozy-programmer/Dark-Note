@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbarThumbVertical="@color/azure"
+    android:scrollbarThumbVertical="?primaryButtonColor"
     android:scrollbarSize="2dp"
     android:scrollbars="vertical"
     android:background="@android:color/transparent">
@@ -21,7 +20,7 @@
             android:layout_height="10dp"
             android:layout_marginTop="10dp"
             android:padding="13dp"
-            app:cardBackgroundColor="@color/gray_200"
+            app:cardBackgroundColor="?primaryStrokeColor"
             app:cardCornerRadius="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +34,7 @@
             android:paddingVertical="10dp"
             android:text="Lock"
             android:fontFamily="@font/baloo_bhai"
-            android:textColor="@color/azure"
+            android:textColor="?secondaryTextColor"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@+id/lock"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +46,7 @@
             android:layout_height="60dp"
             android:padding="15dp"
             android:src="@drawable/lock_icon"
+            android:tint="?primaryIconTintColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
@@ -70,18 +70,20 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_weight="50"
                 android:hint="Pin"
-                android:textColorHint="@color/white"
-                app:boxBackgroundColor="@color/gray"
-                app:boxStrokeColor="@color/havelock_blue"
-                app:boxStrokeWidth="2dp"
-                app:hintTextColor="@color/white">
+                android:textColorHint="?secondaryTextColor"
+                app:hintTextColor="?secondaryTextColor"
+                app:boxBackgroundColor="?primaryStrokeColor"
+                app:boxStrokeColor="?primaryButtonColor"
+                app:boxStrokeErrorColor="?tertiaryIconTintColor"
+                app:boxStrokeWidth="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/pin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:textColor="@color/white" />
+                    android:textColor="?primaryTextColor"
+                    android:textColorHint="?secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,18 +96,20 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_weight="50"
                 android:hint="Security Word"
-                android:textColorHint="@color/white"
-                app:boxBackgroundColor="@color/gray"
-                app:boxStrokeColor="@color/havelock_blue"
-                app:boxStrokeWidth="2dp"
-                app:hintTextColor="@color/white">
+                android:textColorHint="?secondaryTextColor"
+                app:hintTextColor="?secondaryTextColor"
+                app:boxBackgroundColor="?primaryStrokeColor"
+                app:boxStrokeColor="?primaryButtonColor"
+                app:boxStrokeErrorColor="?tertiaryIconTintColor"
+                app:boxStrokeWidth="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/security_word"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:textColor="@color/white" />
+                    android:textColor="?primaryTextColor"
+                    android:textColorHint="?secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,7 +126,7 @@
             android:text="Fingerprint\t\t"
             android:scaleX="0.85"
             android:scaleY="0.85"
-            android:textColor="@color/darker_blue"
+            android:textColor="?primaryTextColor"
             android:textSize="16sp"
             android:textStyle="bold"
             android:theme="@style/ThemeOverlay.SwitchTheme"

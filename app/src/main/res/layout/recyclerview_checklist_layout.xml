@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    android:id="@+id/background"
+<com.google.android.material.card.MaterialCardView android:id="@+id/background"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -8,8 +7,10 @@
     android:layout_marginVertical="5dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="@color/gray_100"
-    app:cardCornerRadius="10dp">
+    app:cardBackgroundColor="?secondaryBackgroundColor"
+    app:cardCornerRadius="10dp"
+    app:strokeWidth="2dp"
+    app:strokeColor="?primaryStrokeColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +36,8 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:src="@drawable/mic_icon"
-                    app:backgroundTint="@color/golden_rod"
+                    app:tint="?primaryIconTintColor"
+                    app:backgroundTint="?secondaryButtonColor"
                     app:maxImageSize="18dp"
                     app:fabCustomSize="25dp" />
 
@@ -49,9 +51,9 @@
                     android:layout_marginTop="2dp"
                     android:elevation="-5dp"
                     android:checked="false"
-                    android:buttonTint="@color/blue"
+                    android:buttonTint="?primaryButtonColor"
                     android:background="@drawable/unchecked_icon"
-                    android:button="@null"/>
+                    android:button="@null" />
 
                 <TextView
                     android:id="@+id/note_Textview"
@@ -61,9 +63,9 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="5dp"
                     android:text="Note"
-                    android:textColor="@color/white"
+                    android:textColor="?primaryTextColor"
                     android:textSize="18sp"
-                    android:autoLink="web"/>
+                    android:autoLink="web" />
 
             </LinearLayout>
 
@@ -80,14 +82,16 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/delete_icon"/>
+                    android:src="@drawable/delete_icon"
+                    android:tint="?tertiaryIconTintColor" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/edit_icon"/>
+                    android:src="@drawable/edit_icon"
+                    android:tint="?secondaryIconTintColor" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/add_subchecklist"
@@ -95,8 +99,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:src="@drawable/add_icon"
+                    app:tint="?primaryIconTintColor"
                     android:elevation="5dp"
-                    app:backgroundTint="@color/darker_blue"
+                    app:backgroundTint="?primaryButtonColor"
                     app:fabCustomSize="30dp" />
 
                 <com.google.android.material.card.MaterialCardView
@@ -106,7 +111,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginRight="10dp"
                     app:cardCornerRadius="10dp"
-                    android:backgroundTint="@color/chetwode_blue">
+                    android:backgroundTint="?primaryButtonColor">
 
                     <ImageView
                         android:id="@+id/item_image"
@@ -114,8 +119,7 @@
                         android:layout_height="35dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"
-                        android:backgroundTint="@color/mdtp_transparent_black"
-                        android:src="@drawable/icon_image"/>
+                        android:src="@drawable/icon_image" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -129,7 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:nestedScrollingEnabled="false"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="5dp" />
 
         <LinearLayout
             android:id="@+id/location_layout"
@@ -137,7 +141,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="-10dp"
+            android:layout_marginTop="-5dp"
+            android:paddingVertical="1dp"
             android:layout_gravity="right"
             android:layout_marginRight="13dp">
 
@@ -147,18 +152,18 @@
                 android:layout_height="match_parent"
                 android:text="place_info"
                 android:fontFamily="@font/baloo_bhai"
-                android:textColor="@color/blue"
-                android:textSize="10sp"
-                android:layout_marginTop="1dp"/>
+                android:textColor="?secondaryTextColor"
+                android:textSize="10sp" />
 
             <ImageView
                 android:layout_width="10dp"
                 android:layout_height="15dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
+                android:layout_marginTop="1dp"
                 android:backgroundTint="@color/mdtp_transparent_black"
                 android:src="@drawable/location_icon"
-                android:tint="@color/tan_hide"/>
+                android:tint="?secondaryIconTintColor" />
 
         </LinearLayout>
 

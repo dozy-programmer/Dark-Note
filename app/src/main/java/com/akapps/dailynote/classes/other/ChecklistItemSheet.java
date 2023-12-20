@@ -1,12 +1,12 @@
 package com.akapps.dailynote.classes.other;
 
 import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,10 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.BuildConfig;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
@@ -51,13 +53,16 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+
 import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
 
@@ -180,19 +185,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             }
         });
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            itemNameLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            itemNameLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
-            itemName.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
-            itemNameLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
-            itemName.setTextColor(getContext().getColor(R.color.white));
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-
         if (isSubChecklist || isAdding)
             itemImageLayout.setVisibility(View.GONE);
 
@@ -231,6 +223,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             delete.setVisibility(View.GONE);
         } else {
             info.setVisibility(View.GONE);
+            dropDownMenu.setVisibility(View.VISIBLE);
             try {
                 if (isSubChecklist) {
                     title.setText("Editing Sub-Item");
@@ -318,9 +311,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         });
 
         info.setOnClickListener(view16 -> {
-            if (isTextPastedDetected)
+            if (isTextPastedDetected) {
                 isTextPasted = true;
-            info.setText(info.getText().toString().split("\n")[0] + "\n");
+                info.setText(info.getText().toString().split("\n")[0] + "\n");
+            }
         });
 
         return view;
@@ -431,12 +425,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     }
                 }
             } else if (isAdding) {
-                if(isSubChecklist)
+                if (isSubChecklist)
                     ((NoteEdit) getActivity()).addSubCheckList(checkListItem, itemName.getText().toString());
                 else
                     ((NoteEdit) getActivity()).addCheckList(itemName.getText().toString(), selectedPlace);
-            }
-            else {
+            } else {
                 if (isSubChecklist)
                     updateItem(currentSubItem, itemName.getText().toString());
                 else
@@ -503,7 +496,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         noteMenu = new CustomPowerMenu.Builder<>(getContext(), new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.copy_icon), "Copy Text"))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.send_icon), "Send"))
-                .setBackgroundColor(getContext().getColor(R.color.gray_100))
+                .setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.DROP_DOWN)
                 .setMenuRadius(15f)
@@ -596,7 +589,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         locationLayout.setVisibility(View.GONE);
     }
 
-    private Realm getRealm(){
+    private Realm getRealm() {
         return RealmSingleton.getInstance(getContext());
     }
 

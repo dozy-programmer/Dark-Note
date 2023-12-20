@@ -2,7 +2,6 @@
 
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbarThumbVertical="@color/azure"
@@ -20,7 +19,7 @@
             android:layout_height="10dp"
             android:layout_marginTop="10dp"
             android:padding="13dp"
-            app:cardBackgroundColor="@color/gray_200"
+            app:cardBackgroundColor="?primaryStrokeColor"
             app:cardCornerRadius="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +36,7 @@
             android:layout_marginTop="10dp"
             android:padding="5dp"
             android:fontFamily="@font/baloo_bhai"
-            android:textColor="@color/azure"
+            android:textColor="?secondaryTextColor"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,6 +48,7 @@
             android:layout_height="0dp"
             android:padding="5dp"
             android:src="@drawable/delete_icon"
+            app:tint="?tertiaryIconTintColor"
             app:layout_constraintBottom_toBottomOf="@+id/dropdown_menu"
             app:layout_constraintStart_toEndOf="@+id/dropdown_menu"
             app:layout_constraintTop_toTopOf="@+id/dropdown_menu" />
@@ -59,10 +59,10 @@
             android:layout_height="0dp"
             android:padding="5dp"
             android:src="@drawable/more_icon"
+            android:tint="?primaryIconTintColor"
             app:layout_constraintBottom_toBottomOf="@+id/confirm_filter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/confirm_filter"
-            app:tint="@color/gray_100" />
+            app:layout_constraintTop_toTopOf="@+id/confirm_filter" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/item_name_layout"
@@ -71,15 +71,15 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:hint="Item name"
-            android:textColorHint="@color/white"
-            app:boxBackgroundColor="@color/gray"
-            app:boxStrokeColor="@color/havelock_blue"
-            app:boxStrokeErrorColor="@color/red"
+            android:textColorHint="?secondaryTextColor"
+            app:hintTextColor="?secondaryTextColor"
+            app:boxBackgroundColor="?primaryStrokeColor"
+            app:boxStrokeColor="?primaryButtonColor"
+            app:boxStrokeErrorColor="?tertiaryIconTintColor"
             app:boxStrokeWidth="2dp"
             app:endIconMode="clear_text"
-            app:endIconTint="@color/red"
-            app:errorIconTint="@color/red"
-            app:hintTextColor="@color/white"
+            app:endIconTint="?tertiaryIconTintColor"
+            app:errorIconTint="?tertiaryIconTintColor"
             app:layout_constraintEnd_toStartOf="@+id/item_image_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/checklist_info">
@@ -89,8 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
+                android:textColor="?primaryTextColor"
+                android:textColorHint="?secondaryTextColor"
                 android:windowSoftInputMode="adjustPan|adjustResize" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -103,7 +103,7 @@
             android:layout_marginRight="5dp"
             app:strokeColor="@color/blue"
             app:strokeWidth="2dp"
-            android:backgroundTint="@color/chetwode_blue"
+            android:backgroundTint="?primaryBackgroundColor"
             app:cardCornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/item_name_layout"
             app:layout_constraintEnd_toEndOf="parent"
@@ -115,8 +115,9 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:scaleType="fitXY"
-                android:backgroundTint="@color/mdtp_transparent_black"
-                android:src="@drawable/icon_image" />
+                android:backgroundTint="?primaryBackgroundColor"
+                android:src="@drawable/icon_image"
+                app:tint="?primaryIconTintColor" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -126,12 +127,12 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text=""
-            android:textColor="@color/white"
+            android:textColor="?primaryTextColor"
             android:textSize="12sp"
             android:layout_marginTop="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
+            app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add_location"
@@ -141,10 +142,11 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="5dp"
             android:padding="10dp"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/azure"
+            android:textColor="?primaryTextColor"
+            app:backgroundTint="?primaryButtonColor"
             app:cornerRadius="15dp"
             app:icon="@drawable/add_location"
+            app:iconTint="?primaryIconTintColor"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -157,10 +159,11 @@
             android:layout_marginHorizontal="10dp"
             android:padding="10dp"
             android:layout_marginTop="5dp"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/havelock_blue"
+            android:textColor="?primaryTextColor"
+            app:backgroundTint="?primaryButtonColor"
             app:cornerRadius="15dp"
             app:icon="@drawable/ic_check_green"
+            app:iconTint="?primaryIconTintColor"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -170,10 +173,10 @@
             android:id="@+id/date_created"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:gravity="right"
             android:text="Created: "
-            android:textColor="@color/golden_rod"
+            android:paddingVertical="5dp"
+            android:textColor="?primaryTextColor"
             android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/photo_info"
@@ -184,13 +187,12 @@
             android:id="@+id/photo_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:gravity="center"
             android:text="Long Click photo to delete"
-            android:textColor="@color/blue"
+            android:textColor="?secondaryTextColor"
+            android:paddingVertical="5dp"
             android:textSize="12sp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_name_layout" />
 
@@ -212,14 +214,13 @@
 
             <ImageView
                 android:id="@+id/delete_location"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="@color/mdtp_transparent_black"
+                android:backgroundTint="?primaryBackgroundColor"
                 android:src="@drawable/location_delete_icon"
-                android:tint="@color/red" />
+                android:tint="?tertiaryIconTintColor" />
 
             <TextView
                 android:id="@+id/place_info"
@@ -227,24 +228,31 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/baloo_bhai"
                 android:text="place_info"
+                android:layout_marginHorizontal="5dp"
                 android:layout_weight="98"
-                android:textColor="@color/blue"
+                android:textColor="?secondaryTextColor"
                 android:textSize="14sp"
-                android:layout_marginTop="3dp"
-                android:gravity="center"/>
+                android:gravity="center" />
 
             <ImageView
                 android:id="@+id/edit_location"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/mdtp_transparent_black"
+                android:layout_marginTop="2dp"
+                android:backgroundTint="?primaryBackgroundColor"
                 android:src="@drawable/edit_location_icon"
-                android:tint="@color/tan_hide" />
+                android:tint="?secondaryIconTintColor" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_name_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
