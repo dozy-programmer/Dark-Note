@@ -484,6 +484,11 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 getUser().setScreenMode(currentMode.getValue());
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
+                Helper.saveBooleanPreference(context, currentMode == User.Mode.Light, "theme");
+                RealmResults<Note> notesWithWidgets = RealmSingleton.get(this).where(Note.class)
+                        .greaterThan("widgetId", 0).findAll();
+                for (Note currentNote : notesWithWidgets)
+                    Helper.updateWidget(currentNote, SettingsScreen.this, RealmSingleton.get(this));
                 Helper.restart(this);
             }
         });

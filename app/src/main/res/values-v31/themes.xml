@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.DailyDay.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">?secondaryBackgroundColor</item>
-        <item name="colorPrimaryVariant">@color/gray</item>
-        <item name="colorOnPrimary">@color/gray</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorSecondaryVariant">@color/blue</item>
-        <item name="colorOnSecondary">@color/gray</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-
+    <style name="Theme.DailyDay.Light" parent="BaseAppTheme">
         <item name="android:dialogCornerRadius">20dp</item>
         <item name="android:windowSplashScreenBackground">?primaryBackgroundColor</item>
 
@@ -65,15 +57,7 @@
         <item name="primaryUnSelectedIconColor">@color/gray_300</item>
     </style>
 
-    <style name="Theme.DailyDay.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">?secondaryBackgroundColor</item>
-        <item name="colorPrimaryVariant">@color/gray</item>
-        <item name="colorOnPrimary">@color/gray</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorSecondaryVariant">@color/blue</item>
-        <item name="colorOnSecondary">@color/gray</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-
+    <style name="Theme.DailyDay.Dark" parent="BaseAppTheme">
         <item name="android:dialogCornerRadius">20dp</item>
         <item name="android:windowSplashScreenBackground">?primaryBackgroundColor</item>
 
@@ -129,15 +113,7 @@
         <item name="primaryUnSelectedIconColor">@color/gray</item>
     </style>
 
-    <style name="Theme.DailyDay.Gray" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">?secondaryBackgroundColor</item>
-        <item name="colorPrimaryVariant">@color/gray</item>
-        <item name="colorOnPrimary">@color/gray</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorSecondaryVariant">@color/blue</item>
-        <item name="colorOnSecondary">@color/gray</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-
+    <style name="Theme.DailyDay.Gray" parent="BaseAppTheme">
         <item name="android:dialogCornerRadius">20dp</item>
         <item name="android:windowSplashScreenBackground">?primaryBackgroundColor</item>
 

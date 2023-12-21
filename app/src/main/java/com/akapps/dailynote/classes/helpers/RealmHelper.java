@@ -1,12 +1,18 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;

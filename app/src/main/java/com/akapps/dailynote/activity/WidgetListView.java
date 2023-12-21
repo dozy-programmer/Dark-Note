@@ -6,14 +6,20 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.UiHelper;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WidgetListView extends RemoteViewsService {
     @Override
@@ -26,11 +32,14 @@ public class WidgetListView extends RemoteViewsService {
         private final Context context;
         private List<String> checklist;
         private int noteId;
+        private boolean isLightMode;
 
         public WidgetListViewFactory(Context context, int noteId, ArrayList<String> checklist) {
             this.context = context;
             this.noteId = noteId;
             this.checklist = checklist;
+            isLightMode = UiHelper.isLightTheme(context);;
+            Log.e("Here", "light mode -> " + isLightMode);
         }
 
         @Override
@@ -62,17 +71,17 @@ public class WidgetListView extends RemoteViewsService {
 
                 if (currentItem.contains("~~")) {
                     remoteView.setInt(R.id.checklist_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
-                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.gray_300));
+                    remoteView.setTextColor(R.id.checklist_text, getColor(isLightMode ? R.color.gray_300 : R.color.white_300));
                     remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.checked_icon);
                 } else {
                     remoteView.setInt(R.id.checklist_text, "setPaintFlags", 0);
-                    remoteView.setTextColor(R.id.checklist_text, getColor(R.color.white));
+                    remoteView.setTextColor(R.id.checklist_text, getColor(isLightMode ? R.color.black : R.color.white));
                     remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.unchecked_icon);
                 }
 
                 if(currentItem.contains("⤷")) {
                     currentItem = currentItem.replace("⤷", "");
-                    remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(R.color.white), 200));
+                    remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(isLightMode ? R.color.black : R.color.white), 200));
                     remoteView.setViewVisibility(R.id.sublist_spacing, View.VISIBLE);
                 }
                 else

@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.DailyDay.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">?secondaryBackgroundColor</item>
         <item name="colorPrimaryVariant">@color/gray</item>
         <item name="colorOnPrimary">@color/gray</item>
@@ -8,7 +8,9 @@
         <item name="colorSecondaryVariant">@color/blue</item>
         <item name="colorOnSecondary">@color/gray</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    </style>
 
+    <style name="Theme.DailyDay.Light" parent="BaseAppTheme">
         <!-- this includes titles !-->
         <item name="primaryTextColor">@color/black</item>
         <!-- this includes subtitle !-->
@@ -61,15 +63,7 @@
         <item name="primaryUnSelectedIconColor">@color/gray_300</item>
     </style>
 
-    <style name="Theme.DailyDay.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">?secondaryBackgroundColor</item>
-        <item name="colorPrimaryVariant">@color/gray</item>
-        <item name="colorOnPrimary">@color/gray</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorSecondaryVariant">@color/blue</item>
-        <item name="colorOnSecondary">@color/gray</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-
+    <style name="Theme.DailyDay.Dark" parent="BaseAppTheme">
         <!-- this includes titles !-->
         <item name="primaryTextColor">@color/white</item>
         <!-- this includes subtitle !-->
@@ -122,14 +116,7 @@
         <item name="primaryUnSelectedIconColor">@color/gray</item>
     </style>
 
-    <style name="Theme.DailyDay.Gray" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">?secondaryBackgroundColor</item>
-        <item name="colorPrimaryVariant">@color/gray</item>
-        <item name="colorOnPrimary">@color/gray</item>
-        <item name="colorSecondary">@color/blue</item>
-        <item name="colorSecondaryVariant">@color/blue</item>
-        <item name="colorOnSecondary">@color/gray</item>
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    <style name="Theme.DailyDay.Gray" parent="BaseAppTheme">
 
         <!-- this includes titles !-->
         <item name="primaryTextColor">@color/white</item>

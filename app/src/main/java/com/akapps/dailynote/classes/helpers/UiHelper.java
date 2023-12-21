@@ -27,6 +27,10 @@ public class UiHelper {
 //        return (blackContrast > whiteContrast) && isDarkMode ? color(ctx, R.color.white) : color(ctx, R.color.black);
 //    }
 
+    public static boolean isLightTheme(Context context){
+        return Helper.getBooleanPreference(context, "theme");
+    }
+
     public static User.Mode getThemeMode(Context context) {
         return RealmHelper.getUser(context, "getting theme").getScreenMode();
     }

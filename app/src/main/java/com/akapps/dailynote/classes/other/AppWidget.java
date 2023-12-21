@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
+import android.util.Log;
 import android.widget.RemoteViews;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
@@ -22,6 +23,9 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.UiHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +72,8 @@ public class AppWidget extends AppWidgetProvider {
             currentNote = getCurrentNote(allNotes, (String) widgetText, noteId);
 
             if (currentNote != null) {
+                boolean isLightTheme = UiHelper.isLightTheme(context);
+                Log.e("Here", "light mode -> " + isLightTheme);
                 boolean isAllChecklistDone = isAllChecklistChecked(currentNote);
                 AppData.updateNoteWidget(context, currentNote.getNoteId(), appWidgetId);
                 // Construct the RemoteViews object
@@ -83,6 +89,8 @@ public class AppWidget extends AppWidgetProvider {
                     views.setTextColor(R.id.appwidget_text, currentNote.getTitleColor());
                 else
                     views.setTextColor(R.id.appwidget_text, context.getColor(R.color.white));
+
+                views.setInt(R.id.preview_checklist, "setBackgroundResource", isLightTheme ? R.drawable.round_corner_light : R.drawable.round_corner);
 
                 ArrayList<String> list = new ArrayList<>();
                 if (currentNote.isCheckList()) {
