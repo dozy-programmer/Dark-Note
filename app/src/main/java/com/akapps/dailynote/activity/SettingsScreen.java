@@ -2,6 +2,7 @@ package com.akapps.dailynote.activity;
 
 import static com.akapps.dailynote.classes.helpers.UiHelper.getColorFromTheme;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
+import static com.akapps.dailynote.classes.helpers.UiHelper.saveLightThemePreference;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -484,11 +485,8 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 getUser().setScreenMode(currentMode.getValue());
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
-                Helper.saveBooleanPreference(context, currentMode == User.Mode.Light, "theme");
-                RealmResults<Note> notesWithWidgets = RealmSingleton.get(this).where(Note.class)
-                        .greaterThan("widgetId", 0).findAll();
-                for (Note currentNote : notesWithWidgets)
-                    Helper.updateWidget(currentNote, SettingsScreen.this, RealmSingleton.get(this));
+                saveLightThemePreference(context, currentMode);
+                Helper.updateAllWidgetTypes(context);
                 Helper.restart(this);
             }
         });

@@ -9,6 +9,7 @@ import android.widget.RemoteViews;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.helpers.AppAnalytics;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 
 public class AppWidgetShortcut extends AppWidgetProvider {
 
@@ -25,13 +26,14 @@ public class AppWidgetShortcut extends AppWidgetProvider {
     }
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int i=0; i < appWidgetIds.length; i++) {
-            int appWidgetId = appWidgetIds[i];
-
+        for (int appWidgetId : appWidgetIds) {
+            boolean isLightTheme = UiHelper.getLightThemePreference(context);
             // Get the layout for the widget and attach an on-click listener to the buttons
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_shortcut);
             views.setOnClickPendingIntent(R.id.add_checklist_shortcut, createPendingIntent(context, true));
             views.setOnClickPendingIntent(R.id.add_note_shortcut, createPendingIntent(context, false));
+            views.setInt(R.id.widget_background, "setBackgroundColor", context.getColor(isLightTheme ? R.color.white_100 : R.color.gray));
+            views.setInt(R.id.divider, "setBackgroundColor", context.getColor(isLightTheme ? R.color.light_gray_300 : R.color.gray_100));
 
             // Tell the AppWidgetManager to perform an update on the current app widget.
             appWidgetManager.updateAppWidget(appWidgetId, views);

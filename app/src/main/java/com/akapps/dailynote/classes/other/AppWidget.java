@@ -23,7 +23,6 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 
 import java.util.ArrayList;
@@ -70,9 +69,8 @@ public class AppWidget extends AppWidgetProvider {
             ArrayList<Note> allNotes = AppData.getAllNotes(context);
 
             currentNote = getCurrentNote(allNotes, (String) widgetText, noteId);
-
             if (currentNote != null) {
-                boolean isLightTheme = UiHelper.isLightTheme(context);
+                boolean isLightTheme = UiHelper.getLightThemePreference(context);
                 Log.e("Here", "light mode -> " + isLightTheme);
                 boolean isAllChecklistDone = isAllChecklistChecked(currentNote);
                 AppData.updateNoteWidget(context, currentNote.getNoteId(), appWidgetId);
@@ -92,23 +90,7 @@ public class AppWidget extends AppWidgetProvider {
 
                 views.setInt(R.id.preview_checklist, "setBackgroundResource", isLightTheme ? R.drawable.round_corner_light : R.drawable.round_corner);
 
-                ArrayList<String> list = new ArrayList<>();
-                if (currentNote.isCheckList()) {
-                    for (CheckListItem currentChecklist : currentNote.getChecklist()) {
-                        if (currentChecklist.getSubChecklist().size() == 0)
-                            list.add(currentChecklist.getText());
-                        else {
-                            StringBuilder subList = new StringBuilder();
-                            for (SubCheckListItem subCheckListItem : currentChecklist.getSubChecklist())
-                                subList.append("-> " + subCheckListItem.getText() + "\n");
-                            list.add(currentChecklist.getText() + "\n" + subList);
-                        }
-                    }
-                } else {
-                    String preview = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
-                    preview = Helper.removeMarkdownFormatting(preview);
-                    list.add(preview);
-                }
+                ArrayList<String> list = AppData.getNoteChecklist(noteId, context);
 
                 Intent intent = new Intent(context, WidgetListView.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);

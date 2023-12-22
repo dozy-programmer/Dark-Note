@@ -178,6 +178,14 @@ public class RealmHelper {
         return user;
     }
 
+    public static Note getCurrentNote(Context context, int noteId) {
+        return getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+    }
+
+    public static boolean isNoteWidget(Context context, int noteId){
+        return getCurrentNote(context, noteId).getWidgetId() > 0;
+    }
+
     private static User addUser(Context context){
         int uniqueId = UniqueIDGenerator.generateUniqueID();
         User user = new User(uniqueId);

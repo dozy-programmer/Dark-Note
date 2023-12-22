@@ -11,21 +11,19 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WidgetListView extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         int noteId = intent.getIntExtra("id", 0);
-        return new WidgetListViewFactory(getApplicationContext(), noteId, AppData.getNoteChecklist(noteId, getApplicationContext()));
+        ArrayList<String> receivedList = intent.getStringArrayListExtra("list");
+        return new WidgetListViewFactory(getApplicationContext(), noteId, receivedList);
     }
 
     class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -38,8 +36,6 @@ public class WidgetListView extends RemoteViewsService {
             this.context = context;
             this.noteId = noteId;
             this.checklist = checklist;
-            isLightMode = UiHelper.isLightTheme(context);;
-            Log.e("Here", "light mode -> " + isLightMode);
         }
 
         @Override
@@ -65,6 +61,7 @@ public class WidgetListView extends RemoteViewsService {
         public RemoteViews getViewAt(int position) {
             String currentItem = checklist.get(position);
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.recyclerview_widget);
+            isLightMode = UiHelper.getLightThemePreference(context);;
 
             if(!currentItem.contains("-Note-")) {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);

@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,6 +49,7 @@ import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.other.AppWidget;
+import com.akapps.dailynote.classes.other.AppWidgetShortcut;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 import java.io.File;
@@ -409,8 +411,7 @@ public class Helper {
     // retrieved data saved
     public static boolean getBooleanPreference(Context context, String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("app", MODE_PRIVATE);
-        boolean data = sharedPreferences.getBoolean(key, false);
-        return data;
+        return sharedPreferences.getBoolean(key, false);
     }
 
     // shows the user a message
@@ -552,10 +553,14 @@ public class Helper {
         return newText.trim();
     }
 
+    public static void updateAllWidgetTypes(Context context){
+        updateAllNoteWidgets(context);
+        updateShortcutWidget(context);
+    }
+
     public static void updateWidget(Note currentNote, Context context, Realm realm) {
         try {
             if (currentNote == null) return;
-
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(currentNote.getWidgetId());
             if (info != null) {
@@ -570,8 +575,24 @@ public class Helper {
                     realm.commitTransaction();
                 }
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
+    }
+
+    public static void updateAllNoteWidgets(Context context){
+        RealmResults<Note> notesWithWidgets = RealmSingleton.get(context).where(Note.class)
+                .greaterThan("widgetId", 0).findAll();
+        for (Note currentNote : notesWithWidgets)
+            updateWidget(currentNote, context, RealmSingleton.get(context));
+    }
+
+    public static void updateShortcutWidget(Context context){
+        try{
+            Intent intent = new Intent(context, AppWidgetShortcut.class);
+            intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+            int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, AppWidgetShortcut.class));
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            context.sendBroadcast(intent);
+        }catch (Exception e){}
     }
 
     public static int darkenColor(int color, int alpha) {

@@ -32,12 +32,7 @@ public class Homepage extends FragmentActivity {
 
         if (AppData.isAppFirstStarted) {
             // initialize database and get data
-            RealmSingleton.get(this).beginTransaction();
-            RealmResults<Note> notesWithWidgets = RealmSingleton.get(this).where(Note.class)
-                    .greaterThan("widgetId", 0).findAll();
-            for (Note currentNote : notesWithWidgets)
-                Helper.updateWidget(currentNote, Homepage.this, RealmSingleton.get(this));
-            RealmSingleton.get(this).commitTransaction();
+           Helper.updateAllWidgetTypes(this);
 
             if (RealmHelper.getUser(this, "home") != null) {
                 if (RealmHelper.getUser(this, "home").getScreenMode().getValue() == 0) {

@@ -57,7 +57,8 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         ImageView textColorIcon = view.findViewById(R.id.text_color_icon);
         backgroundText = view.findViewById(R.id.background_text);
 
-        currentNote = ((NoteEdit) getActivity()).getCurrentNote();
+        int noteId = ((NoteEdit) getActivity()).noteId;
+        currentNote = RealmHelper.getCurrentNote(getContext(), noteId);
 
         backgroundIcon.setOnClickListener(v -> {
             openDialog("b");

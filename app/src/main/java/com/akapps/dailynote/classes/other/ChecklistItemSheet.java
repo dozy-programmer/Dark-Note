@@ -135,7 +135,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         if (savedInstanceState != null)
             this.dismiss();
 
-        currentNote = ((NoteEdit) getActivity()).getCurrentNote();
+        int noteId = ((NoteEdit) getActivity()).noteId;
+        currentNote = RealmHelper.getCurrentNote(getContext(), noteId);
         user = RealmHelper.getUser(getContext(), "bottom sheet");
 
         // Initialize the SDK

@@ -15,6 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 public class UiHelper {
 
+    public static String themePreferenceKey = "theme";
+
     public static int color(Context context, int colorName) {
         return context.getColor(colorName);
     }
@@ -27,8 +29,12 @@ public class UiHelper {
 //        return (blackContrast > whiteContrast) && isDarkMode ? color(ctx, R.color.white) : color(ctx, R.color.black);
 //    }
 
-    public static boolean isLightTheme(Context context){
-        return Helper.getBooleanPreference(context, "theme");
+    public static boolean getLightThemePreference(Context context){
+        return Helper.getBooleanPreference(context, themePreferenceKey);
+    }
+
+    public static void saveLightThemePreference(Context context, User.Mode newTheme){
+        Helper.saveBooleanPreference(context, newTheme == User.Mode.Light, themePreferenceKey);
     }
 
     public static User.Mode getThemeMode(Context context) {
