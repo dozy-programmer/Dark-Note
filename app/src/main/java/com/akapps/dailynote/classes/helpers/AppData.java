@@ -36,7 +36,7 @@ public class AppData {
         return RealmSingleton.getInstance(context);
     }
 
-    public static ArrayList getAllNotes(Context context) {
+    public static ArrayList<Note> getAllNotes(Context context) {
         Realm realm = getRealm(context);
         RealmResults<Note> allNotes = getCurrentNoteSort(realm);
         ArrayList<Note> noteArrayList = new ArrayList<>();

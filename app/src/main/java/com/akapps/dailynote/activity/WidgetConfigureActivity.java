@@ -1,5 +1,6 @@
 package com.akapps.dailynote.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -8,29 +9,34 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.AppWidget;
 import java.util.ArrayList;
 
 public class WidgetConfigureActivity extends Activity {
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    EditText mAppWidgetText;
+    //private EditText mAppWidgetText;
     private static final String PREFS_NAME = "AppWidget";
     private static final String PREF_PREFIX_KEY = "appwidget";
 
     private ArrayList<Note> allNotes;
+    private boolean isLightMode;
 
-    public WidgetConfigureActivity() {
-        super();
-    }
+    public WidgetConfigureActivity() { super(); }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -38,15 +44,22 @@ public class WidgetConfigureActivity extends Activity {
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
+        isLightMode = UiHelper.getLightThemePreference(this);
 
         setContentView(R.layout.activity_widget_configure);
         // Set layout size of activity
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
+        //mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
         ListView listView = (ListView) findViewById(R.id.list);
+        LinearLayout background = (LinearLayout) findViewById(R.id.background);
+        TextView title = findViewById(R.id.title);
 
-        ArrayList<String> allArraylistNotes = new ArrayList<>();
+        background.setBackground(getDrawable(isLightMode ? R.drawable.round_corner_light : R.drawable.round_corner));
+        listView.setBackgroundColor(getColor(isLightMode ? R.color.white_100 : R.color.gray));
+        title.setTextColor(getColor(isLightMode ? R.color.black : R.color.white));
+
         new Handler(Looper.getMainLooper()).post(() -> {
+            ArrayList<String> allArraylistNotes = new ArrayList<>();
             allNotes = AppData.getAllNotes(WidgetConfigureActivity.this);
 
             for(Note currentNote: allNotes)
@@ -54,17 +67,21 @@ public class WidgetConfigureActivity extends Activity {
 
             if(allArraylistNotes.size() == 0)
                 allArraylistNotes.add("No notes or checklists found\n\nPress Here to Close");
-        });
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, allArraylistNotes);
+            initializeLayout(listView, allArraylistNotes);
+        });
+    }
+
+    private void initializeLayout(ListView listView, ArrayList allArraylistNotes){
+        SimpleArrayAdapter adapter = new SimpleArrayAdapter(this,
+                R.layout.recyclerview_configure_widget, allArraylistNotes);
 
         listView.setAdapter(adapter);
 
         // ListView Item Click Listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             // Take ListView clicked item value
-            String  widgetText    = (String) listView.getItemAtPosition(position);
+            String  widgetText = (String) listView.getItemAtPosition(position);
 
             if(widgetText.equals("No notes or checklists found\n\nPress Here to Close"))
                 finish();
@@ -83,10 +100,7 @@ public class WidgetConfigureActivity extends Activity {
         // If this activity was started with an intent without an app widget ID, finish with an error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
-            return;
         }
-
-        mAppWidgetText.setText(loadTitlePref(WidgetConfigureActivity.this, mAppWidgetId));
     }
 
     private void createWidget(Context context, String widgetText) {
@@ -127,5 +141,20 @@ public class WidgetConfigureActivity extends Activity {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
         prefs.apply();
+    }
+
+    class SimpleArrayAdapter extends ArrayAdapter<String> {
+        public SimpleArrayAdapter(Context context, int resource, ArrayList<String> notes) {
+            super(context, resource, notes);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+            TextView textView = (TextView) view.findViewById(R.id.note_title);
+            boolean isLightMode = UiHelper.getLightThemePreference(view.getContext());
+            textView.setTextColor(getColor(isLightMode ? R.color.black : R.color.white));
+            return view;
+        }
     }
 }
