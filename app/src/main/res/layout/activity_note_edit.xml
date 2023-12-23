@@ -486,7 +486,7 @@
             android:layout_height="wrap_content"
             app:backgroundTint="?tertiaryButtonColor"
             app:srcCompat="@drawable/close_icon"
-            android:tint="?primaryIconTintColor" />
+            app:tint="?primaryIconTintColor" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/increase_textsize"
@@ -495,7 +495,7 @@
             android:layout_marginVertical="10dp"
             app:backgroundTint="?primaryButtonColor"
             app:srcCompat="@drawable/arrow_up"
-            android:tint="?primaryIconTintColor" />
+            app:tint="?primaryIconTintColor" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/decrease_textsize"
@@ -503,7 +503,7 @@
             android:layout_height="wrap_content"
             app:backgroundTint="?primaryButtonColor"
             app:srcCompat="@drawable/arrow_down"
-            android:tint="?primaryIconTintColor" />
+            app:tint="?primaryIconTintColor" />
 
     </LinearLayout>
 
@@ -532,7 +532,7 @@
         app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/add_icon"
-        android:tint="?primaryButtonColor" />
+        app:tint="?primaryIconTintColor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_audio_note"
@@ -546,7 +546,7 @@
         app:layout_constraintEnd_toStartOf="@+id/add_checklist_item"
         app:layout_constraintTop_toTopOf="@+id/add_checklist_item"
         app:srcCompat="@drawable/mic_icon"
-        android:tint="?secondaryButtonColor" />
+        app:tint="?primaryIconTintColor" />
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"

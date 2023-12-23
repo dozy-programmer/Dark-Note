@@ -79,7 +79,7 @@
         android:layout_marginBottom="10dp"
         android:fontFamily="@font/baloo_bhai"
         android:gravity="center"
-        android:text="App Restart Required..."
+        android:text="I am sorry, an error occured 😔\nApp Restart Required..."
         android:textColor="?primaryTextColor"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"

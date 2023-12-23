@@ -78,22 +78,6 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
 
         realm = RealmSingleton.getInstance(getContext());
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            emailLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            emailLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_300)));
-            emailLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_300)));
-            emailInput.setTextColor(getContext().getColor(R.color.gray_300));
-            passwordLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            passwordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_300)));
-            passwordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_300)));
-            passwordInput.setTextColor(getContext().getColor(R.color.gray_300));
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-
         if (!signUp)
             title.setText("Log in");
         else

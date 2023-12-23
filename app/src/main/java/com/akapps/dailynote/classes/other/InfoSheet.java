@@ -180,7 +180,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         } else if (message == 3 || message == -3) {
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             backup.setText("DELETE");
             if (deleteAllChecklists) {
@@ -190,7 +190,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 if (message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
                     backup.setText("TRASH");
-                    backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
+                    //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
                     info.setVisibility(View.GONE);
                 } else if (message == -3) {
                     backup.setText("DELETE");
@@ -207,7 +207,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             // initialize layout
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             backup.setText("DELETE");
             info.setText("Are you sure?");
             info.setGravity(Gravity.CENTER);
@@ -224,13 +224,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
             allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
-            if (allBackups.size() <= 50) {
+            if (allBackups.size() <= 100) {
                 ((SettingsScreen) getActivity()).upLoadData();
                 this.dismiss();
             } else {
                 // initialize layout
                 title.setText("Upload");
-                info.setText("Max Uploads of 20 has been reached. Please delete a backup by pressing sync button.");
+                info.setText("Max Uploads of 100 has been reached. Please delete a backup by pressing sync button.");
                 info.setGravity(Gravity.CENTER);
                 securityWord.setVisibility(View.GONE);
             }
@@ -283,7 +283,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             // initialize layout
             title.setText("Logout");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             backup.setText("LOGOUT");
             info.setText("Are you sure?");
             info.setGravity(Gravity.CENTER);
@@ -291,7 +291,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         } else if (message == 9) {
             title.setText("Remove Formatting");
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             backup.setText("REMOVE");
             info.setText("Are you sure?");
@@ -333,13 +333,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     .show());
         } else if (message == 11) {
             title.setText("Audio Info");
-            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
         } else if (message == 12) {
             title.setText("Export Info");
-            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
@@ -359,7 +359,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     "in order for a feature to work.");
             info.setGravity(Gravity.CENTER);
             backup.setVisibility(View.VISIBLE);
-            backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
+            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
             backup.setText("PROCEED");
         }
 

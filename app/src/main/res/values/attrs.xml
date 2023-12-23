@@ -21,6 +21,8 @@
         <attr name="primaryStrokeColor" format="reference" />
         <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
         <attr name="secondaryStrokeColor" format="reference" />
+        <!-- for dark mode, so that confirm button is a different color than primaryButtonColor !-->
+        <attr name="tertiaryStrokeColor" format="reference" />
         <!-- 99% if icons should be the same !-->
         <attr name="primaryIconTintColor" format="reference" />
         <!-- for second most used icon color !-->

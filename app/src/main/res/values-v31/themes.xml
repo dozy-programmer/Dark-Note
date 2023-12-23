@@ -27,6 +27,8 @@
         <item name="primaryStrokeColor">@color/white_100</item>
         <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
         <item name="secondaryStrokeColor">@color/white_200</item>
+        <!-- for dark mode, so that confirm button is a different color than primaryButtonColor !-->
+        <item name="tertiaryStrokeColor">@color/azure_100</item>
 
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/black</item>
@@ -83,6 +85,8 @@
         <item name="primaryStrokeColor">@color/gray</item>
         <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
         <item name="secondaryStrokeColor">@color/black_100</item>
+        <!-- for dark mode, so that confirm button is a different color than primaryButtonColor !-->
+        <item name="tertiaryStrokeColor">@color/orange</item>
 
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/white</item>
@@ -139,6 +143,8 @@
         <item name="primaryStrokeColor">@color/gray_100</item>
         <!-- for dark mode, so that the inside of cards can be dark - match secondary color !-->
         <item name="secondaryStrokeColor">@color/gray_200</item>
+        <!-- for dark mode, so that confirm button is a different color than primaryButtonColor !-->
+        <item name="tertiaryStrokeColor">@color/azure</item>
 
         <!-- 99% if icons should be the same !-->
         <item name="primaryIconTintColor">@color/white</item>

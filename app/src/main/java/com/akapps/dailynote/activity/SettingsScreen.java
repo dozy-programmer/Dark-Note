@@ -66,6 +66,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import io.realm.Realm;
@@ -301,7 +302,6 @@ public class SettingsScreen extends AppCompatActivity {
             Helper.moveAnimation(findViewById(R.id.version_icon), 300f);
 
         User currentUser = getUser();
-
         if (null == currentUser.getEmail()) {
             RealmSingleton.get(this).beginTransaction();
             currentUser.setEmail("");
@@ -894,7 +894,7 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public void upLoadData() {
-        User currentUser = getUser();
+        AtomicReference<User> currentUser = new AtomicReference<>(getUser());
         File backupFile = new File(backUpZip());
         Uri file = Uri.fromFile(backupFile);
         // file info
@@ -949,14 +949,15 @@ public class SettingsScreen extends AppCompatActivity {
                         MotionToast.TOAST_ERROR);
                 Helper.restart(this);
             }).addOnSuccessListener(taskSnapshot -> {
+                currentUser.set(getUser());
                 String bytesTransferredFormatted = Helper.getFormattedFileSize(context, taskSnapshot.getBytesTransferred());
                 if (bytesTransferredFormatted.equals(fileSize)) {
                     RealmSingleton.get(this).beginTransaction();
-                    RealmSingleton.get(this).insert(new Backup(currentUser.getUserId(), fileName, new Date(), 0));
-                    currentUser.setLastUpload(Helper.getCurrentDate());
+                    RealmSingleton.get(this).insert(new Backup(currentUser.get().getUserId(), fileName, new Date(), 0));
+                    currentUser.get().setLastUpload(Helper.getCurrentDate());
                     RealmSingleton.get(this).commitTransaction();
                     lastUploadDate.setVisibility(View.VISIBLE);
-                    lastUploadDate.setText("Last Upload : " + currentUser.getLastUpload().replaceAll("\n", " "));
+                    lastUploadDate.setText("Last Upload : " + currentUser.get().getLastUpload().replaceAll("\n", " "));
                     progressDialog.cancel();
                     Helper.showMessage(SettingsScreen.this, "Upload Success",
                             "Data Uploaded",
