@@ -239,9 +239,9 @@
     </style>
 
     <style name="slider" parent="Widget.AppCompat.SeekBar">
-        <item name="android:progressBackgroundTint">@color/gray_300</item>
-        <item name="android:progressTint">@color/gray_100</item>
-        <item name="android:thumbTint">@color/white</item>
+        <item name="android:progressBackgroundTint">?quaternaryBackgroundColor</item>
+        <item name="android:progressTint">?primaryIconTintColor</item>
+        <item name="android:thumbTint">?primaryIconTintColor</item>
     </style>
 
 </resources>

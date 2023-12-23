@@ -67,15 +67,6 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment {
         TextView totalAudioTime = view.findViewById(R.id.total_audio_time);
         MaterialButton infoRecording = view.findViewById(R.id.info_recording);
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-            infoRecording.setBackgroundColor(getContext().getColor(R.color.not_too_dark_gray));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-
         String audioPath = item.getAudioPath();
         int audioDuration = item.getAudioDuration();
         totalAudioTime.setText(Helper.secondsToDurationText(audioDuration));

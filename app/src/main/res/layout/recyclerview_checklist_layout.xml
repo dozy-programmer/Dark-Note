@@ -37,6 +37,7 @@
                     android:layout_gravity="center"
                     android:src="@drawable/mic_icon"
                     app:tint="?primaryIconTintColor"
+                    android:layout_marginTop="3dp"
                     app:backgroundTint="?secondaryButtonColor"
                     app:maxImageSize="18dp"
                     app:fabCustomSize="25dp" />

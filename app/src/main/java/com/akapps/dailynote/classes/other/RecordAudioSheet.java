@@ -57,14 +57,6 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
 
         audioManager = new AudioManager(recordToFilePath);
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-
         MaterialButton close = view.findViewById(R.id.cancel_recording);
         MaterialButton done = view.findViewById(R.id.done_recording);
         FloatingActionButton pauseOrPlayButton = view.findViewById(R.id.pause_play_button);
