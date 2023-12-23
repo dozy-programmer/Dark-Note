@@ -73,13 +73,6 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         // retrieves current photo object
         Photo currentPhoto = allPhotos.get(position);
 
-        if (RealmHelper.getUser(context, "photos_recyclerview").getScreenMode() == User.Mode.Dark)
-            holder.background.setCardBackgroundColor(activity.getColor(R.color.gray));
-        else if (RealmHelper.getUser(context, "photos_recyclerview").getScreenMode() == User.Mode.Gray) {
-        } else if (RealmHelper.getUser(context, "photos_recyclerview").getScreenMode() == User.Mode.Light) {
-
-        }
-
         if (!showDelete) {
             holder.delete.setVisibility(View.GONE);
             holder.share.setVisibility(View.GONE);

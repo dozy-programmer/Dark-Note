@@ -70,16 +70,6 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         // retrieves current photo object
         Backup currentBackup = allBackups.get(position);
 
-        if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-            holder.background.setCardBackgroundColor(context.getColor(R.color.black));
-            holder.background.setStrokeColor(context.getColor(R.color.gray_100));
-            holder.background.setStrokeWidth(5);
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray)
-            holder.background.setCardBackgroundColor(context.getColor(R.color.gray_100));
-        else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
-        }
-
         String fileName = currentBackup.getFileName().replace("_backup.zip", "");
 
         String fileSize = "";

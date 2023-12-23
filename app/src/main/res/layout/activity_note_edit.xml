@@ -95,6 +95,7 @@
                                 android:backgroundTint="@android:color/transparent"
                                 android:hint="Search inside note"
                                 android:maxLines="1"
+                                android:textCursorDrawable="@drawable/cursor"
                                 android:textColor="?primaryTextColor"
                                 android:textColorHint="?secondaryTextColor"
                                 android:visibility="gone"></EditText>
@@ -341,6 +342,7 @@
                 android:backgroundTint="?primaryBackgroundColor"
                 android:textColorHint="?quaternaryBackgroundColor"
                 android:inputType="textCapSentences"
+                android:textCursorDrawable="@drawable/cursor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -361,6 +363,7 @@
                 android:textColorHint="?secondaryTextColor"
                 android:textSize="20sp"
                 android:visibility="gone"
+                android:textCursorDrawable="@drawable/cursor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

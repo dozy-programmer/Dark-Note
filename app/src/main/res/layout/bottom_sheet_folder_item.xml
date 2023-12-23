@@ -50,6 +50,7 @@
             android:src="@drawable/voice_icon"
             android:visibility="gone"
             android:backgroundTint="@color/azure"
+            app:tint="?primaryIconTintColor"
             app:fabSize="mini"
             app:borderWidth="0dp"
             app:elevation="6dp"

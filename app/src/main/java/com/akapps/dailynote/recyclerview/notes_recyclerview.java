@@ -170,13 +170,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-            holder.note_info.setBackgroundColor(activity.getColor(R.color.black));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 192));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
-            holder.note_info.setBackgroundColor(activity.getColor(R.color.not_too_dark_gray));
             holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 255));
         } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
-
+            holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
         }
 
         // changes the number of lines title and preview occupy depending on user setting

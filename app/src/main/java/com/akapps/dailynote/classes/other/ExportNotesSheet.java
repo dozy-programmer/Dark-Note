@@ -64,27 +64,17 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         ImageButton info = view.findViewById(R.id.export_info);
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-            exportText.setBackgroundColor(getContext().getColor(R.color.black));
-            exportMarkdown.setBackgroundColor(getContext().getColor(R.color.black));
-            exportTextString.setBackgroundColor(getContext().getColor(R.color.black));
-            exportTextStringFormatted.setBackgroundColor(getContext().getColor(R.color.black));
-            exportNote.setBackgroundColor(getContext().getColor(R.color.black));
-            exportText.setStrokeWidth(5);
-            exportMarkdown.setStrokeWidth(5);
-            exportTextString.setStrokeWidth(5);
-            exportTextStringFormatted.setStrokeWidth(5);
-            exportNote.setStrokeWidth(5);
+            int background = UiHelper.getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor);
+            exportText.setBackgroundColor(background);
+            exportMarkdown.setBackgroundColor(background);
+            exportTextString.setBackgroundColor(background);
+            exportTextStringFormatted.setBackgroundColor(background);
+            exportNote.setBackgroundColor(background);
             exportText.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.blue)));
             exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.azure)));
             exportTextString.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.golden_rod)));
             exportTextStringFormatted.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.gumbo)));
             exportNote.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.money_green)));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray) {
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-            exportTextString.setTextColor(getContext().getColor(R.color.gray));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
         }
 
         if (!isOneNoteSelected) {

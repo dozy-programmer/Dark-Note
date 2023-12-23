@@ -1194,15 +1194,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (getCurrentNote(context, noteId).getPinNumber() != 0)
             lockStatus += "ed";
 
-        int backgroundColor = R.color.gray_100;
-        if (user.getScreenMode() == User.Mode.Dark)
-            backgroundColor = R.color.black;
-        else if (user.getScreenMode() == User.Mode.Light) {
-
-        }
-
         IconPowerMenuItem restoreFromTrash = new IconPowerMenuItem(getDrawable(R.drawable.restore_icon), "Undo Delete");
-
         IconPowerMenuItem reminderItem = new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder");
         noteMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.archive_icon), archivedStatus))

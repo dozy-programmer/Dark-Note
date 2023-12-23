@@ -57,22 +57,6 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
         else
             title.setText("Lock Note");
 
-        if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
-            pinLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            pinLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.gray_300)));
-            pinLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
-            pin.setTextColor(getContext().getColor(R.color.white));
-            securityWordLayout.setBoxBackgroundColor(getContext().getColor(R.color.black));
-            securityWordLayout.setHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
-            securityWordLayout.setDefaultHintTextColor(ColorStateList.valueOf(getContext().getColor(R.color.white)));
-            securityWord.setTextColor(getContext().getColor(R.color.white));
-            view.setBackgroundColor(getContext().getColor(R.color.black));
-        } else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Gray)
-            view.setBackgroundColor(getContext().getColor(R.color.gray));
-        else if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Light) {
-
-        }
-
         boolean fingerprintFeatureExists;
         final boolean[] isFingerprintSelected = new boolean[1];
         BiometricManager biometricManager = BiometricManager.from(getActivity());
