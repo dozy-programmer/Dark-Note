@@ -411,7 +411,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (textSize == null)
             textSize = "20";
         note.setEditorFontSize(Integer.parseInt(textSize));
-        note.setEditorFontColor(getCurrentNote(context, noteId).getTextColor() == 0 ? R.attr.primaryTextColor : getCurrentNote(context, noteId).getTextColor());
+        note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
         category.setText(getCategoryName());
         category.setVisibility(View.VISIBLE);
@@ -881,7 +881,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         noteColor.setCardBackgroundColor(getCurrentNote(context, noteId).getBackgroundColor());
         category.setTextColor(getCurrentNote(context, noteId).getBackgroundColor());
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
-        note.setEditorFontColor(getCurrentNote(context, noteId).getTextColor() == -1 ? R.attr.primaryTextColor : getCurrentNote(context, noteId).getTextColor());
+        note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         if (checklistAdapter != null && getCurrentNote(context, noteId).isCheckList())
             checklistAdapter.notifyDataSetChanged();
 

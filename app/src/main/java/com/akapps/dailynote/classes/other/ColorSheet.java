@@ -35,6 +35,7 @@ import io.realm.Realm;
 public class ColorSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;
+    private int noteId;
     private AlertDialog colorPickerView;
     private TextView titleColor;
     private TextView textColor;
@@ -42,8 +43,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
     private TextView backgroundText;
     private ImageView backgroundIcon;
 
-    public ColorSheet() {
-    }
+    public ColorSheet() {}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         ImageView textColorIcon = view.findViewById(R.id.text_color_icon);
         backgroundText = view.findViewById(R.id.background_text);
 
-        int noteId = ((NoteEdit) getActivity()).noteId;
+        noteId = ((NoteEdit) getActivity()).noteId;
         currentNote = RealmHelper.getCurrentNote(getContext(), noteId);
 
         backgroundIcon.setOnClickListener(v -> {
@@ -77,7 +77,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
             checkColor();
         }
         titleColor.setTextColor(currentNote.getTitleColor());
-        textColor.setTextColor(currentNote.getTextColor());
+        textColor.setTextColor(RealmHelper.getTextColorBasedOnTheme(getContext(), noteId));
 
         return view;
     }
@@ -90,7 +90,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         else if (colorChanging.equals("title"))
             initialColor = currentNote.getTitleColor();
         else
-            initialColor = currentNote.getTextColor();
+            initialColor = RealmHelper.getTextColorBasedOnTheme(getContext(), noteId);
 
         // opens dialog to choose a color
         colorPickerView = ColorPickerDialogBuilder
@@ -106,8 +106,9 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                         currentNote.setBackgroundColor(selectedColor);
                     } else if (colorChanging.equals("title"))
                         currentNote.setTitleColor(selectedColor);
-                    else
-                        currentNote.setTextColor(selectedColor);
+                    else {
+                        RealmHelper.setTextColorBasedOnTheme(getContext(), noteId, selectedColor);
+                    }
                     currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
                     realm.commitTransaction();
                     ((NoteEdit) getActivity()).updateDateEdited();
@@ -141,7 +142,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
             checkColor();
         }
         titleColor.setTextColor(currentNote.getTitleColor());
-        textColor.setTextColor(currentNote.getTextColor());
+        textColor.setTextColor(RealmHelper.getTextColorBasedOnTheme(getContext(), noteId));
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
@@ -162,12 +163,45 @@ public class RealmHelper {
     }
 
     public static Note getNote(Context context, int noteId){
-        Note note = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
-        return note;
+        return getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+    }
+
+    public static int getTextColorBasedOnTheme(Context context, int noteId){
+        Note currentNote = getNote(context, noteId);
+        boolean isLightMode = isLightMode(context);
+        int primaryTextColor = UiHelper.getColorFromTheme(context, R.attr.primaryTextColor);
+
+        if(currentNote == null) return primaryTextColor;
+
+        if(isLightMode) {
+            if(currentNote.getLightTextColor() == 0 || currentNote.getLightTextColor() == -1) return primaryTextColor;
+        }
+        else {
+            if (currentNote.getTextColor() == 0 || currentNote.getTextColor() == -1) return primaryTextColor;
+        }
+        Log.d("Here", "isLightMode -> " + isLightMode);
+        Log.d("Here", "current color -> " + (isLightMode ? currentNote.getLightTextColor() : currentNote.getTextColor()));
+
+        return isLightMode ? currentNote.getLightTextColor() : currentNote.getTextColor();
+    }
+
+    public static void setTextColorBasedOnTheme(Context context, int noteId, int newColor){
+        Note currentNote = getNote(context, noteId);
+        boolean isLightMode = isLightMode(context);
+        getRealm(context).beginTransaction();
+        if(isLightMode)
+            currentNote.setLightTextColor(newColor);
+        else
+            currentNote.setTextColor(newColor);
+        getRealm(context).commitTransaction();
+    }
+
+    public static boolean isLightMode(Context context){
+        return getUser(context, "in realm helper").getScreenMode() == User.Mode.Light;
     }
 
     public static int getNotePin(Context context, int noteId){
-        Note note = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+        Note note = getCurrentNote(context, noteId);
         if(note == null) return 0;
         return note.getPinNumber();
     }

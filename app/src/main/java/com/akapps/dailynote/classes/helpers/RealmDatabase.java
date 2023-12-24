@@ -192,6 +192,9 @@ public class RealmDatabase {
 
             if (!schema.get("User").hasField("disableLastEditInfo"))
                 schema.get("User").addField("disableLastEditInfo", boolean.class);
+
+            if (!schema.get("Note").hasField("lightTextColor"))
+                schema.get("Note").addField("lightTextColor", int.class);
         }
     }
 }

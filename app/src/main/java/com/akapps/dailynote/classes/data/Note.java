@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.data;
 
+import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.Helper;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ public class Note extends RealmObject {
     private String note;
     private int titleColor;
     private int textColor;
+    private int lightTextColor;
     private int backgroundColor;
     private boolean pin;
     private boolean archived;
@@ -69,6 +71,8 @@ public class Note extends RealmObject {
         dateCreatedMilli = dateEditedMilli = Helper.dateToCalender(dateCreated).getTimeInMillis();
         category = "none";
         sort = 5;
+        lightTextColor = R.color.black;
+        textColor = R.color.white;
         this.enableSublist = enableSublist;
         widgetId = -1;
         pinNumber = 0;
@@ -280,5 +284,13 @@ public class Note extends RealmObject {
 
     public void setWidgetId(int widgetId) {
         this.widgetId = widgetId;
+    }
+
+    public int getLightTextColor() {
+        return lightTextColor;
+    }
+
+    public void setLightTextColor(int lightTextColor) {
+        this.lightTextColor = lightTextColor;
     }
 }

@@ -84,7 +84,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         // to be filled and changes text color to gray
         if (isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-            holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 100));
+            holder.checklistText.setTextColor(Helper.darkenColor(RealmHelper.getTextColorBasedOnTheme(context, currentNote.getNoteId()), 100));
             if (RealmHelper.getUser(context, "sub_checklist_recyclerview").isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_checked));
             } else {
@@ -92,7 +92,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             }
         } else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-            holder.checklistText.setTextColor(Helper.darkenColor(currentNote.getTextColor(), 200));
+            holder.checklistText.setTextColor(Helper.darkenColor(RealmHelper.getTextColorBasedOnTheme(context, currentNote.getNoteId()), 200));
             if (RealmHelper.getUser(context, "sub_checklist_recyclerview").isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_unchecked));
             } else {
