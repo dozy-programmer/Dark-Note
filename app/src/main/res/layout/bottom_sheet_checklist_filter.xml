@@ -51,7 +51,7 @@
                     android:layout_marginBottom="2dp"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
-                    android:text="A - Z"
+                    android:text="Alphabetical ➙ A - Z"
                     android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
