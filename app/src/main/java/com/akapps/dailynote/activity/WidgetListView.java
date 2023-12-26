@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WidgetListView extends RemoteViewsService {
+
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         int noteId = intent.getIntExtra("id", 0);
@@ -61,7 +62,7 @@ public class WidgetListView extends RemoteViewsService {
         public RemoteViews getViewAt(int position) {
             String currentItem = checklist.get(position);
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.recyclerview_widget);
-            isLightMode = UiHelper.getLightThemePreference(context);;
+            isLightMode = UiHelper.getLightThemePreference(context);
 
             if(!currentItem.contains("-Note-")) {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);

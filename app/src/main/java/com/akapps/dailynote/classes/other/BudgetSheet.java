@@ -156,11 +156,9 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                         try {
                             if(currentTokenTrimmed.isEmpty()) {
                                 wrongFormatList.add(expenseKey + currentTokenTrimmed);
-                                Log.d("Here", "Current String EMPTY -> " + expenseKey + currentTokenTrimmed);
                             }
                             else {
                                 Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
-                                Log.d("Here", "Double is -> " + currentTokenDouble);
                                 currentExpenseAmount += currentTokenDouble;
                                 currentSubExpenseTotal += currentTokenDouble;
                             }

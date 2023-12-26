@@ -1,6 +1,7 @@
 package com.akapps.dailynote.classes.helpers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
@@ -18,6 +19,8 @@ public class AppData {
     public static int timerDuration;
     public static boolean isKeyboardOpen;
     public static boolean isDisableAnimation;
+    public static ArrayList<Integer> wordFoundPositions;
+    public static int wordIndex;
 
     private AppData() {
     }
@@ -27,6 +30,8 @@ public class AppData {
             isAppFirstStarted = true;
             isKeyboardOpen = false;
             isDisableAnimation = false;
+            wordFoundPositions = new ArrayList<>();
+            wordIndex = 0;
             appData = new AppData();
         }
         return appData;
@@ -92,23 +97,50 @@ public class AppData {
     }
 
     public static void updateNoteWidget(Context context, int noteId, int widgetId) {
-        Realm realm = getRealm(context);
-        Note currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
+        Note currentNote = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+        if(currentNote == null) return;
 
-        assert currentNote != null;
-        if (currentNote.getWidgetId() != widgetId) {
-            realm.beginTransaction();
-            currentNote.setWidgetId(widgetId);
-            realm.commitTransaction();
-        }
+        getRealm(context).beginTransaction();
+        currentNote.setWidgetId(widgetId);
+        getRealm(context).commitTransaction();
     }
 
     public static RealmResults<Note> getCurrentNoteSort(Realm realm) {
-        RealmResults<Note> allNotes = realm.where(Note.class)
+        return realm.where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+    }
 
-        return allNotes;
+    public static void resetWordFoundPositions(){
+        wordFoundPositions.clear();
+        wordIndex = 0;
+    }
+
+    public static void addWordFoundPositions(int position){
+        if (!wordFoundPositions.contains(position)) {
+            wordFoundPositions.add(position);
+            Log.d("Here", "positions -> " + AppData.getWordFoundPositions());
+        }
+    }
+
+    public static ArrayList<Integer> getWordFoundPositions(){
+        return wordFoundPositions;
+    }
+
+    public static int getIndexPosition(boolean isGoingUp){
+        if(isGoingUp){
+            if(wordIndex == 0)
+                wordIndex = getWordFoundPositions().size() - 1;
+            else
+                wordIndex--;
+        }
+        else{
+            if(wordIndex == getWordFoundPositions().size() -1)
+                wordIndex = 0;
+            else
+                wordIndex++;
+        }
+        return getWordFoundPositions().get(wordIndex);
     }
 }

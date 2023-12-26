@@ -250,4 +250,12 @@
         <item name="android:thumbTint">?primaryIconTintColor</item>
     </style>
 
+    <style name="Widget.Configure" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
+    <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="">
+        <item name="colorControlActivated">@color/azure</item>
+    </style>
+
 </resources>

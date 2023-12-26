@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     android:id="@+id/background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_margin="5dp"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/title"
@@ -14,20 +16,40 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="Select note for widget"
+        android:paddingVertical="10dp"
         android:textSize="18sp"
         android:fontFamily="@font/baloo_bhai"
         android:textColor="@color/white" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/appwidget_text"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:visibility="gone"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:inputType="text" />-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_edittext_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/azure"
+        app:hintTextColor="@color/white"
+        app:boxBackgroundColor="@color/gray"
+        app:boxStrokeColor="@color/azure"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/red"
+        app:boxStrokeWidth="2dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search for note"
+            android:textColor="@color/white"
+            android:textColorHint="@color/azure"
+            android:windowSoftInputMode="adjustPan|adjustResize" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:scrollbarThumbVertical="@color/azure"/>
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.akapps.dailynote.activity;
 
 import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
 import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentNote;
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getUser;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.Manifest;
@@ -422,9 +423,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         updateColors();
 
         if (getCurrentNote(context, noteId).isCheckList()) {
-            sortChecklist();
+            sortChecklist("");
             showCheckListLayout(true);
-            searchLayout.setVisibility(View.GONE);
+            //searchLayout.setVisibility(View.GONE);
             formatMenu.setVisibility(View.GONE);
             checkListRecyclerview.requestFocus();
         } else {
@@ -511,7 +512,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
 
         search.setOnClickListener(v -> {
-            if (note.getHtml().length() > 0) {
+            if(getCurrentNote(context, noteId).isCheckList()){
+                textSizeLayout.setVisibility(View.VISIBLE);
+                showSearchBar();
+            }
+            else if (note.getHtml().length() > 0) {
                 textSizeLayout.setVisibility(View.VISIBLE);
                 showSearchBar();
             } else
@@ -536,14 +541,20 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentWordIndex = 0;
-                if (isSearchingNotes) {
-                    textSizeLayout.setVisibility(View.VISIBLE);
-                    if (!s.toString().isEmpty() && s.toString().length() > 1)
-                        findText(s.toString().toLowerCase());
-                    else {
-                        wordOccurences = new ArrayList();
-                        noteSearching.setText(Html.fromHtml(getCurrentNote(context, noteId).getNote(), Html.FROM_HTML_MODE_COMPACT));
+                if(getCurrentNote(context, noteId).isCheckList() && s.toString().length() > 1){
+                    AppData.resetWordFoundPositions();
+                    sortChecklist(s.toString());
+                }
+                else {
+                    currentWordIndex = 0;
+                    if (isSearchingNotes) {
+                        textSizeLayout.setVisibility(View.VISIBLE);
+                        if (!s.toString().isEmpty() && s.toString().length() > 1)
+                            findText(s.toString().toLowerCase());
+                        else {
+                            wordOccurences = new ArrayList();
+                            noteSearching.setText(Html.fromHtml(getCurrentNote(context, noteId).getNote(), Html.FROM_HTML_MODE_COMPACT));
+                        }
                     }
                 }
             }
@@ -612,11 +623,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isChangingTextSize = false;
             if (!isSearchingNotes) {
                 hideButtons();
-                if (getCurrentNote(context, noteId).isCheckList()) {
-                    addCheckListItem.setVisibility(View.VISIBLE);
-                    if (!RealmHelper.getUser(context, "in space").isShowAudioButton())
-                        addAudioItem.setVisibility(View.VISIBLE);
-                } else {
+                if (getCurrentNote(context, noteId).isCheckList())
+                    showChecklistButtons();
+                else {
                     // TO DO, see if do not edit note toggle is enabled and then run the following
                     if (user.isEnableEditableNoteButton()) {
                         addCheckListItem.setVisibility(View.VISIBLE);
@@ -632,7 +641,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         increaseTextSize.setOnTouchListener(new RepeatListener(500, 100, v -> {
-            if (isSearchingNotes) {
+            if(getCurrentNote(context, noteId).isCheckList()){
+                if(AppData.getWordFoundPositions().size() == 0) return;
+                int currentIndex = AppData.getIndexPosition(true);
+                checkListRecyclerview.smoothScrollToPosition(currentIndex);
+            }
+            else if (isSearchingNotes) {
                 if (currentWordIndex != -1 && wordOccurences.size() != 0) {
                     int nextIndex;
                     noteSearching.requestFocus();
@@ -646,7 +660,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }));
 
         decreaseTextSize.setOnTouchListener(new RepeatListener(500, 100, v -> {
-            if (isSearchingNotes) {
+            if(getCurrentNote(context, noteId).isCheckList()){
+                if(AppData.getWordFoundPositions().size() == 0) return;
+                int currentIndex = AppData.getIndexPosition(false);
+                checkListRecyclerview.smoothScrollToPosition(currentIndex);
+            }
+            else if (isSearchingNotes) {
                 int nextIndex;
                 if (currentWordIndex != -1 && wordOccurences.size() != 0) {
                     noteSearching.requestFocus();
@@ -801,27 +820,27 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
         }
 
-        if (isShowingPhotos) {
+        if (getCurrentNote(context, noteId).isCheckList()) {
             addCheckListItem.setVisibility(View.GONE);
-            photosScrollView.setVisibility(View.GONE);
+            addAudioItem.setVisibility(View.GONE);
+            if(isShowingPhotos)
+                photosScrollView.setVisibility(View.GONE);
         }
-
-        String textSize = Helper.getPreference(context, "size");
-        if (textSize == null)
-            textSize = "20";
-
-        note.setVisibility(View.GONE);
-        noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(textSize));
-        noteSearching.setVisibility(View.VISIBLE);
-        noteSearching.setText(Html.fromHtml(note.getHtml(), Html.FROM_HTML_MODE_COMPACT));
+        else{
+            String textSize = Helper.getPreference(context, "size");
+            if (textSize == null)
+                textSize = "20";
+            note.setVisibility(View.GONE);
+            noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(textSize));
+            noteSearching.setVisibility(View.VISIBLE);
+            noteSearching.setText(Html.fromHtml(note.getHtml(), Html.FROM_HTML_MODE_COMPACT));
+        }
 
         showButtons();
     }
 
     private void hideSearchBar() {
         isSearchingNotes = false;
-        noteSearching.setText("");
-        searchEditText.setText("");
         closeNote.setVisibility(View.VISIBLE);
         expandMenu.setVisibility(View.VISIBLE);
         noteColor.setVisibility(View.VISIBLE);
@@ -841,22 +860,28 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-        note.setHtml(getCurrentNote(context, noteId).getNote());
 
-        if (isShowingPhotos) {
-            addCheckListItem.setVisibility(View.VISIBLE);
-            photosScrollView.setVisibility(View.VISIBLE);
+        noteSearching.setText("");
+        searchEditText.setText("");
+        if(getCurrentNote(context, noteId).isCheckList()){
+            note.setVisibility(View.GONE);
+            noteSearching.setVisibility(View.GONE);
+            sortChecklist("");
+        }
+        else {
+            note.setHtml(getCurrentNote(context, noteId).getNote());
+            note.setVisibility(View.VISIBLE);
+            noteSearching.setVisibility(View.GONE);
         }
 
-        note.setVisibility(View.VISIBLE);
-        noteSearching.setVisibility(View.GONE);
-
+        showChecklistButtons();
         hideButtons();
     }
 
     private void showButtons() {
+        float elevation = -1 * (getCurrentNote(context, noteId).isCheckList() ? 50f : getResources().getDisplayMetrics().heightPixels / 2f);
         new Handler().postDelayed(() -> {
-            ObjectAnimator refreshAnimation = ObjectAnimator.ofFloat(textSizeLayout, "translationY", -1 * (textSizeLayout.getY() / 2));
+            ObjectAnimator refreshAnimation = ObjectAnimator.ofFloat(textSizeLayout, "translationY", elevation);
             refreshAnimation.setDuration(500);
             refreshAnimation.start();
         }, 100);
@@ -871,9 +896,27 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }, 500);
     }
 
-    public void sortChecklist() {
+    private void showChecklistButtons(){
+        if (getCurrentNote(context, noteId).isCheckList()) {
+            new Handler().postDelayed(() -> {
+                addCheckListItem.setVisibility(View.VISIBLE);
+            }, 500);
+            if(isShowingPhotos) {
+                new Handler().postDelayed(() -> {
+                    photosScrollView.setVisibility(View.VISIBLE);
+                }, 500);
+            }
+            if(!getUser(context, "note edit").isShowAudioButton()) {
+                new Handler().postDelayed(() -> {
+                    addAudioItem.setVisibility(View.VISIBLE);
+                }, 500);
+            }
+        }
+    }
+
+    public void sortChecklist(String word) {
         RealmResults<CheckListItem> results = Helper.sortChecklist(getCurrentNote(context, noteId), getRealm());
-        populateChecklist(results);
+        populateChecklist(results, word);
         title.clearFocus();
     }
 
@@ -1074,12 +1117,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         Random rand = new Random();
 
+        long lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
         // insert data to database
         getRealm().beginTransaction();
         CheckListItem currentItem = new CheckListItem(itemText.trim(), false, getCurrentNote(context, noteId).getNoteId(),
                 initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
                 .format(Calendar.getInstance().getTime()), place);
         getCurrentNote(context, noteId).getChecklist().add(currentItem);
+        getRealm().where(CheckListItem.class).equalTo("id", noteId).findAll().setLong("lastCheckedDate", lastCheckedDate);
         getCurrentNote(context, noteId).setChecked(false);
         getRealm().commitTransaction();
         updateSaveDateEdited();
@@ -1451,13 +1496,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         photosScrollView.setAdapter(scrollAdapter);
     }
 
-    private void populateChecklist(RealmResults<CheckListItem> currentList) {
+    private void populateChecklist(RealmResults<CheckListItem> currentList, String word) {
         int span = 1;
         if (Helper.isTablet(context))
             span = 2;
         GridLayoutManager layout = new GridLayoutManager(context, span);
         checkListRecyclerview.setLayoutManager(layout);
-        checklistAdapter = new checklist_recyclerview(currentList, getCurrentNote(context, noteId), this);
+        checklistAdapter = new checklist_recyclerview(currentList, getCurrentNote(context, noteId), this, word);
         checklistAdapter.setHasStableIds(true);
         checkListRecyclerview.setAdapter(checklistAdapter);
     }

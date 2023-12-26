@@ -1374,7 +1374,6 @@ public class SettingsScreen extends AppCompatActivity {
         finish();
         if (!AppData.isDisableAnimation) {
             overridePendingTransition(R.anim.show_from_bottom, R.anim.hide_to_bottom);
-            Log.d("Here", "---------------------- Transition --------------------------");
         }
     }
 

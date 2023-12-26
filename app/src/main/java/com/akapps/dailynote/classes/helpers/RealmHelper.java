@@ -175,12 +175,14 @@ public class RealmHelper {
 
         if(isLightMode) {
             if(currentNote.getLightTextColor() == 0 || currentNote.getLightTextColor() == -1) return primaryTextColor;
+
+            if(currentNote.getLightTextColor() == context.getColor(R.color.white)) return primaryTextColor;
         }
         else {
             if (currentNote.getTextColor() == 0 || currentNote.getTextColor() == -1) return primaryTextColor;
+
+            if(currentNote.getTextColor() == context.getColor(R.color.black)) return primaryTextColor;
         }
-        Log.d("Here", "isLightMode -> " + isLightMode);
-        Log.d("Here", "current color -> " + (isLightMode ? currentNote.getLightTextColor() : currentNote.getTextColor()));
 
         return isLightMode ? currentNote.getLightTextColor() : currentNote.getTextColor();
     }
@@ -193,7 +195,6 @@ public class RealmHelper {
             currentNote.setLightTextColor(newColor);
         else
             currentNote.setTextColor(newColor);
-        getRealm(context).commitTransaction();
     }
 
     public static boolean isLightMode(Context context){
@@ -217,6 +218,7 @@ public class RealmHelper {
     }
 
     public static boolean isNoteWidget(Context context, int noteId){
+        if(getCurrentNote(context, noteId) == null) return false;
         return getCurrentNote(context, noteId).getWidgetId() > 0;
     }
 

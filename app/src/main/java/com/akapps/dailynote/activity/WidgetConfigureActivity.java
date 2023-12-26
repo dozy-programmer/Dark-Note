@@ -5,10 +5,15 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -20,19 +25,31 @@ import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.AppWidget;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WidgetConfigureActivity extends Activity {
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    //private EditText mAppWidgetText;
     private static final String PREFS_NAME = "AppWidget";
     private static final String PREF_PREFIX_KEY = "appwidget";
 
     private ArrayList<Note> allNotes;
+    private HashMap<String, Integer> allHashMapNotes;
+    private ArrayList<String> allArrayListNotes;
     private boolean isLightMode;
+
+    // layout
+    private TextInputLayout searchNoteLayout;
+    private TextInputEditText searchNoteEditText;
+    private SimpleArrayAdapter adapter;
+    private ListView listView;
 
     public WidgetConfigureActivity() { super(); }
 
@@ -41,52 +58,25 @@ public class WidgetConfigureActivity extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        // Set the result to CANCELED.  This will cause the widget host to cancel
-        // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
         isLightMode = UiHelper.getLightThemePreference(this);
 
         setContentView(R.layout.activity_widget_configure);
         // Set layout size of activity
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        //mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
-        ListView listView = (ListView) findViewById(R.id.list);
-        LinearLayout background = (LinearLayout) findViewById(R.id.background);
-        TextView title = findViewById(R.id.title);
-
-        background.setBackground(getDrawable(isLightMode ? R.drawable.round_corner_light : R.drawable.round_corner));
-        listView.setBackgroundColor(getColor(isLightMode ? R.color.white_100 : R.color.gray));
-        title.setTextColor(getColor(isLightMode ? R.color.black : R.color.white));
 
         new Handler(Looper.getMainLooper()).post(() -> {
-            ArrayList<String> allArraylistNotes = new ArrayList<>();
+            allHashMapNotes = new HashMap<>();
+            allArrayListNotes = new ArrayList<>();
             allNotes = AppData.getAllNotes(WidgetConfigureActivity.this);
 
             for(Note currentNote: allNotes)
-                allArraylistNotes.add(currentNote.getTitle());
+                allHashMapNotes.put(currentNote.getTitle(), currentNote.getNoteId());
 
-            if(allArraylistNotes.size() == 0)
-                allArraylistNotes.add("No notes or checklists found\n\nPress Here to Close");
+            if(allHashMapNotes.size() == 0)
+                allHashMapNotes.put("No notes or checklists found, search something else...", -1);
 
-            initializeLayout(listView, allArraylistNotes);
-        });
-    }
-
-    private void initializeLayout(ListView listView, ArrayList allArraylistNotes){
-        SimpleArrayAdapter adapter = new SimpleArrayAdapter(this,
-                R.layout.recyclerview_configure_widget, allArraylistNotes);
-
-        listView.setAdapter(adapter);
-
-        // ListView Item Click Listener
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            // Take ListView clicked item value
-            String  widgetText = (String) listView.getItemAtPosition(position);
-
-            if(widgetText.equals("No notes or checklists found\n\nPress Here to Close"))
-                finish();
-            else
-                createWidget(getApplicationContext(), widgetText);
+            initializeLayout();
         });
 
         // Find the widget id from the intent.
@@ -103,13 +93,65 @@ public class WidgetConfigureActivity extends Activity {
         }
     }
 
-    private void createWidget(Context context, String widgetText) {
-        // Store the string locally
-        saveTitlePref(context, mAppWidgetId, widgetText);
+    private void initializeLayout(){
+        searchNoteLayout = (TextInputLayout) findViewById(R.id.search_edittext_layout);
+        searchNoteEditText = (TextInputEditText) findViewById(R.id.search_edittext);
+        listView = (ListView) findViewById(R.id.list);
+        LinearLayout background = (LinearLayout) findViewById(R.id.background);
+        TextView title = findViewById(R.id.title);
 
+        background.setBackground(getDrawable(isLightMode ? R.drawable.round_corner_light : R.drawable.round_corner));
+        searchNoteLayout.setBoxBackgroundColor(getColor(isLightMode ? R.color.white_100 : R.color.gray));
+        searchNoteLayout.setHintTextColor(ColorStateList.valueOf(getColor(isLightMode ? R.color.black : R.color.white)));
+        searchNoteEditText.setBackgroundColor(getColor(isLightMode ? R.color.white_100 : R.color.gray));
+        searchNoteEditText.setTextColor(getColor(isLightMode ? R.color.black : R.color.white));
+        listView.setBackgroundColor(getColor(isLightMode ? R.color.white_100 : R.color.gray));
+        listView.setDivider(new ColorDrawable(getColor(isLightMode ? R.color.gray_300 : R.color.light_gray_300)));
+        listView.setDividerHeight(1);
+        title.setTextColor(getColor(isLightMode ? R.color.black : R.color.white));
+
+        adapter = new SimpleArrayAdapter(this, R.layout.recyclerview_configure_widget, updateArrayListNotes());
+        listView.setAdapter(adapter);
+
+        searchNoteEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(allNotes.isEmpty()) return;
+
+                allHashMapNotes.clear();
+                allArrayListNotes.clear();
+                for(Note currentNote: allNotes)
+                    if (currentNote.getTitle().toLowerCase().contains(s.toString().toLowerCase()))
+                        allHashMapNotes.put(currentNote.getTitle(), currentNote.getNoteId());
+
+                if(allHashMapNotes.size() == 0)
+                    allHashMapNotes.put("No notes or checklists found, search something else...", -1);
+
+                updateArrayListNotes();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String  widgetText = (String) listView.getItemAtPosition(position);
+
+            if(widgetText.equals("No notes or checklists found, search something else...")) { }
+            else
+                createWidget(getApplicationContext(), widgetText, allHashMapNotes.get(widgetText));
+        });
+    }
+
+    private void createWidget(Context context, String widgetText, int noteId) {
         // It is the responsibility of the configuration activity to update the app widget
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        AppWidget.updateAppWidget(context, appWidgetManager, -1, mAppWidgetId);
+        AppData.updateNoteWidget(context, noteId, mAppWidgetId);
+        AppWidget.updateAppWidget(context, appWidgetManager, noteId, mAppWidgetId);
 
         // Make sure we pass back the original appWidgetId
         Intent resultValue = new Intent();
@@ -118,29 +160,10 @@ public class WidgetConfigureActivity extends Activity {
         finish();
     }
 
-    // Write the prefix to the SharedPreferences object for this widget
-    static void saveTitlePref(Context context, int appWidgetId, String text) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
-        prefs.apply();
-    }
-
-    // Read the prefix from the SharedPreferences object for this widget.
-    // If there is no preference saved, get the default from a resource
-    public static String loadTitlePref(Context context, int appWidgetId) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String titleValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null);
-        if (titleValue != null) {
-            return titleValue;
-        } else {
-            return "null";
-        }
-    }
-
-    public static void deleteTitlePref(Context context, int appWidgetId) {
-        SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.remove(PREF_PREFIX_KEY + appWidgetId);
-        prefs.apply();
+    public ArrayList<String> updateArrayListNotes() {
+        allArrayListNotes.clear();
+        allArrayListNotes.addAll(allHashMapNotes.keySet());
+        return allArrayListNotes;
     }
 
     class SimpleArrayAdapter extends ArrayAdapter<String> {

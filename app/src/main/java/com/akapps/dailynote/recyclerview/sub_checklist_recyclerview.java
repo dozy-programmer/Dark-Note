@@ -2,6 +2,7 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +17,15 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
+
+import java.util.regex.Pattern;
 
 import io.realm.RealmResults;
 
@@ -32,6 +36,8 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     private final Note currentNote;
     private Context context;
     private final FragmentActivity activity;
+    private int parentPosition;
+    private String searchingForWord;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -51,10 +57,12 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     }
 
     public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote,
-                                      FragmentActivity activity) {
+                                      FragmentActivity activity, int parentPosition, String searchingForWord) {
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.activity = activity;
+        this.parentPosition = parentPosition;
+        this.searchingForWord = searchingForWord;
     }
 
     @Override
@@ -79,6 +87,16 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         if (textSize == null)
             textSize = "20";
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
+
+        if(!searchingForWord.isEmpty() && checkListText.toLowerCase().contains(searchingForWord.toLowerCase())){
+            String regex = "(" + searchingForWord + ")";
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+
+            String modifiedString = pattern.matcher(holder.checklistText.getText()).replaceAll("<font color='#8CA9CF'><b>$1</b></font>");
+            holder.checklistText.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
+            holder.background.setStrokeColor(context.getColor(R.color.azure));
+            AppData.addWordFoundPositions(parentPosition);
+        }
 
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
