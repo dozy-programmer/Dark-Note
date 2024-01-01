@@ -198,6 +198,9 @@ public class RealmDatabase {
 
             if (!schema.get("CheckListItem").hasField("isSublistExpanded"))
                 schema.get("CheckListItem").addField("isSublistExpanded", boolean.class);
+
+            if (!schema.get("CheckListItem").hasField("redirectToOtherNote"))
+                schema.get("CheckListItem").addField("redirectToOtherNote", int.class);
         }
     }
 }

@@ -104,7 +104,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
             if (audioManager != null && audioManager.isRecording())
                 audioManager.stopRecording();
             if (!Helper.isFileEmpty(recordToFilePath)) {
-                CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("", new Place());
+                CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("", new Place(), "");
                 ((NoteEdit) getActivity()).addCheckList(voiceItem.getSubListId(), recordToFilePath, AppData.timerDuration);
             }
             dismiss();

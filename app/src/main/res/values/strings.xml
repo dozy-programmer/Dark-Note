@@ -2,7 +2,7 @@
 
     <!-- App Data !-->
     <string name="app_name">Dark Note</string>
-    <string name="schema">44</string>
+    <string name="schema">45</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
     <string name="app_version">v14.1</string>

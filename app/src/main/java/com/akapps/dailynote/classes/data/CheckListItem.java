@@ -23,10 +23,12 @@ public class CheckListItem extends RealmObject {
 
     private Place place;
 
+    private int redirectToOtherNote;
+
     public CheckListItem(){}
 
     public CheckListItem(String text, boolean checked, int id, int positionInList, int subListId,
-                         String dateCreated, Place place) {
+                         String dateCreated, Place place, int redirectToOtherNote) {
         this.text = text;
         this.checked = checked;
         this.id = id;
@@ -38,6 +40,7 @@ public class CheckListItem extends RealmObject {
         this.subChecklist = new RealmList<>();
         audioDuration = 0;
         this.place = place;
+        this.redirectToOtherNote = redirectToOtherNote;
     }
 
     public String getText() {
@@ -142,5 +145,13 @@ public class CheckListItem extends RealmObject {
 
     public void setSublistExpanded(boolean sublistExpanded) {
         isSublistExpanded = sublistExpanded;
+    }
+
+    public int getRedirectToOtherNote() {
+        return redirectToOtherNote;
+    }
+
+    public void setRedirectToOtherNote(int redirectToOtherNote) {
+        this.redirectToOtherNote = redirectToOtherNote;
     }
 }

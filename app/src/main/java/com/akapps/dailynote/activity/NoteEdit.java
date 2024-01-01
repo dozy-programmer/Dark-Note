@@ -1130,7 +1130,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     // adds note
-    public CheckListItem addCheckList(String itemText, Place place) {
+    public CheckListItem addCheckList(String itemText, Place place, String redirectToOtherNote) {
         int initialPosition = -1;
 
         if (getCurrentNote(context, noteId).getChecklist().size() != 0) {
@@ -1143,12 +1143,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         Random rand = new Random();
 
+        int redirectId = RealmHelper.getNoteIdUsingTitle(context, redirectToOtherNote);
         long lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
         // insert data to database
         getRealm().beginTransaction();
         CheckListItem currentItem = new CheckListItem(itemText.trim(), false, getCurrentNote(context, noteId).getNoteId(),
                 initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
-                .format(Calendar.getInstance().getTime()), place);
+                .format(Calendar.getInstance().getTime()), place, redirectId);
         getCurrentNote(context, noteId).getChecklist().add(currentItem);
         getRealm().where(CheckListItem.class).equalTo("id", noteId).findAll().setLong("lastCheckedDate", lastCheckedDate);
         getCurrentNote(context, noteId).setChecked(false);
@@ -1198,7 +1199,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         getRealm().beginTransaction();
         CheckListItem currentItem = new CheckListItem(itemText.trim(), isChecked, getCurrentNote(context, noteId).getNoteId(),
                 initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
-                .format(Calendar.getInstance().getTime()), new Place("", "", "", 0, 0));
+                .format(Calendar.getInstance().getTime()), new Place("", "", "", 0, 0), 0);
         getCurrentNote(context, noteId).getChecklist().add(currentItem);
         getCurrentNote(context, noteId).setChecked(false);
         getRealm().commitTransaction();
@@ -1213,6 +1214,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         getRealm().beginTransaction();
         checkListItem.getSubChecklist().add(new SubCheckListItem(itemText.trim(), false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
         getCurrentNote(context, noteId).setEnableSublist(true);
+        checkListItem.setChecked(false);
         getRealm().commitTransaction();
         updateSaveDateEdited();
 

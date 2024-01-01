@@ -93,6 +93,40 @@
                 android:textColorHint="?secondaryTextColor"
                 android:windowSoftInputMode="adjustPan|adjustResize" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/all_notes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    app:layout_constrainedHeight="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_max="200dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/redirect_to_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="redirect"
+                    android:textColor="?primaryTextColor"
+                    app:backgroundTint="?secondaryBackgroundColor"
+                    app:cornerRadius="15dp"
+                    app:icon="@drawable/link_icon"
+                    app:iconGravity="textStart"
+                    app:iconPadding="20dp"
+                    app:iconTint="?primaryIconTintColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:strokeColor="?primaryStrokeColor"
+                    app:strokeWidth="2dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.card.MaterialCardView

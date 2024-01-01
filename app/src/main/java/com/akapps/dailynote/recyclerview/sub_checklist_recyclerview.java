@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.helpers.AppData;
@@ -33,11 +34,12 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
 
     // project data
     private final RealmResults<SubCheckListItem> checkList;
+    private final CheckListItem parentSublistListItem;
     private final Note currentNote;
     private Context context;
     private final FragmentActivity activity;
-    private int parentPosition;
-    private String searchingForWord;
+    private final int parentPosition;
+    private final String searchingForWord;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -56,8 +58,9 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         }
     }
 
-    public sub_checklist_recyclerview(RealmResults<SubCheckListItem> checkList, Note currentNote,
+    public sub_checklist_recyclerview(CheckListItem parentSublistListItem, RealmResults<SubCheckListItem> checkList, Note currentNote,
                                       FragmentActivity activity, int parentPosition, String searchingForWord) {
+        this.parentSublistListItem = parentSublistListItem;
         this.checkList = checkList;
         this.currentNote = currentNote;
         this.activity = activity;
@@ -132,7 +135,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         });
 
         holder.edit.setOnClickListener(v -> {
-            openEditDialog(checkListItem, position);
+            openEditDialog(parentSublistListItem, checkListItem, position);
         });
 
     }
@@ -154,11 +157,25 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         checkListItem.setChecked(status);
         RealmSingleton.getInstance(context).commitTransaction();
         ((NoteEdit) context).updateSaveDateEdited();
+        isAllSubItemsSelected();
     }
 
     // opens dialog that allows user to edit or delete checklist item
-    private void openEditDialog(SubCheckListItem checkListItem, int position) {
-        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(checkListItem, position, this);
+    private void openEditDialog(CheckListItem parentSubItem, SubCheckListItem checkListItem, int position) {
+        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(parentSubItem, checkListItem, position, this);
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
+    }
+
+    private void isAllSubItemsSelected() {
+        RealmResults<SubCheckListItem> checkedSubCheckListItems = RealmSingleton.getInstance(context)
+                .where(SubCheckListItem.class)
+                .equalTo("id", parentSublistListItem.getSubListId())
+                .equalTo("checked", true)
+                .findAll();
+
+        RealmSingleton.getInstance(context).beginTransaction();
+        parentSublistListItem.setChecked(checkList.size() == checkedSubCheckListItems.size());
+        RealmSingleton.getInstance(context).commitTransaction();
+        ((NoteEdit) activity).checklistAdapter.notifyItemChanged(parentPosition);
     }
 }

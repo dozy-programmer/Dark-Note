@@ -159,10 +159,11 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             } else {
                 if (checkListItem.getSubChecklist().size() != 0) {
                     holder.subChecklist.setVisibility(View.VISIBLE);
-                    subChecklistAdapter = new sub_checklist_recyclerview(RealmSingleton.getInstance(context).where(SubCheckListItem.class)
+                    subChecklistAdapter = new sub_checklist_recyclerview(checkListItem, RealmSingleton.getInstance(context).where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
                             .sort("positionInList").findAll(), currentNote, activity, position, searchingForWord);
                     holder.subChecklist.setAdapter(subChecklistAdapter);
+                    holder.subChecklist.setHasFixedSize(true);
                     subChecklistAdapter.notifyItemChanged(position);
                 }
             }

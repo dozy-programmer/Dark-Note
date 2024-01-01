@@ -14,6 +14,7 @@ import com.akapps.dailynote.classes.data.User;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
@@ -220,6 +221,20 @@ public class RealmHelper {
     public static boolean isNoteWidget(Context context, int noteId){
         if(getCurrentNote(context, noteId) == null) return false;
         return getCurrentNote(context, noteId).getWidgetId() > 0;
+    }
+
+    public static int getNoteIdUsingTitle(Context context, String target){
+        Note queryNotes = getRealm(context).where(Note.class)
+                .equalTo("title", target, Case.INSENSITIVE)
+                .findFirst();
+        return queryNotes == null ? 0 : queryNotes.getNoteId();
+    }
+
+    public static String getTitleUsingId(Context context, int id){
+        Note queryNotes = getRealm(context).where(Note.class)
+                .equalTo("noteId", id)
+                .findFirst();
+        return queryNotes == null ? "" : queryNotes.getTitle();
     }
 
     private static User addUser(Context context){

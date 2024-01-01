@@ -7,14 +7,17 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,11 +25,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.akapps.dailynote.BuildConfig;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.activity.WidgetConfigureActivity;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
@@ -38,6 +44,7 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
+import com.akapps.dailynote.recyclerview.notes_search_recyclerview;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -62,8 +69,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
 public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
@@ -72,6 +81,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private Note currentNote;
     private final boolean isAdding;
     private RecyclerView.Adapter adapter;
+    private RecyclerView allNotesRecyclerview;
+    private RecyclerView.Adapter notesSearchAdapter;
+    private ArrayList<Note> allNotes;
     private int position;
 
     private User user;
@@ -82,6 +94,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private TextInputEditText itemName;
 
     private SubCheckListItem currentSubItem;
+    private CheckListItem parentCurrentSubItem;
     private final boolean isSubChecklist;
     private String parentNode;
     private CheckListItem checkListItem;
@@ -95,6 +108,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
     private LinearLayout locationLayout;
     private TextView placeLocation;
+
+    private BottomSheetDialog dialog;
+
+    private MaterialButton redirectToNote;
+    private String noteSelectedTitle;
+    private String wordAfterAt;
 
     // adding
     public ChecklistItemSheet() {
@@ -120,9 +139,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     // editing sub-note
-    public ChecklistItemSheet(SubCheckListItem checkListItem, int position, RecyclerView.Adapter adapter) {
+    public ChecklistItemSheet(CheckListItem parentCurrentSubItem, SubCheckListItem checkListItem, int position, RecyclerView.Adapter adapter) {
         isAdding = false;
         isSubChecklist = true;
+        this.parentCurrentSubItem = parentCurrentSubItem;
         this.currentSubItem = checkListItem;
         this.position = position;
         this.adapter = adapter;
@@ -154,6 +174,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         placeLocation = view.findViewById(R.id.place_info);
         ImageView editLocation = view.findViewById(R.id.edit_location);
         ImageView deleteLocation = view.findViewById(R.id.delete_location);
+        redirectToNote = view.findViewById(R.id.redirect_to_note);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
@@ -162,8 +183,16 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         itemImageLayout = view.findViewById(R.id.item_image_layout);
         itemImage = view.findViewById(R.id.item_image);
 
-        itemName.requestFocusFromTouch();
+        // initialize recyclerview
+        allNotesRecyclerview = view.findViewById(R.id.all_notes);
 
+        allNotes = AppData.getAllNotes(getActivity());
+        allNotesRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        populateSearchAdapter(allNotes);
+        allNotesRecyclerview.setVisibility(View.GONE);
+        redirectToNote.setVisibility(View.GONE);
+
+        itemName.requestFocusFromTouch();
         itemName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -171,7 +200,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
             @SuppressLint("SetTextI18n")
             @Override
-            public void onTextChanged(CharSequence charSequence, int current, int before, int count) {
+            public void onTextChanged(CharSequence s, int current, int before, int count) {
                 if (!isTextPastedDetected) {
                     if (count - before > 20) {
                         info.setText(info.getText().toString().split("\n")[0] + "\n\nPaste detected, if you want to want this to " +
@@ -179,11 +208,47 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                         isTextPastedDetected = true;
                     }
                 }
+                int atIndex = s.toString().lastIndexOf("@");
+                if (atIndex != -1 && atIndex < s.length() - 1) { // Ensure "@" exists and isn't the last character
+                    redirectToNote.setVisibility(View.GONE);
+                    wordAfterAt = s.toString().substring(atIndex + 1).trim(); // Extract and trim the word
+                    // Do something with the wordAfterAt
+                    Log.d("Here", "Word after @: " + wordAfterAt);
+                    ArrayList<Note> filteredNotes = new ArrayList<>(allNotes.stream()
+                            .filter(note -> note.getTitle().toLowerCase().contains(wordAfterAt.toLowerCase()))
+                            .collect(Collectors.toList()));
+                    populateSearchAdapter(filteredNotes);
+                    if(allNotesRecyclerview.getVisibility() == View.GONE)
+                        allNotesRecyclerview.setVisibility(View.VISIBLE);
+                }
+                else if(atIndex != -1 && atIndex == s.length() - 1){
+                    populateSearchAdapter(allNotes);
+                    if(allNotesRecyclerview.getVisibility() == View.GONE)
+                        allNotesRecyclerview.setVisibility(View.VISIBLE);
+                }
+                else {
+                    allNotesRecyclerview.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
             }
+        });
+
+        redirectToNote.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                noteSelectedTitle = redirectToNote.getText().toString();
+                itemName.setText(itemName.getText().toString().replace("@" + wordAfterAt, ""));
+                redirectToNote.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
         });
 
         if (isSubChecklist || isAdding)
@@ -239,6 +304,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 } else {
                     title.setText("Editing");
                     itemName.setText(currentItem.getText());
+
+                    if(currentItem.getRedirectToOtherNote() != 0)
+                        redirectToNote.setText(RealmHelper.getTitleUsingId(getContext(), currentItem.getRedirectToOtherNote()));
 
                     if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
                         Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
@@ -321,6 +389,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         return view;
     }
 
+    private void populateSearchAdapter(ArrayList<Note> notes){
+        notesSearchAdapter = new notes_search_recyclerview(notes, redirectToNote);
+        allNotesRecyclerview.setAdapter(notesSearchAdapter);
+    }
+
     // updates select status of note in database
     private void updateItem(CheckListItem checkListItem, String text) {
         // save status to database
@@ -371,11 +444,30 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         // save status to database
         RealmHelper.deleteSublistItem(checkListItem, getContext());
         getRealm().beginTransaction();
-        //checkListItem.deleteFromRealm();
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyDataSetChanged();
+        isAllSubItemsSelected();
+    }
+
+    private void isAllSubItemsSelected() {
+        RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.getInstance(getContext())
+                .where(SubCheckListItem.class).equalTo("id", parentCurrentSubItem.getSubListId()).findAll();
+        RealmResults<SubCheckListItem> checkedSubCheckListItems = RealmSingleton.getInstance(getContext())
+                .where(SubCheckListItem.class)
+                .equalTo("id", parentCurrentSubItem.getSubListId())
+                .equalTo("checked", true)
+                .findAll();
+
+        if(subCheckListItems.size() == checkedSubCheckListItems.size()){
+            if(!parentCurrentSubItem.isChecked()) {
+                getRealm().beginTransaction();
+                parentCurrentSubItem.setChecked(true);
+                getRealm().commitTransaction();
+                ((NoteEdit) getActivity()).checklistAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
 
@@ -397,7 +489,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 else {
                     for (String item : items) {
                         if (!item.startsWith(" ") && checklistItemsSeparator.equals("\n")) {
-                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0], selectedPlace);
+                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0], selectedPlace, noteSelectedTitle);
                             selectedPlace = new Place();
                             if (sublistItemsSeparator.equals("--")) {
                                 String[] currentSublistItems = item.split(sublistItemsSeparator);
@@ -409,10 +501,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                             }
                         } else if (item.startsWith(" ") && sublistItemsSeparator.equals("\n")) {
                             if (currentItem == null)
-                                currentItem = ((NoteEdit) getActivity()).addCheckList("", new Place());
+                                currentItem = ((NoteEdit) getActivity()).addCheckList("", new Place(), noteSelectedTitle);
                             ((NoteEdit) getActivity()).addSubCheckList(getRealm().where(CheckListItem.class).equalTo("subListId", currentItem.getSubListId()).findFirst(), item);
                         } else {
-                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0], selectedPlace);
+                            currentItem = ((NoteEdit) getActivity()).addCheckList(item.split(sublistItemsSeparator)[0], selectedPlace, noteSelectedTitle);
                             selectedPlace = new Place();
                             if (item.contains(sublistItemsSeparator)) {
                                 String[] currentSublistItems = item.split(sublistItemsSeparator);
@@ -429,7 +521,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 if (isSubChecklist)
                     ((NoteEdit) getActivity()).addSubCheckList(checkListItem, itemName.getText().toString());
                 else
-                    ((NoteEdit) getActivity()).addCheckList(itemName.getText().toString(), selectedPlace);
+                    ((NoteEdit) getActivity()).addCheckList(itemName.getText().toString(), selectedPlace, noteSelectedTitle);
             } else {
                 if (isSubChecklist)
                     updateItem(currentSubItem, itemName.getText().toString());
@@ -628,7 +720,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        dialog = (BottomSheetDialog) getDialog();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(true);
         UiHelper.setBottomSheetBehavior(view, dialog);
     }
 
