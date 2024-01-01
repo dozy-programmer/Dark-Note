@@ -221,11 +221,11 @@
             android:layout_marginVertical="10dp"
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="15dp"
-            app:strokeColor="?primaryStrokeColor"
-            app:strokeWidth="2dp"
             app:layout_constraintEnd_toEndOf="@+id/sort_by_date"
             app:layout_constraintStart_toStartOf="@+id/sort_by_date"
-            app:layout_constraintTop_toBottomOf="@+id/sort_by_date">
+            app:layout_constraintTop_toBottomOf="@+id/sort_by_date"
+            app:strokeColor="?primaryStrokeColor"
+            app:strokeWidth="2dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -234,8 +234,8 @@
                 android:layout_marginVertical="8dp"
                 android:gravity="center"
                 android:text="Alphabetically"
-                android:textSize="16sp"
                 android:textColor="?primaryTextColor"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -324,23 +324,22 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/confirm_filter"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="15dp"
-            android:layout_marginHorizontal="15dp"
             android:padding="15dp"
             android:text="Apply"
             android:textColor="?primaryTextColor"
             android:textSize="16sp"
             app:backgroundTint="?secondaryBackgroundColor"
-            app:strokeWidth="2dp"
-            app:strokeColor="?tertiaryStrokeColor"
-            app:iconTint="?primaryIconTintColor"
             app:cornerRadius="20dp"
+            app:iconTint="?primaryIconTintColor"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/alphabetical_sort"></com.google.android.material.button.MaterialButton>
+            app:layout_constraintEnd_toEndOf="@+id/alphabetical_sort"
+            app:layout_constraintStart_toStartOf="@+id/alphabetical_sort"
+            app:layout_constraintTop_toBottomOf="@+id/alphabetical_sort"
+            app:strokeColor="?tertiaryStrokeColor"
+            app:strokeWidth="2dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

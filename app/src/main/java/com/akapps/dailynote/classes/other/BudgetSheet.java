@@ -52,6 +52,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
     private String budgetKey;
     private String expenseKey;
+    private double totalExpenses;
 
     public BudgetSheet() {
     }
@@ -98,6 +99,10 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                 // sort by highest to lowest expense
                 expensesListGraph.sort(Comparator.comparing(DonutSection::getAmount, Comparator.reverseOrder()));
                 expensesList.sort(Comparator.comparing(Expense::getExpenseAmountPercentage, Comparator.reverseOrder()));
+                ArrayList<SubExpense> currentExpenseSubList = new ArrayList<>();
+                currentExpenseSubList.add(new SubExpense("Total Spent", totalExpenses));
+                expensesList.add(new Expense(UiHelper.getColorFromTheme(getContext(), R.attr.primaryStrokeColor), "Total Spent",
+                        totalExpenses / budget, totalExpenses, currentExpenseSubList));
                 budgetProgress.submitData(expensesListGraph);
                 RecyclerView.Adapter expensesAdapter = new expenses_recyclerview(expensesList, budget, expenseKey);
                 expensesRecyclerview.setAdapter(expensesAdapter);
@@ -149,16 +154,18 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                     if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
                         String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey))
                                 .replaceAll("\\" + expenseKey + "+", "\\" + expenseKey)
+                                .replaceAll("\\" + "-+", "\\" + "-")
                                 .trim().replaceAll(",", "");
 
-                        currentTokenTrimmed = currentTokenTrimmed.substring(currentToken.indexOf(expenseKey) + 1);
+                        boolean isNegative = !currentToken.isEmpty() && currentToken.charAt(0) == '-';
+                        currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + 1);
 
                         try {
                             if(currentTokenTrimmed.isEmpty()) {
                                 wrongFormatList.add(expenseKey + currentTokenTrimmed);
                             }
                             else {
-                                Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
+                                double currentTokenDouble = (isNegative ? -1 : 1) * Double.parseDouble(currentTokenTrimmed);
                                 currentExpenseAmount += currentTokenDouble;
                                 currentSubExpenseTotal += currentTokenDouble;
                             }
@@ -181,14 +188,21 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                         if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
                             String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey))
                                     .replaceAll("\\" + expenseKey + "+", "\\" + expenseKey)
+                                    .replaceAll("\\" + "-+", "\\" + "-")
                                     .trim().replaceAll(",", "");
 
-                            currentTokenTrimmed = currentTokenTrimmed.substring(currentToken.indexOf(expenseKey) + 1);
+                            boolean isNegative = !currentToken.isEmpty() && currentToken.charAt(0) == '-';
+                            currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + 1);
 
                             try {
-                                Double currentTokenDouble = Double.parseDouble(currentTokenTrimmed);
-                                currentExpenseAmount += currentTokenDouble;
-                                currentSubExpenseTotal += currentTokenDouble;
+                                if(currentTokenTrimmed.isEmpty()) {
+                                    wrongFormatList.add(expenseKey + currentTokenTrimmed);
+                                }
+                                else {
+                                    double currentTokenDouble = (isNegative ? -1 : 1) * Double.parseDouble(currentTokenTrimmed);
+                                    currentExpenseAmount += currentTokenDouble;
+                                    currentSubExpenseTotal += currentTokenDouble;
+                                }
                             } catch (Exception e) {
                                 wrongFormatList.add(expenseKey + currentTokenTrimmed);
                             }
@@ -233,6 +247,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                 leftOver = totalExpenses - budget;
                 leftOverText = "Over Budget";
             }
+            this.totalExpenses = totalExpenses;
             currentExpenseSubList.add(new SubExpense(leftOverText, leftOver));
 
             currentExpensesList.add(new DonutSection(leftOverText, randomColorGenerated, (float) leftOver));

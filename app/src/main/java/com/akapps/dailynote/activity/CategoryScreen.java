@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -101,11 +102,8 @@ public class CategoryScreen extends AppCompatActivity {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_screen);
-        if (!AppData.isDisableAnimation)
-            overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
 
         context = this;
-
         screenMode = RealmHelper.getUser(context, "in space").getScreenMode();
 
         // if orientation changes, retrieve these values
@@ -143,13 +141,15 @@ public class CategoryScreen extends AppCompatActivity {
 
         initializeLayout();
         UiHelper.setStatusBarColor(this);
-    }
 
-    @Override
-    public void onBackPressed() {
-        if (editingRegularNote)
-            unSelectAllNotes();
-        closeActivity(0);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (editingRegularNote)
+                    unSelectAllNotes();
+                closeActivity(0);
+            }
+        });
     }
 
     @Override
@@ -532,8 +532,7 @@ public class CategoryScreen extends AppCompatActivity {
         Intent home = new Intent();
         setResult(resultCode, home);
         finish();
-        if (!AppData.isDisableAnimation)
-            overridePendingTransition(R.anim.show_from_bottom, R.anim.hide_to_bottom);
+        if (!AppData.isDisableAnimation) overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 
     private void showInfoDialog() {

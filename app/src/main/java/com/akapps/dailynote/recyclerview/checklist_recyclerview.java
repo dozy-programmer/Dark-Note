@@ -27,6 +27,7 @@ import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.PlayAudioSheet;
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -63,6 +64,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final FloatingActionButton addSubChecklist;
         private final FloatingActionButton audio;
         private final MaterialCardView itemImageLayout;
+        private final MaterialButton expandSublist;
         private final ImageView itemImage;
         private final MaterialCardView background;
 
@@ -82,6 +84,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             itemImage = v.findViewById(R.id.item_image);
             deleteIcon = v.findViewById(R.id.delete_checklist_item);
             background = v.findViewById(R.id.background);
+            expandSublist = v.findViewById(R.id.sublist_view);
         }
     }
 
@@ -216,6 +219,15 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         } else
             holder.itemImageLayout.setVisibility(View.GONE);
 
+        if(checkListItem.isSublistExpanded()){
+            holder.expandSublist.setVisibility(View.VISIBLE);
+            holder.subChecklist.setVisibility(View.GONE);
+        }
+        else if(null != checkListItem.getSubChecklist()){
+            holder.expandSublist.setVisibility(View.GONE);
+            holder.subChecklist.setVisibility(View.VISIBLE);
+        }
+
         holder.audio.setOnClickListener(view -> {
             if (holder.audio.getVisibility() == View.VISIBLE) {
                 PlayAudioSheet playAudioSheet = new PlayAudioSheet(checkListItem);
@@ -233,11 +245,26 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         holder.checkItem.setOnClickListener(v -> {
             updateChecklistStatus(checkListItem, !isSelected, position);
         });
-
         // if checklist item is clicked, then it updates the status of the item
         // this is added to support clickable links
         holder.checklistText.setOnClickListener(v -> {
             updateChecklistStatus(checkListItem, isSelected, position);
+        });
+
+        holder.expandSublist.setOnClickListener(view -> {
+            updateSublistView(checkListItem, false);
+            notifyItemChanged(position);
+        });
+        // minimize sublist
+        holder.checklistText.setOnLongClickListener(view -> {
+            updateSublistView(checkListItem, true);
+            notifyItemChanged(position);
+            return true;
+        });
+        holder.checkItem.setOnLongClickListener(view -> {
+            updateSublistView(checkListItem, true);
+            notifyItemChanged(position);
+            return true;
         });
 
         holder.edit.setOnClickListener(v -> {
@@ -290,7 +317,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private void updateChecklistStatus(CheckListItem checkListItem, boolean isSelected, int position) {
         saveSelected(checkListItem, !isSelected);
         isAllItemsSelected();
-        notifyDataSetChanged();
+        notifyItemChanged(position);
+    }
+
+    private void updateSublistView(CheckListItem checkListItem, boolean newState){
+        RealmSingleton.getInstance(context).beginTransaction();
+        checkListItem.setSublistExpanded(newState);
+        RealmSingleton.getInstance(context).commitTransaction();
     }
 
     // updates select status of note in database

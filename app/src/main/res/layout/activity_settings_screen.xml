@@ -143,28 +143,29 @@
                 android:id="@+id/theme_mode_toggle_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
                 app:singleSelection="true">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/dark_mode"
-                    android:layout_width="60dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                    app:icon="@drawable/dark_mode_unselected_icon" />
+                    app:icon="@drawable/dark_mode_icon" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/gray_mode"
-                    android:layout_width="60dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                    app:icon="@drawable/gray_mode_unselected_icon" />
+                    app:icon="@drawable/gray_mode_icon" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/light_mode"
-                    android:layout_width="60dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                    app:icon="@drawable/light_mode_unselected_icon" />
+                    app:icon="@drawable/light_mode_icon" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
         </com.google.android.material.card.MaterialCardView>
@@ -201,7 +202,7 @@
                     android:maxLines="3"
                     android:text=""
                     android:textColor="?secondaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:visibility="gone" />
 
                 <LinearLayout
@@ -324,7 +325,7 @@
                         android:gravity="center"
                         android:text=""
                         android:textColor="?primaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:visibility="gone" />
 
                 </LinearLayout>
@@ -383,7 +384,7 @@
                         android:gravity="center_vertical"
                         android:text="Backup"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <ImageView
@@ -416,7 +417,7 @@
                         android:gravity="center_vertical"
                         android:text="Backup + Images"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <ImageView
@@ -449,7 +450,7 @@
                         android:gravity="center_vertical"
                         android:text="Restore Backup"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <ImageView
@@ -482,7 +483,7 @@
                         android:gravity="center_vertical"
                         android:text="Restore Backup + Images"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <ImageView
@@ -552,7 +553,7 @@
                         android:gravity="center_vertical"
                         android:text="Title Lines"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <TextView
@@ -599,7 +600,7 @@
                         android:gravity="center_vertical"
                         android:text="Content Lines"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <TextView
@@ -646,7 +647,7 @@
                         android:gravity="center_vertical"
                         android:text="Show Preview"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -682,7 +683,7 @@
                         android:gravity="center_vertical"
                         android:text="Show Info Icon"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -857,7 +858,7 @@
                         android:gravity="center_vertical"
                         android:text="Checklist Separator"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <TextView
@@ -903,7 +904,7 @@
                         android:gravity="center_vertical"
                         android:text="Sublist Separator"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <TextView
@@ -949,7 +950,7 @@
                         android:gravity="center_vertical"
                         android:text="Budget Symbol"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <TextView
@@ -1041,7 +1042,7 @@
                         android:gravity="center_vertical"
                         android:text="Enable Sub-Lists for Checklist"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1076,7 +1077,7 @@
                         android:gravity="center_vertical"
                         android:text="Show Delete Icon in Checklist"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1111,7 +1112,7 @@
                         android:gravity="center_vertical"
                         android:text="Disable Audio for Checklists"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1146,7 +1147,7 @@
                         android:gravity="center_vertical"
                         android:text="Disable Budget for Checklists"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1181,7 +1182,7 @@
                         android:gravity="center_vertical"
                         android:text="Square Style for Checklist Checkboxes"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1251,7 +1252,7 @@
                         android:gravity="center_vertical"
                         android:text="Show Folders on Launch"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1292,7 +1293,7 @@
                             android:gravity="center_vertical"
                             android:text="Organize Notes inside Folders"
                             android:textColor="?tertiaryTextColor"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textStyle="bold"></TextView>
 
                         <TextView
@@ -1376,7 +1377,7 @@
                         android:gravity="center_vertical"
                         android:text="Allow Blank Title &amp; Note"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1411,7 +1412,7 @@
                         android:gravity="center_vertical"
                         android:text="Hide Rich-Text Editor"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1446,7 +1447,7 @@
                         android:gravity="center_vertical"
                         android:text="24 Hour Date Format"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1481,7 +1482,7 @@
                         android:gravity="center_vertical"
                         android:text="Notes are View-Only by Default"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1516,7 +1517,7 @@
                         android:gravity="center_vertical"
                         android:text="Hide Last Edit Info"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <androidx.appcompat.widget.SwitchCompat
@@ -1579,7 +1580,7 @@
                     android:gravity="center_vertical"
                     android:text="New Note Button (Enlarge)"
                     android:textColor="?tertiaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -1625,7 +1626,7 @@
                     android:gravity="center_vertical"
                     android:text="Turn Off Screen Animation"
                     android:textColor="?tertiaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -1671,7 +1672,7 @@
                     android:gravity="center|left"
                     android:text="App Settings"
                     android:textColor="?tertiaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
                 <ImageView
@@ -1732,7 +1733,7 @@
                     android:gravity="center|left"
                     android:text="About"
                     android:textColor="?tertiaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -1779,7 +1780,7 @@
                     android:gravity="center|left"
                     android:text="Contact Developer"
                     android:textColor="?tertiaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
                 <ImageView
@@ -1823,7 +1824,7 @@
                     android:gravity="center|left"
                     android:text="Dark Note Sub-Reddit Feedback"
                     android:textColor="?tertiaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
                 <ImageView
@@ -1868,7 +1869,7 @@
                     android:gravity="center|left"
                     android:text="Leave a Review"
                     android:textColor="?tertiaryTextColor"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"></TextView>
 
                 <ImageView

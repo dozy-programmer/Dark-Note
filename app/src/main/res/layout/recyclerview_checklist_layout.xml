@@ -128,6 +128,21 @@
 
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sublist_view"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginBottom="10dp"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            app:icon="@drawable/expand_menu_icon"
+            app:iconGravity="textStart"
+            app:backgroundTint="?tertiaryBackgroundColor"
+            app:cornerRadius="20dp"
+            app:iconTint="?primaryIconTintColor"
+            android:text=""
+            android:layout_gravity="center"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/subchecklist"
             android:layout_width="match_parent"

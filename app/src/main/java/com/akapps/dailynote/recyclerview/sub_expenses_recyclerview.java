@@ -60,7 +60,7 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
         holder.expenseAmount.setText(expenseKey + Helper.formatToTwoDecimalPlaces(currentExpense.getTotalExpenseAmount()));
         holder.expensePercentage.setText(formatPercentage(currentExpense.getTotalExpenseAmount() / totalBudget));
 
-        if(currentExpense.getExpenseName().toLowerCase().contains("total"))
+        if(position == expenses.size() - 1)
             holder.background.setStrokeColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.primaryButtonColor));
     }
 

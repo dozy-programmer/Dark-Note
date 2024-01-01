@@ -14,6 +14,7 @@ public class CheckListItem extends RealmObject {
     private int subListId;
     private String dateCreated;
     private RealmList<SubCheckListItem> subChecklist;
+    private boolean isSublistExpanded;
     private String itemImage;
 
     // audio recording data
@@ -133,5 +134,13 @@ public class CheckListItem extends RealmObject {
 
     public void setPlace(Place place) {
         this.place = place;
+    }
+
+    public boolean isSublistExpanded() {
+        return isSublistExpanded;
+    }
+
+    public void setSublistExpanded(boolean sublistExpanded) {
+        isSublistExpanded = sublistExpanded;
     }
 }

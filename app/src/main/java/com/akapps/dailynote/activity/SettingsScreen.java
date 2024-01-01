@@ -22,6 +22,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -189,6 +191,13 @@ public class SettingsScreen extends AppCompatActivity {
 
         if (backingUp)
             showBackupRestoreInfo(6);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                close();
+            }
+        });
     }
 
     @Override
@@ -200,11 +209,6 @@ public class SettingsScreen extends AppCompatActivity {
     protected void onDestroy() {
         RealmSingleton.closeRealmInstance("SettingsScreen onDestroy");
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        close();
     }
 
     private void initializeLayout() {
@@ -675,19 +679,11 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void toggleCurrentTheme(User.Mode currentTheme, int toToggle){
         themeToggle.check(toToggle);
-        if (currentTheme == User.Mode.Dark) {
-            darkMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primarySelectedIconColor)));
-            grayMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
-            lightMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
-        } else if (currentTheme == User.Mode.Gray) {
-            grayMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primarySelectedIconColor)));
-            darkMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
-            lightMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
-        } else if (currentTheme == User.Mode.Light) {
-            lightMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primarySelectedIconColor)));
-            grayMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
-            darkMode.setIconTint(ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor)));
-        }
+        ColorStateList selectedColor = ColorStateList.valueOf(getColorFromTheme(this, R.attr.primarySelectedIconColor));
+        ColorStateList unSelectedColor = ColorStateList.valueOf(getColorFromTheme(this, R.attr.primaryUnSelectedIconColor));
+        darkMode.setIconTint(currentTheme == User.Mode.Dark ? selectedColor : unSelectedColor);
+        grayMode.setIconTint(currentTheme == User.Mode.Gray ? selectedColor : unSelectedColor);
+        lightMode.setIconTint(currentTheme == User.Mode.Light ? selectedColor : unSelectedColor);
     }
 
     private void initializeSettings() {
@@ -1369,12 +1365,8 @@ public class SettingsScreen extends AppCompatActivity {
     private void close() {
         RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in SettingsScreen");
-        Intent intent = new Intent(context, Homepage.class);
-        startActivity(intent);
         finish();
-        if (!AppData.isDisableAnimation) {
-            overridePendingTransition(R.anim.show_from_bottom, R.anim.hide_to_bottom);
-        }
+        if (!AppData.isDisableAnimation) overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 
     private void openAppInSettings() {

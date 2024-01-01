@@ -176,7 +176,7 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+        getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 if (isSearchingNotes) {
@@ -187,8 +187,7 @@ public class notes extends Fragment {
                     getActivity().moveTaskToBack(true);
                 }
             }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        });
     }
 
     @Override
@@ -215,7 +214,6 @@ public class notes extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         Helper.unSetOrientation(getActivity(), context);
         if (isSearchingNotes) return;
 
@@ -223,7 +221,6 @@ public class notes extends Fragment {
             new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
         else {
             adapterNotes.notifyDataSetChanged();
-
             try {
                 // if list is empty, then it shows an empty layout
                 isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
@@ -371,6 +368,8 @@ public class notes extends Fragment {
             if (enableSelectMultiple)
                 category.putExtra("multi_select", true);
             startActivityForResult(category, 5);
+            if (!AppData.isDisableAnimation)
+                getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
         });
 
         search.setOnClickListener(v -> {
@@ -481,10 +480,9 @@ public class notes extends Fragment {
         String userId = String.valueOf(getUser().getUserId());
         Intent settings = new Intent(context, SettingsScreen.class);
         settings.putExtra("size", size);
-        settings.putExtra("getUser()", userId);
-        RealmSingleton.setCloseRealm(false);
+        //RealmSingleton.setCloseRealm(false);
         startActivity(settings);
-        getActivity().finish();
+        //getActivity().finish();
         getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
     }
 

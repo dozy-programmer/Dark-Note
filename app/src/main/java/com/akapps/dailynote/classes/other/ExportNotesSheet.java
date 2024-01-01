@@ -35,6 +35,13 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
     private boolean isOneNoteSelected;
     private String noteText;
 
+    // layout
+    private MaterialButton exportText;
+    private MaterialButton exportMarkdown;
+    private MaterialButton exportTextString;
+    private MaterialButton exportTextStringFormatted;
+    private MaterialButton exportNote;
+
     public ExportNotesSheet() {
     }
 
@@ -56,11 +63,11 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
 
         TextView numNotesSelectedText = view.findViewById(R.id.number_of_notes);
         TextView title = view.findViewById(R.id.title);
-        MaterialButton exportText = view.findViewById(R.id.export_text);
-        MaterialButton exportMarkdown = view.findViewById(R.id.export_markdown);
-        MaterialButton exportTextString = view.findViewById(R.id.export_text_string);
-        MaterialButton exportTextStringFormatted = view.findViewById(R.id.export_text_string_formatted);
-        MaterialButton exportNote = view.findViewById(R.id.export_note);
+        exportText = view.findViewById(R.id.export_text);
+        exportMarkdown = view.findViewById(R.id.export_markdown);
+        exportTextString = view.findViewById(R.id.export_text_string);
+        exportTextStringFormatted = view.findViewById(R.id.export_text_string_formatted);
+        exportNote = view.findViewById(R.id.export_note);
         ImageButton info = view.findViewById(R.id.export_info);
 
         if (RealmHelper.getUser(getContext(), "bottom sheet").getScreenMode() == User.Mode.Dark) {
@@ -70,11 +77,9 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
             exportTextString.setBackgroundColor(background);
             exportTextStringFormatted.setBackgroundColor(background);
             exportNote.setBackgroundColor(background);
-            exportText.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.blue)));
-            exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.azure)));
-            exportTextString.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.golden_rod)));
-            exportTextStringFormatted.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.gumbo)));
-            exportNote.setStrokeColor(ColorStateList.valueOf(getContext().getColor(R.color.money_green)));
+            initializeLayout(true);
+        } else {
+            initializeLayout(false);
         }
 
         if (!isOneNoteSelected) {
@@ -151,6 +156,14 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         Helper.exportFiles(extension, getActivity(), RealmSingleton.getInstance(getContext()).where(Note.class)
                 .equalTo("noteId", numNotesSelected).findAll(), RealmSingleton.getInstance(getContext()));
         dismiss();
+    }
+
+    private void initializeLayout(boolean isDarkMode) {
+        exportText.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.blue : R.color.transparent)));
+        exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.azure : R.color.transparent)));
+        exportTextString.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.golden_rod : R.color.transparent)));
+        exportTextStringFormatted.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.gumbo : R.color.transparent)));
+        exportNote.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.money_green : R.color.transparent)));
     }
 
     @Override

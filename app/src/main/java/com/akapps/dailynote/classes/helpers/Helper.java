@@ -848,7 +848,7 @@ public class Helper {
         else if (currentSort == 2)
             results = results.sort("text", Sort.DESCENDING);
         else if (currentSort == 4)
-            results = results.sort("lastCheckedDate", Sort.ASCENDING)
+            results = results.sort("lastCheckedDate", Sort.DESCENDING)
                     .sort("checked", Sort.ASCENDING);
         else if (currentSort == 3)
             results = results.sort("lastCheckedDate", Sort.ASCENDING)

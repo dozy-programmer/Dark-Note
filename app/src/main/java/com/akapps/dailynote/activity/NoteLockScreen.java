@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
@@ -65,15 +67,17 @@ public class NoteLockScreen extends AppCompatActivity {
 
         UiHelper.setStatusBarColor(this);
         initializeLayout();
-    }
 
-    @Override
-    public void onBackPressed() {
-        if (!isAppLocked) {
-            finish();
-            if (!AppData.isDisableAnimation)
-                overridePendingTransition(R.anim.stay, R.anim.right_out);
-        }
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (!isAppLocked) {
+                    finish();
+                    if (!AppData.isDisableAnimation)
+                        overridePendingTransition(R.anim.stay, R.anim.right_out);
+                }
+            }
+        });
     }
 
     private void initializeLayout() {

@@ -195,6 +195,9 @@ public class RealmDatabase {
 
             if (!schema.get("Note").hasField("lightTextColor"))
                 schema.get("Note").addField("lightTextColor", int.class);
+
+            if (!schema.get("CheckListItem").hasField("isSublistExpanded"))
+                schema.get("CheckListItem").addField("isSublistExpanded", boolean.class);
         }
     }
 }
