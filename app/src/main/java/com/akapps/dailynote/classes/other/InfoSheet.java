@@ -79,6 +79,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
     private String titleText;
     private String permission;
 
+    private MaterialButton redirectNote;
+
     public InfoSheet() {
     }
 
@@ -99,6 +101,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
     public InfoSheet(int message, boolean deleteAllChecklists) {
         this.message = message;
         this.deleteAllChecklists = deleteAllChecklists;
+    }
+
+    public InfoSheet(int message, MaterialButton redirectNote) {
+        this.message = message;
+        this.redirectNote = redirectNote;
     }
 
     public InfoSheet(int message, String userSecurityWord, boolean isAppLocked) {
@@ -177,20 +184,25 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     "more.\nGoogle Drive is recommended\n\n" +
                     "Backup file name ends in .zip");
             info.setGravity(Gravity.CENTER);
-        } else if (message == 3 || message == -3) {
+        } else if (message == 3 || message == -3 || message == 14) {
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
-            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             backup.setText("DELETE");
-            if (deleteAllChecklists) {
+            if(message == 14){
+                title.setText("Deleting Link to Other Note...");
+                info.setText("Are you sure you want to delete link?");
+                backup.setText("YES");
+                delete.setText("No");
+                delete.setVisibility(View.VISIBLE);
+            }
+            else if (deleteAllChecklists) {
                 title.setText("Deleting Checklist...");
                 info.setText("Are you sure you want to delete checklist?");
             } else {
                 if (message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
                     backup.setText("TRASH");
-                    //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
                     info.setVisibility(View.GONE);
                 } else if (message == -3) {
                     backup.setText("DELETE");
@@ -207,7 +219,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             // initialize layout
             title.setText("Deleting...");
             backup.setVisibility(View.VISIBLE);
-            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             backup.setText("DELETE");
             info.setText("Are you sure?");
             info.setGravity(Gravity.CENTER);
@@ -382,8 +393,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     dismiss();
                 }
             }
-            else if (message == 3 || message == -3) {
-                if (deleteMultipleNotes)
+            else if (message == 3 || message == -3 || message == 14) {
+                if(message == 14){
+                    redirectNote.setText("");
+                    redirectNote.setVisibility(View.GONE);
+                    dismiss();
+                }
+                else if (deleteMultipleNotes)
                     ((notes) fragmentActivity).deleteMultipleNotes(false);
                 else {
                     if (deleteAllChecklists)
@@ -432,7 +448,9 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         });
 
         delete.setOnClickListener(view1 -> {
-            if (deleteMultipleNotes)
+            if(message == 14)
+                this.dismiss();
+            else if (deleteMultipleNotes)
                 ((notes) fragmentActivity).deleteMultipleNotes(true);
             else
                 // delete note without sending to trash

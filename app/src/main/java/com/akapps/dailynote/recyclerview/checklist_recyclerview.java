@@ -121,15 +121,25 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             RealmSingleton.getInstance(context).commitTransaction();
         }
 
+        boolean isPlaceShown = false, isRedirectShown = false;
         if (checkListItem.getPlace() != null && !checkListItem.getPlace().getPlaceName().isEmpty()) {
             holder.locationLayout.setVisibility(View.VISIBLE);
             holder.placeAttached.setText(checkListItem.getPlace().getPlaceName());
+            isPlaceShown = true;
         } else
             holder.locationLayout.setVisibility(View.GONE);
 
         holder.redirectToNote.setVisibility(checkListItem.getRedirectToOtherNote() != 0 ? View.VISIBLE : View.GONE);
-        if(checkListItem.getRedirectToOtherNote() != 0)
+        if(checkListItem.getRedirectToOtherNote() != 0) {
+            isRedirectShown = true;
+            holder.redirectToNote.setClickable(true);
             holder.redirectToNote.setText(RealmHelper.getTitleUsingId(context, checkListItem.getRedirectToOtherNote()));
+        }
+
+        if(isPlaceShown && !isRedirectShown){
+            holder.redirectToNote.setVisibility(View.INVISIBLE);
+            holder.redirectToNote.setClickable(false);
+        }
 
         boolean recordingExists = false;
         if (checkListItem.getAudioPath() != null)

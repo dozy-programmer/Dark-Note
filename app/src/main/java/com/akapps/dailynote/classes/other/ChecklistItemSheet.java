@@ -248,6 +248,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 redirectToNote.setVisibility(View.VISIBLE);
                 Helper.toggleKeyboard(getContext(), itemName, false);
                 itemName.setSelection(itemName.getText().length());
+                allNotesRecyclerview.setVisibility(View.GONE);
             }
 
             @Override
@@ -380,6 +381,11 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             photo_info.setVisibility(View.GONE);
             adapter.notifyItemChanged(position);
             return true;
+        });
+
+        redirectToNote.setOnClickListener(view17 -> {
+            InfoSheet info1 = new InfoSheet(14, redirectToNote);
+            info1.show(getActivity().getSupportFragmentManager(), info1.getTag());
         });
 
         info.setOnClickListener(view16 -> {
