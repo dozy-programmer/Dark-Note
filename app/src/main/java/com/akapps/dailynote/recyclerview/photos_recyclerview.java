@@ -12,10 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Photo;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
-import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
@@ -83,7 +80,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         // populates photo into the recyclerview
         Glide.with(context).load(currentPhoto.getPhotoLocation())
                 .centerCrop()
-                .placeholder(activity.getDrawable(R.drawable.error_icon))
+                .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                 .into(holder.image);
 
         holder.imageSize.setText(Helper.getFormattedFileSize(context,

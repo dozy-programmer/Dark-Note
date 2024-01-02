@@ -31,7 +31,7 @@ public class AppData {
             isKeyboardOpen = false;
             isDisableAnimation = false;
             wordFoundPositions = new ArrayList<>();
-            wordIndex = 0;
+            wordIndex = -1;
             appData = new AppData();
         }
         return appData;
@@ -114,7 +114,7 @@ public class AppData {
 
     public static void resetWordFoundPositions(){
         wordFoundPositions.clear();
-        wordIndex = 0;
+        wordIndex = -1;
     }
 
     public static void addWordFoundPositions(int position){
@@ -130,13 +130,13 @@ public class AppData {
 
     public static int getIndexPosition(boolean isGoingUp){
         if(isGoingUp){
-            if(wordIndex == 0)
+            if(wordIndex == 0 || wordIndex == -1)
                 wordIndex = getWordFoundPositions().size() - 1;
             else
                 wordIndex--;
         }
         else{
-            if(wordIndex == getWordFoundPositions().size() -1)
+            if(wordIndex == getWordFoundPositions().size() - 1 || wordIndex == -1)
                 wordIndex = 0;
             else
                 wordIndex++;

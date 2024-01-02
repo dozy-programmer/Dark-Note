@@ -16,10 +16,8 @@ import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.andrognito.pinlockview.IndicatorDots;
@@ -102,7 +100,7 @@ public class NoteLockScreen extends AppCompatActivity {
         lockView.attachIndicatorDots(indicatorDots);
         lockView.setDeleteButtonSize(75);
         lockView.setPinLength(String.valueOf(notePinNumber).length());
-        lockView.setDeleteButtonDrawable(getDrawable(R.drawable.icon_backspace));
+        lockView.setDeleteButtonDrawable(getDrawable(R.drawable.backspace_icon));
         lockView.setDeleteButtonPressedColor(UiHelper.getColorFromTheme(this, R.attr.tertiaryButtonColor));
 
         // if there is no pin number/it is 0, then just open note

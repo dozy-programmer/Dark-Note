@@ -101,7 +101,7 @@
                     android:layout_gravity="center"
                     android:src="@drawable/add_icon"
                     app:tint="?primaryIconTintColor"
-                    android:elevation="5dp"
+                    app:elevation="0dp"
                     app:backgroundTint="?primaryButtonColor"
                     app:fabCustomSize="30dp" />
 
@@ -152,34 +152,73 @@
             android:layout_marginBottom="5dp" />
 
         <LinearLayout
-            android:id="@+id/location_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="-5dp"
-            android:paddingVertical="1dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="13dp">
+            android:layout_marginTop="-10dp"
+            android:elevation="-5dp">
 
-            <TextView
-                android:id="@+id/place_info"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/redirect_to_note"
+                android:layout_width="wrap_content"
+                android:maxWidth="200dp"
+                android:layout_height="30dp"
+                android:layout_marginHorizontal="10dp"
+                android:ellipsize="end"
+                android:maxLength="30"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="redirect"
+                android:textColor="?primaryTextColor"
+                android:textSize="8sp"
+                app:iconSize="12dp"
+                android:visibility="visible"
+                android:layout_gravity="left"
+                android:shadowColor="?primaryBackgroundColor"
+                app:backgroundTint="?tertiaryBackgroundColor"
+                app:cornerRadius="15dp"
+                app:icon="@drawable/link_icon"
+                app:iconGravity="textStart"
+                app:iconPadding="20dp"
+                app:iconTint="?primaryIconTintColor"
+                app:strokeColor="?secondaryStrokeColor"
+                app:strokeWidth="2dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/location_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="place_info"
-                android:fontFamily="@font/baloo_bhai"
-                android:textColor="?secondaryTextColor"
-                android:textSize="10sp" />
+                android:orientation="horizontal"
+                android:paddingVertical="1dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp">
 
-            <ImageView
-                android:layout_width="10dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="1dp"
-                android:backgroundTint="@color/mdtp_transparent_black"
-                android:src="@drawable/location_icon"
-                android:tint="?secondaryIconTintColor" />
+                <TextView
+                    android:id="@+id/place_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="place_info"
+                    android:fontFamily="@font/baloo_bhai"
+                    android:textColor="?secondaryTextColor"
+                    android:textSize="10sp" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:backgroundTint="@color/mdtp_transparent_black"
+                    android:src="@drawable/location_icon"
+                    android:tint="?secondaryIconTintColor" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

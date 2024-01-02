@@ -60,6 +60,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/insert_email_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -92,6 +93,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/insert_password_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -115,6 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:nextFocusDown="@id/login"
                 android:textColor="?primaryTextColor"
                 android:textColorHint="?secondaryTextColor" />
 

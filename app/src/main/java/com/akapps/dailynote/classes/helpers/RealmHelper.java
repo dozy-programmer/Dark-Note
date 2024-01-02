@@ -191,7 +191,6 @@ public class RealmHelper {
     public static void setTextColorBasedOnTheme(Context context, int noteId, int newColor){
         Note currentNote = getNote(context, noteId);
         boolean isLightMode = isLightMode(context);
-        getRealm(context).beginTransaction();
         if(isLightMode)
             currentNote.setLightTextColor(newColor);
         else
@@ -224,8 +223,9 @@ public class RealmHelper {
     }
 
     public static int getNoteIdUsingTitle(Context context, String target){
+        if(target == null || target.isEmpty()) return 0;
         Note queryNotes = getRealm(context).where(Note.class)
-                .equalTo("title", target, Case.INSENSITIVE)
+                .contains("title", target)
                 .findFirst();
         return queryNotes == null ? 0 : queryNotes.getNoteId();
     }

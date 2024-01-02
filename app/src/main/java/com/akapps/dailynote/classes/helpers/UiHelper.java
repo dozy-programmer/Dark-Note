@@ -21,24 +21,12 @@ public class UiHelper {
         return context.getColor(colorName);
     }
 
-//    public static int determineTextColor(Context ctx, int textColor){
-//        boolean isDarkMode = getThemeMode(ctx) != User.Mode.Light;
-//        double whiteContrast = ColorUtils.calculateContrast(Color.WHITE, textColor);
-//        double blackContrast = ColorUtils.calculateContrast(Color.BLACK, textColor);
-//
-//        return (blackContrast > whiteContrast) && isDarkMode ? color(ctx, R.color.white) : color(ctx, R.color.black);
-//    }
-
     public static boolean getLightThemePreference(Context context){
         return Helper.getBooleanPreference(context, themePreferenceKey);
     }
 
     public static void saveLightThemePreference(Context context, User.Mode newTheme){
         Helper.saveBooleanPreference(context, newTheme == User.Mode.Light, themePreferenceKey);
-    }
-
-    public static User.Mode getThemeMode(Context context) {
-        return RealmHelper.getUser(context, "getting theme").getScreenMode();
     }
 
     public static int getThemeStyle(Context context) {
@@ -78,7 +66,8 @@ public class UiHelper {
     }
 
     public static void setStatusBarColor(Activity activity) {
-        activity.getWindow().setStatusBarColor(getColorFromTheme(activity, R.attr.secondaryBackgroundColor));
+        activity.getWindow().setStatusBarColor(getColorFromTheme(activity, R.attr.primaryBackgroundColor));
+        if(getLightThemePreference(activity)) activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
     }
 
     public static void setBottomSheetBehavior(View view, final Dialog dialog) {

@@ -3,6 +3,7 @@ package com.akapps.dailynote.recyclerview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.text.Html;
 import android.view.Gravity;
@@ -27,6 +28,7 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
@@ -135,10 +137,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         Note currentNote;
         try {
             currentNote = allNotes.get(position);
-        }catch (Exception e){
+        } catch (Exception e){
             Helper.restart(activity);
             return;
         }
+        int noteId = currentNote.getNoteId();
 
         // retrieves all photos that belong to note
         RealmResults<Photo> allPhotos = RealmSingleton.getInstance(context).where(Photo.class)
@@ -249,6 +252,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if (currentNote.isTrash()) {
             holder.trash_icon.setVisibility(View.VISIBLE);
             holder.trash_icon.setImageDrawable(activity.getDrawable(R.drawable.delete_icon));
+            holder.trash_icon.setImageTintList(ColorStateList.valueOf(UiHelper.getColorFromTheme(context, R.attr.tertiaryButtonColor)));
         } else
             holder.trash_icon.setVisibility(View.GONE);
 
@@ -343,7 +347,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
                             .centerCrop()
-                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_2);
                 }
             } else if (allPhotos.size() == 2) {
@@ -356,14 +360,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
                             .centerCrop()
-                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_1);
                 }
 
                 if (new File(allPhotos.get(1).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
                             .centerCrop()
-                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_3);
                 }
             } else {
@@ -378,21 +382,21 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
                             .centerCrop()
-                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_1);
                 }
 
                 if (new File(allPhotos.get(1).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
                             .centerCrop()
-                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_2);
                 }
 
                 if (new File(allPhotos.get(2).getPhotoLocation()).exists()) {
                     Glide.with(activity).load(allPhotos.get(2).getPhotoLocation())
                             .centerCrop()
-                            .placeholder(activity.getDrawable(R.drawable.error_icon))
+                            .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_3);
                 }
             }
@@ -501,7 +505,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         holder.note_info.setOnClickListener(view -> {
             if (!enableSelectMultiple) {
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(currentNote, true);
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(noteId, true);
                 noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
             }
         });

@@ -278,7 +278,7 @@
                         app:icon="@drawable/sync_icon"
                         app:iconTint="?primaryIconTintColor"
                         app:iconGravity="textEnd"
-                        app:iconPadding="0dp" />
+                        app:iconPadding="20dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/upload"
@@ -296,7 +296,7 @@
                         app:cornerRadius="15dp"
                         app:icon="@drawable/upload_icon"
                         app:iconGravity="textEnd"
-                        app:iconPadding="5dp"
+                        app:iconPadding="20dp"
                         app:iconTint="?primaryIconTintColor" />
 
                 </LinearLayout>
@@ -1820,7 +1820,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="8"
+                    android:layout_weight="9"
                     android:gravity="center|left"
                     android:text="Dark Note Sub-Reddit Feedback"
                     android:textColor="?tertiaryTextColor"
@@ -1831,9 +1831,9 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:layout_marginRight="5dp"
-                    android:layout_weight="2"
-                    android:src="@drawable/reddit_logo"
+                    android:src="@drawable/reddit_icon"
                     android:tint="?primaryIconTintColor"></ImageView>
 
             </LinearLayout>

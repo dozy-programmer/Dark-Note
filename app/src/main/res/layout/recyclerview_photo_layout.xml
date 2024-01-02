@@ -55,7 +55,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:background="?secondaryBackgroundColor"
-                android:src="@drawable/error_icon" />
+                android:src="@drawable/placeholder_image_icon" />
 
         </com.google.android.material.card.MaterialCardView>
 

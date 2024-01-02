@@ -4,6 +4,7 @@
     android:widgetFeatures="reconfigurable"
     android:initialKeyguardLayout="@layout/widget"
     android:previewImage="@drawable/note_widget_preview"
+    android:description="@string/preview_description"
     android:initialLayout="@layout/widget"
     android:minHeight="40dp"
     android:minWidth="110dp"

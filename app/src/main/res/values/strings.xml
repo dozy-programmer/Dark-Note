@@ -21,6 +21,10 @@
     <string name="login_max_message">Please contact admin</string>
     <string name="input_error">Incorrect Input</string>
 
+    <!-- Widget Preview !-->
+    <string name="preview_description">Preview Your Notes Quickly</string>
+    <string name="shortcut_description">Shortcut for Adding Notes Quickly</string>
+
     <!-- Note Info Sheet !-->
     <string name="try_out_budget">
         How to use:\n\n
@@ -64,10 +68,10 @@
 
         Github Libraries Used:\n\n
 
-        <font color='#7A9CC7'>Message Toast</font>\n
+        <font color='#7A9CC7'>Messages</font>\n
         https://github.com/Spikeysanju/MotionToast\n\n
 
-        <font color='#7A9CC7'>Image Loading</font>\n
+        <font color='#7A9CC7'>Loading Images</font>\n
         https://github.com/bumptech/glide\n\n
 
         <font color='#7A9CC7'>Color Picker</font>\n
@@ -88,17 +92,20 @@
         <font color='#7A9CC7'>Bottom Sheet</font>\n
         https://github.com/Deishelon/RoundedBottomSheet \n\n
 
-        <font color='#7A9CC7'>Rich Text Editing</font>\n
+        <font color='#7A9CC7'>Formatting Notes</font>\n
         https://github.com/wasabeef/richeditor-android\n\n
 
-        <font color='#7A9CC7'>Floating Action Button</font>\n
+        <font color='#7A9CC7'>Circular Buttons</font>\n
         https://github.com/Clans/FloatingActionButton\n\n
 
         <font color='#7A9CC7'>Loading Indicator</font>\n
         https://github.com/yash786agg/AnimatedLoadingIndicator\n\n
 
-        <font color='#7A9CC7'>Image Full Screen</font>\n
+        <font color='#7A9CC7'>Full Screen Images</font>\n
         https://github.com/stfalcon-studio/StfalconImageViewer\n\n
+
+        <font color='#7A9CC7'>Budget Graph</font>\n
+        https://github.com/futuredapp/donut\n\n
 
     </string>
 

@@ -98,6 +98,7 @@ public class WidgetListView extends RemoteViewsService {
             else {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.GONE);
                 remoteView.setViewVisibility(R.id.audio, View.GONE);
+                remoteView.setTextColor(R.id.checklist_text, getColor(isLightMode ? R.color.black : R.color.white));
             }
 
             String checklistItemText = currentItem.replace("~~", "").replace("-Note-", "");

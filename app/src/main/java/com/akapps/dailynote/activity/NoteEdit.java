@@ -271,7 +271,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         if (user.isEnableEditableNoteButton()) {
                             addCheckListItem.setVisibility(View.VISIBLE);
                             addCheckListItem.setImageDrawable(getDrawable(
-                                    isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+                                    isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
                         }
                     }
                 }
@@ -413,9 +413,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         pinNoteButton.setVisibility(View.VISIBLE);
         noteColor.setVisibility(View.VISIBLE);
         expandMenu.setVisibility(View.VISIBLE);
-        // current note
-        Realm realm = getRealm();
 
+        // current note
         if (null != getCurrentNote(context, noteId).getChecklist())
             checkListItems = getCurrentNote(context, noteId).getChecklist().sort("positionInList");
         populatePhotos();
@@ -451,7 +450,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 note.setInputEnabled(!isEditLockedMode);
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
-                        isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+                        isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
             }
 
             if (isNewNote)
@@ -522,7 +521,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (user.isEnableEditableNoteButton() && !isNewNoteCopy) {
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
-                        isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+                        isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
             }
         }
 
@@ -645,7 +644,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     if (user.isEnableEditableNoteButton()) {
                         addCheckListItem.setVisibility(View.VISIBLE);
                         addCheckListItem.setImageDrawable(getDrawable(
-                                isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+                                isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
                     }
                 }
             } else {
@@ -722,7 +721,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 isEditLockedMode = !isEditLockedMode;
                 // TO DO, see if do not edit note toggle is enabled and then run the following
                 addCheckListItem.setImageDrawable(getDrawable(
-                        isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+                        isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
             }
         });
 
@@ -828,7 +827,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         searchLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         searchLayout.setPadding(100, 100, 8, 100);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.setMargins(0, 0, 8, 0);
+        params.setMargins(24, 0, 16, 0);
         searchEditText.setLayoutParams(params);
         searchEditText.requestFocusFromTouch();
 
@@ -899,7 +898,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (user.isEnableEditableNoteButton()) {
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
-                        isEditLockedMode ? R.drawable.edit_filled_icon : R.drawable.do_not_edit_icon));
+                        isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
             }
         }
     }
@@ -1297,7 +1296,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 String sublistStatus = "";
                 if (getCurrentNote(context, noteId).isEnableSublist()) {
                     sublistStatus = sublistStatus + "Sub-List";
-                    noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.not_visible_icon), sublistStatus));
+                    noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.visible_false_icon), sublistStatus));
                 } else {
                     sublistStatus = sublistStatus + "Sub-List";
                     noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.visible_icon), sublistStatus));
@@ -1384,7 +1383,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 decreaseTextSize.setAlpha(new Float(1.0));
                 increaseTextSize.setAlpha(new Float(1.0));
             } else if (item.getTitle().equals("Info")) {
-                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(getCurrentNote(context, noteId), false);
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(getCurrentNote(context, noteId).getNoteId(), false);
                 noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
             } else if (item.getTitle().contains("Sub-List"))
                 updateSublistEnabledStatus();

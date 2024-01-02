@@ -71,6 +71,7 @@ public class notes extends Fragment {
     private MaterialCardView categoryNotes;
     private SearchView searchEditText;
     private ImageView search;
+    private ImageView categoryIcon;
     private ImageView filterIcon;
     private ImageView settingsIcon;
     private RecyclerView recyclerViewNotes;
@@ -278,6 +279,7 @@ public class notes extends Fragment {
         subtitle = view.findViewById(R.id.empty_subtitle);
         subSubTitle = view.findViewById(R.id.empty_sub_subtitle);
         filterIcon = view.findViewById(R.id.filter_icon);
+        categoryIcon = view.findViewById(R.id.category_icon);
         settingsIcon = view.findViewById(R.id.settings_icon);
         addMenu = view.findViewById(R.id.menu);
         addNote = view.findViewById(R.id.add_note);
@@ -741,12 +743,12 @@ public class notes extends Fragment {
     private void closeFilter() {
         isNotesFiltered = true;
         categoryNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
+        categoryIcon.setImageDrawable(context.getDrawable(R.drawable.folder_open_icon));
         addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
         addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
     }
-
 
     private void searchNotesAndUpdate(String target) {
         RealmResults<Note> queryNotes = getRealm().where(Note.class)
@@ -804,6 +806,7 @@ public class notes extends Fragment {
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.filter_icon));
         filterNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor));
         categoryNotes.setVisibility(View.VISIBLE);
+        categoryIcon.setImageDrawable(context.getDrawable(R.drawable.folder_icon));
         categoryNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor));
 
         LinearLayout.LayoutParams params = (new LinearLayout.LayoutParams(filterNotes.getWidth(), filterNotes.getHeight()));
@@ -1007,12 +1010,5 @@ public class notes extends Fragment {
             getUser().setTextSize(currentSize);
             getRealm().commitTransaction();
         }
-    }
-
-    private void showMessage(String title, String message, boolean error) {
-        if (error)
-            Helper.showMessage(getActivity(), title, message, MotionToast.TOAST_ERROR);
-        else
-            Helper.showMessage(getActivity(), title, message, MotionToast.TOAST_SUCCESS);
     }
 }

@@ -16,6 +16,8 @@
         android:text="Title"
         android:textSize="18sp"
         android:padding="5dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="?primaryTextColor"/>
 
     <View

@@ -203,8 +203,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             public void onTextChanged(CharSequence s, int current, int before, int count) {
                 if (!isTextPastedDetected) {
                     if (count - before > 20) {
-                        info.setText(info.getText().toString().split("\n")[0] + "\n\nPaste detected, if you want to want this to " +
-                                "only be one item, click here.\n");
+                        info.setText(info.getText().toString().split("\n")[0] + "\n\nPaste detected, if you want this to " +
+                                "only be one item, [Click Here].\n");
                         isTextPastedDetected = true;
                     }
                 }
@@ -242,9 +242,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(wordAfterAt == null) wordAfterAt = "";
                 noteSelectedTitle = redirectToNote.getText().toString();
                 itemName.setText(itemName.getText().toString().replace("@" + wordAfterAt, ""));
                 redirectToNote.setVisibility(View.VISIBLE);
+                Helper.toggleKeyboard(getContext(), itemName, false);
+                itemName.setSelection(itemName.getText().length());
             }
 
             @Override
@@ -400,6 +403,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         getRealm().beginTransaction();
         checkListItem.setText(text);
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+        checkListItem.setRedirectToOtherNote(RealmHelper.getNoteIdUsingTitle(getContext(), noteSelectedTitle));
+        Log.d("Here", "note title -> " + noteSelectedTitle);
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyItemChanged(position);
@@ -581,7 +586,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 placeLocation.setText(selectedPlace.getPlaceName());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             }
-            return;
         }
     }
 
@@ -598,7 +602,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
         if (currentItem != null) {
             if (currentItem.getPlace() == null || currentItem.getPlace().getPlaceName().isEmpty())
-                noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location), "Location"));
+                noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location_icon), "Location"));
         }
 
         noteMenu.showAsAnchorLeftTop(dropDownMenu);

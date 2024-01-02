@@ -1,5 +1,7 @@
 package com.akapps.dailynote.classes.other;
 
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentNote;
+
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -49,14 +51,15 @@ import www.sanju.motiontoast.MotionToast;
 public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;
+    private int noteId;
     boolean showOpenButton;
     String noteTitle;
 
     public NoteInfoSheet() {
     }
 
-    public NoteInfoSheet(Note currentNote, boolean showOpenButton) {
-        this.currentNote = currentNote;
+    public NoteInfoSheet(int noteId, boolean showOpenButton) {
+        this.noteId = noteId;
         this.showOpenButton = showOpenButton;
     }
 
@@ -65,7 +68,8 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_note_info, container, false);
 
-        RealmResults<Photo> allPhotos = getRealm().where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
+        RealmResults<Photo> allPhotos = getRealm().where(Photo.class).equalTo("noteId", noteId).findAll();
+        currentNote = getCurrentNote(getContext(), noteId);
 
         TextView noteName = view.findViewById(R.id.note_name);
         TextView dateCreated = view.findViewById(R.id.date_created);

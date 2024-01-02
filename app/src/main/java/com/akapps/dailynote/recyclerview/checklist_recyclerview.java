@@ -1,6 +1,7 @@
 package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.text.Html;
 import android.util.TypedValue;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
@@ -67,6 +69,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final MaterialButton expandSublist;
         private final ImageView itemImage;
         private final MaterialCardView background;
+        private final MaterialButton redirectToNote;
 
         public MyViewHolder(View v) {
             super(v);
@@ -85,6 +88,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             deleteIcon = v.findViewById(R.id.delete_checklist_item);
             background = v.findViewById(R.id.background);
             expandSublist = v.findViewById(R.id.sublist_view);
+            redirectToNote = v.findViewById(R.id.redirect_to_note);
         }
     }
 
@@ -122,6 +126,10 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.placeAttached.setText(checkListItem.getPlace().getPlaceName());
         } else
             holder.locationLayout.setVisibility(View.GONE);
+
+        holder.redirectToNote.setVisibility(checkListItem.getRedirectToOtherNote() != 0 ? View.VISIBLE : View.GONE);
+        if(checkListItem.getRedirectToOtherNote() != 0)
+            holder.redirectToNote.setText(RealmHelper.getTitleUsingId(context, checkListItem.getRedirectToOtherNote()));
 
         boolean recordingExists = false;
         if (checkListItem.getAudioPath() != null)
@@ -270,6 +278,24 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         holder.edit.setOnClickListener(v -> {
             openEditDialog(checkListItem, position);
+        });
+
+        holder.redirectToNote.setOnClickListener(view -> {
+            Note redirectNote = RealmHelper.getNote(context, checkListItem.getRedirectToOtherNote());
+            if (currentNote.getPinNumber() == 0) {
+                Intent note = new Intent(activity, NoteEdit.class);
+                note.putExtra("id", redirectNote.getNoteId());
+                note.putExtra("isChecklist", redirectNote.isCheckList());
+                activity.startActivity(note);
+            } else {
+                Intent lockScreen = new Intent(activity, NoteLockScreen.class);
+                lockScreen.putExtra("id", redirectNote.getNoteId());
+                lockScreen.putExtra("title", redirectNote.getTitle().replace("\n", " "));
+                lockScreen.putExtra("pin", redirectNote.getPinNumber());
+                lockScreen.putExtra("securityWord", redirectNote.getSecurityWord());
+                lockScreen.putExtra("fingerprint", redirectNote.isFingerprint());
+                activity.startActivity(lockScreen);
+            }
         });
 
         holder.selectedIcon.setOnClickListener(view -> updateChecklistStatus(checkListItem, isSelected, position));

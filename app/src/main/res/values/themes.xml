@@ -121,7 +121,6 @@
     </style>
 
     <style name="Theme.DailyDay.Gray" parent="BaseAppTheme">
-
         <!-- this includes titles !-->
         <item name="primaryTextColor">@color/white</item>
         <!-- this includes subtitle !-->
