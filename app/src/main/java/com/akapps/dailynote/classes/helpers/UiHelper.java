@@ -21,6 +21,10 @@ public class UiHelper {
         return context.getColor(colorName);
     }
 
+    public static User.Mode getTheme(Context context){
+        return RealmHelper.getUser(context, "get theme style").getScreenMode();
+    }
+
     public static boolean getLightThemePreference(Context context){
         return Helper.getBooleanPreference(context, themePreferenceKey);
     }

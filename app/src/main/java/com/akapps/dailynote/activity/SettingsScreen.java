@@ -1366,7 +1366,6 @@ public class SettingsScreen extends AppCompatActivity {
         RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in SettingsScreen");
         finish();
-        if (!AppData.isDisableAnimation) overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 
     private void openAppInSettings() {

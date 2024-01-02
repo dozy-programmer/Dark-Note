@@ -1,12 +1,15 @@
 package com.akapps.dailynote.fragments;
 
 import static com.akapps.dailynote.classes.helpers.UiHelper.getColorFromTheme;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,10 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -108,6 +115,9 @@ public class notes extends Fragment {
     private TextView subtitle;
     private TextView subSubTitle;
 
+    private ActivityResultLauncher<Intent> settingsLauncher;
+    private User.Mode currentTheme;
+
     public notes() {
     }
 
@@ -189,6 +199,16 @@ public class notes extends Fragment {
                 }
             }
         });
+
+        currentTheme = UiHelper.getTheme(context);
+        settingsLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if(currentTheme != UiHelper.getTheme(context))
+                        refreshFragment(true);
+                    else if (!AppData.isDisableAnimation)
+                        getActivity().overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
+                });
     }
 
     @Override
@@ -479,12 +499,9 @@ public class notes extends Fragment {
     private void openSettings() {
         savePreferences();
         int size = getRealm().where(Note.class).findAll().size();
-        String userId = String.valueOf(getUser().getUserId());
         Intent settings = new Intent(context, SettingsScreen.class);
         settings.putExtra("size", size);
-        //RealmSingleton.setCloseRealm(false);
-        startActivity(settings);
-        //getActivity().finish();
+        settingsLauncher.launch(settings);
         getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
     }
 
