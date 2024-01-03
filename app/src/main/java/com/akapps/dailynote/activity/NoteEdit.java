@@ -201,6 +201,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             Toast.makeText(this, "Note has been deleted, please delete widget!", Toast.LENGTH_LONG).show();
             RealmSingleton.closeRealmInstance("NoteEdit onDestroy - Deleted Note is being accessed via widget");
             finish();
+            return;
         }
 
         noteFromOtherApp = getIntent().getStringExtra("otherAppNote");
@@ -555,7 +556,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(getCurrentNote(context, noteId).isCheckList() && s.toString().length() > 1){
+                if(getCurrentNote(context, noteId).isCheckList()){
+                    if(s == null) return;
                     AppData.resetWordFoundPositions();
                     sortChecklist(s.toString());
                 }

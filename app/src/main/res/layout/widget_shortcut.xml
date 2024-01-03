@@ -49,8 +49,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_marginVertical="5dp"
-        android:layout_gravity="center"
-        android:paddingHorizontal="20dp">
+        android:layout_gravity="center">
 
         <ImageButton
             android:id="@+id/add_checklist_shortcut"
@@ -60,7 +59,7 @@
             android:tint="@color/black"
             android:backgroundTint="@color/orange"
             android:background="@drawable/round_button"
-            android:layout_marginHorizontal="5dp"
+            android:layout_marginHorizontal="10dp"
             tools:ignore="UseAppTint">
         </ImageButton>
 
@@ -71,7 +70,7 @@
             android:src="@drawable/note_icon"
             android:backgroundTint="@color/azure_100"
             android:background="@drawable/round_button"
-            android:layout_marginHorizontal="5dp">
+            android:layout_marginHorizontal="10dp">
         </ImageButton>
 
     </LinearLayout>

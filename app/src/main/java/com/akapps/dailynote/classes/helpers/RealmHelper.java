@@ -44,14 +44,15 @@ public class RealmHelper {
             Helper.cancelNotification(context, currentNote.getNoteId());
 
         // deletes note
-        getRealm(context).beginTransaction();
         if(currentNote.getWidgetId() > 0) {
+            getRealm(context).beginTransaction();
             currentNote.setPinNumber(0);
             currentNote.setTitle("Delete Me");
             currentNote.setNote("* Note has been deleted, delete this widget *");
+            currentNote.setIsCheckList(false);
+            getRealm(context).commitTransaction();
             Helper.updateWidget(currentNote, context, RealmSingleton.getInstance(context));
         }
-        getRealm(context).commitTransaction();
         deleteNoteFromDatabase(context, currentNote);
     }
 

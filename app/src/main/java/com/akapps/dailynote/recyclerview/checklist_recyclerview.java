@@ -354,7 +354,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private void updateChecklistStatus(CheckListItem checkListItem, boolean isSelected, int position) {
         saveSelected(checkListItem, !isSelected);
         isAllItemsSelected();
-        notifyItemChanged(position);
+        notifyDataSetChanged();
     }
 
     private void updateSublistView(CheckListItem checkListItem, boolean newState){
