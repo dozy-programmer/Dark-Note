@@ -1,6 +1,7 @@
 package com.akapps.dailynote.classes.helpers;
 
 import static android.content.Context.MODE_PRIVATE;
+
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -35,14 +36,15 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.OptIn;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
@@ -52,6 +54,7 @@ import com.akapps.dailynote.classes.other.AppWidget;
 import com.akapps.dailynote.classes.other.AppWidgetShortcut;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -69,6 +72,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -321,7 +325,7 @@ public class Helper {
                                    boolean isChecklist, boolean isChecklistAdded,
                                    LottieAnimationView emptyView, ImageView emptyViewNoAnimation) {
         if (isResults) {
-            if(RealmHelper.getUser(context, "in space").isDisableAnimation()) {
+            if (RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
                 if (!emptyView.isAnimating()) {
@@ -334,8 +338,7 @@ public class Helper {
                     params.gravity = Gravity.CENTER_HORIZONTAL;
                     emptyViewNoAnimation.setLayoutParams(params);
                 }
-            }
-            else if (!emptyView.isAnimating())
+            } else if (!emptyView.isAnimating())
                 emptyView.setAnimation(R.raw.waiting_astronaut);
             title.setText("No Results");
             title.setTextSize(20);
@@ -345,14 +348,13 @@ public class Helper {
             title.setText("");
             subTitle.setText("\"Houston, we have a problem...\"");
             subTitle.setTextSize(18);
-            if(RealmHelper.getUser(context, "in space").isDisableAnimation()) {
+            if (RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
                 emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.empty_checklist_icon));
                 subTitle.setText("\"Ah, the loneliness...\"");
                 subSubTitle.setText("Tap the bottom right button to add to checklist and help me be less lonely");
-            }
-            else {
+            } else {
                 emptyView.setAnimation(R.raw.waiting_astronaut);
                 subTitle.setText("\"Houston, we have a problem...\"");
                 subSubTitle.setText("Tap the bottom right button to add to checklist");
@@ -363,12 +365,11 @@ public class Helper {
             title.setText("Avoid getting lost in the universe trying to remember");
             subTitle.setText("Let me do it for you");
             subSubTitle.setText("Tap the bottom right button to create a note");
-            if(RealmHelper.getUser(context, "in space").isDisableAnimation()) {
+            if (RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
                 emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.notebook_icon));
-            }
-            else
+            } else
                 emptyView.setAnimation(R.raw.astronaut_floating);
         }
 
@@ -553,7 +554,7 @@ public class Helper {
         return newText.trim();
     }
 
-    public static void updateAllWidgetTypes(Context context){
+    public static void updateAllWidgetTypes(Context context) {
         updateAllNoteWidgets(context);
         updateShortcutWidget(context);
     }
@@ -575,24 +576,26 @@ public class Helper {
                     realm.commitTransaction();
                 }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
-    public static void updateAllNoteWidgets(Context context){
+    public static void updateAllNoteWidgets(Context context) {
         RealmResults<Note> notesWithWidgets = RealmSingleton.get(context).where(Note.class)
                 .greaterThan("widgetId", 0).findAll();
         for (Note currentNote : notesWithWidgets)
             updateWidget(currentNote, context, RealmSingleton.get(context));
     }
 
-    public static void updateShortcutWidget(Context context){
-        try{
+    public static void updateShortcutWidget(Context context) {
+        try {
             Intent intent = new Intent(context, AppWidgetShortcut.class);
             intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
             int[] ids = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, AppWidgetShortcut.class));
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
             context.sendBroadcast(intent);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     public static int darkenColor(int color, int alpha) {
@@ -848,7 +851,7 @@ public class Helper {
         else if (currentSort == 2)
             results = results.sort("text", Sort.DESCENDING);
         else if (currentSort == 4)
-            results = results.sort("lastCheckedDate", Sort.DESCENDING)
+            results = results.sort("lastCheckedDate", Sort.ASCENDING)
                     .sort("checked", Sort.ASCENDING);
         else if (currentSort == 3)
             results = results.sort("lastCheckedDate", Sort.ASCENDING)
@@ -879,15 +882,15 @@ public class Helper {
     }
 
     /**
-     *          if aToZ + added bottom = 11
-     *          if aToZ + added bottom = 12
-     *          if zToA + added top = 13
-     *          if zToA + added top = 14
-     *
-     *          if added bottom + checked top = 15
-     *          if added bottom + checked bottom = 16
-     *          if added top + checked top = 17
-     *          if added top + checked bottom = 18
+     * if aToZ + added bottom = 11
+     * if aToZ + added bottom = 12
+     * if zToA + added top = 13
+     * if zToA + added top = 14
+     * <p>
+     * if added bottom + checked top = 15
+     * if added bottom + checked bottom = 16
+     * if added top + checked top = 17
+     * if added top + checked bottom = 18
      */
 
     public static RealmResults<Note> getSelectedNotes(Realm realm, Activity activity) {
@@ -982,7 +985,8 @@ public class Helper {
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapTo));
             intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
             activity.startActivity(intent);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     public static void cancelNotification(Context context, int notificationId) {
@@ -1023,7 +1027,7 @@ public class Helper {
         return decimalFormat.format(number);
     }
 
-    public static void restart(Activity activity){
+    public static void restart(Activity activity) {
         RealmSingleton.setCloseRealm(false);
         Intent intent = new Intent(activity, activity.getClass());
         activity.startActivity(intent);

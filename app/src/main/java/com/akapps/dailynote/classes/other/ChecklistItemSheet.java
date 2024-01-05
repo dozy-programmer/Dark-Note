@@ -7,7 +7,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,7 +16,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,14 +23,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.akapps.dailynote.BuildConfig;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
-import com.akapps.dailynote.activity.WidgetConfigureActivity;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
@@ -211,22 +207,24 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 int atIndex = s.toString().lastIndexOf("@");
                 if (atIndex != -1 && atIndex < s.length() - 1) { // Ensure "@" exists and isn't the last character
                     redirectToNote.setVisibility(View.GONE);
-                    wordAfterAt = s.toString().substring(atIndex + 1).trim(); // Extract and trim the word
+                    wordAfterAt = s.toString().substring(atIndex + 1); // Extract word
                     // Do something with the wordAfterAt
                     Log.d("Here", "Word after @: " + wordAfterAt);
+                    if (wordAfterAt.equals(" ")) {
+                        allNotesRecyclerview.setVisibility(View.GONE);
+                        return;
+                    }
                     ArrayList<Note> filteredNotes = new ArrayList<>(allNotes.stream()
                             .filter(note -> note.getTitle().toLowerCase().contains(wordAfterAt.toLowerCase()))
                             .collect(Collectors.toList()));
                     populateSearchAdapter(filteredNotes);
-                    if(allNotesRecyclerview.getVisibility() == View.GONE)
+                    if (allNotesRecyclerview.getVisibility() == View.GONE)
                         allNotesRecyclerview.setVisibility(View.VISIBLE);
-                }
-                else if(atIndex != -1 && atIndex == s.length() - 1){
+                } else if (atIndex != -1 && atIndex == s.length() - 1) {
                     populateSearchAdapter(allNotes);
-                    if(allNotesRecyclerview.getVisibility() == View.GONE)
+                    if (allNotesRecyclerview.getVisibility() == View.GONE)
                         allNotesRecyclerview.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     allNotesRecyclerview.setVisibility(View.GONE);
                 }
             }
@@ -238,11 +236,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
         redirectToNote.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(wordAfterAt == null) wordAfterAt = "";
+                if (wordAfterAt == null) wordAfterAt = "";
                 noteSelectedTitle = redirectToNote.getText().toString();
                 itemName.setText(itemName.getText().toString().replace("@" + wordAfterAt, ""));
                 redirectToNote.setVisibility(View.VISIBLE);
@@ -252,7 +251,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
         });
 
         if (isSubChecklist || isAdding)
@@ -309,7 +309,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     title.setText("Editing");
                     itemName.setText(currentItem.getText());
 
-                    if(currentItem.getRedirectToOtherNote() != 0)
+                    if (currentItem.getRedirectToOtherNote() != 0)
                         redirectToNote.setText(RealmHelper.getTitleUsingId(getContext(), currentItem.getRedirectToOtherNote()));
 
                     if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
@@ -398,7 +398,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         return view;
     }
 
-    private void populateSearchAdapter(ArrayList<Note> notes){
+    private void populateSearchAdapter(ArrayList<Note> notes) {
         notesSearchAdapter = new notes_search_recyclerview(notes, redirectToNote);
         allNotesRecyclerview.setAdapter(notesSearchAdapter);
     }
@@ -471,8 +471,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 .equalTo("checked", true)
                 .findAll();
 
-        if(subCheckListItems.size() == checkedSubCheckListItems.size()){
-            if(!parentCurrentSubItem.isChecked()) {
+        if (subCheckListItems.size() == checkedSubCheckListItems.size()) {
+            if (!parentCurrentSubItem.isChecked()) {
                 getRealm().beginTransaction();
                 parentCurrentSubItem.setChecked(true);
                 getRealm().commitTransaction();

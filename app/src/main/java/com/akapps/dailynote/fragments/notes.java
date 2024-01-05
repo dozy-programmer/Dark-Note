@@ -2,7 +2,6 @@ package com.akapps.dailynote.fragments;
 
 import static com.akapps.dailynote.classes.helpers.UiHelper.getColorFromTheme;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,8 +21,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -116,7 +113,6 @@ public class notes extends Fragment {
     private TextView subSubTitle;
 
     private ActivityResultLauncher<Intent> settingsLauncher;
-    private User.Mode currentTheme;
 
     public notes() {
     }
@@ -200,13 +196,17 @@ public class notes extends Fragment {
             }
         });
 
-        currentTheme = UiHelper.getTheme(context);
+        User.Mode currentTheme = UiHelper.getTheme(context);
         settingsLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if(currentTheme != UiHelper.getTheme(context))
+                    Log.d("Here", "current theme " + currentTheme);
+                    Log.d("Here", "current theme " + UiHelper.getTheme(context));
+                    if (currentTheme != UiHelper.getTheme(context)) {
+                        Log.d("Here", "refreshing");
+                        settingsLauncher.unregister();
                         refreshFragment(true);
-                    else if (!AppData.isDisableAnimation)
+                    } else if (!AppData.isDisableAnimation)
                         getActivity().overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
                 });
     }
@@ -677,7 +677,7 @@ public class notes extends Fragment {
             closeFilter();
     }
 
-    public void setCategoryIconColors(){
+    public void setCategoryIconColors() {
         filterNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
         addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));

@@ -6,22 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
-import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+
 import org.jetbrains.annotations.NotNull;
-import io.realm.Realm;
 
 public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
@@ -69,27 +68,23 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         } else if (sort == 2) {
             selectView(zA, true);
         } else if (sort == 4) {
-        selectView(checkedBottom, true);
+            selectView(checkedBottom, true);
         } else if (sort == 3) {
             selectView(checkedTop, true);
         } else if (sort == 5) {
             selectView(addedBottom, true);
         } else if (sort == 6) {
             selectView(addedTop, true);
-        }
-        else if (sort == 7) {
+        } else if (sort == 7) {
             selectView(aZ, true);
             selectView(checkedTop, true);
-        }
-        else if (sort == 8) {
+        } else if (sort == 8) {
             selectView(aZ, true);
             selectView(checkedBottom, true);
-        }
-        else if (sort == 9) {
+        } else if (sort == 9) {
             selectView(zA, true);
             selectView(checkedTop, true);
-        }
-        else if (sort == 10) {
+        } else if (sort == 10) {
             selectView(zA, true);
             selectView(checkedBottom, true);
         }
@@ -110,7 +105,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
         aZ.setOnClickListener(v -> {
             unSelectAll(false);
-            if(isViewSelected(zA)){
+            if (isViewSelected(zA)) {
                 selectView(zA, false);
             }
 
@@ -119,7 +114,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
         zA.setOnClickListener(v -> {
             unSelectAll(false);
-            if(isViewSelected(aZ)){
+            if (isViewSelected(aZ)) {
                 selectView(aZ, false);
             }
 
@@ -128,7 +123,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
         checkedBottom.setOnClickListener(v -> {
             unSelectAll(false);
-            if(isViewSelected(checkedTop)){
+            if (isViewSelected(checkedTop)) {
                 selectView(checkedTop, false);
             }
 
@@ -137,7 +132,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
         checkedTop.setOnClickListener(v -> {
             unSelectAll(false);
-            if(isViewSelected(checkedBottom)){
+            if (isViewSelected(checkedBottom)) {
                 selectView(checkedBottom, false);
             }
 
@@ -151,7 +146,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         });
 
         addedTop.setOnClickListener(v -> {
-            boolean isCurrentlySelected= isViewSelected(addedTop);
+            boolean isCurrentlySelected = isViewSelected(addedTop);
             unSelectAll(true);
             selectView(addedTop, !isCurrentlySelected);
         });
@@ -188,14 +183,14 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         return view;
     }
 
-    private boolean isViewSelected(MaterialCardView view){
+    private boolean isViewSelected(MaterialCardView view) {
         int selectionColor = UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor);
         return view.getCardBackgroundColor().getDefaultColor() == selectionColor ||
                 view.getStrokeColorStateList().getDefaultColor() == selectionColor;
     }
 
-    private void selectView(MaterialCardView view, boolean select){
-        if(select)
+    private void selectView(MaterialCardView view, boolean select) {
+        if (select)
             view.setStrokeColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
         else
             modeItemLayout(view);
@@ -206,8 +201,8 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         view.setStrokeColor(UiHelper.getColorFromTheme(getActivity(), R.attr.secondaryStrokeColor));
     }
 
-    private void unSelectAll(boolean deselectAll){
-        if(deselectAll) {
+    private void unSelectAll(boolean deselectAll) {
+        if (deselectAll) {
             modeItemLayout(aZ);
             modeItemLayout(zA);
             modeItemLayout(checkedTop);
@@ -217,35 +212,26 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         modeItemLayout(addedBottom);
     }
 
-    private int getSelectedSort(){
-        if(isViewSelected(aZ) && isViewSelected(checkedTop)){
+    private int getSelectedSort() {
+        if (isViewSelected(aZ) && isViewSelected(checkedTop)) {
             return 7;
-        }
-        else if(isViewSelected(aZ) && isViewSelected(checkedBottom)){
+        } else if (isViewSelected(aZ) && isViewSelected(checkedBottom)) {
             return 8;
-        }
-        else if(isViewSelected(aZ)){
+        } else if (isViewSelected(aZ)) {
             return 1;
-        }
-        else if(isViewSelected(zA) && isViewSelected(checkedTop)){
+        } else if (isViewSelected(zA) && isViewSelected(checkedTop)) {
             return 9;
-        }
-        else if(isViewSelected(zA) && isViewSelected(checkedBottom)){
+        } else if (isViewSelected(zA) && isViewSelected(checkedBottom)) {
             return 10;
-        }
-        else if(isViewSelected(zA)){
+        } else if (isViewSelected(zA)) {
             return 2;
-        }
-        else if(isViewSelected(checkedTop)){
+        } else if (isViewSelected(checkedTop)) {
             return 3;
-        }
-        else if(isViewSelected(checkedBottom)){
+        } else if (isViewSelected(checkedBottom)) {
             return 4;
-        }
-        else if(isViewSelected(addedTop)){
+        } else if (isViewSelected(addedTop)) {
             return 6;
-        }
-        else if(isViewSelected(addedBottom)){
+        } else if (isViewSelected(addedBottom)) {
             return 5;
         }
 

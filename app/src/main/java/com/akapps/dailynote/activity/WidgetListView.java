@@ -6,10 +6,10 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -64,7 +64,7 @@ public class WidgetListView extends RemoteViewsService {
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.recyclerview_widget);
             isLightMode = UiHelper.getLightThemePreference(context);
 
-            if(!currentItem.contains("-Note-")) {
+            if (!currentItem.contains("-Note-")) {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);
 
                 if (currentItem.contains("~~")) {
@@ -77,32 +77,29 @@ public class WidgetListView extends RemoteViewsService {
                     remoteView.setImageViewResource(R.id.widget_check_status, R.drawable.unchecked_icon);
                 }
 
-                if(currentItem.contains("⤷")) {
+                if (currentItem.contains("⤷")) {
                     currentItem = currentItem.replace("⤷", "");
                     remoteView.setTextColor(R.id.checklist_text, Helper.darkenColor(getColor(isLightMode ? R.color.black : R.color.white), 200));
                     remoteView.setViewVisibility(R.id.sublist_spacing, View.VISIBLE);
-                }
-                else
+                } else
                     remoteView.setViewVisibility(R.id.sublist_spacing, View.GONE);
 
-                if(currentItem.contains("♬")){
+                if (currentItem.contains("♬")) {
                     currentItem = currentItem.equals("♬") ? "[Audio]" : currentItem.replace("♬", "");
                     remoteView.setViewVisibility(R.id.widget_check_status, View.GONE);
                     remoteView.setViewVisibility(R.id.audio, View.VISIBLE);
-                }
-                else {
+                } else {
                     remoteView.setViewVisibility(R.id.audio, View.GONE);
                     remoteView.setViewVisibility(R.id.widget_check_status, View.VISIBLE);
                 }
-            }
-            else {
+            } else {
                 remoteView.setViewVisibility(R.id.widget_check_status, View.GONE);
                 remoteView.setViewVisibility(R.id.audio, View.GONE);
                 remoteView.setTextColor(R.id.checklist_text, getColor(isLightMode ? R.color.black : R.color.white));
             }
 
             String checklistItemText = currentItem.replace("~~", "").replace("-Note-", "");
-            checklistItemText += checklistItemText.isEmpty() ? "[Audio]": "";
+            checklistItemText += checklistItemText.isEmpty() ? "[Audio]" : "";
 
             remoteView.setTextViewText(R.id.checklist_text, Html.fromHtml(checklistItemText, Html.FROM_HTML_MODE_COMPACT));
 

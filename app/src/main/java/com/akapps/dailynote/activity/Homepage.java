@@ -4,17 +4,17 @@ import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.fragment.app.FragmentActivity;
+
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
-import io.realm.RealmResults;
 
 public class Homepage extends FragmentActivity {
 
@@ -25,6 +25,7 @@ public class Homepage extends FragmentActivity {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage_screen);
+        Log.d("Here", "in home screen");
 
         isOpenApp = getIntent().getBooleanExtra("openApp", false);
         AppData.getAppData();
@@ -32,7 +33,7 @@ public class Homepage extends FragmentActivity {
 
         if (AppData.isAppFirstStarted) {
             // initialize database and get data
-           Helper.updateAllWidgetTypes(this);
+            Helper.updateAllWidgetTypes(this);
 
             if (RealmHelper.getUser(this, "home") != null) {
                 if (RealmHelper.getUser(this, "home").getScreenMode().getValue() == 0) {

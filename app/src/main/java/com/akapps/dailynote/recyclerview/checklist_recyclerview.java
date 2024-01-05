@@ -130,13 +130,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.locationLayout.setVisibility(View.GONE);
 
         holder.redirectToNote.setVisibility(checkListItem.getRedirectToOtherNote() != 0 ? View.VISIBLE : View.GONE);
-        if(checkListItem.getRedirectToOtherNote() != 0) {
+        if (checkListItem.getRedirectToOtherNote() != 0) {
             isRedirectShown = true;
             holder.redirectToNote.setClickable(true);
             holder.redirectToNote.setText(RealmHelper.getTitleUsingId(context, checkListItem.getRedirectToOtherNote()));
         }
 
-        if(isPlaceShown && !isRedirectShown){
+        if (isPlaceShown && !isRedirectShown) {
             holder.redirectToNote.setVisibility(View.INVISIBLE);
             holder.redirectToNote.setClickable(false);
         }
@@ -196,7 +196,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         // populates note into the recyclerview
         holder.checklistText.setText(recordingExists && checkListItem.getText().isEmpty() ? "[Audio]" : checkListText);
-        if(!searchingForWord.isEmpty() && checkListText.toLowerCase().contains(searchingForWord.toLowerCase())){
+        if (!searchingForWord.isEmpty() && checkListText.toLowerCase().contains(searchingForWord.toLowerCase())) {
             String regex = "(" + searchingForWord + ")";
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
@@ -238,11 +238,10 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         } else
             holder.itemImageLayout.setVisibility(View.GONE);
 
-        if(checkListItem.isSublistExpanded()){
+        if (checkListItem.isSublistExpanded()) {
             holder.expandSublist.setVisibility(View.VISIBLE);
             holder.subChecklist.setVisibility(View.GONE);
-        }
-        else if(null != checkListItem.getSubChecklist()){
+        } else if (null != checkListItem.getSubChecklist()) {
             holder.expandSublist.setVisibility(View.GONE);
             holder.subChecklist.setVisibility(View.VISIBLE);
         }
@@ -276,13 +275,17 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         });
         // minimize sublist
         holder.checklistText.setOnLongClickListener(view -> {
-            updateSublistView(checkListItem, true);
-            notifyItemChanged(position);
+            if (checkListItem.getSubChecklist().size() != 0) {
+                updateSublistView(checkListItem, true);
+                notifyItemChanged(position);
+            }
             return true;
         });
         holder.checkItem.setOnLongClickListener(view -> {
-            updateSublistView(checkListItem, true);
-            notifyItemChanged(position);
+            if (checkListItem.getSubChecklist().size() != 0) {
+                updateSublistView(checkListItem, true);
+                notifyItemChanged(position);
+            }
             return true;
         });
 
@@ -357,7 +360,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         notifyDataSetChanged();
     }
 
-    private void updateSublistView(CheckListItem checkListItem, boolean newState){
+    private void updateSublistView(CheckListItem checkListItem, boolean newState) {
         RealmSingleton.getInstance(context).beginTransaction();
         checkListItem.setSublistExpanded(newState);
         RealmSingleton.getInstance(context).commitTransaction();
