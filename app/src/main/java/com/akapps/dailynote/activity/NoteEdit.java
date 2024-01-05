@@ -1054,6 +1054,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteFromOtherApp = noteFromOtherApp.replaceAll("\\[V\\]", "[x]");
             noteFromOtherApp = noteFromOtherApp.replaceAll("○", "[]");
             noteFromOtherApp = noteFromOtherApp.replaceAll("●", "[x]");
+            noteFromOtherApp = noteFromOtherApp.replaceAll("\n", "<br>");
             if (noteFromOtherApp.contains("[ ]") || noteFromOtherApp.contains("[x]")) {
                 isCheckList = true;
                 noteFromOtherApp = noteFromOtherApp.replaceAll("\\[x\\]", "n~~n~~~");
