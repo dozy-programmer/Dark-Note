@@ -1,8 +1,8 @@
 plugins {
     id 'com.android.application'
-    id 'com.google.gms.google-services'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.gms.google-services'
 }
 
 apply plugin: 'realm-android' // Realm DB
@@ -15,7 +15,7 @@ android {
         applicationId "com.akapps.dailynote"
         minSdkVersion 24
         targetSdkVersion 34
-        versionCode 135
+        versionCode 136
         versionName "@string/app_version_int"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
@@ -62,7 +62,7 @@ dependencies {
     implementation "androidx.activity:activity:1.8.2"
 
     // firebase
-    implementation platform('com.google.firebase:firebase-bom:31.2.0')
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
     implementation("com.google.firebase:firebase-auth") {
         exclude module: "play-services-safetynet"
     }

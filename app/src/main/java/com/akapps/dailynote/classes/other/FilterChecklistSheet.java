@@ -22,9 +22,12 @@ import com.google.android.material.card.MaterialCardView;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.realm.Realm;
+
 public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;
+    private int noteId;
 
     // layout
     private MaterialCardView aZ;
@@ -37,13 +40,15 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
     public FilterChecklistSheet() {
     }
 
-    public FilterChecklistSheet(Note currentNote) {
-        this.currentNote = currentNote;
+    public FilterChecklistSheet(int noteId) {
+        this.noteId = noteId;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_checklist_filter, container, false);
+
+        currentNote = RealmHelper.getNote(getContext(), noteId);
 
         MaterialCardView background = view.findViewById(R.id.background);
         aZ = view.findViewById(R.id.a_z);

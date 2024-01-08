@@ -112,7 +112,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         });
 
         exportTextStringFormatted.setOnClickListener(view13 -> {
-            Helper.shareFile(getActivity(), noteText);
+            Helper.shareFile(getActivity(), Helper.removeMarkdownFormatting(noteText));
             dismiss();
         });
 

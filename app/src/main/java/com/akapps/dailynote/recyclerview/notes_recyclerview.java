@@ -230,7 +230,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setVisibility(View.VISIBLE);
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
-            RealmResults<CheckListItem> checklist = Helper.sortChecklist(currentNote, RealmSingleton.getInstance(context));
+            RealmResults<CheckListItem> checklist = Helper.sortChecklist(context, noteId, RealmSingleton.getInstance(context));
             if (!isNoteLocked) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText(checklist.size() + " items");
@@ -426,7 +426,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
-                saveSelected(currentNote, true);
+                saveSelected(noteId, true);
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
@@ -440,7 +440,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
-                saveSelected(currentNote, true);
+                saveSelected(noteId, true);
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
@@ -454,7 +454,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
-                saveSelected(currentNote, true);
+                saveSelected(noteId, true);
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
@@ -469,17 +469,17 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.view.setOnClickListener(v -> {
             enableSelectMultiple = ((notes) noteFragment).enableSelectMultiple;
             if (!enableSelectMultiple) {
-                openNoteActivity(currentNoteUnmanaged);
+                openNoteActivity(noteId);
             } else {
                 if (currentNote.isSelected()) {
-                    saveSelected(currentNote, false);
+                    saveSelected(noteId, false);
                     holder.note_background.setStrokeColor(RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark ?
                             Helper.darkenColor(currentNote.getBackgroundColor(), 0)
                             : currentNote.getBackgroundColor());
                     holder.note_background.setStrokeWidth(10);
                     ((notes) noteFragment).numberSelected(0, 1, -1);
                 } else {
-                    saveSelected(currentNote, true);
+                    saveSelected(noteId, true);
                     holder.note_background.setStrokeColor(activity.getColor(R.color.red));
                     holder.note_background.setStrokeWidth(10);
                     ((notes) noteFragment).numberSelected(1, 0, -1);
@@ -494,7 +494,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (!enableSelectMultiple) {
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
-                saveSelected(currentNote, true);
+                saveSelected(noteId, true);
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
@@ -543,7 +543,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     // Checks to see if note is locked, if it is then user is sent to lock screen activity
     // where they need to enter a pin. If not locked, it opens note
-    private void openNoteActivity(Note currentNote) {
+    private void openNoteActivity(int noteId) {
+        Note currentNote = RealmHelper.getNote(context, noteId);
         if (currentNote.getPinNumber() == 0) {
             Intent note = new Intent(activity, NoteEdit.class);
             note.putExtra("id", currentNote.getNoteId());
@@ -561,10 +562,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     }
 
     // updates select status of note in database
-    private void saveSelected(Note currentNote, boolean status) {
+    private void saveSelected(int noteId, boolean status) {
         // save status to database
         RealmSingleton.get(context).beginTransaction();
-        currentNote.setSelected(status);
+        RealmHelper.getNote(context, noteId).setSelected(status);
         RealmSingleton.get(context).commitTransaction();
     }
 }

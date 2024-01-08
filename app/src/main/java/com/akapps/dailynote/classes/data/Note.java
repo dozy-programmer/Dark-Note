@@ -103,7 +103,7 @@ public class Note extends RealmObject {
     }
 
     public String getNote() {
-        return note==null ? "" : note;
+        return note == null ? "" : note;
     }
 
     public void setNote(String note) {

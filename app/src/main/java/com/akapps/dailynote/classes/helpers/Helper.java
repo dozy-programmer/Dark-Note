@@ -3,6 +3,7 @@ package com.akapps.dailynote.classes.helpers;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -249,7 +250,9 @@ public class Helper {
             return "";
     }
 
-    public static void startAlarm(Activity activity, Note currentNote, Realm realm) {
+    @SuppressLint("ScheduleExactAlarm")
+    public static void startAlarm(Activity activity, int noteId, Realm realm) {
+        Note currentNote = RealmHelper.getNote(activity, noteId);
         if (currentNote.getReminderDateTime().length() > 0) {
             Date reminderDate = null;
             try {
@@ -809,7 +812,7 @@ public class Helper {
             }
         }
 
-        String noteString = currentNote.isCheckList() ? getNoteString(currentNote, realm)
+        String noteString = currentNote.isCheckList() ? getNoteString(activity, noteId, realm)
                 : Helper.removeMarkdownFormatting(currentNote.getNote());
 
         // adds email subject and email body to intent
@@ -834,7 +837,8 @@ public class Helper {
         }
     }
 
-    public static RealmResults<CheckListItem> sortChecklist(Note currentNote, Realm realm) {
+    public static RealmResults<CheckListItem> sortChecklist(Context context, int noteId, Realm realm) {
+        Note currentNote = RealmHelper.getNote(context, noteId);
         int currentSort = currentNote.getSort();
 
         RealmResults<CheckListItem> results = currentNote.getChecklist()
@@ -927,8 +931,9 @@ public class Helper {
         return outputFile;
     }
 
-    public static String getNoteString(Note currentNote, Realm realm) {
-        RealmResults<CheckListItem> results = Helper.sortChecklist(currentNote, realm);
+    public static String getNoteString(Context context, int noteId, Realm realm) {
+        Note currentNote = RealmHelper.getNote(context, noteId);
+        RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, realm);
         StringBuilder formattedString = new StringBuilder();
 
         if (currentNote.isCheckList()) {
@@ -959,10 +964,10 @@ public class Helper {
         for (Note selectedNote : selectedNotes) {
             if (extension.equals(".md"))
                 exportFiles.add(createTempExportFile(activity, selectedNote.isCheckList() ?
-                        getNoteString(selectedNote, realm) : selectedNote.getNote(), extension));
+                        getNoteString(activity, selectedNote.getNoteId(), realm) : selectedNote.getNote(), extension));
             else if (extension.equals(".txt")) {
                 String text = selectedNote.isCheckList() ?
-                        getNoteString(selectedNote, realm) :
+                        getNoteString(activity, selectedNote.getNoteId(), realm) :
                         Helper.removeMarkdownFormatting(selectedNote.getNote());
                 exportFiles.add(createTempExportFile(activity, text, extension));
             }
@@ -973,9 +978,7 @@ public class Helper {
     }
 
     public static String removeMarkdownFormatting(String text) {
-        return Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT).toString()
-                .replaceAll("&nbsp;", " ")
-                .replaceAll("<br>", "\n");
+        return text.replaceAll("&nbsp;", " ").replaceAll("<br>", "\n");
     }
 
     public static void openMapView(Activity activity, Place place) {
@@ -1029,9 +1032,9 @@ public class Helper {
 
     public static void restart(Activity activity, boolean recreate) {
         RealmSingleton.setCloseRealm(false);
-            Intent intent = new Intent(activity, activity.getClass());
-            activity.startActivity(intent);
-            activity.finish();
+        Intent intent = new Intent(activity, activity.getClass());
+        activity.startActivity(intent);
+        activity.finish();
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

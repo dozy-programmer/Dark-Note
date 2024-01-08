@@ -416,8 +416,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         expandMenu.setVisibility(View.VISIBLE);
 
         // current note
-        if (null != getCurrentNote(context, noteId).getChecklist())
+        if (null != getCurrentNote(context, noteId) && null != getCurrentNote(context, noteId).getChecklist()) {
             checkListItems = getCurrentNote(context, noteId).getChecklist().sort("positionInList");
+        }
         populatePhotos();
         oldTitle = getCurrentNote(context, noteId).getTitle();
         oldNote = getCurrentNote(context, noteId).getNote();
@@ -942,7 +943,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void sortChecklist(String word) {
-        RealmResults<CheckListItem> results = Helper.sortChecklist(getCurrentNote(context, noteId), getRealm());
+        RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, getRealm());
         populateChecklist(results, word);
         title.clearFocus();
     }
@@ -1327,7 +1328,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             } else if (item.getTitle().equals("Export")) {
                 ExportNotesSheet exportNotesSheet = new ExportNotesSheet(noteId,
                         true, getCurrentNote(context, noteId).isCheckList() ?
-                        Helper.getNoteString(getCurrentNote(context, noteId), getRealm()) : getCurrentNote(context, noteId).getNote());
+                        Helper.getNoteString(context, noteId, getRealm()) : getCurrentNote(context, noteId).getNote());
                 exportNotesSheet.show(getSupportFragmentManager(), exportNotesSheet.getTag());
             } else if (item.getTitle().equals("Reminder")) {
                 if (!getCurrentNote(context, noteId).getReminderDateTime().isEmpty()) {
@@ -1345,7 +1346,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 dismissDialog = true;
                 openDialog();
             } else if (item.getTitle().equals("Sort")) {
-                FilterChecklistSheet filter = new FilterChecklistSheet(getCurrentNote(context, noteId));
+                FilterChecklistSheet filter = new FilterChecklistSheet(noteId);
                 filter.show(getSupportFragmentManager(), filter.getTag());
             } else if (item.getTitle().equals("Lock")) {
                 LockSheet lockSheet = new LockSheet(false);

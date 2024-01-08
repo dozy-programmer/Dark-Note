@@ -1214,7 +1214,7 @@ public class SettingsScreen extends AppCompatActivity {
         for (int i = 0; i < allNotes.size(); i++) {
             Note currentNote = allNotes.get(i);
             if (null != currentNote.getReminderDateTime() && !currentNote.getReminderDateTime().isEmpty())
-                Helper.startAlarm(this, currentNote, RealmSingleton.get(this));
+                Helper.startAlarm(this, currentNote.getNoteId(), RealmSingleton.get(this));
         }
     }
 
