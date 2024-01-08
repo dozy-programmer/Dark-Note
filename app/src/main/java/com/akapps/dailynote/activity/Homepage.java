@@ -9,7 +9,6 @@ import android.util.Log;
 import androidx.fragment.app.FragmentActivity;
 
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -29,7 +28,6 @@ public class Homepage extends FragmentActivity {
 
         isOpenApp = getIntent().getBooleanExtra("openApp", false);
         AppData.getAppData();
-        AppAnalytics.get(this);
 
         if (AppData.isAppFirstStarted) {
             // initialize database and get data

@@ -113,8 +113,10 @@ public class AppData {
     }
 
     public static void resetWordFoundPositions(){
-        wordFoundPositions.clear();
-        wordIndex = -1;
+        if(wordFoundPositions != null ) {
+            wordFoundPositions.clear();
+            wordIndex = -1;
+        }
     }
 
     public static void addWordFoundPositions(int position){

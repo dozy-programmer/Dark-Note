@@ -8,22 +8,9 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
-import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 
 public class AppWidgetShortcut extends AppWidgetProvider {
-
-    @Override
-    public void onEnabled(Context context) {
-        AppAnalytics.logEvent(context, "1", "Shortcut Widget - (onEnabled)",
-                "Placing widget on home-screen");
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        AppAnalytics.logEvent(context, "1", "Shortcut Widget - (onDisabled)",
-                "Deleting widget from home-screen");
-    }
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {

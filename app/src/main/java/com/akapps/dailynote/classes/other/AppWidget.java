@@ -7,23 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
-import android.util.Log;
 import android.widget.RemoteViews;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
-import com.akapps.dailynote.activity.WidgetConfigureActivity;
 import com.akapps.dailynote.activity.WidgetListView;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.SubCheckListItem;
-import com.akapps.dailynote.classes.helpers.AppAnalytics;
 import com.akapps.dailynote.classes.helpers.AppData;
-import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 
@@ -38,18 +31,6 @@ public class AppWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds)
             updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetId);
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        AppAnalytics.logEvent(context, "1", "Widget - (onEnabled)",
-                "Placing widget on home-screen");
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        AppAnalytics.logEvent(context, "1", "Widget - (onDisabled)",
-                "Deleting widget from home-screen");
     }
 
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId) {

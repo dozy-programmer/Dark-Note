@@ -35,7 +35,8 @@
                     android:layout_height="80dp"
                     android:layout_gravity="center"
                     android:background="@color/orange"
-                    android:src="@drawable/note_icon"></ImageView>
+                    android:src="@drawable/note_icon"
+                    android:tint="@color/black"></ImageView>
 
             </com.google.android.material.card.MaterialCardView>
 

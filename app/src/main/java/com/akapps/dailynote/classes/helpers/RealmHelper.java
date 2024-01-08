@@ -246,7 +246,6 @@ public class RealmHelper {
         realm.beginTransaction();
         realm.insert(user);
         realm.commitTransaction();
-        AppAnalytics.logNewUser(context, uniqueId);
         return getRealm(context).where(User.class).findFirst();
     }
 

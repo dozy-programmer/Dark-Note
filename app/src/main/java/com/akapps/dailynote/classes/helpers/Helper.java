@@ -1027,12 +1027,11 @@ public class Helper {
         return decimalFormat.format(number);
     }
 
-    public static void restart(Activity activity) {
+    public static void restart(Activity activity, boolean recreate) {
         RealmSingleton.setCloseRealm(false);
-        Intent intent = new Intent(activity, activity.getClass());
-        activity.startActivity(intent);
-        activity.finish();
-        if (!AppData.isDisableAnimation)
-            activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            Intent intent = new Intent(activity, activity.getClass());
+            activity.startActivity(intent);
+            activity.finish();
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

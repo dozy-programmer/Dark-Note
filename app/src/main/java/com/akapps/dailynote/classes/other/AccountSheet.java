@@ -152,7 +152,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
                                 currentUser.setProUser(true);
                                 realm.commitTransaction();
                                 dialog.dismiss();
-                                Helper.restart(getActivity());
+                                Helper.restart(getActivity(), false);
                             } else {
                                 mAuth.getCurrentUser().sendEmailVerification()
                                         .addOnCompleteListener(task3 -> {

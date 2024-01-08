@@ -30,6 +30,8 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
@@ -491,7 +493,7 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
                 saveLightThemePreference(context, currentMode);
                 Helper.updateAllWidgetTypes(context);
-                Helper.restart(this);
+                Helper.restart(this, false);
             }
         });
 
@@ -602,7 +604,7 @@ public class SettingsScreen extends AppCompatActivity {
             getUser().setDisableAnimation(isChecked);
             RealmSingleton.get(this).commitTransaction();
             AppData.isDisableAnimation = isChecked;
-            Helper.restart(this);
+            Helper.restart(this, false);
         });
 
         showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -640,7 +642,7 @@ public class SettingsScreen extends AppCompatActivity {
             Helper.showMessage(SettingsScreen.this, "Downgrade Successful", "" +
                     "Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
 
-        Helper.restart(this);
+        Helper.restart(this, false);
     }
 
     private void populateUserSettings() {
@@ -943,7 +945,7 @@ public class SettingsScreen extends AppCompatActivity {
                 Helper.showMessage(this, "Upload error",
                         "Error Uploading data, try again",
                         MotionToast.TOAST_ERROR);
-                Helper.restart(this);
+                Helper.restart(this, false);
             }).addOnSuccessListener(taskSnapshot -> {
                 currentUser.set(getUser());
                 String bytesTransferredFormatted = Helper.getFormattedFileSize(context, taskSnapshot.getBytesTransferred());
@@ -1080,11 +1082,21 @@ public class SettingsScreen extends AppCompatActivity {
     private void restoreBackupBeta(Intent data) {
         if (data != null) {
             Uri uri = data.getData();
-            Cursor returnCursor = context.getContentResolver()
-                    .query(uri, null, null, null, null);
-            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            returnCursor.moveToFirst();
-            String fileName = returnCursor.getString(nameIndex);
+//            Cursor returnCursor = context.getContentResolver()
+//                    .query(uri, null, null, null, null);
+//            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+//            returnCursor.moveToFirst();
+//            String fileName = returnCursor.getString(nameIndex);
+
+            String fileName = null;
+            DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
+            if (documentFile != null) {
+                fileName = documentFile.getName();
+            }
+            else{
+                fileName = "";
+            }
+
 
             if (fileName.contains(".zip")) {
                 RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
@@ -1148,11 +1160,20 @@ public class SettingsScreen extends AppCompatActivity {
     private void restoreBackup(Intent data) {
         if (data != null) {
             Uri uri = data.getData();
-            Cursor returnCursor = context.getContentResolver()
-                    .query(uri, null, null, null, null);
-            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            returnCursor.moveToFirst();
-            String fileName = returnCursor.getString(nameIndex);
+//            Cursor returnCursor = context.getContentResolver()
+//                    .query(uri, null, null, null, null);
+//            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+//            returnCursor.moveToFirst();
+//            String fileName = returnCursor.getString(nameIndex);
+
+            String fileName = null;
+            DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
+            if (documentFile != null) {
+                fileName = documentFile.getName();
+            }
+            else{
+                fileName = "";
+            }
 
             if (fileName.contains(".realm")) {
                 try {
@@ -1366,6 +1387,7 @@ public class SettingsScreen extends AppCompatActivity {
         RealmSingleton.setCloseRealm(false);
         Log.d("Here", "Keep realm open in SettingsScreen");
         finish();
+        overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 
     private void openAppInSettings() {

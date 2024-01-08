@@ -54,6 +54,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -200,12 +201,13 @@ public class notes extends Fragment {
         settingsLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    Log.d("Here", "current theme " + currentTheme);
-                    Log.d("Here", "current theme " + UiHelper.getTheme(context));
                     if (currentTheme != UiHelper.getTheme(context)) {
-                        Log.d("Here", "refreshing");
-                        settingsLauncher.unregister();
-                        refreshFragment(true);
+                        RealmSingleton.setCloseRealm(false);
+                        Log.d("Here", "currentTheme -> " + currentTheme);
+                        Log.d("Here", "currentTheme -> " + UiHelper.getTheme(context));
+                        Helper.showMessage(getActivity(), "Theme Updated", "" +
+                                "Give me a moment to load", MotionToast.TOAST_SUCCESS);
+                        refreshFragment(true, true);
                     } else if (!AppData.isDisableAnimation)
                         getActivity().overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
                 });
@@ -239,14 +241,14 @@ public class notes extends Fragment {
         if (isSearchingNotes) return;
 
         if (getRealm().isClosed())
-            new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true, false), 800);
         else {
             adapterNotes.notifyDataSetChanged();
             try {
                 // if list is empty, then it shows an empty layout
                 isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
             } catch (Exception e) {
-                new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true, false), 800);
             }
 
             if (RealmSingleton.getInstance(context).where(Note.class).findAll().size() == 0)
@@ -940,7 +942,7 @@ public class notes extends Fragment {
 
     public void unSelectAllNotes() {
         if (getRealm().isClosed()) {
-            refreshFragment(true);
+            refreshFragment(true, false);
             return;
         }
         RealmResults<Note> realmResults = getRealm().where(Note.class).equalTo("isSelected", true).findAll();
@@ -971,9 +973,10 @@ public class notes extends Fragment {
         adapterNotes.notifyDataSetChanged();
     }
 
-    private void refreshFragment(boolean refresh) {
+    private void refreshFragment(boolean refresh, boolean recreate) {
         if (refresh) {
-            Helper.restart(getActivity());
+            getActivity().getSupportFragmentManager().beginTransaction().detach(this).commit();
+            Helper.restart(getActivity(), recreate);
         } else {
             getActivity().getSupportFragmentManager().beginTransaction().detach(this).attach(this).commit();
             clearVariables();

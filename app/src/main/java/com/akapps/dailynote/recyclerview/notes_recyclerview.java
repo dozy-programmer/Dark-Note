@@ -138,7 +138,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         try {
             currentNote = allNotes.get(position);
         } catch (Exception e){
-            Helper.restart(activity);
+            Helper.restart(activity, false);
             return;
         }
         int noteId = currentNote.getNoteId();
@@ -536,7 +536,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         try {
             return allNotes.size();
         } catch (Exception e) {
-            Helper.restart(activity);
+            Helper.restart(activity, false);
             return notesSize;
         }
     }
@@ -563,8 +563,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     // updates select status of note in database
     private void saveSelected(Note currentNote, boolean status) {
         // save status to database
-        RealmSingleton.getInstance(context).beginTransaction();
+        RealmSingleton.get(context).beginTransaction();
         currentNote.setSelected(status);
-        RealmSingleton.getInstance(context).commitTransaction();
+        RealmSingleton.get(context).commitTransaction();
     }
 }
