@@ -156,7 +156,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // populates note data into the recyclerview
         holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));
         holder.note_edited.setText(isTwentyFourHourFormat ?
-                Helper.convertToTwentyFourHour(currentNote.getDateEdited()) : currentNote.getDateEdited());
+                Helper.convertToTwentyFourHour(activity, currentNote.getDateEdited()) : currentNote.getDateEdited());
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
         if (Helper.isColorDark(currentNote.getBackgroundColor())) {

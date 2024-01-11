@@ -202,11 +202,6 @@ public class notes extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (currentTheme != UiHelper.getTheme(context)) {
-                        RealmSingleton.setCloseRealm(false);
-                        Log.d("Here", "currentTheme -> " + currentTheme);
-                        Log.d("Here", "currentTheme -> " + UiHelper.getTheme(context));
-                        Helper.showMessage(getActivity(), "Theme Updated", "" +
-                                "Give me a moment to load", MotionToast.TOAST_SUCCESS);
                         refreshFragment(true, true);
                     } else if (!AppData.isDisableAnimation)
                         getActivity().overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);

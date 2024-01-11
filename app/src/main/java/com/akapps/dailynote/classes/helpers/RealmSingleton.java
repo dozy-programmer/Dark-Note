@@ -50,9 +50,11 @@ public class RealmSingleton {
         else if (closeRealm) {
             realmInstance.close();
             realmInstance = null;
-            Log.d("Here", "realm instance closed at " + location);
         }
+        if(closeRealm)
+            Log.d("Here", "realm instance CLOSED at " + location);
 
         setCloseRealm(true);
     }
+
 }

@@ -207,12 +207,6 @@ public class SettingsScreen extends AppCompatActivity {
         super.onResume();
     }
 
-    @Override
-    protected void onDestroy() {
-        RealmSingleton.closeRealmInstance("SettingsScreen onDestroy");
-        super.onDestroy();
-    }
-
     private void initializeLayout() {
         toolbar = findViewById(R.id.toolbar);
         close = findViewById(R.id.close_activity);
@@ -483,11 +477,13 @@ public class SettingsScreen extends AppCompatActivity {
 
         themeToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             User.Mode currentMode = User.Mode.Dark;
+            User.Mode oldTheme = getUser().getScreenMode();
             if (isChecked) {
                 if(checkedId == R.id.gray_mode)
                     currentMode = User.Mode.Gray;
                 else if(checkedId == R.id.light_mode)
                     currentMode = User.Mode.Light;
+                if(oldTheme == currentMode) return;
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 getUser().setScreenMode(currentMode.getValue());
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();

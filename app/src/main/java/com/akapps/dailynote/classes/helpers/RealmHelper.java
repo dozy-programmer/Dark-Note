@@ -211,7 +211,9 @@ public class RealmHelper {
 
     public static User getUser(Context context, String location) {
         User user = getRealm(context).where(User.class).findFirst();
-        if (user == null) return addUser(context);
+        if (user == null) {
+            return addUser(context);
+        }
         return user;
     }
 

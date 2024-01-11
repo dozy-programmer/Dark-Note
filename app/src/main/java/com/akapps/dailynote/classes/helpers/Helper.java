@@ -301,14 +301,16 @@ public class Helper {
         return calendar;
     }
 
-    public static String convertToTwentyFourHour(String input) {
+    public static String convertToTwentyFourHour(Activity activity, String input) {
         // Parse the original string into a Date object
+        String inputBefore = input;
+        input = input.replaceAll(".", "");
         SimpleDateFormat originalFormat = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa");
         Date originalDate = null;
         try {
             originalDate = originalFormat.parse(input);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            return inputBefore;
         }
 
         // Format the Date object into the desired format

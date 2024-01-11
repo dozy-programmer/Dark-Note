@@ -308,8 +308,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setText("Are you sure?");
             info.setGravity(Gravity.CENTER);
         } else if (message == 10) {
-            String budgetChar = ((NoteEdit) getActivity()).user.getBudgetCharacter();
-            String expenseChar = ((NoteEdit) getActivity()).user.getExpenseCharacter();
+            String budgetChar = ((NoteEdit) getActivity()).getUser(getContext()).getBudgetCharacter();
+            String expenseChar = ((NoteEdit) getActivity()).getUser(getContext()).getExpenseCharacter();
             title.setText("Budget $ Guide");
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);

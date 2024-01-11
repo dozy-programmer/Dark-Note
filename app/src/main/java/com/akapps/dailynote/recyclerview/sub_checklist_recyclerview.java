@@ -176,6 +176,6 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         RealmSingleton.getInstance(context).beginTransaction();
         parentSublistListItem.setChecked(checkList.size() == checkedSubCheckListItems.size());
         RealmSingleton.getInstance(context).commitTransaction();
-        ((NoteEdit) activity).checklistAdapter.notifyItemChanged(parentPosition);
+        ((NoteEdit) activity).checklistAdapter.notifyDataSetChanged();
     }
 }
