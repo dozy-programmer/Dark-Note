@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,7 +54,6 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.helpers.AppData;
-import com.akapps.dailynote.classes.helpers.BackupRealmHelper;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -76,7 +74,12 @@ import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
-import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.nguyenhoanglam.imagepicker.helper.Constants;
+import com.nguyenhoanglam.imagepicker.model.CustomColor;
+import com.nguyenhoanglam.imagepicker.model.Image;
+import com.nguyenhoanglam.imagepicker.model.ImagePickerConfig;
+import com.nguyenhoanglam.imagepicker.model.StatusBarContent;
+import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerLauncher;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -1639,19 +1642,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void updateSublistEnabledStatus() {
         boolean isSublistEnabled = getCurrentNote(context, noteId).isEnableSublist();
 
-        if (isSublistEnabled) {
-            getRealm().beginTransaction();
-            getCurrentNote(context, noteId).setEnableSublist(false);
-            getRealm().commitTransaction();
-            Helper.showMessage(this, "Sublist Status", "It has has been " +
-                    "disabled", MotionToast.TOAST_SUCCESS);
-        } else {
-            getRealm().beginTransaction();
-            getCurrentNote(context, noteId).setEnableSublist(true);
-            getRealm().commitTransaction();
-            Helper.showMessage(this, "Sublist Status", "It has been " +
-                    "enabled", MotionToast.TOAST_SUCCESS);
-        }
+        getRealm().beginTransaction();
+        getCurrentNote(context, noteId).setEnableSublist(!isSublistEnabled);
+        getRealm().commitTransaction();
+        Helper.showMessage(this, "Sublist Status", "It has been " +
+                (isSublistEnabled ? "disabled" : "enabled"), MotionToast.TOAST_SUCCESS);
         updateSaveDateEdited();
         checklistAdapter.notifyDataSetChanged();
     }
@@ -1663,37 +1658,36 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         return isTitleChanged || isNoteChanged;
     }
 
-    // makes sure title is not empty
-    private boolean checkInput() {
-        if (title.getText().toString().isEmpty()) {
-            Helper.showMessage(this, "fill in empty fields", "Title is empty", MotionToast.TOAST_ERROR);
-            return false;
-        }
-        return true;
-    }
-
     public void showCameraDialog() {
-        ImagePicker.with(this)
-                .maxResultSize(704, 704)
-                .compress(1024)
-                .saveDir(getExternalFilesDir("/Documents"))
-                .start(0);
+        ImagePickerConfig config = new ImagePickerConfig();
+        config.setShowCamera(true);
+        config.setLimitSize(15);
+        config.setCustomColor(UiHelper.getImagePickerTheme(this));
+        config.setStatusBarContentMode(UiHelper.getLightThemePreference(context) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
+        Intent intent = ImagePickerLauncher.Companion.createIntent(context, config);
+        startActivityForResult(intent, 0);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 0) {
-            Uri uri = data.getData();
-
-            Photo currentPhoto = new Photo(noteId, uri.getPath());
-            getRealm().beginTransaction();
-            getRealm().insert(currentPhoto);
-            getRealm().commitTransaction();
+            ArrayList<Image> images = data.getParcelableArrayListExtra(Constants.EXTRA_IMAGES);
+            if (!images.isEmpty()) {
+                for (Image image : images) {
+                    File newFile = Helper.createFile(this, "image", ".png");
+                    String filePath = Helper.createFile(context, image.getUri(), newFile).getAbsolutePath();
+                    Photo currentPhoto = new Photo(noteId, filePath);
+                    getRealm().beginTransaction();
+                    getRealm().insert(currentPhoto);
+                    getRealm().commitTransaction();
+                }
+            }
+            else
+                return;
             updateSaveDateEdited();
             scrollAdapter.notifyDataSetChanged();
             showPhotos(View.VISIBLE);
-        } else if (resultCode == ImagePicker.RESULT_ERROR) {
         }
     }
 
@@ -1780,7 +1774,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                             } else {
                                 date.setText("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " "));
                             }
-                        } catch (Exception e) { }
+                        } catch (Exception e) {
+                        }
                     }
                 }
             }, 0);

@@ -32,6 +32,7 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
@@ -43,7 +44,6 @@ import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.recyclerview.notes_search_recyclerview;
 import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -53,6 +53,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.nguyenhoanglam.imagepicker.helper.Constants;
+import com.nguyenhoanglam.imagepicker.model.Image;
+import com.nguyenhoanglam.imagepicker.model.ImagePickerConfig;
+import com.nguyenhoanglam.imagepicker.model.StatusBarContent;
+import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerLauncher;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -547,11 +552,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private void showCameraDialog() {
-        ImagePicker.with(this)
-                .maxResultSize(814, 814)
-                .compress(1024)
-                .saveDir(getActivity().getExternalFilesDir("/Documents"))
-                .start(1);
+        ImagePickerConfig config = new ImagePickerConfig();
+        config.setShowCamera(true);
+        config.setSingleSelectMode(true);
+        config.setCustomColor(UiHelper.getImagePickerTheme(getActivity()));
+        config.setStatusBarContentMode(UiHelper.getLightThemePreference(getContext()) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
+        Intent intent = ImagePickerLauncher.Companion.createIntent(getContext(), config);
+        startActivityForResult(intent, 1);
     }
 
     @Override
@@ -559,27 +566,28 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 1) {
             Uri uri = data.getData();
-
-            File file = new File(uri.getPath());
-            String fileName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
-            File newFile = new File(getActivity().getExternalFilesDir("/Documents"), "~" + fileName);
-            file.renameTo(newFile);
+            File createImageFile = null;
+            String filePath = "";
+            ArrayList<Image> images = data.getParcelableArrayListExtra(Constants.EXTRA_IMAGES);
+            if (!images.isEmpty()) {
+                createImageFile = Helper.createFile(getActivity(), "image", ".png");
+                filePath = Helper.createFile(getContext(),  images.get(0).getUri(), createImageFile).getAbsolutePath();
+            }
+            else return;
 
             if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
                 File fdelete = new File(currentItem.getItemImage());
-                if (fdelete.exists())
-                    fdelete.delete();
+                if (fdelete.exists()) fdelete.delete();
             }
 
             getRealm().beginTransaction();
-            currentItem.setItemImage(newFile.getPath());
+            currentItem.setItemImage(filePath);
             getRealm().commitTransaction();
 
             Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
             photo_info.setVisibility(View.VISIBLE);
             dateCreated.setGravity(Gravity.LEFT);
             adapter.notifyItemChanged(position);
-        } else if (resultCode == ImagePicker.RESULT_ERROR) {
         } else if (requestCode == 5) {
             if (resultCode == RESULT_OK) {
                 com.google.android.libraries.places.api.model.Place place = Autocomplete.getPlaceFromIntent(data);
@@ -590,7 +598,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
                 locationLayout.setVisibility(View.VISIBLE);
                 placeLocation.setText(selectedPlace.getPlaceName());
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             }
         }
     }
