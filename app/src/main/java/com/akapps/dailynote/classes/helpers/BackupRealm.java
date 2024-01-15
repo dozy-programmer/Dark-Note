@@ -84,6 +84,7 @@ public class BackupRealm {
     public static Map<String, String> readBackupFile(Context context, Uri backupUri) {
         Map<String, String> gsonStrings = new HashMap<>();
         ArrayList<String> realmModels = BackupRealmHelper.getAllRealmModels();
+        boolean shouldReadLine = false;
 
         if (backupUri != null) {
             try {
@@ -98,14 +99,16 @@ public class BackupRealm {
                     while ((line = reader.readLine()) != null) {
                         if (line.startsWith(BackupRealmHelper.getSection(realmModels.get(realmModelPosition), true))) {
                             Log.d("Here", "Reading " + realmModels.get(realmModelPosition));
+                            shouldReadLine = true;
                             currentGson.setLength(0);
                         } else if (line.startsWith(BackupRealmHelper.getSection(realmModels.get(realmModelPosition), false))) {
                             gsonStrings.put(realmModels.get(realmModelPosition), currentGson.toString());
                             Log.d("Here", "Finished " + realmModels.get(realmModelPosition));
                             realmModelPosition++;
+                            shouldReadLine = false;
                             currentGson.setLength(0);
                         } else {
-                            currentGson.append(line);
+                            if(shouldReadLine) currentGson.append(line);
                         }
                     }
 

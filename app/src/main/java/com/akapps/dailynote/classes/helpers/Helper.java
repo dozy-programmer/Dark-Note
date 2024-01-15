@@ -43,6 +43,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;

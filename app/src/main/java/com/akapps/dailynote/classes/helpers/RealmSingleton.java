@@ -16,6 +16,10 @@ public class RealmSingleton {
         // Private constructor to prevent instantiation
     }
 
+    public static Realm getOnlyRealm(){
+        return realmInstance;
+    }
+
     public static Realm get(Context context){
         return getInstance(context);
     }

@@ -46,7 +46,7 @@ public class BackupRealmHelper {
     }
 
     public static RealmResults getAllClassData(Context context, String className) {
-        return RealmHelper.getRealm(context).where(getClassName(className)).findAllAsync();
+        return RealmHelper.getRealm(context).where(getClassName(className)).findAll();
     }
 
     public static String createSectionHeader(String className, boolean isAtTop) {

@@ -1,5 +1,6 @@
 package com.akapps.dailynote.classes.helpers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 
@@ -14,8 +15,10 @@ import com.akapps.dailynote.classes.data.User;
 import java.io.File;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import www.sanju.motiontoast.MotionToast;
 
 public class RealmHelper {
 
@@ -257,6 +260,30 @@ public class RealmHelper {
         if(getUser(context, "in space") == null) return defaultTextSize;
         int userTextSize = getUser(context, "in space").getTextSize();
         return userTextSize == 0 ? defaultTextSize : userTextSize;
+    }
+
+    public static boolean isRealmInstancesClosed(){
+        if(RealmSingleton.getOnlyRealm() == null)
+            return true;
+        else
+            RealmSingleton.getOnlyRealm().close();
+        return Realm.getLocalInstanceCount(RealmSingleton.getOnlyRealm().getConfiguration()) == 0;
+    }
+
+    public static boolean deleteRealmDatabase(Activity activity){
+        if (!RealmHelper.isRealmInstancesClosed()) {
+            Helper.showMessage(activity, "Restore Error", "" +
+                    "Issue deleting database...try again", MotionToast.TOAST_ERROR);
+            return false;
+        }
+        return deleteDatabase();
+    }
+
+    private static boolean deleteDatabase(){
+        if(RealmSingleton.getOnlyRealm() != null){
+            return Realm.deleteRealm(RealmSingleton.getOnlyRealm().getConfiguration());
+        }
+        return false;
     }
 
     private static User addUser(Context context) {

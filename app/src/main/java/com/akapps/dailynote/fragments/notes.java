@@ -492,9 +492,7 @@ public class notes extends Fragment {
     }
 
     private void openSettings() {
-        int size = getRealm().where(Note.class).findAll().size();
         Intent settings = new Intent(context, SettingsScreen.class);
-        settings.putExtra("size", size);
         settingsLauncher.launch(settings);
         getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
     }

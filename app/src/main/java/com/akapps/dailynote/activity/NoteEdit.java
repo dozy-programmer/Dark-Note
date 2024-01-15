@@ -1763,7 +1763,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         date.setVisibility(View.VISIBLE);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && !RealmHelper.getUser(context, "in space").isDisableLastEditInfo()) {
+        if (!RealmHelper.getUser(context, "in space").isDisableLastEditInfo()) {
             handler.postDelayed(new Runnable() {
                 public void run() {
                     if (!getRealm().isClosed()) {
@@ -1776,12 +1776,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                                     date.setText(Html.fromHtml("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") +
                                             "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                                 }
+                                handler.postDelayed(this, 1000);
                             } else {
-                                date.setText(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") + "\n  ");
+                                date.setText("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " "));
                             }
-                            handler.postDelayed(this, 1000);
-                        } catch (Exception e) {
-                        }
+                        } catch (Exception e) { }
                     }
                 }
             }, 0);

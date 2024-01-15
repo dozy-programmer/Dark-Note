@@ -24,6 +24,7 @@ import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.BackupHelper;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -236,7 +237,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
             if (allBackups.size() <= 100) {
-                ((SettingsScreen) getActivity()).upLoadData();
+                ((SettingsScreen) getActivity()).uploadData();
                 this.dismiss();
             } else {
                 // initialize layout
