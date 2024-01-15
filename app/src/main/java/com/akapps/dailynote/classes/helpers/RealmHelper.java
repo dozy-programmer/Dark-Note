@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
@@ -47,10 +48,10 @@ public class RealmHelper {
             currentNote.setTitle("Delete Me");
             currentNote.setNote("* Note has been deleted, delete this widget *");
             getRealm(context).commitTransaction();
-            Helper.updateWidget(currentNote, context, RealmSingleton.getInstance(context));
+            Helper.updateWidget(currentNote, context, getRealm(context));
         }
         deleteNoteFromDatabase(context, currentNote);
-        new Handler().postDelayed(() -> Helper.updateWidget(currentNote, context, RealmSingleton.getInstance(context)), 3000);
+        new Handler().postDelayed(() -> Helper.updateWidget(currentNote, context, getRealm(context)), 3000);
     }
 
     public static void deleteNoteFromDatabase(Context context, Note currentNote) {
@@ -239,6 +240,23 @@ public class RealmHelper {
                 .equalTo("noteId", id)
                 .findFirst();
         return queryNotes == null ? "" : queryNotes.getTitle();
+    }
+
+    public static Backup getBackup(Context context, String backupFilename){
+        return RealmHelper.getRealm(context).where(Backup.class).equalTo("fileName", backupFilename).findFirst();
+    }
+
+    public static void setUserTextSize(Context context, int newSize){
+        getRealm(context).beginTransaction();
+        getUser(context, "in space").setTextSize(newSize);
+        getRealm(context).commitTransaction();
+    }
+
+    public static int getUserTextSize(Context context) {
+        int defaultTextSize = 20;
+        if(getUser(context, "in space") == null) return defaultTextSize;
+        int userTextSize = getUser(context, "in space").getTextSize();
+        return userTextSize == 0 ? defaultTextSize : userTextSize;
     }
 
     private static User addUser(Context context) {

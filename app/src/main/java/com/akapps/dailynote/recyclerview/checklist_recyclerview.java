@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import www.sanju.motiontoast.MotionToast;
 
 public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyclerview.MyViewHolder> {
 
@@ -206,10 +207,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             AppData.addWordFoundPositions(position);
         }
 
-        String textSize = Helper.getPreference(context, "size");
-        if (textSize == null)
-            textSize = "20";
-        holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
+        holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, RealmHelper.getUserTextSize(context));
 
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
@@ -234,7 +232,15 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // show if checklist item has an image
         if (checkListItem.getItemImage() != null && !checkListItem.getItemImage().isEmpty()) {
             holder.itemImageLayout.setVisibility(View.VISIBLE);
-            Glide.with(context).load(checkListItem.getItemImage()).into(holder.itemImage);
+            File file = new File(checkListItem.getItemImage());
+            if (!file.exists()) {
+                RealmSingleton.get(context).beginTransaction();
+                checkListItem.setItemImage("");
+                RealmSingleton.get(context).commitTransaction();
+                holder.itemImageLayout.setVisibility(View.GONE);
+            }
+            else
+                Glide.with(context).load(checkListItem.getItemImage()).into(holder.itemImage);
         } else
             holder.itemImageLayout.setVisibility(View.GONE);
 

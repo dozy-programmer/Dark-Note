@@ -161,6 +161,8 @@ public class NoteLockScreen extends AppCompatActivity {
                         MotionToast.TOAST_ERROR);
             }
         });
+
+        if (fingerprint) fingerprintDialog();
     }
 
     private void changeLottieAnimationColor(ImageView icon, int newColor) {

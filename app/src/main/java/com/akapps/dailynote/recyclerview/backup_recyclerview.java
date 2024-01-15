@@ -70,6 +70,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         // retrieves current photo object
         Backup currentBackup = allBackups.get(position);
 
+        String actualFilename = currentBackup.getFileName();
         String fileName = currentBackup.getFileName().replace("_backup.zip", "");
 
         String fileSize = "";
@@ -91,7 +92,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
 
         String finalFileSize = fileSize;
         holder.sync.setOnLongClickListener(view -> {
-            ((SettingsScreen) activity).restoreFromDatabase(currentBackup.getFileName(), finalFileSize);
+            ((SettingsScreen) activity).restoreFromDatabase(RealmHelper.getBackup(context, actualFilename).getFileName(), finalFileSize);
             return false;
         });
 

@@ -137,7 +137,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         Note currentNote;
         try {
             currentNote = allNotes.get(position);
-        } catch (Exception e){
+        } catch (Exception e) {
             Helper.restart(activity, false);
             return;
         }
@@ -200,16 +200,16 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if (currentNote.getCategory().equals("none"))
             holder.category_background.setVisibility(View.GONE);
         else {
-            Folder folderColor = RealmSingleton.getInstance(context).where(Folder.class)
+            Folder folder = RealmSingleton.getInstance(context).where(Folder.class)
                     .equalTo("name", currentNote.getCategory())
                     .findFirst();
 
             holder.category_background.setVisibility(View.VISIBLE);
             holder.category.setText(currentNote.getCategory());
-            holder.category.setTextColor(folderColor.getColor() == 0 ?
-                    activity.getColor(R.color.azure) : folderColor.getColor());
-            holder.category_background.setStrokeColor(folderColor.getColor() == 0 ?
-                    activity.getColor(R.color.azure) : folderColor.getColor());
+            holder.category.setTextColor(folder.getColor() == 0 ?
+                    activity.getColor(R.color.azure) : folder.getColor());
+            holder.category_background.setStrokeColor(folder.getColor() == 0 ?
+                    activity.getColor(R.color.azure) : folder.getColor());
         }
 
         // if selecting multiple notes, it changes the color of the note outline

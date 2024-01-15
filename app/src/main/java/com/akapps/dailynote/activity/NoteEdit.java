@@ -55,6 +55,7 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.BackupRealmHelper;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -264,7 +265,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     if (getCurrentNote(context, noteId).isCheckList())
                         showChecklistButtons();
                     else {
-                        // TO DO, see if do not edit note toggle is enabled and then run the following
                         if (getUser().isEnableEditableNoteButton()) {
                             addCheckListItem.setVisibility(View.VISIBLE);
                             addCheckListItem.setImageDrawable(getDrawable(
@@ -419,10 +419,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         oldNote = getCurrentNote(context, noteId).getNote();
         title.setText(getCurrentNote(context, noteId).getTitle());
         note.setHtml(getCurrentNote(context, noteId).getNote());
-        String textSize = Helper.getPreference(context, "size");
-        if (textSize == null)
-            textSize = "20";
-        note.setEditorFontSize(Integer.parseInt(textSize));
+        note.setEditorFontSize(RealmHelper.getUser(context, "checklist_recyclerview").getTextSize());
         note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
         category.setText(getCategoryName());
@@ -442,7 +439,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         } else {
             formatMenu.setVisibility(View.VISIBLE);
 
-            // TO DO, see if do not edit note toggle is enabled and then run the following
             if (getUser().isEnableEditableNoteButton() && !isNewNoteCopy) {
                 note.setInputEnabled(!isEditLockedMode);
                 addCheckListItem.setVisibility(View.VISIBLE);
@@ -514,7 +510,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 photosScrollView.setVisibility(View.GONE);
             }
 
-            // TO DO, see if do not edit note toggle is enabled and then run the following
             if (getUser().isEnableEditableNoteButton() && !isNewNoteCopy) {
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
@@ -636,7 +631,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 if (getCurrentNote(context, noteId).isCheckList())
                     showChecklistButtons();
                 else {
-                    // TO DO, see if do not edit note toggle is enabled and then run the following
                     if (getUser().isEnableEditableNoteButton()) {
                         addCheckListItem.setVisibility(View.VISIBLE);
                         addCheckListItem.setImageDrawable(getDrawable(
@@ -713,7 +707,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             } else {
                 note.setInputEnabled(isEditLockedMode);
                 isEditLockedMode = !isEditLockedMode;
-                // TO DO, see if do not edit note toggle is enabled and then run the following
                 addCheckListItem.setImageDrawable(getDrawable(
                         isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
             }
@@ -836,11 +829,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (isShowingPhotos)
                 photosScrollView.setVisibility(View.GONE);
         } else {
-            String textSize = Helper.getPreference(context, "size");
-            if (textSize == null)
-                textSize = "20";
             note.setVisibility(View.GONE);
-            noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, Integer.parseInt(textSize));
+            noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, RealmHelper.getUserTextSize(context));
             noteSearching.setVisibility(View.VISIBLE);
             noteSearching.setText(Html.fromHtml(note.getHtml(), Html.FROM_HTML_MODE_COMPACT));
         }
@@ -886,7 +876,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (getCurrentNote(context, noteId).isCheckList())
             showChecklistButtons();
         else {
-            // TO DO, see if do not edit note toggle is enabled and then run the following
             if (getUser().isEnableEditableNoteButton()) {
                 addCheckListItem.setVisibility(View.VISIBLE);
                 addCheckListItem.setImageDrawable(getDrawable(
@@ -1010,10 +999,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void changeTextSize(boolean increaseText, boolean isCheckList) {
-        String textSize = Helper.getPreference(context, "size");
-        if (textSize == null)
-            textSize = "20";
-        int textSizeNumber = Integer.parseInt(textSize);
+        int textSizeNumber = RealmHelper.getUserTextSize(context);
         int currentTextSize;
         if (isCheckList) {
             currentTextSize = textSizeNumber;
@@ -1030,7 +1016,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             note.setEditorFontSize(currentTextSize);
         }
 
-        Helper.savePreference(context, String.valueOf(currentTextSize), "size");
+        RealmHelper.setUserTextSize(context, currentTextSize);
 
         if (isCheckList)
             checklistAdapter.notifyDataSetChanged();

@@ -76,7 +76,7 @@ public class User extends RealmObject {
         this.userId = userId;
         ultimateUser = proUser = openFoldersOnStart = showFolderNotes = enableEmptyNote =
                 hideRichTextEditor = enableDeleteIcon = fingerprint = twentyFourHourFormat = false;
-        textSize = backupReminderOccurrence = pinNumber = 0;
+        backupReminderOccurrence = pinNumber = 0;
         layoutSelected = "stag";
         showPreview = showPreviewNoteInfo = increaseFabSize =
                 modeSettings = enableSublists = showAudioButton = hideBudget = true;
@@ -88,6 +88,7 @@ public class User extends RealmObject {
         expenseCharacter = "$";
         enableEditableNoteButton = disableAnimation = showChecklistCheckbox = disableLastEditInfo = false;
         screenMode = 1;
+        textSize = 20;
     }
 
     public int getUserId() {
@@ -384,4 +385,6 @@ public class User extends RealmObject {
     public void setDisableLastEditInfo(boolean disableLastEditInfo) {
         this.disableLastEditInfo = disableLastEditInfo;
     }
+
+
 }

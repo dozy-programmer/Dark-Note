@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.util.Log;
@@ -41,6 +43,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
+import com.akapps.dailynote.classes.helpers.BackupRealm;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmDatabase;
@@ -64,12 +67,17 @@ import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -318,6 +326,11 @@ public class SettingsScreen extends AppCompatActivity {
                     syncLayout.setVisibility(View.VISIBLE);
                     accountInfo.setVisibility(View.VISIBLE);
                     accountInfo.setText(mAuth.getCurrentUser().getEmail());
+                    if(mAuth.getCurrentUser().getEmail() != null && !mAuth.getCurrentUser().getEmail().isEmpty()){
+                        RealmSingleton.get(context).beginTransaction();
+                        RealmHelper.getUser(context, "settings").setEmail(mAuth.getCurrentUser().getEmail());
+                        RealmSingleton.get(context).commitTransaction();
+                    }
                     spaceOne.setVisibility(View.VISIBLE);
                     spaceTwo.setVisibility(View.VISIBLE);
 
@@ -716,11 +729,16 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public boolean isBackupPermissionEnabled(){
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT != Build.VERSION_CODES.TIRAMISU;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Log.d("Here", "Android version >= 10");
+            return true;
+        }
+        Log.d("Here", "Android version == " + Build.VERSION.SDK_INT);
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void openBackUpRestoreDialog() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT != Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         } else
             openBackup();
@@ -771,11 +789,15 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void backUpData() {
         if (all_Notes != 0) {
-            RealmSingleton.get(this).close();
             RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
             realmBackupRestore.update(this, context);
-            File exportedFilePath = realmBackupRestore.backup_Share();
+            // closes realm
+            File exportedFilePath = null;
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+                exportedFilePath = realmBackupRestore.backup_Share();
             shareFile(exportedFilePath);
+            // reopen realm
+            RealmSingleton.getInstance(context);
         } else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
@@ -983,7 +1005,23 @@ public class SettingsScreen extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
-    private void shareFile(File backup) {
+    private void shareFile(File backup){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            shareFileTiramisuPlus();
+        else
+            shareFileNonTiramisu(backup);
+    }
+
+    private void shareFileTiramisuPlus() {
+        Intent emailIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        emailIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_TITLE, "dark_note_backup");
+
+        startActivityForResult(emailIntent, 2);
+    }
+
+    private void shareFileNonTiramisu(File backup) {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("*/*");
 
@@ -1005,17 +1043,33 @@ public class SettingsScreen extends AppCompatActivity {
             else
                 restoreBackup(data);
         }
+        else if(requestCode == 2){
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+                boolean isBackupFileCreated = BackupRealm.create(context, uri);
+                if(isBackupFileCreated){
+                    Helper.showMessage(this, "Backup", "" +
+                            "All your notes have been successfully backup up!", MotionToast.TOAST_SUCCESS);
+                }
+                else {
+                    Helper.showMessage(this, "Backup", "" +
+                            "Error backing up notes, try again...", MotionToast.TOAST_ERROR);
+                }
+            }
+        }
     }
 
     public void restoreFromDatabase(String fileName, String fileSize) {
         progressDialog = Helper.showLoading("Syncing...", progressDialog, context, true);
         String userEmail = mAuth.getCurrentUser().getEmail();
+        Log.d("Here", "filename " + fileName + " , userEmail " + userEmail);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference()
                 .child("users/" + userEmail + "/" + fileName);
 
         File storageDir = new File(context
-                .getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Dark Note");
+                .getFilesDir() + "/Dark Note");
 
         if (!storageDir.exists())
             storageDir.mkdirs();
@@ -1037,7 +1091,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void restoreFromDatabase(Uri uri) {
         RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
-        try {
+//        try {
             // close realm before restoring
             RealmConfiguration configuration = RealmSingleton.get(this).getConfiguration();
             RealmSingleton.get(this).close();
@@ -1068,11 +1122,11 @@ public class SettingsScreen extends AppCompatActivity {
             // delete all zip files
             Helper.deleteZipFile(context);
             close();
-        } catch (Exception e) {
-            Helper.showLoading("", progressDialog, context, false);
-            Helper.showMessage(this, "Error", "" +
-                    "Restoring Error to device, try again", MotionToast.TOAST_ERROR);
-        }
+//        } catch (Exception e) {
+//            Helper.showLoading("", progressDialog, context, false);
+//            Helper.showMessage(this, "Error", "" +
+//                    "Restoring Error to device, try again", MotionToast.TOAST_ERROR);
+//        }
     }
 
     private void restoreBackupBeta(Intent data) {
@@ -1156,11 +1210,64 @@ public class SettingsScreen extends AppCompatActivity {
     private void restoreBackup(Intent data) {
         if (data != null) {
             Uri uri = data.getData();
-//            Cursor returnCursor = context.getContentResolver()
-//                    .query(uri, null, null, null, null);
-//            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-//            returnCursor.moveToFirst();
-//            String fileName = returnCursor.getString(nameIndex);
+
+            String fileName = null;
+            DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
+            if (documentFile != null) {
+                fileName = documentFile.getName();
+            }
+            else {
+                fileName = "";
+            }
+
+            Log.d("Here", "filename -> " + fileName);
+
+            if (fileName.contains(".txt")) {
+                    // delete realm
+                    RealmConfiguration configuration = RealmSingleton.get(this).getConfiguration();
+                    int realmInstances = Realm.getLocalInstanceCount(configuration);
+                    Log.d("Here", "Before: realm instances -> " + realmInstances);
+                    RealmSingleton.get(this).close();
+                    realmInstances = Realm.getLocalInstanceCount(configuration);
+                    Log.d("Here", "After: realm instances -> " + realmInstances);
+                    if(realmInstances != 0) {
+                        Helper.showMessage(this, "Restore Error", "" +
+                                "Issue deleting database...try again", MotionToast.TOAST_ERROR);
+                        return;
+                    }
+                    Realm.deleteRealm(configuration);
+
+                    // backup from text file here
+                    Map<String, String> backupsRetrieved = BackupRealm.readBackupFile(context, uri);
+                    boolean isNotesImported = false;
+                    if(backupsRetrieved != null)
+                        isNotesImported = BackupRealm.convertGsonToRealm(context, backupsRetrieved);
+
+                    if(backupsRetrieved == null || !isNotesImported) {
+                        Helper.showMessage(this, "Restore Error", "" +
+                                "Issue Restoring, file might be empty or file corrupted...", MotionToast.TOAST_ERROR);
+                    } else {
+                        Helper.showMessage(this, "Restored", "" +
+                                "Notes have been restored", MotionToast.TOAST_SUCCESS);
+                    }
+//
+//                    Realm realm = RealmSingleton.getInstance(context);
+//                    updateAlarms(realm.where(Note.class)
+//                            .equalTo("archived", false)
+//                            .equalTo("trash", false).findAll());
+//
+//                    Helper.showLoading("", progressDialog, context, false);
+//
+//                    close();
+            } else
+                Helper.showMessage(this, "Error\uD83D\uDE14", "" +
+                        "Filename needs to end in '.realm'. Try again!", MotionToast.TOAST_ERROR);
+        }
+    }
+
+    private void restoreRealmBackup(Intent data) {
+        if (data != null) {
+            Uri uri = data.getData();
 
             String fileName = null;
             DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
@@ -1173,23 +1280,24 @@ public class SettingsScreen extends AppCompatActivity {
 
             if (fileName.contains(".realm")) {
                 try {
-                    RealmConfiguration configuration = RealmSingleton.get(this).getConfiguration();
-                    RealmSingleton.get(this).close();
-                    Realm.deleteRealm(configuration);
+                // delete realm
+                RealmConfiguration configuration = RealmSingleton.get(this).getConfiguration();
+                RealmSingleton.get(this).close();
+                Realm.deleteRealm(configuration);
 
                     RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
                     realmBackupRestore.restore(uri, "default.realm", false);
-                    Helper.showMessage(this, "Restored", "" +
-                            "Notes have been restored", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(this, "Restored", "" +
+                        "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
-                    Realm realm = RealmSingleton.getInstance(context);
-                    updateAlarms(realm.where(Note.class)
-                            .equalTo("archived", false)
-                            .equalTo("trash", false).findAll());
+                Realm realm = RealmSingleton.getInstance(context);
+                updateAlarms(realm.where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false).findAll());
 
-                    Helper.showLoading("", progressDialog, context, false);
+                Helper.showLoading("", progressDialog, context, false);
 
-                    close();
+                close();
                 } catch (Exception e) {
                     if (tryAgain) {
                         Helper.showMessage(this, "Error", "Clear storage via App Settings", MotionToast.TOAST_ERROR);

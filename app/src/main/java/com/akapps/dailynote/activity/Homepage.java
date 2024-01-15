@@ -26,7 +26,6 @@ public class Homepage extends FragmentActivity {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage_screen);
-        Log.d("Here", "in home screen");
 
         isOpenApp = getIntent().getBooleanExtra("openApp", false);
         AppData.getAppData();
@@ -71,7 +70,7 @@ public class Homepage extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        if(notes != null && notes.isVisible()) getSupportFragmentManager().beginTransaction().detach(notes).commit();
+        if(notes != null && notes.isVisible() && !notes.isStateSaved()) getSupportFragmentManager().beginTransaction().detach(notes).commit();
         super.onDestroy();
     }
 }

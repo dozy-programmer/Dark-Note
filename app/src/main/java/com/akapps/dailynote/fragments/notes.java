@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,6 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -494,7 +492,6 @@ public class notes extends Fragment {
     }
 
     private void openSettings() {
-        savePreferences();
         int size = getRealm().where(Note.class).findAll().size();
         Intent settings = new Intent(context, SettingsScreen.class);
         settings.putExtra("size", size);
@@ -1006,24 +1003,5 @@ public class notes extends Fragment {
         Helper.isListEmpty(context, size, empty_Layout, title, subtitle, subSubTitle,
                 isResult, false, false, view.findViewById(R.id.empty_view),
                 view.findViewById(R.id.empty_view_no_animation));
-    }
-
-    private void savePreferences() {
-        // text size saved by getUser()
-        int savedSize = getUser().getTextSize();
-        // text size set by getUser()
-        String textSize = Helper.getPreference(context, "size");
-        int currentSize = Integer.parseInt(textSize == null ? "0" : textSize);
-
-        // if device was backed up, then restore text size
-        if (savedSize > 0 && currentSize == 0) {
-            Helper.savePreference(context, String.valueOf(savedSize), "size");
-        }
-        // if text size save
-        else if (savedSize != currentSize) {
-            getRealm().beginTransaction();
-            getUser().setTextSize(currentSize);
-            getRealm().commitTransaction();
-        }
     }
 }

@@ -86,10 +86,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
 
         // populates note into the recyclerview
         holder.checklistText.setText(checkListText);
-        String textSize = Helper.getPreference(context, "size");
-        if (textSize == null)
-            textSize = "20";
-        holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Integer.parseInt(textSize));
+        holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, RealmHelper.getUserTextSize(context));
 
         if(!searchingForWord.isEmpty() && checkListText.toLowerCase().contains(searchingForWord.toLowerCase())){
             String regex = "(" + searchingForWord + ")";
