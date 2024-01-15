@@ -36,6 +36,7 @@ import com.akapps.dailynote.classes.helpers.BackupHelper;
 import com.akapps.dailynote.classes.helpers.BackupRealm;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
+import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -56,6 +57,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
 
 public class SettingsScreen extends AppCompatActivity {
@@ -82,7 +84,7 @@ public class SettingsScreen extends AppCompatActivity {
     private LinearLayout backup;
     private LinearLayout restoreBackup;
     private LinearLayout backupBeta;
-    private LinearLayout restoreBackupBeta;
+    private LinearLayout restoreBackupWithFiles;
     private LinearLayout appSettings;
     private LinearLayout syncLayout;
     private TextView titleLines;
@@ -142,7 +144,7 @@ public class SettingsScreen extends AppCompatActivity {
     private boolean backUpWithFiles = false;
     private boolean restoreWithFiles = false;
 
-    private  BackupHelper backupHelper;
+    private BackupHelper backupHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,7 +223,7 @@ public class SettingsScreen extends AppCompatActivity {
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
         backupBeta = findViewById(R.id.backup_beta);
-        restoreBackupBeta = findViewById(R.id.restore_beta_backup);
+        restoreBackupWithFiles = findViewById(R.id.restore_beta_backup);
         syncLayout = findViewById(R.id.logged_in_layout);
         signUp = findViewById(R.id.sign_up);
         logIn = findViewById(R.id.log_in);
@@ -356,7 +358,7 @@ public class SettingsScreen extends AppCompatActivity {
             openFile();
         });
 
-        restoreBackupBeta.setOnClickListener(view -> {
+        restoreBackupWithFiles.setOnClickListener(view -> {
             restoreWithFiles = true;
             openFile();
         });
@@ -737,8 +739,7 @@ public class SettingsScreen extends AppCompatActivity {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                 exportedFilePath = realmBackupRestore.backup_Share();
                 backupHelper.shareFile(exportedFilePath, false);
-            }
-            else
+            } else
                 backupHelper.shareFile(null, false);
             // reopen realm
             RealmSingleton.getInstance(context);
@@ -749,9 +750,11 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void backUpDataAndImages() {
         if (allNotesSize != 0) {
-            backupHelper.shareFile(new File(backupHelper.backUpZip()), true);
-        }
-        else
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                backupHelper.shareFile(null, true);
+            else
+                backupHelper.shareFile(new File(backupHelper.backUpZip()), true);
+        } else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
     }
@@ -764,8 +767,11 @@ public class SettingsScreen extends AppCompatActivity {
     private void openFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        startActivityForResult(intent, 1);
+        intent.setType("application/zip");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            startActivityForResult(intent, 4);
+        else
+            startActivityForResult(intent, 1);
     }
 
     @Override
@@ -793,8 +799,28 @@ public class SettingsScreen extends AppCompatActivity {
             Uri uri = null;
             if (data != null) {
                 uri = data.getData();
-                Helper.showMessage(this, "Backup", "" +
-                        "This is what you wanted to see!", MotionToast.TOAST_SUCCESS);
+                ArrayList<String> getAllAppFiles = backupHelper.getAllAppFiles();
+                boolean isSuccessful = BackupRealm.zipAppFiles(context, getAllAppFiles, uri);
+                if(isSuccessful) {
+                    Helper.showMessage(this, "Backup", "" +
+                            "All your notes and associated files successfully backed up!", MotionToast.TOAST_SUCCESS);
+                }
+                else{
+                    Helper.showMessage(this, "Backup", "" +
+                            "Error backing up notes, try again...", MotionToast.TOAST_ERROR);
+                }
+            }
+        }
+        else if(requestCode == 4){
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+                boolean isSuccessful = BackupRealm.unzipAppFiles(context, uri);
+                if(isSuccessful){
+                    backupHelper.restoreTextBackupWithFiles();
+                    Helper.showMessage(this, "Backup", "" +
+                            "All your notes and associated files successfully backed up!", MotionToast.TOAST_SUCCESS);
+                }
             }
         }
     }

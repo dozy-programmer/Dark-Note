@@ -47,10 +47,26 @@ public class BackupHelper {
     // account authentication
     private final FirebaseAuth mAuth;
 
+    private String backupPath;
+
     public BackupHelper(Activity activity, Context context, FirebaseAuth mAuth) {
         this.activity = activity;
         this.context = context;
         this.mAuth = mAuth;
+    }
+
+    public File createTextBackupFile() {
+        Context context = activity.getApplicationContext();
+        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "");
+        if (!storageDir.exists()) storageDir.mkdirs();
+        File exportTextFile = new File(storageDir, "realm_backup.txt");
+
+        // if backup file already exists, delete it
+        if(exportTextFile.exists()) exportTextFile.delete();
+        Uri uri =  Uri.fromFile(new File(exportTextFile.getAbsolutePath()));
+        BackupRealm.create(context, uri);
+
+        return exportTextFile;
     }
 
     // creates a zip folder
@@ -64,6 +80,10 @@ public class BackupHelper {
     }
 
     public String backUpZip() {
+        return zipAppFiles(getAllAppFiles());
+    }
+
+    public ArrayList<String> getAllAppFiles(){
         RealmResults<Note> checklistPhotos = RealmSingleton.get(activity).where(Note.class).findAll();
         ArrayList<String> allFiles = new ArrayList<>();
         ArrayList<String> allPhotos = getAllFilePaths(RealmSingleton.get(activity).where(Photo.class)
@@ -72,16 +92,22 @@ public class BackupHelper {
         ArrayList<String> allRecordings = getAllRecordingsPaths(RealmSingleton.get(activity).where(CheckListItem.class).not()
                 .isNull("audioPath").or().equalTo("audioPath", "").findAll());
         RealmSingleton.get(activity).close();
-        RealmBackupRestore realmBackupRestore = new RealmBackupRestore(activity);
-        realmBackupRestore.update(activity, context);
-        File exportedFilePath = realmBackupRestore.backup_Share();
+
+        File exportedFilePath;
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            RealmBackupRestore realmBackupRestore = new RealmBackupRestore(activity);
+            realmBackupRestore.update(activity, context);
+            exportedFilePath = realmBackupRestore.backup_Share();
+        }
+        else
+            exportedFilePath = createTextBackupFile();
         // add all photos paths
         allFiles.addAll(allPhotos);
         // add realm path (this contains all the note data)
         allFiles.add(exportedFilePath.getAbsolutePath());
         // add all recording paths
         allFiles.addAll(allRecordings);
-        return zipPhotos(allFiles);
+        return allFiles;
     }
 
     private ArrayList<String> getAllFilePaths(RealmResults<Photo> allNotePhotos, RealmResults<Note> allNotes) {
@@ -112,7 +138,7 @@ public class BackupHelper {
     }
 
     // places all the photos in a zip file and returns a string of the file path
-    private String zipPhotos(ArrayList<String> files) {
+    private String zipAppFiles(ArrayList<String> files) {
         String zipPath = createZipFolder() + ".zip";
         File zipFile = new File(zipPath);
 
@@ -275,15 +301,15 @@ public class BackupHelper {
 
             Helper.showLoading("", progressDialog, context, false);
 
-            ArrayList<String> images = realmBackupRestore.getImagesPath();
-            ArrayList<String> recordings = realmBackupRestore.getRecordingsPath();
-            realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
+            ArrayList<String> images = getImagesPath();
+            ArrayList<String> recordings = getRecordingsPath();
+            realmBackupRestore.copyBundledRealmFile(getBackupPath(), "default.realm");
 
             Helper.showMessage(activity, "Restored", "" + "Notes have been restored",
                     MotionToast.TOAST_SUCCESS);
 
             // update image paths from restored database so it knows where the images are
-            Realm realm = RealmDatabase.setUpDatabase(context);
+            Realm realm = RealmSingleton.getInstance(context);
             updateAlarms(activity, realm.where(Note.class)
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
@@ -320,9 +346,9 @@ public class BackupHelper {
                     // make a copy of the backup zip file selected by user and unzip it
                     realmBackupRestore.restore(uri, "backup.zip", true);
 
-                    ArrayList<String> images = realmBackupRestore.getImagesPath();
-                    ArrayList<String> recordings = realmBackupRestore.getRecordingsPath();
-                    realmBackupRestore.copyBundledRealmFile(realmBackupRestore.getBackupPath(), "default.realm");
+                    ArrayList<String> images = getImagesPath();
+                    ArrayList<String> recordings = getRecordingsPath();
+                    realmBackupRestore.copyBundledRealmFile(getBackupPath(), "default.realm");
 
                     // update image paths from restored database so it knows where the images are
                     Realm realm = RealmSingleton.getInstance(context);
@@ -368,22 +394,7 @@ public class BackupHelper {
 
     public void restoreTextBackup(Uri uri) {
         try {
-            // delete realm
-            if(!RealmHelper.deleteRealmDatabase(activity)) return;
-
-            // backup from text file here
-            Map<String, String> backupsRetrieved = BackupRealm.readBackupFile(context, uri);
-            boolean isNotesImported = false;
-            if (backupsRetrieved != null)
-                isNotesImported = BackupRealm.convertGsonToRealm(context, backupsRetrieved);
-
-            if (backupsRetrieved == null || !isNotesImported) {
-                Helper.showMessage(activity, "Restore Error", "" +
-                        "Issue Restoring, file might be empty/corrupted/not supported...", MotionToast.TOAST_ERROR);
-            } else {
-                Helper.showMessage(activity, "Restored", "" +
-                        "Notes have been restored", MotionToast.TOAST_SUCCESS);
-            }
+            if(!restoreTextBackupOnly(uri)) return;
 
             Realm realm = RealmSingleton.getInstance(context);
             updateAlarms(activity, realm.where(Note.class)
@@ -394,6 +405,27 @@ public class BackupHelper {
         } catch (Exception e) {
             Helper.showMessage(activity, "Restore Error", "" +
                     "Issue Restoring, try again...", MotionToast.TOAST_ERROR);
+        }
+    }
+
+    public boolean restoreTextBackupOnly(Uri uri){
+        // delete realm
+        if(!RealmHelper.deleteRealmDatabase(activity)) return false;
+
+        // backup from text file here
+        Map<String, String> backupsRetrieved = BackupRealm.readBackupFile(context, uri);
+        boolean isNotesImported = false;
+        if (backupsRetrieved != null)
+            isNotesImported = BackupRealm.convertGsonToRealm(context, backupsRetrieved);
+
+        if (backupsRetrieved == null || !isNotesImported) {
+            Helper.showMessage(activity, "Restore Error", "" +
+                    "Issue Restoring, file might be empty/corrupted/not supported...", MotionToast.TOAST_ERROR);
+            return false;
+        } else {
+            Helper.showMessage(activity, "Restored", "" +
+                    "Notes have been restored", MotionToast.TOAST_SUCCESS);
+            return true;
         }
     }
 
@@ -417,6 +449,63 @@ public class BackupHelper {
             Helper.showMessage(activity, "Restore Error", "" +
                     "Issue Restoring, try again...", MotionToast.TOAST_ERROR);
         }
+    }
+
+    public void restoreTextBackupWithFiles(){
+        // delete realm
+        if(!RealmHelper.deleteRealmDatabase(activity)) return;
+
+        ArrayList<String> images = getImagesPath();
+        ArrayList<String> recordings = getRecordingsPath();
+
+        // update image paths from restored database so it knows where the images are
+        Realm realm = RealmSingleton.getInstance(context);
+        updateAlarms(activity, realm.where(Note.class)
+                .equalTo("archived", false)
+                .equalTo("trash", false).findAll());
+        updateImages(context, images);
+        updateRecordings(context, recordings);
+        resetWidgets(context);
+
+        // delete all zip files
+        Helper.deleteZipFile(context);
+        ((SettingsScreen) activity).close();
+    }
+
+    public ArrayList<String> getRecordingsPath(){
+        return findRecordingPaths();
+    }
+
+    private ArrayList<String> findRecordingPaths(){
+        ArrayList<String> recordings = new ArrayList<>();
+        String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if(files[i].getName().contains(".mp4"))
+                recordings.add(files[i].getPath());
+        }
+        return recordings;
+    }
+
+    public ArrayList<String> getImagesPath(){
+        return findImageAndBackupPaths();
+    }
+
+    private ArrayList<String> findImageAndBackupPaths(){
+        ArrayList<String> images = new ArrayList<>();
+        String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if(files[i].getName().contains(".png"))
+                images.add(files[i].getPath());
+            else if(files[i].getName().contains(".realm"))
+                backupPath = files[i].getPath();
+            else if(files[i].getName().contains(".txt"))
+                restoreTextBackupOnly(Uri.fromFile(new File(files[i].getAbsolutePath())));
+        }
+        return images;
     }
 
     private void updateAlarms(Activity activity, RealmResults<Note> allNotes) {
@@ -523,6 +612,10 @@ public class BackupHelper {
             fileName = "";
         }
         return fileName;
+    }
+
+    private String getBackupPath(){
+        return backupPath;
     }
 
 }
