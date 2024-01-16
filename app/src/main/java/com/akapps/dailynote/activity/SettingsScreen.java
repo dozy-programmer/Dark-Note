@@ -769,7 +769,7 @@ public class SettingsScreen extends AppCompatActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/zip");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            intent.setType(restoreWithFiles ? "application/zip" : "text/plain");
+            intent.setType(restoreWithFiles ? "application/zip" : "*/*");
             startActivityForResult(intent, 4);
         }
         else {

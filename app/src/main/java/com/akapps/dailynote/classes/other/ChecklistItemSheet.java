@@ -442,6 +442,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyItemChanged(position);
+        ((NoteEdit) getActivity()).checklistAdapter.notifyDataSetChanged();
     }
 
     // updates select status of note in database

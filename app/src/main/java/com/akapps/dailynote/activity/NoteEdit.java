@@ -1132,7 +1132,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
                 .format(Calendar.getInstance().getTime()), place, redirectId);
         getCurrentNote(context, noteId).getChecklist().add(currentItem);
-        getRealm().where(CheckListItem.class).equalTo("id", noteId).findAll().setLong("lastCheckedDate", lastCheckedDate);
+        if(getCurrentNote(context, noteId).getSort() == 8)
+            getRealm().where(CheckListItem.class).equalTo("id", noteId).findAll().setLong("lastCheckedDate", lastCheckedDate);
         getCurrentNote(context, noteId).setChecked(false);
         getRealm().commitTransaction();
         updateSaveDateEdited();
@@ -1776,10 +1777,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                                     date.setText(Html.fromHtml("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") +
                                             "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                                 }
-                                handler.postDelayed(this, 1000);
                             } else {
-                                date.setText("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " "));
+                                date.setText("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") + "\n");
                             }
+                            handler.postDelayed(this, 1000);
                         } catch (Exception e) {
                         }
                     }
