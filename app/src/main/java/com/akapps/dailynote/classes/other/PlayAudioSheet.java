@@ -139,7 +139,7 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment {
                 dismiss();
             } else if (position == 1) {
                 // send audio
-                Helper.shareFile(getContext(), "audio", item.getAudioPath(), item.getText());
+                Helper.shareFile(getContext(), "audio", "mp3", item.getAudioPath(), item.getText());
             }
             audioMenu.dismiss();
         }

@@ -67,7 +67,6 @@ public class BackupRealm {
             ParcelFileDescriptor document = context.getContentResolver().openFileDescriptor(uri, "w");
             FileOutputStream fileOutputStream = new FileOutputStream(document.getFileDescriptor());
             StringBuilder line = new StringBuilder();
-            Log.d("Here", "realm models -> " + BackupRealmHelper.getAllRealmModels());
             for (String dataClass : BackupRealmHelper.getAllRealmModels()) {
                 String data = convertRealmToJson(context, BackupRealmHelper.getAllClassData(context, dataClass));
                 if (data.isEmpty()) continue;

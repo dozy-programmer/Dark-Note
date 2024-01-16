@@ -1,7 +1,6 @@
 package com.akapps.dailynote.classes.other;
 
 import android.Manifest;
-import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -24,7 +23,6 @@ import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.BackupHelper;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -364,14 +362,14 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 feature = "Reminders";
             else if(permission.equals(Manifest.permission.RECORD_AUDIO))
                 feature = "Audio";
-            else if(permission.equals(Manifest.permission.CAMERA))
+            else if(permission.equals(Manifest.permission.READ_MEDIA_IMAGES))
                 feature = "Photos";
             info.setText("This permission needs to be enabled so that you can use the " + feature + " feature. " +
+                    (feature.equals("Photos") ? "\n\nPlease Select [ALLOW ALL] for best image picking experience" : "") +
                     "\n\nDark Note will only ever ask for you to allow a permission when it is required by the system " +
                     "in order for a feature to work.");
             info.setGravity(Gravity.CENTER);
             backup.setVisibility(View.VISIBLE);
-            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
             backup.setText("PROCEED");
         }
 
@@ -440,8 +438,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 else if(permission.equals(Manifest.permission.RECORD_AUDIO)){
                     ((NoteEdit) getActivity()).checkMicrophonePermission();
                 }
-                else if(permission.equals(Manifest.permission.CAMERA)){
-                    ((NoteEdit) getActivity()).showCameraDialog();
+                else if(permission.equals(Manifest.permission.READ_MEDIA_IMAGES)){
+                    ((NoteEdit) getActivity()).showImageSelectionDialog();
                 }
             }
 

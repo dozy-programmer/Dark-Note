@@ -53,7 +53,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
         String randomString = UUID.randomUUID().toString();
         recordToFilePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) +
                 "/recording_" + randomString.substring(0, randomString.length() / 3)
-                .replaceAll("-", "_") + ".mp4";
+                .replaceAll("-", "_") + ".mp3";
 
         audioManager = new AudioManager(recordToFilePath);
 

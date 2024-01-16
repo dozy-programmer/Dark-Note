@@ -13,6 +13,7 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -294,6 +295,22 @@ public class RealmHelper {
         realm.insert(user);
         realm.commitTransaction();
         return getRealm(context).where(User.class).findFirst();
+    }
+
+    public static ArrayList<String> getAllImagePaths(Context context){
+        RealmResults<Photo> allNotePhotos = getRealm(context).where(Photo.class).findAll();
+        ArrayList<String> allPhotoPaths = new ArrayList<>();
+        for(Photo image: allNotePhotos) allPhotoPaths.add(image.getPhotoLocation());
+        return allPhotoPaths;
+    }
+
+    public static ArrayList<String> getAllAudioPaths(Context context){
+        RealmResults<CheckListItem> allChecklistItemsAudioPaths = getRealm(context).where(CheckListItem.class)
+                .isNotNull("audioPath")
+                .isNotEmpty("audioPath").findAll();
+        ArrayList<String> allAudioPaths = new ArrayList<>();
+        for(CheckListItem checkListItem: allChecklistItemsAudioPaths) allAudioPaths.add(checkListItem.getAudioPath());
+        return allAudioPaths;
     }
 
 }

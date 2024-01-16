@@ -22,11 +22,13 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.Html;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -63,6 +65,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -715,12 +719,11 @@ public class Helper {
         return new File(file);
     }
 
-    public static void shareFile(Context context, String fileType, String filePath, String bodyText) {
+    public static void shareFile(Context context, String fileType, String fileExtension, String filePath, String bodyText) {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType(fileType + "/*");
+        emailIntent.setType(fileType + "/" + fileExtension);
         Uri uri = null;
 
-        // only attaches to email if there are project photos
         File file = new File(filePath);
         if (file.exists()) {
             uri = FileProvider.getUriForFile(
@@ -734,7 +737,7 @@ public class Helper {
         // adds email subject and email body to intent
         emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
 
-        context.startActivity(Intent.createChooser(emailIntent, "Share Photo"));
+        context.startActivity(Intent.createChooser(emailIntent, fileExtension.equals("mp3") ? "Share Audio" : "Share Photo"));
     }
 
     public static void shareFile(Activity activity, String text) {
@@ -828,15 +831,38 @@ public class Helper {
         activity.startActivity(Intent.createChooser(emailIntent, "Share Note"));
     }
 
-    public static void deleteUnneededFiles(Activity activity) {
+    public static void deleteFloatingFiles(Activity activity) {
         String path = activity.getApplicationContext().getExternalFilesDir("") + "";
-        File directory = new File(path);
-        File[] files = directory.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().contains(".zip")) {
-                FilesKt.deleteRecursively(files[i]);
-                break;
+        ArrayList<String> allImagePaths = RealmHelper.getAllImagePaths(activity);
+        ArrayList<String> allAudioPaths = RealmHelper.getAllAudioPaths(activity);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Files.walk(Paths.get(path))
+                        .filter(Files::isRegularFile)  // Ensure only regular files are processed
+                        .forEach(file -> {
+                            try {
+                                String filename = file.getFileName().toString();
+                                if (filename.contains(".zip")) {
+                                    Files.delete(file);
+                                }
+                                else if(filename.contains(".txt") || filename.contains(".realm")){
+                                    Files.delete(file);
+                                }
+                                else if (filename.contains(".png")){
+                                    boolean isFileInUse = allImagePaths.stream().anyMatch(element -> element.toLowerCase().contains(filename.replace(".png", "").toLowerCase()));
+                                    if(!isFileInUse) Files.delete(file);
+                                }
+                                else if (filename.contains(".mp4") || filename.contains(".mp3")){
+                                    boolean isFileInUse = allAudioPaths.stream().anyMatch(element -> element.toLowerCase().contains(filename.replace(".mp4", "").replace(".mp3", "").toLowerCase()));
+                                    if(!isFileInUse) Files.delete(file);
+                                }
+                            } catch (Exception e) {
+                                Log.e("Error", "Failed to process file: " + file, e);
+                            }
+                        });
             }
+        } catch (Exception e) {
+            Log.e("Error", "Failed to walk directory: " + path, e);
         }
     }
 

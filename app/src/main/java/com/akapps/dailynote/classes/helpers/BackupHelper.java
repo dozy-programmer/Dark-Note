@@ -482,7 +482,7 @@ public class BackupHelper {
         File directory = new File(path);
         File[] files = directory.listFiles();
         for (int i = 0; i < files.length; i++) {
-            if(files[i].getName().contains(".mp4"))
+            if(files[i].getName().contains(".mp4") || files[i].getName().contains(".mp3"))
                 recordings.add(files[i].getPath());
         }
         return recordings;

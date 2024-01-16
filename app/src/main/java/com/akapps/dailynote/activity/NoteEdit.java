@@ -75,7 +75,7 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
 import com.nguyenhoanglam.imagepicker.helper.Constants;
-import com.nguyenhoanglam.imagepicker.model.CustomColor;
+import com.nguyenhoanglam.imagepicker.model.CustomMessage;
 import com.nguyenhoanglam.imagepicker.model.Image;
 import com.nguyenhoanglam.imagepicker.model.ImagePickerConfig;
 import com.nguyenhoanglam.imagepicker.model.StatusBarContent;
@@ -702,11 +702,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (getCurrentNote(context, noteId).isCheckList() && !isShowingPhotos)
                 openNewItemDialog();
             else if (isShowingPhotos) {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
-                    InfoSheet permissionInfo = new InfoSheet("Camera Permission Required", Manifest.permission.CAMERA);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED) {
+                    InfoSheet permissionInfo = new InfoSheet("Images Permission Required", Manifest.permission.READ_MEDIA_IMAGES);
                     permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
                 } else
-                    showCameraDialog();
+                    showImageSelectionDialog();
             } else {
                 note.setInputEnabled(isEditLockedMode);
                 isEditLockedMode = !isEditLockedMode;
@@ -1658,11 +1658,17 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         return isTitleChanged || isNoteChanged;
     }
 
-    public void showCameraDialog() {
+    public void showImageSelectionDialog() {
         ImagePickerConfig config = new ImagePickerConfig();
         config.setShowCamera(true);
-        config.setLimitSize(15);
+        config.setLimitSize(20);
         config.setCustomColor(UiHelper.getImagePickerTheme(this));
+        CustomMessage customMessage = new CustomMessage();
+        customMessage.setReachLimitSize("You can only select up to 20 images.");
+        customMessage.setNoImage("No image found.");
+        customMessage.setNoPhotoAccessPermission("Please allow permission to access photos and media.");
+        customMessage.setNoCamera("Please allow permission to access camera.");
+        config.setCustomMessage(customMessage);
         config.setStatusBarContentMode(UiHelper.getLightThemePreference(context) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
         Intent intent = ImagePickerLauncher.Companion.createIntent(context, config);
         startActivityForResult(intent, 0);

@@ -12,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.storage.StorageManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -160,8 +161,7 @@ public class SettingsScreen extends AppCompatActivity {
 
         populateUserSettings();
 
-        if (backingUp)
-            showBackupRestoreInfo(6);
+        if (backingUp) showBackupRestoreInfo(6);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override

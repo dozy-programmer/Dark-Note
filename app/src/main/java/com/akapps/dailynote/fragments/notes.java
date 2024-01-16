@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.storage.StorageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,7 +167,6 @@ public class notes extends Fragment {
                 }
 
                 Helper.deleteCache(context);
-                Helper.deleteUnneededFiles(getActivity());
             }
         };
         thread.start();
@@ -181,6 +181,8 @@ public class notes extends Fragment {
         if (getUser().isShowFolderNotes())
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
+
+        Helper.deleteFloatingFiles(getActivity());
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
