@@ -768,10 +768,14 @@ public class SettingsScreen extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/zip");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            intent.setType(restoreWithFiles ? "application/zip" : "text/plain");
             startActivityForResult(intent, 4);
-        else
+        }
+        else {
+            intent.setType("*/*");
             startActivityForResult(intent, 1);
+        }
     }
 
     @Override

@@ -170,18 +170,16 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             title.setText("Backup");
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
-            info.setText("Backup to Google Drive, OneDrive, and " +
-                    "more.\nGoogle Drive is recommended\n\n" +
-                    "**Photos will NOT backup**\n" +
-                    "Backup file name ends in .realm");
+            info.setText("Backup to Google Drive and " +
+                    "more\n\nGoogle Drive is recommended\n\n" +
+                    "Images and Audio files will [NOT] backup");
             info.setGravity(Gravity.CENTER);
         } else if (message == 2) {
             title.setText("Backup");
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
-            info.setText("Backup to Google Drive, OneDrive, and " +
-                    "more.\nGoogle Drive is recommended\n\n" +
-                    "Backup file name ends in .zip");
+            info.setText("Backup to Google Drive and " +
+                    "more\n\nGoogle Drive is recommended\n\nBacking notes + files (images + audio)");
             info.setGravity(Gravity.CENTER);
         } else if (message == 3 || message == -3 || message == 14) {
             title.setText("Deleting...");
