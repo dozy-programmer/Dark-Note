@@ -210,6 +210,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     }
                 }
                 int atIndex = s.toString().lastIndexOf("@");
+                if(isSubChecklist) return;
                 if (atIndex != -1 && atIndex < s.length() - 1) { // Ensure "@" exists and isn't the last character
                     redirectToNote.setVisibility(View.GONE);
                     wordAfterAt = s.toString().substring(atIndex + 1); // Extract word
@@ -239,26 +240,28 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             }
         });
 
-        redirectToNote.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+        if (!isSubChecklist) {
+            redirectToNote.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (wordAfterAt == null) wordAfterAt = "";
-                noteSelectedTitle = redirectToNote.getText().toString();
-                itemName.setText(itemName.getText().toString().replace("@" + wordAfterAt, ""));
-                redirectToNote.setVisibility(View.VISIBLE);
-                Helper.toggleKeyboard(getContext(), itemName, false);
-                itemName.setSelection(itemName.getText().length());
-                allNotesRecyclerview.setVisibility(View.GONE);
-            }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (wordAfterAt == null) wordAfterAt = "";
+                    noteSelectedTitle = redirectToNote.getText().toString();
+                    itemName.setText(itemName.getText().toString().replace("@" + wordAfterAt, ""));
+                    redirectToNote.setVisibility(View.VISIBLE);
+                    Helper.toggleKeyboard(getContext(), itemName, false);
+                    itemName.setSelection(itemName.getText().length());
+                    allNotesRecyclerview.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+        }
 
         if (isSubChecklist || isAdding)
             itemImageLayout.setVisibility(View.GONE);
