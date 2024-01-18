@@ -36,7 +36,7 @@ public class RealmHelper {
 
         // delete checklist, check list item photos, and sublists
         if (currentNote.isCheckList())
-            deleteChecklist(currentNote, context);
+            deleteChecklist(currentNote, context, false);
 
         // deletes photos if they exist
         deleteNotePhotos(currentNote, context);
@@ -75,16 +75,30 @@ public class RealmHelper {
         getRealm(context).commitTransaction();
     }
 
-    public static void deleteChecklist(Note currentNote, Context context) {
+    public static void deleteChecklist(Note currentNote, Context context, boolean deleteOnlyContents) {
         // delete each checklist item and all its associated data
         // like image, recording, and sublist (if they exist)
-        for (CheckListItem checkListItem : currentNote.getChecklist())
-            deleteChecklistItem(checkListItem, context, true);
+        for (CheckListItem checkListItem : currentNote.getChecklist()) {
+            deleteChecklistItem(checkListItem, context, deleteOnlyContents);
+        }
 
         // make sure all checklist items are deleted
         getRealm(context).beginTransaction();
         currentNote.getChecklist().deleteAllFromRealm();
         getRealm(context).commitTransaction();
+    }
+
+    public static void deleteChecklistItems(Note currentNote, Context context, boolean checkedStatus, boolean deleteOnlyContents) {
+        // delete each checklist item and all its associated data
+        // like image, recording, and sublist (if they exist)
+        RealmResults<CheckListItem> checkListItems = RealmSingleton.getInstance(context).where(CheckListItem.class)
+                .equalTo("id", currentNote.getNoteId())
+                .equalTo("checked", checkedStatus)
+                .findAll();
+        for (CheckListItem checkListItem : checkListItems) {
+            if(checkListItem.isChecked() == checkedStatus)
+                deleteChecklistItem(checkListItem, context, deleteOnlyContents);
+        }
     }
 
     public static void deleteRecording(CheckListItem item, Context context) {

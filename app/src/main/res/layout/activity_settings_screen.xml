@@ -370,7 +370,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/backup"
+                    android:id="@+id/backup_beta"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:orientation="horizontal"
@@ -403,72 +403,6 @@
                     android:background="?primaryDividerColor" />
 
                 <LinearLayout
-                    android:id="@+id/backup_beta"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="99"
-                        android:gravity="center_vertical"
-                        android:text="Backup + Images"
-                        android:textColor="?tertiaryTextColor"
-                        android:textSize="14sp"
-                        android:textStyle="bold"></TextView>
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:src="@drawable/arrow_right_icon"
-                        android:tint="?primaryIconTintColor"></ImageView>
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="?primaryDividerColor" />
-
-                <LinearLayout
-                    android:id="@+id/restore_backup"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_weight="99"
-                        android:gravity="center_vertical"
-                        android:text="Restore Backup"
-                        android:textColor="?tertiaryTextColor"
-                        android:textSize="14sp"
-                        android:textStyle="bold"></TextView>
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:src="@drawable/arrow_right_icon"
-                        android:tint="?primaryIconTintColor"></ImageView>
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="?primaryDividerColor"></ImageView>
-
-                <LinearLayout
                     android:id="@+id/restore_beta_backup"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -481,7 +415,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="99"
                         android:gravity="center_vertical"
-                        android:text="Restore Backup + Images"
+                        android:text="Restore Backup"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>

@@ -59,7 +59,9 @@ import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.RepeatListener;
 import com.akapps.dailynote.classes.helpers.UiHelper;
+import com.akapps.dailynote.classes.other.BackupSheet;
 import com.akapps.dailynote.classes.other.BudgetSheet;
+import com.akapps.dailynote.classes.other.CheckListDeleteSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
@@ -1273,7 +1275,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (getCurrentNote(context, noteId).isCheckList()) {
             noteMenu.addItem(2, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
-            noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete All"));
+            noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete Items"));
             noteMenu.addItem(7, new IconPowerMenuItem(getDrawable(R.drawable.filter_icon), "Sort"));
             if (getUser().isEnableSublists()) {
                 String sublistStatus = "";
@@ -1355,9 +1357,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     Helper.showMessage(NoteEdit.this, "Success", "All items " +
                             "have been unselected", MotionToast.TOAST_SUCCESS);
                 }
-            } else if (item.getTitle().equals("Delete All")) {
-                InfoSheet info = new InfoSheet(3, true);
-                info.show(getSupportFragmentManager(), info.getTag());
+            } else if (item.getTitle().equals("Delete Items")) {
+                showChecklistItemsDeleteBottomSheet();
+//                InfoSheet info = new InfoSheet(3, true);
+//                info.show(getSupportFragmentManager(), info.getTag());
             } else if (item.getTitle().contains("Text")) {
                 isChangingTextSize = true;
                 textSizeLayout.setVisibility(View.VISIBLE);
@@ -1427,12 +1430,29 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         recordAudioSheet.show(getSupportFragmentManager(), recordAudioSheet.getTag());
     }
 
-    public void deleteChecklist() {
-        RealmHelper.deleteChecklist(getCurrentNote(context, noteId), context);
-        checkNote(false);
+    public void deleteChecklist(String selectedToDelete) {
+        switch (selectedToDelete) {
+            case "all":
+                Log.d("Here", "Selected Button -> " + selectedToDelete);
+                RealmHelper.deleteChecklist(getCurrentNote(context, noteId), context, false);
+                checkNote(false);
+                Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
+                break;
+            case "checked":
+                Log.d("Here", "Selected Button -> " + selectedToDelete);
+                RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context, true, false);
+                Helper.showMessage(NoteEdit.this, "Success", "Checked items deleted", MotionToast.TOAST_SUCCESS);
+                break;
+            case "un-checked":
+                Log.d("Here", "Selected Button -> " + selectedToDelete);
+                RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context,false, false);
+                Helper.showMessage(NoteEdit.this, "Success", "Un-Checked items deleted", MotionToast.TOAST_SUCCESS);
+                break;
+            default:
+                return;
+        }
         checklistAdapter.notifyDataSetChanged();
-        Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
-        isListEmpty(0, true);
+        isListEmpty(getCurrentNote(context, noteId).getChecklist().size(), true);
     }
 
     private void checkNote(boolean status) {
@@ -1704,7 +1724,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void openDialog() {
-        InfoSheet info = new InfoSheet(getCurrentNote(context, noteId).isTrash() ? -3 : 3, false);
+        InfoSheet info = new InfoSheet(getCurrentNote(context, noteId).isTrash() ? -3 : 3);
         info.show(getSupportFragmentManager(), info.getTag());
     }
 
@@ -1771,7 +1791,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         try {
                             if (Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false).length() > 0) {
                                 if (getUser().isTwentyFourHourFormat()) {
-                                    date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(NoteEdit.this, getCurrentNote(context, noteId).getDateEdited()).replace("\n", " ") +
+                                    date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(getCurrentNote(context, noteId).getDateEdited(), getUser().isTwentyFourHourFormat()).replace("\n", " ") +
                                             "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                                 } else {
                                     date.setText(Html.fromHtml("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") +
@@ -1911,7 +1931,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         findViewById(R.id.action_format_clear).setOnClickListener(v -> {
-            InfoSheet info = new InfoSheet(9, false);
+            InfoSheet info = new InfoSheet(9);
             info.show(getSupportFragmentManager(), info.getTag());
         });
 
@@ -1941,6 +1961,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public User getUser(Context context) {
         return RealmHelper.getUser(context, "in noteEdit from sheet");
+    }
+
+    private void showChecklistItemsDeleteBottomSheet(){
+        CheckListDeleteSheet checkListDeleteSheet = new CheckListDeleteSheet();
+        checkListDeleteSheet.show(getSupportFragmentManager(), checkListDeleteSheet.getTag());
     }
 
 }

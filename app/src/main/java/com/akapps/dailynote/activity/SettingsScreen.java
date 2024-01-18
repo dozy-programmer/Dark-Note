@@ -12,7 +12,6 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.storage.StorageManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -37,11 +36,11 @@ import com.akapps.dailynote.classes.helpers.BackupHelper;
 import com.akapps.dailynote.classes.helpers.BackupRealm;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
-import com.akapps.dailynote.classes.helpers.RealmDatabase;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.AccountSheet;
+import com.akapps.dailynote.classes.other.BackupSheet;
 import com.akapps.dailynote.classes.other.CreditsSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
@@ -58,7 +57,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
 
 public class SettingsScreen extends AppCompatActivity {
@@ -82,10 +80,8 @@ public class SettingsScreen extends AppCompatActivity {
     private ImageView lockApp;
 
     // layout
-    private LinearLayout backup;
-    private LinearLayout restoreBackup;
-    private LinearLayout backupBeta;
-    private LinearLayout restoreBackupWithFiles;
+    private LinearLayout backupWithFilesButton;
+    private LinearLayout restoreBackupWithFilesButton;
     private LinearLayout appSettings;
     private LinearLayout syncLayout;
     private TextView titleLines;
@@ -144,6 +140,8 @@ public class SettingsScreen extends AppCompatActivity {
     // variables
     private boolean backUpWithFiles = false;
     private boolean restoreWithFiles = false;
+    private boolean isIncludingImages = false;
+    private boolean isIncludingAudio = false;
 
     private BackupHelper backupHelper;
 
@@ -180,8 +178,6 @@ public class SettingsScreen extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         close = findViewById(R.id.close_activity);
         lockApp = findViewById(R.id.lock_app);
-        backup = findViewById(R.id.backup);
-        restoreBackup = findViewById(R.id.restore_backup);
         appSettings = findViewById(R.id.app_settings);
         contact = findViewById(R.id.contact);
         reddit = findViewById(R.id.reddit);
@@ -222,8 +218,8 @@ public class SettingsScreen extends AppCompatActivity {
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
-        backupBeta = findViewById(R.id.backup_beta);
-        restoreBackupWithFiles = findViewById(R.id.restore_beta_backup);
+        backupWithFilesButton = findViewById(R.id.backup_beta);
+        restoreBackupWithFilesButton = findViewById(R.id.restore_beta_backup);
         syncLayout = findViewById(R.id.logged_in_layout);
         signUp = findViewById(R.id.sign_up);
         logIn = findViewById(R.id.log_in);
@@ -343,24 +339,22 @@ public class SettingsScreen extends AppCompatActivity {
                 showBackupRestoreInfo(6);
         });
 
-        backup.setOnClickListener(v -> {
-            backUpWithFiles = false;
-            showBackupRestoreInfo(1);
-        });
-
-        backupBeta.setOnClickListener(view -> {
+        backupWithFilesButton.setOnClickListener(view -> {
             backUpWithFiles = true;
-            showBackupRestoreInfo(2);
+            if(isBackupPermissionEnabled())
+                showBackupBottomSheet();
+            else{
+                showPermissionBottomSheet("Backup Permission Required", Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
         });
 
-        restoreBackup.setOnClickListener(v -> {
-            restoreWithFiles = false;
-            openFile();
-        });
-
-        restoreBackupWithFiles.setOnClickListener(view -> {
+        restoreBackupWithFilesButton.setOnClickListener(view -> {
             restoreWithFiles = true;
-            openFile();
+            if(isBackupPermissionEnabled())
+                openFile();
+            else{
+                showPermissionBottomSheet("Backup Permission Required", Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
         });
 
         titleLayout.setOnClickListener(v -> {
@@ -585,6 +579,20 @@ public class SettingsScreen extends AppCompatActivity {
         });
     }
 
+    private void showPermissionBottomSheet(String message, String permission){
+        InfoSheet permissionInfo = new InfoSheet(message, permission);
+        permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
+    }
+
+    public void requestBackupPermissions(){
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+    }
+
+    private void showBackupBottomSheet(){
+        BackupSheet backupSheet = new BackupSheet();
+        backupSheet.show(getSupportFragmentManager(), backupSheet.getTag());
+    }
+
     // hidden feature
     private void upgradeToPro() {
         User currentUser = getUser();
@@ -677,16 +685,17 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public boolean isBackupPermissionEnabled() {
-        Log.d("Here", "Android version == " + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) return true;
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        boolean isWritePermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        boolean isReadPermissionGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return isWritePermissionGranted && isReadPermissionGranted;
     }
 
-    public void openBackUpRestoreDialog() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
-        } else
-            openBackup();
+    public void continueWithBackup(){
+        if(restoreWithFiles)
+            openFile();
+        else if(backUpWithFiles)
+            showBackupBottomSheet();
     }
 
     @Override
@@ -694,10 +703,10 @@ public class SettingsScreen extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 2) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                openBackup();
+                continueWithBackup();
             else
-                Helper.showMessage(this, "Accept Permission", "You need " +
-                        "to accept permissions to backup", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, "Permission Denied",
+                        "Permission [Required] to Backup + Restore", MotionToast.TOAST_ERROR);
         }
     }
 
@@ -725,35 +734,18 @@ public class SettingsScreen extends AppCompatActivity {
         lockApp.setColorFilter(UiHelper.getColorFromTheme(this, R.attr.primaryIconTintColor));
     }
 
-    private void openBackup() {
-        if (backUpWithFiles) backUpDataAndImages();
-        else backUpData();
-    }
-
-    private void backUpData() {
-        if (allNotesSize != 0) {
-            RealmBackupRestore realmBackupRestore = new RealmBackupRestore(this);
-            realmBackupRestore.update(this, context);
-            // closes realm
-            File exportedFilePath = null;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                exportedFilePath = realmBackupRestore.backup_Share();
-                backupHelper.shareFile(exportedFilePath, false);
-            } else
-                backupHelper.shareFile(null, false);
-            // reopen realm
-            RealmSingleton.getInstance(context);
-        } else
-            Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
-                    "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
+    public void backup(boolean includeImage, boolean includeAudio){
+        isIncludingImages = includeImage;
+        isIncludingAudio = includeAudio;
+        backUpDataAndImages();
     }
 
     private void backUpDataAndImages() {
         if (allNotesSize != 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-                backupHelper.shareFile(null, true);
+                backupHelper.shareFile(null);
             else
-                backupHelper.shareFile(new File(backupHelper.backUpZip()), true);
+                backupHelper.shareFile(new File(backupHelper.backUpZip(isIncludingImages, isIncludingAudio)));
         } else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
@@ -767,43 +759,21 @@ public class SettingsScreen extends AppCompatActivity {
     private void openFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/zip");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            intent.setType(restoreWithFiles ? "application/zip" : "*/*");
-            startActivityForResult(intent, 4);
-        }
-        else {
-            intent.setType("*/*");
-            startActivityForResult(intent, 1);
-        }
+        intent.setType("*/*");
+        startActivityForResult(intent, 1);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (restoreWithFiles)
-                backupHelper.restoreBackupWithFiles(data);
-            else
+        if (requestCode == 1 && resultCode == RESULT_OK) {
                 backupHelper.restoreBackup(data);
         } else if (requestCode == 2) {
             Uri uri = null;
             if (data != null) {
                 uri = data.getData();
-                boolean isBackupFileCreated = BackupRealm.create(context, uri);
-                if (isBackupFileCreated) {
-                    Helper.showMessage(this, "Backup", "" +
-                            "All your notes have been successfully backup up!", MotionToast.TOAST_SUCCESS);
-                } else {
-                    Helper.showMessage(this, "Backup", "" +
-                            "Error backing up notes, try again...", MotionToast.TOAST_ERROR);
-                }
-            }
-        } else if (requestCode == 3) {
-            Uri uri = null;
-            if (data != null) {
-                uri = data.getData();
-                ArrayList<String> getAllAppFiles = backupHelper.getAllAppFiles();
+                ArrayList<String> getAllAppFiles = backupHelper.getAllAppFiles(isIncludingImages, isIncludingAudio);
+                isIncludingImages = isIncludingAudio = false;
                 boolean isSuccessful = BackupRealm.zipAppFiles(context, getAllAppFiles, uri);
                 if(isSuccessful) {
                     Helper.showMessage(this, "Backup", "" +
@@ -812,18 +782,6 @@ public class SettingsScreen extends AppCompatActivity {
                 else{
                     Helper.showMessage(this, "Backup", "" +
                             "Error backing up notes, try again...", MotionToast.TOAST_ERROR);
-                }
-            }
-        }
-        else if(requestCode == 4){
-            Uri uri = null;
-            if (data != null) {
-                uri = data.getData();
-                boolean isSuccessful = BackupRealm.unzipAppFiles(context, uri);
-                if(isSuccessful){
-                    backupHelper.restoreTextBackupWithFiles();
-                    Helper.showMessage(this, "Backup", "" +
-                            "All your notes and associated files successfully backed up!", MotionToast.TOAST_SUCCESS);
                 }
             }
         }

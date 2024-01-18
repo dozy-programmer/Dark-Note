@@ -306,22 +306,23 @@ public class Helper {
         return calendar;
     }
 
-    public static String convertToTwentyFourHour(Activity activity, String input) {
+    public static String convertToTwentyFourHour(String input, boolean isTwentyFourHourFormat) {
         // Parse the original string into a Date object
         String inputBefore = input;
-        input = input.replaceAll(".", "");
-        SimpleDateFormat originalFormat = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa");
-        Date originalDate = null;
+        input = input.replaceAll("\\.", "");
+        SimpleDateFormat format;
+        if(isTwentyFourHourFormat)
+            format = new SimpleDateFormat("E, MMM dd, yyyy\nHH:mm:ss");
+        else
+            format = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa");
+        Date dateFormatted = null;
         try {
-            originalDate = originalFormat.parse(input);
+            dateFormatted = format.parse(input);
+            return dateFormatted.toString();
         } catch (Exception e) {
+            Log.d("Here", "error occurred -> " + inputBefore);
             return inputBefore;
         }
-
-        // Format the Date object into the desired format
-        SimpleDateFormat desiredFormat = new SimpleDateFormat("E, MMM dd, yyyy\nHH:mm:ss");
-
-        return desiredFormat.format(originalDate);
     }
 
     /**

@@ -41,22 +41,18 @@ public class RealmBackupRestore {
 
     public File backup_Share() {
         Context context = activity.getApplicationContext();
-        File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-                        + "");
-        if (!storageDir.exists()) {
-            storageDir.mkdirs();
-        }
+        File storageDir = new File(String.valueOf(context.getFilesDir()));
 
+        if (!storageDir.exists()) storageDir.mkdirs();
         File exportRealmFile = new File(storageDir, IMPORT_REALM_FILE_NAME);
 
         // if backup file already exists, delete it
-        if(exportRealmFile.exists())
-            exportRealmFile.delete();
+        if(exportRealmFile.exists()) exportRealmFile.delete();
 
         // copy current realm to backup file
         realm.writeCopyTo(exportRealmFile);
 
-        realm.close();
+        //realm.close();
         return exportRealmFile;
     }
 

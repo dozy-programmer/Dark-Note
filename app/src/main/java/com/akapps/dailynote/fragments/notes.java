@@ -173,7 +173,7 @@ public class notes extends Fragment {
 
         // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli(context);
-        updateDateEditedMilli();
+        //updateDateEditedMilli();
         unSelectAllNotes();
 
         allNotes = getAllNotes();
@@ -182,7 +182,7 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        Helper.deleteFloatingFiles(getActivity());
+        //Helper.deleteFloatingFiles(getActivity());
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarThumbVertical="?primaryButtonColor"
+    android:scrollbarSize="2dp"
+    android:scrollbars="vertical"
+    android:background="@android:color/transparent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardBackgroundColor="?primaryStrokeColor"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="Select One to Delete"
+            android:textColor="?secondaryTextColor"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
+
+        <RadioGroup
+            android:id="@+id/delete_items_radio_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="?primaryBackgroundColor"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title">
+
+            <RadioButton
+                android:id="@+id/radio_delete_checked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Checked Items"
+                android:textColor="?primaryTextColor"
+                android:buttonTint="?primaryButtonColor"/>
+
+            <RadioButton
+                android:id="@+id/radio_delete_unchecked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:text="Un-Checked Items"
+                android:textColor="?primaryTextColor"
+                android:buttonTint="?primaryButtonColor"/>
+
+            <RadioButton
+                android:id="@+id/radio_all_checklist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="All Items"
+                android:textColor="?primaryTextColor"
+                android:buttonTint="?primaryButtonColor"/>
+        </RadioGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/confirm_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="15dp"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="13dp"
+            android:text="DELETE"
+            android:textColor="?primaryTextColor"
+            app:backgroundTint="?secondaryBackgroundColor"
+            app:cornerRadius="20dp"
+            app:iconTint="?primaryIconTintColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/delete_items_radio_layout"
+            app:strokeColor="?primaryButtonColor"
+            app:strokeWidth="2dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

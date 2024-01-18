@@ -57,7 +57,6 @@ import www.sanju.motiontoast.MotionToast;
 public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
     private int message;
-    private boolean deleteAllChecklists;
 
     private int position;
     private Photo currentPhoto;
@@ -97,11 +96,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         this.position = position;
     }
 
-    public InfoSheet(int message, boolean deleteAllChecklists) {
-        this.message = message;
-        this.deleteAllChecklists = deleteAllChecklists;
-    }
-
     public InfoSheet(int message, MaterialButton redirectNote) {
         this.message = message;
         this.redirectNote = redirectNote;
@@ -132,7 +126,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
         if (savedInstanceState != null) {
             message = savedInstanceState.getInt("message");
-            deleteAllChecklists = savedInstanceState.getBoolean("check");
             position = savedInstanceState.getInt("position");
             userSecurityWord = savedInstanceState.getString("word");
         }
@@ -193,10 +186,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 delete.setText("No");
                 delete.setVisibility(View.VISIBLE);
             }
-            else if (deleteAllChecklists) {
-                title.setText("Deleting Checklist...");
-                info.setText("Are you sure you want to delete checklist?");
-            } else {
+            else {
                 if (message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
                     backup.setText("TRASH");
@@ -381,16 +371,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         });
 
         backup.setOnClickListener(v -> {
-            if (message == 1 || message == 2) {
-                if(((SettingsScreen) getActivity()).isBackupPermissionEnabled())
-                    ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
-                else{
-                    InfoSheet permissionInfo = new InfoSheet("Backup Permission Required", Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    permissionInfo.show(getActivity().getSupportFragmentManager(), permissionInfo.getTag());
-                    dismiss();
-                }
-            }
-            else if (message == 3 || message == -3 || message == 14) {
+            if (message == 3 || message == -3 || message == 14) {
                 if(message == 14){
                     redirectNote.setText("");
                     redirectNote.setVisibility(View.GONE);
@@ -399,10 +380,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 else if (deleteMultipleNotes)
                     ((notes) fragmentActivity).deleteMultipleNotes(false);
                 else {
-                    if (deleteAllChecklists)
-                        ((NoteEdit) getActivity()).deleteChecklist();
-                    else
-                        ((NoteEdit) getActivity()).deleteNote(false);
+                    ((NoteEdit) getActivity()).deleteNote(false);
                 }
             } else if (message == 4) {
                 // delete file
@@ -427,17 +405,19 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             } else if (message == 9)
                 ((NoteEdit) getActivity()).removeFormatting();
             else if (message == 13){
-                if(permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                    ((SettingsScreen) getActivity()).openBackUpRestoreDialog();
-                }
-                else if(permission.equals(Manifest.permission.POST_NOTIFICATIONS)){
-                    ((NoteEdit) getActivity()).checkNotificationPermission();
-                }
-                else if(permission.equals(Manifest.permission.RECORD_AUDIO)){
-                    ((NoteEdit) getActivity()).checkMicrophonePermission();
-                }
-                else if(permission.equals(Manifest.permission.READ_MEDIA_IMAGES)){
-                    ((NoteEdit) getActivity()).showImageSelectionDialog();
+                switch (permission) {
+                    case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                        ((SettingsScreen) getActivity()).requestBackupPermissions();
+                        break;
+                    case Manifest.permission.POST_NOTIFICATIONS:
+                        ((NoteEdit) getActivity()).checkNotificationPermission();
+                        break;
+                    case Manifest.permission.RECORD_AUDIO:
+                        ((NoteEdit) getActivity()).checkMicrophonePermission();
+                        break;
+                    case Manifest.permission.READ_MEDIA_IMAGES:
+                        ((NoteEdit) getActivity()).showImageSelectionDialog();
+                        break;
                 }
             }
 
@@ -478,7 +458,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         super.onSaveInstanceState(outState);
         outState.putInt("message", message);
         outState.putInt("position", position);
-        outState.putBoolean("check", deleteAllChecklists);
         outState.putString("word", userSecurityWord);
     }
 
