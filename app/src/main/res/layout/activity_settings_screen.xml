@@ -24,7 +24,7 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/close_icon"
-                android:tint="?primaryIconTintColor"/>
+                android:tint="?primaryIconTintColor" />
 
             <TextView
                 android:id="@+id/title"
@@ -34,7 +34,7 @@
                 android:fontFamily="@font/baloo_bhai"
                 android:text="Settings"
                 android:textColor="?primaryTextColor"
-                android:textSize="24sp"/>
+                android:textSize="24sp" />
 
             <ImageView
                 android:id="@+id/lock_app"
@@ -43,7 +43,7 @@
                 android:layout_gravity="right"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/unlock_icon"
-                app:tint="?primaryIconTintColor"/>
+                app:tint="?primaryIconTintColor" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -1775,7 +1775,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/review"
+            android:id="@+id/delete_unneeded_files"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
@@ -1788,6 +1788,51 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reddit">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="9"
+                    android:gravity="center|left"
+                    android:text="Removed Unused Files"
+                    android:textColor="?tertiaryTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold"></TextView>
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/delete_file_icon"
+                    android:tint="?primaryIconTintColor"></ImageView>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/review"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/delete_unneeded_files">
 
             <LinearLayout
                 android:layout_width="match_parent"

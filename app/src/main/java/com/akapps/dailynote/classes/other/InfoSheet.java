@@ -80,15 +80,22 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
     private MaterialButton redirectNote;
 
+    private ArrayList<String> unUsedFiles;
+
     public InfoSheet() {
+    }
+
+    public InfoSheet(int message) {
+        this.message = message;
+    }
+
+    public InfoSheet(int message, ArrayList<String> unUsedFiles) {
+        this.message = message;
+        this.unUsedFiles = unUsedFiles;
     }
 
     public InfoSheet(String messageText, int message) {
         this.messageText = messageText;
-        this.message = message;
-    }
-
-    public InfoSheet(int message) {
         this.message = message;
     }
 
@@ -161,19 +168,17 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     "Or individually when editing a note " +
                     "by clicking on \"none\" next to Folder");
         } else if (message == 1) {
-            title.setText("Backup");
+            title.setText("Unused Files");
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
-            info.setText("Backup to Google Drive and " +
-                    "more\n\nGoogle Drive is recommended\n\n" +
-                    "Images and Audio files will [NOT] backup");
-            info.setGravity(Gravity.CENTER);
-        } else if (message == 2) {
-            title.setText("Backup");
-            securityWord.setVisibility(View.GONE);
-            backup.setVisibility(View.VISIBLE);
-            info.setText("Backup to Google Drive and " +
-                    "more\n\nGoogle Drive is recommended\n\nBacking notes + files (images + audio)");
+            backup.setText("CONFIRM");
+            StringBuilder formattedFilesNames = new StringBuilder();
+            if (unUsedFiles != null) {
+                for (int i = 0; i < unUsedFiles.size(); i++) {
+                    formattedFilesNames.append("\n").append(i + 1).append(": ").append(unUsedFiles.get(i));
+                }
+            }
+            info.setText("The following are unused files (not referenced by any note), would you like to delete?\n\n" + formattedFilesNames);
             info.setGravity(Gravity.CENTER);
         } else if (message == 3 || message == -3 || message == 14) {
             title.setText("Deleting...");
@@ -331,13 +336,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     .show());
         } else if (message == 11) {
             title.setText("Audio Info");
-            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
         } else if (message == 12) {
             title.setText("Export Info");
-            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
@@ -371,7 +374,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         });
 
         backup.setOnClickListener(v -> {
-            if (message == 3 || message == -3 || message == 14) {
+            if (message == 1) {
+                if (unUsedFiles != null & unUsedFiles.size() > 0) {
+                    Helper.showFloatingFiles(getActivity(), true);
+                }
+            } else if (message == 3 || message == -3 || message == 14) {
                 if (message == 14) {
                     redirectNote.setText("");
                     redirectNote.setVisibility(View.GONE);

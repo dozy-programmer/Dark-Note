@@ -38,6 +38,7 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -182,7 +183,14 @@ public class notes extends Fragment {
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
         // Delete Un-needed files
-        //Helper.deleteFloatingFiles(getActivity());
+        if (!Helper.getBooleanPreference(context, AppConstants.UNUSED_FILES_MESSAGE)) {
+            ArrayList<String> unUsedFiles = Helper.showFloatingFiles(getActivity(), false);
+            if (unUsedFiles != null && unUsedFiles.size() > 0) {
+                Helper.saveBooleanPreference(context, true, AppConstants.UNUSED_FILES_MESSAGE);
+                InfoSheet info = new InfoSheet(1, unUsedFiles);
+                info.show(getActivity().getSupportFragmentManager(), info.getTag());
+            }
+        }
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override

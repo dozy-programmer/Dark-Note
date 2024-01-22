@@ -133,6 +133,7 @@ public class SettingsScreen extends AppCompatActivity {
     private MaterialCardView accountLayout;
     private MaterialCardView contact;
     private MaterialCardView reddit;
+    private MaterialCardView removedUnneededFiles;
     private MaterialCardView review;
     private LottieAnimationView coffeeAnimation;
 
@@ -180,6 +181,7 @@ public class SettingsScreen extends AppCompatActivity {
         appSettings = findViewById(R.id.app_settings);
         contact = findViewById(R.id.contact);
         reddit = findViewById(R.id.reddit);
+        removedUnneededFiles = findViewById(R.id.delete_unneeded_files);
         review = findViewById(R.id.review);
         about = findViewById(R.id.about);
         titleLines = findViewById(R.id.title_lines);
@@ -450,6 +452,16 @@ public class SettingsScreen extends AppCompatActivity {
         contact.setOnClickListener(v -> contactMe());
 
         reddit.setOnClickListener(v -> openReddit());
+
+        removedUnneededFiles.setOnClickListener(v -> {
+            ArrayList<String> unUsedFiles = Helper.showFloatingFiles(this, false);
+            if (unUsedFiles != null && unUsedFiles.size() > 0) {
+                InfoSheet info = new InfoSheet(1, unUsedFiles);
+                info.show(getSupportFragmentManager(), info.getTag());
+            } else {
+                Helper.showMessage(this, "No Files Found", "No further action needed", MotionToast.TOAST_WARNING);
+            }
+        });
 
         review.setOnClickListener(v -> openAppInPlayStore());
 

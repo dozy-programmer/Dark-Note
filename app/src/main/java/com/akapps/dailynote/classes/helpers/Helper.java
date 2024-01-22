@@ -827,10 +827,11 @@ public class Helper {
         activity.startActivity(Intent.createChooser(emailIntent, "Share Note"));
     }
 
-    public static void deleteFloatingFiles(Activity activity) {
+    public static ArrayList<String> showFloatingFiles(Activity activity, boolean delete) {
         String path = activity.getApplicationContext().getExternalFilesDir("") + "";
         ArrayList<String> allImagePaths = RealmHelper.getAllImagePaths(activity);
         ArrayList<String> allAudioPaths = RealmHelper.getAllAudioPaths(activity);
+        ArrayList<String> unusedFiles = new ArrayList<>();
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Files.walk(Paths.get(path))
@@ -839,24 +840,42 @@ public class Helper {
                             try {
                                 String filename = file.getFileName().toString();
                                 if (filename.contains(".zip")) {
-                                    Files.delete(file);
+                                    if (delete)
+                                        Files.delete(file);
+                                    else
+                                        unusedFiles.add(filename);
                                 } else if (filename.contains(".txt") || filename.contains(".realm")) {
-                                    Files.delete(file);
+                                    if (delete)
+                                        Files.delete(file);
+                                    else
+                                        unusedFiles.add(filename);
                                 } else if (filename.contains(".png")) {
                                     boolean isFileInUse = allImagePaths.stream().anyMatch(element -> element.toLowerCase().contains(filename.replace(".png", "").toLowerCase()));
-                                    if (!isFileInUse) Files.delete(file);
+                                    if (!isFileInUse) {
+                                        if (delete)
+                                            Files.delete(file);
+                                        else
+                                            unusedFiles.add(filename);
+                                    }
                                 } else if (filename.contains(".mp4") || filename.contains(".mp3")) {
                                     boolean isFileInUse = allAudioPaths.stream().anyMatch(element -> element.toLowerCase().contains(filename.replace(".mp4", "").replace(".mp3", "").toLowerCase()));
-                                    if (!isFileInUse) Files.delete(file);
+                                    if (!isFileInUse) {
+                                        if (delete)
+                                            Files.delete(file);
+                                        else
+                                            unusedFiles.add(filename);
+                                    }
                                 }
                             } catch (Exception e) {
                                 Log.e("Error", "Failed to process file: " + file, e);
                             }
                         });
+                return unusedFiles;
             }
         } catch (Exception e) {
             Log.e("Error", "Failed to walk directory: " + path, e);
         }
+        return null;
     }
 
     public static RealmResults<CheckListItem> sortChecklist(Context context, int noteId, Realm realm) {
