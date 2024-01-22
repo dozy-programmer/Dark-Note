@@ -7,6 +7,7 @@ import android.os.Handler;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.CheckListItem;
+import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
@@ -16,7 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
@@ -35,8 +35,9 @@ public class RealmHelper {
         getRealm(context).commitTransaction();
 
         // delete checklist, check list item photos, and sublists
-        if (currentNote.isCheckList())
-            deleteChecklist(currentNote, context, false);
+        if (currentNote.isCheckList()) {
+            deleteChecklist(currentNote, context);
+        }
 
         // deletes photos if they exist
         deleteNotePhotos(currentNote, context);
@@ -75,14 +76,14 @@ public class RealmHelper {
         getRealm(context).commitTransaction();
     }
 
-    public static void deleteChecklist(Note currentNote, Context context, boolean deleteOnlyContents) {
-        // delete each checklist item and all its associated data
+    public static void deleteChecklist(Note currentNote, Context context) {
+        // delete each checklist item's associated data
         // like image, recording, and sublist (if they exist)
         for (CheckListItem checkListItem : currentNote.getChecklist()) {
-            deleteChecklistItem(checkListItem, context, deleteOnlyContents);
+            deleteChecklistItem(checkListItem, context, true);
         }
 
-        // make sure all checklist items are deleted
+        // delete all checklist items
         getRealm(context).beginTransaction();
         currentNote.getChecklist().deleteAllFromRealm();
         getRealm(context).commitTransaction();
@@ -96,7 +97,7 @@ public class RealmHelper {
                 .equalTo("checked", checkedStatus)
                 .findAll();
         for (CheckListItem checkListItem : checkListItems) {
-            if(checkListItem.isChecked() == checkedStatus)
+            if (checkListItem.isChecked() == checkedStatus)
                 deleteChecklistItem(checkListItem, context, deleteOnlyContents);
         }
     }
@@ -146,7 +147,11 @@ public class RealmHelper {
 
     public static void deleteSublistItem(SubCheckListItem sublistItem, Context context) {
         getRealm(context).beginTransaction();
-        sublistItem.deleteFromRealm();
+        try {
+            sublistItem.deleteFromRealm();
+        } catch (Exception e) {
+            getRealm(context).cancelTransaction();
+        }
         getRealm(context).commitTransaction();
     }
 
@@ -230,10 +235,12 @@ public class RealmHelper {
 
     public static User getUser(Context context, String location) {
         User user = getRealm(context).where(User.class).findFirst();
-        if (user == null) {
-            return addUser(context);
-        }
+        if (user == null) return addUser(context);
         return user;
+    }
+
+    public static RealmResults<Folder> getAllFolders(Context context) {
+        return RealmSingleton.getInstance(context).where(Folder.class).sort("positionInList").findAll();
     }
 
     public static Note getCurrentNote(Context context, int noteId) {
@@ -260,11 +267,11 @@ public class RealmHelper {
         return queryNotes == null ? "" : queryNotes.getTitle();
     }
 
-    public static Backup getBackup(Context context, String backupFilename){
+    public static Backup getBackup(Context context, String backupFilename) {
         return RealmHelper.getRealm(context).where(Backup.class).equalTo("fileName", backupFilename).findFirst();
     }
 
-    public static void setUserTextSize(Context context, int newSize){
+    public static void setUserTextSize(Context context, int newSize) {
         getRealm(context).beginTransaction();
         getUser(context, "in space").setTextSize(newSize);
         getRealm(context).commitTransaction();
@@ -272,20 +279,20 @@ public class RealmHelper {
 
     public static int getUserTextSize(Context context) {
         int defaultTextSize = 20;
-        if(getUser(context, "in space") == null) return defaultTextSize;
+        if (getUser(context, "in space") == null) return defaultTextSize;
         int userTextSize = getUser(context, "in space").getTextSize();
         return userTextSize == 0 ? defaultTextSize : userTextSize;
     }
 
-    public static boolean isRealmInstancesClosed(){
-        if(RealmSingleton.getOnlyRealm() == null)
+    public static boolean isRealmInstancesClosed() {
+        if (RealmSingleton.getOnlyRealm() == null)
             return true;
         else
             RealmSingleton.getOnlyRealm().close();
         return Realm.getLocalInstanceCount(RealmSingleton.getOnlyRealm().getConfiguration()) == 0;
     }
 
-    public static boolean deleteRealmDatabase(Activity activity){
+    public static boolean deleteRealmDatabase(Activity activity) {
         if (!RealmHelper.isRealmInstancesClosed()) {
             Helper.showMessage(activity, "Restore Error", "" +
                     "Issue deleting database...try again", MotionToast.TOAST_ERROR);
@@ -294,8 +301,8 @@ public class RealmHelper {
         return deleteDatabase();
     }
 
-    private static boolean deleteDatabase(){
-        if(RealmSingleton.getOnlyRealm() != null){
+    private static boolean deleteDatabase() {
+        if (RealmSingleton.getOnlyRealm() != null) {
             return Realm.deleteRealm(RealmSingleton.getOnlyRealm().getConfiguration());
         }
         return false;
@@ -311,19 +318,20 @@ public class RealmHelper {
         return getRealm(context).where(User.class).findFirst();
     }
 
-    public static ArrayList<String> getAllImagePaths(Context context){
+    public static ArrayList<String> getAllImagePaths(Context context) {
         RealmResults<Photo> allNotePhotos = getRealm(context).where(Photo.class).findAll();
         ArrayList<String> allPhotoPaths = new ArrayList<>();
-        for(Photo image: allNotePhotos) allPhotoPaths.add(image.getPhotoLocation());
+        for (Photo image : allNotePhotos) allPhotoPaths.add(image.getPhotoLocation());
         return allPhotoPaths;
     }
 
-    public static ArrayList<String> getAllAudioPaths(Context context){
+    public static ArrayList<String> getAllAudioPaths(Context context) {
         RealmResults<CheckListItem> allChecklistItemsAudioPaths = getRealm(context).where(CheckListItem.class)
                 .isNotNull("audioPath")
                 .isNotEmpty("audioPath").findAll();
         ArrayList<String> allAudioPaths = new ArrayList<>();
-        for(CheckListItem checkListItem: allChecklistItemsAudioPaths) allAudioPaths.add(checkListItem.getAudioPath());
+        for (CheckListItem checkListItem : allChecklistItemsAudioPaths)
+            allAudioPaths.add(checkListItem.getAudioPath());
         return allAudioPaths;
     }
 

@@ -33,9 +33,8 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.BackupHelper;
-import com.akapps.dailynote.classes.helpers.BackupRealm;
+import com.akapps.dailynote.classes.helpers.FileHelper;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmBackupRestore;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -341,18 +340,18 @@ public class SettingsScreen extends AppCompatActivity {
 
         backupWithFilesButton.setOnClickListener(view -> {
             backUpWithFiles = true;
-            if(isBackupPermissionEnabled())
+            if (isBackupPermissionEnabled())
                 showBackupBottomSheet();
-            else{
+            else {
                 showPermissionBottomSheet("Backup Permission Required", Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         });
 
         restoreBackupWithFilesButton.setOnClickListener(view -> {
             restoreWithFiles = true;
-            if(isBackupPermissionEnabled())
+            if (isBackupPermissionEnabled())
                 openFile();
-            else{
+            else {
                 showPermissionBottomSheet("Backup Permission Required", Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
         });
@@ -444,7 +443,7 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
                 saveLightThemePreference(context, currentMode);
                 Helper.updateAllWidgetTypes(context);
-                Helper.restart(this, false);
+                Helper.restart(this);
             }
         });
 
@@ -555,7 +554,7 @@ public class SettingsScreen extends AppCompatActivity {
             getUser().setDisableAnimation(isChecked);
             RealmSingleton.get(this).commitTransaction();
             AppData.isDisableAnimation = isChecked;
-            Helper.restart(this, false);
+            Helper.restart(this);
         });
 
         showDeleteIcon.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -579,16 +578,16 @@ public class SettingsScreen extends AppCompatActivity {
         });
     }
 
-    private void showPermissionBottomSheet(String message, String permission){
+    private void showPermissionBottomSheet(String message, String permission) {
         InfoSheet permissionInfo = new InfoSheet(message, permission);
         permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
     }
 
-    public void requestBackupPermissions(){
+    public void requestBackupPermissions() {
         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
     }
 
-    private void showBackupBottomSheet(){
+    private void showBackupBottomSheet() {
         BackupSheet backupSheet = new BackupSheet();
         backupSheet.show(getSupportFragmentManager(), backupSheet.getTag());
     }
@@ -607,7 +606,7 @@ public class SettingsScreen extends AppCompatActivity {
             Helper.showMessage(SettingsScreen.this, "Downgrade Successful", "" +
                     "Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
 
-        Helper.restart(this, false);
+        Helper.restart(this);
     }
 
     private void populateUserSettings() {
@@ -691,10 +690,10 @@ public class SettingsScreen extends AppCompatActivity {
         return isWritePermissionGranted && isReadPermissionGranted;
     }
 
-    public void continueWithBackup(){
-        if(restoreWithFiles)
+    public void continueWithBackup() {
+        if (restoreWithFiles)
             openFile();
-        else if(backUpWithFiles)
+        else if (backUpWithFiles)
             showBackupBottomSheet();
     }
 
@@ -734,7 +733,7 @@ public class SettingsScreen extends AppCompatActivity {
         lockApp.setColorFilter(UiHelper.getColorFromTheme(this, R.attr.primaryIconTintColor));
     }
 
-    public void backup(boolean includeImage, boolean includeAudio){
+    public void backup(boolean includeImage, boolean includeAudio) {
         isIncludingImages = includeImage;
         isIncludingAudio = includeAudio;
         backUpDataAndImages();
@@ -767,19 +766,16 @@ public class SettingsScreen extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-                backupHelper.restoreBackup(data);
+            backupHelper.restoreBackupFromFile(data);
         } else if (requestCode == 2) {
-            Uri uri = null;
             if (data != null) {
-                uri = data.getData();
                 ArrayList<String> getAllAppFiles = backupHelper.getAllAppFiles(isIncludingImages, isIncludingAudio);
                 isIncludingImages = isIncludingAudio = false;
-                boolean isSuccessful = BackupRealm.zipAppFiles(context, getAllAppFiles, uri);
-                if(isSuccessful) {
+                boolean isSuccessful = FileHelper.zip(context, getAllAppFiles, data.getData());
+                if (isSuccessful) {
                     Helper.showMessage(this, "Backup", "" +
                             "All your notes and associated files successfully backed up!", MotionToast.TOAST_SUCCESS);
-                }
-                else{
+                } else {
                     Helper.showMessage(this, "Backup", "" +
                             "Error backing up notes, try again...", MotionToast.TOAST_ERROR);
                 }
@@ -788,11 +784,11 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public void uploadData() {
-        backupHelper.upLoadData();
+        backupHelper.upLoadToFirebaseStorage();
     }
 
     public void restoreFromDatabase(String fileName, String fileSize) {
-        backupHelper.restoreFromDatabase(fileName, fileSize);
+        backupHelper.restoreFromFirebaseStorage(fileName, fileSize);
     }
 
     private void showLineNumberMenu(TextView lines, SwitchCompat reminderDropDown) {

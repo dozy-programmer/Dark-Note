@@ -88,7 +88,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         holder.checklistText.setText(checkListText);
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, RealmHelper.getUserTextSize(context));
 
-        if(!searchingForWord.isEmpty() && checkListText.toLowerCase().contains(searchingForWord.toLowerCase())){
+        if (!searchingForWord.isEmpty() && checkListText.toLowerCase().contains(searchingForWord.toLowerCase())) {
             String regex = "(" + searchingForWord + ")";
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 

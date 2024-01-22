@@ -6,8 +6,10 @@ import android.media.MediaRecorder;
 import android.os.Handler;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.akapps.dailynote.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.io.IOException;
 
 public class AudioManager {
@@ -28,13 +30,13 @@ public class AudioManager {
     private TextView currentDuration;
     private FloatingActionButton pausePlayButton;
 
-    public AudioManager(String fileName){
+    public AudioManager(String fileName) {
         this.fileName = fileName;
         isStopped = true;
     }
 
     public AudioManager(String fileName, TextView currentDuration, SeekBar audioSeekbar,
-                        FloatingActionButton pausePlayButton, Activity activity, int audioDuration){
+                        FloatingActionButton pausePlayButton, Activity activity, int audioDuration) {
         this.fileName = fileName;
         this.currentDuration = currentDuration;
         this.audioSeekbar = audioSeekbar;
@@ -54,7 +56,8 @@ public class AudioManager {
 
         try {
             recorder.prepare();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
 
         recorder.start();
         isRecording = true;
@@ -63,13 +66,12 @@ public class AudioManager {
 
     // pause audio recording
     public void pauseRecording(boolean pause) {
-        if(pause) {
+        if (pause) {
             recorder.pause();
             // update status
             isRecording = false;
             isPaused = true;
-        }
-        else {
+        } else {
             recorder.resume();
             // update status
             isRecording = true;
@@ -97,7 +99,8 @@ public class AudioManager {
             player.start();
             isPlaying = true;
             isStopped = isPaused = false;
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         Helper.startTimer(handlerTimer, 0);
         updateTextDuration(currentDuration, audioSeekbar);
         pausePlayButton.setImageDrawable(activity.getDrawable(R.drawable.pause_icon));
@@ -115,7 +118,7 @@ public class AudioManager {
 
     // pause playback
     public void resumePlaying() {
-        if(AppData.timerDuration >= audioDuration) {
+        if (AppData.timerDuration >= audioDuration) {
             AppData.timerDuration = 0;
             player.seekTo(AppData.timerDuration * 1000);
         }
@@ -127,14 +130,14 @@ public class AudioManager {
         pausePlayButton.setImageDrawable(activity.getDrawable(R.drawable.pause_icon));
     }
 
-    public void changePositionByIncrement(int increment){
+    public void changePositionByIncrement(int increment) {
         int newValue = AppData.timerDuration + increment;
 
-        if(newValue > audioDuration)
+        if (newValue > audioDuration)
             AppData.timerDuration = audioDuration;
-        else if(AppData.timerDuration == audioDuration && increment < 0)
+        else if (AppData.timerDuration == audioDuration && increment < 0)
             AppData.timerDuration = audioDuration + increment;
-        else if(newValue >= 0 && newValue <= audioDuration)
+        else if (newValue >= 0 && newValue <= audioDuration)
             AppData.timerDuration += increment;
         else
             AppData.timerDuration = 0;
@@ -145,17 +148,16 @@ public class AudioManager {
             player.seekTo(audioSeekbar.getProgress() * 1000);
     }
 
-    private void updateTextDuration(TextView playingDuration, SeekBar audioSeekbar){
+    private void updateTextDuration(TextView playingDuration, SeekBar audioSeekbar) {
         handlerTimerText.postDelayed(new Runnable() {
             public void run() {
                 int currentTime = AppData.timerDuration;
-                if(currentTime <= audioDuration) {
+                if (currentTime <= audioDuration) {
                     playingDuration.setText(Helper.secondsToDurationText(currentTime));
-                    if(audioSeekbar != null)
+                    if (audioSeekbar != null)
                         audioSeekbar.setProgress(AppData.timerDuration);
                     handlerTimerText.postDelayed(this, 1000);
-                }
-                else{
+                } else {
                     AppData.timerDuration--;
                     pausePlaying();
                     pausePlayButton.setImageDrawable(activity.getDrawable(R.drawable.play_icon));
@@ -164,41 +166,43 @@ public class AudioManager {
         }, 0);
     }
 
-    private void initSeekBar(){
+    private void initSeekBar() {
         audioSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {}
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 AppData.timerDuration = seekBar.getProgress();
                 currentDuration.setText(Helper.secondsToDurationText(AppData.timerDuration));
-                if(player != null)
+                if (player != null)
                     player.seekTo(seekBar.getProgress() * 1000);
             }
         });
     }
 
-    public boolean isRecording(){
+    public boolean isRecording() {
         return isRecording;
     }
 
-    public boolean isPlaying(){
+    public boolean isPlaying() {
         return isPlaying;
     }
 
-    public boolean isPaused(){
+    public boolean isPaused() {
         return isPaused;
     }
 
-    public boolean isStopped(){
+    public boolean isStopped() {
         return isStopped;
     }
 
-    public void onStop(){
+    public void onStop() {
         if (recorder != null) {
             recorder.release();
             recorder = null;
@@ -209,10 +213,10 @@ public class AudioManager {
             player = null;
         }
 
-        if(handlerTimerText != null)
+        if (handlerTimerText != null)
             handlerTimerText.removeCallbacksAndMessages(null);
 
-        if(handlerTimer != null)
+        if (handlerTimer != null)
             handlerTimer.removeCallbacksAndMessages(null);
     }
 }

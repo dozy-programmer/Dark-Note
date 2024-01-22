@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.RemoteViews;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
@@ -34,7 +35,7 @@ public class AppWidget extends AppWidgetProvider {
     }
 
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId) {
-        if(noteId == -1) return;
+        if (noteId == -1) return;
 
         new Handler(Looper.getMainLooper()).post(() -> {
             Note currentNote = RealmHelper.getCurrentNote(context, noteId);

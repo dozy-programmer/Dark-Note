@@ -2,23 +2,25 @@ package com.akapps.dailynote.recyclerview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.google.android.material.card.MaterialCardView;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recyclerview.MyViewHolder>{
+public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recyclerview.MyViewHolder> {
 
     // project data
     private ArrayList<Expense> expenses;
@@ -67,15 +69,15 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         holder.expenseName.setText(expenseName);
         holder.expensePercentage.setText(formatDouble(currentExpense.getExpenseAmountPercentage()));
 
-        if(expenseName.equals("Over Budget"))
+        if (expenseName.equals("Over Budget"))
             holder.expenseName.setTextColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.tertiaryButtonColor));
-        else if(expenseName.equals("Under Budget"))
+        else if (expenseName.equals("Under Budget"))
             holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.money_green));
         else
             holder.expenseName.setTextColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.primaryTextColor));
 
         holder.dropDown.setOnClickListener(view -> {
-            if(holder.subExpensesRecyclerview.getVisibility() == View.VISIBLE){
+            if (holder.subExpensesRecyclerview.getVisibility() == View.VISIBLE) {
                 holder.subExpensesRecyclerview.animate()
                         .alpha(0.0f)
                         .setDuration(200)
@@ -87,8 +89,7 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
                             }
                         });
                 holder.dropDown.setRotation(0);
-            }
-            else {
+            } else {
                 holder.subExpensesRecyclerview.setLayoutManager(new LinearLayoutManager(holder.view.getContext()));
                 RecyclerView.Adapter expensesAdapter = new sub_expenses_recyclerview(currentExpense.getSubExpensesList(),
                         totalBudget, expenseKey);
@@ -114,7 +115,7 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         return expenses.size();
     }
 
-    private String formatDouble(double number){
+    private String formatDouble(double number) {
         DecimalFormat df = new DecimalFormat("#,##0.00%");
         return df.format(number);
     }

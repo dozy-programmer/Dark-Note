@@ -1,6 +1,5 @@
 package com.akapps.dailynote.activity;
 
-import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
 import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentNote;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
@@ -14,9 +13,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -34,6 +35,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
@@ -57,9 +61,7 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
-import com.akapps.dailynote.classes.helpers.RepeatListener;
 import com.akapps.dailynote.classes.helpers.UiHelper;
-import com.akapps.dailynote.classes.other.BackupSheet;
 import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.CheckListDeleteSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
@@ -189,6 +191,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     private final String ACTION_ADD_CHECKLIST = "android.intent.action.CREATE_SHORTCUT";
 
+    private ActivityResultLauncher<Intent> startAlarmPermission;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(getThemeStyle(this));
@@ -249,6 +253,20 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if (dismissNotification)
             Helper.cancelNotification(context, noteId);
+
+        startAlarmPermission = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), (ActivityResult result) -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            if (dateSelected != null && alarmManager.canScheduleExactAlarms())
+                                startAlarm(dateSelected);
+                            else
+                                Helper.showMessage(this, "Alarm not set", "Alarm permission needs to be enabled",
+                                        MotionToast.TOAST_ERROR);
+                        }
+                    }
+                });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -466,7 +484,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         updateDateEdited();
         if (!getCurrentNote(context, noteId).getReminderDateTime().isEmpty()) {
-            updateReminderLayout(View.VISIBLE);
+            updateReminderLayout(View.VISIBLE, 0);
             Date reminderDate = null;
             try {
                 reminderDate = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(getCurrentNote(context, noteId).getReminderDateTime());
@@ -649,7 +667,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         });
 
-        increaseTextSize.setOnTouchListener(new RepeatListener(500, 100, v -> {
+        increaseTextSize.setOnClickListener(view -> {
             if (isChangingTextSize)
                 changeTextSize(true, getCurrentNote(context, noteId).isCheckList());
             else if (getCurrentNote(context, noteId).isCheckList()) {
@@ -666,9 +684,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     noteSearching.setSelection(nextIndex);
                 }
             }
-        }));
+        });
 
-        decreaseTextSize.setOnTouchListener(new RepeatListener(500, 100, v -> {
+        decreaseTextSize.setOnClickListener(view -> {
             if (isChangingTextSize)
                 changeTextSize(false, getCurrentNote(context, noteId).isCheckList());
             else if (getCurrentNote(context, noteId).isCheckList()) {
@@ -685,7 +703,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     noteSearching.setSelection(nextIndex);
                 }
             }
-        }));
+        });
 
         note.setOnClickListener(view -> {
         });
@@ -1134,14 +1152,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
                 .format(Calendar.getInstance().getTime()), place, redirectId);
         getCurrentNote(context, noteId).getChecklist().add(currentItem);
-        if(getCurrentNote(context, noteId).getSort() == 8)
+        if (getCurrentNote(context, noteId).getSort() == 8)
             getRealm().where(CheckListItem.class).equalTo("id", noteId).findAll().setLong("lastCheckedDate", lastCheckedDate);
         getCurrentNote(context, noteId).setChecked(false);
         getRealm().commitTransaction();
         updateSaveDateEdited();
         isListEmpty(getCurrentNote(context, noteId).getChecklist().size());
 
-        checklistAdapter.notifyDataSetChanged();
+        if (checklistAdapter != null)
+            checklistAdapter.notifyDataSetChanged();
+        else {
+            sortChecklist("");
+        }
 
         if (title.getText().length() == 0)
             title.requestFocus();
@@ -1157,13 +1179,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         return currentItem;
     }
 
-    public CheckListItem addCheckList(int subListId, String path, int duration) {
+    public void addCheckList(int subListId, String path, int duration) {
         CheckListItem newItem = getRealm().where(CheckListItem.class).equalTo("subListId", subListId).findFirst();
         getRealm().beginTransaction();
         newItem.setAudioPath(path);
         newItem.setAudioDuration(duration);
         getRealm().commitTransaction();
-        return newItem;
     }
 
     public void onlyAddChecklist(String itemText, boolean isChecked) {
@@ -1386,11 +1407,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     };
 
     public boolean isNotificationPermissionEnabled() {
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true;
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void checkNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 2);
         } else
             showDatePickerDialog();
@@ -1434,7 +1456,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         switch (selectedToDelete) {
             case "all":
                 Log.d("Here", "Selected Button -> " + selectedToDelete);
-                RealmHelper.deleteChecklist(getCurrentNote(context, noteId), context, false);
+                RealmHelper.deleteChecklist(getCurrentNote(context, noteId), context);
                 checkNote(false);
                 Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
                 break;
@@ -1445,7 +1467,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 break;
             case "un-checked":
                 Log.d("Here", "Selected Button -> " + selectedToDelete);
-                RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context,false, false);
+                RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context, false, false);
                 Helper.showMessage(NoteEdit.this, "Success", "Un-Checked items deleted", MotionToast.TOAST_SUCCESS);
                 break;
             default:
@@ -1493,7 +1515,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 "un-locked", MotionToast.TOAST_SUCCESS);
     }
 
-    private void updateReminderLayout(int visibility) {
+    private void updateReminderLayout(int visibility, int color) {
         remindNote.setVisibility(visibility);
         remindNoteDate.setVisibility(visibility);
         if (!getCurrentNote(context, noteId).getReminderDateTime().isEmpty()) {
@@ -1503,6 +1525,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     ":" + getCurrentNote(context, noteId).getReminderDateTime().split(" ")[1].split(":")[1] +
                     ":" + getCurrentNote(context, noteId).getReminderDateTime().split(" ")[1].split(":")[2] + " " + ((formatDate24Hours > 12) ? "PM" : "AM");
             remindNoteDate.setText(formatted);
+            if (color != 0) remindNoteDate.setTextColor(color);
         } else
             remindNoteDate.setVisibility(View.GONE);
     }
@@ -1609,19 +1632,21 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             intent.putExtra("securityWord", getCurrentNote(context, noteId).getSecurityWord());
             intent.putExtra("fingerprint", getCurrentNote(context, noteId).isFingerprint());
             updateReminderDate(currentDateTimeSelected);
-            updateReminderLayout(View.VISIBLE);
+            updateReminderLayout(View.VISIBLE, UiHelper.getColorFromTheme(this, R.attr.secondaryTextColor));
             Helper.showMessage(this, "Reminder set", "Will Remind you " +
                     "in " + Helper.getTimeDifference(c, true), MotionToast.TOAST_SUCCESS);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
                     PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                } else {
+                if (!alarmManager.canScheduleExactAlarms()) {
                     Helper.showMessage(this, "Alarm Not Set", "Please Enable " +
                             "Alarms & Reminders ", MotionToast.TOAST_ERROR);
-                    Intent intent2 = new Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-                    startActivity(intent2);
+                    startAlarmPermission.launch(new Intent(
+                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                            Uri.parse("package:" + getPackageName())
+                    ));
+                    return;
                 }
             }
 
@@ -1709,8 +1734,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     getRealm().insert(currentPhoto);
                     getRealm().commitTransaction();
                 }
-            }
-            else
+            } else
                 return;
             updateSaveDateEdited();
             scrollAdapter.notifyDataSetChanged();
@@ -1791,7 +1815,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         try {
                             if (Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false).length() > 0) {
                                 if (getUser().isTwentyFourHourFormat()) {
-                                    date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(getCurrentNote(context, noteId).getDateEdited(), getUser().isTwentyFourHourFormat()).replace("\n", " ") +
+                                    date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(getCurrentNote(context, noteId).getDateEdited()).replace("\n", " ") +
                                             "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
                                 } else {
                                     date.setText(Html.fromHtml("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") +
@@ -1963,7 +1987,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         return RealmHelper.getUser(context, "in noteEdit from sheet");
     }
 
-    private void showChecklistItemsDeleteBottomSheet(){
+    private void showChecklistItemsDeleteBottomSheet() {
         CheckListDeleteSheet checkListDeleteSheet = new CheckListDeleteSheet();
         checkListDeleteSheet.show(getSupportFragmentManager(), checkListDeleteSheet.getTag());
     }

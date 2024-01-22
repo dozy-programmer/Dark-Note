@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
-import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -71,14 +71,14 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         Backup currentBackup = allBackups.get(position);
 
         String actualFilename = currentBackup.getFileName();
-        String fileName = currentBackup.getFileName().replace("_backup.zip", "");
+        String fileName = currentBackup.getFileName().replace("_" + AppConstants.BACKUP_ZIP_FILE_NAME, "");
 
         String fileSize = "";
 
         // February_16_2023~04_37_PM~33.40 kB
 
         try {
-            holder.file_name.setText(fileName.split("~")[1] + "_backup.zip");
+            holder.file_name.setText(fileName.split("~")[1] + "_" + AppConstants.BACKUP_ZIP_FILE_NAME);
             holder.file_date.setText(fileName.split("~")[0].replace("_", " "));
             fileSize = fileName.split("~")[2].replace("_", " ");
             holder.file_size.setText(fileSize);

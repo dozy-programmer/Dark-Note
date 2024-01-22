@@ -3,7 +3,6 @@ package com.akapps.dailynote.classes.other;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +19,20 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.SubExpense;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.recyclerview.expenses_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import app.futured.donut.DonutProgressView;
 import app.futured.donut.DonutSection;
 import io.realm.RealmList;
@@ -82,7 +82,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         if (budget == 0) {
             List<DonutSection> list = getListOfExpenses(checkListItems, errorMessage, budget);
 
-            if(list != null) {
+            if (list != null) {
                 if (list.size() > 1) {
                     updateErrorMessage("\n\n" + "Budget is missing, add using " +
                             budgetKey + "XXXX" + "\n\nExample: " + budgetKey + "1000");
@@ -161,10 +161,9 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                         currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + 1);
 
                         try {
-                            if(currentTokenTrimmed.isEmpty()) {
+                            if (currentTokenTrimmed.isEmpty()) {
                                 wrongFormatList.add(expenseKey + currentTokenTrimmed);
-                            }
-                            else {
+                            } else {
                                 double currentTokenDouble = (isNegative ? -1 : 1) * Double.parseDouble(currentTokenTrimmed);
                                 currentExpenseAmount += currentTokenDouble;
                                 currentSubExpenseTotal += currentTokenDouble;
@@ -195,10 +194,9 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                             currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + 1);
 
                             try {
-                                if(currentTokenTrimmed.isEmpty()) {
+                                if (currentTokenTrimmed.isEmpty()) {
                                     wrongFormatList.add(expenseKey + currentTokenTrimmed);
-                                }
-                                else {
+                                } else {
                                     double currentTokenDouble = (isNegative ? -1 : 1) * Double.parseDouble(currentTokenTrimmed);
                                     currentExpenseAmount += currentTokenDouble;
                                     currentSubExpenseTotal += currentTokenDouble;

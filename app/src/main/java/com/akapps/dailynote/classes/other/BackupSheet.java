@@ -1,36 +1,28 @@
 package com.akapps.dailynote.classes.other;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.biometric.BiometricManager;
 
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
-import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.NotNull;
 
-import www.sanju.motiontoast.MotionToast;
-
 public class BackupSheet extends RoundedBottomSheetDialogFragment {
 
-    public BackupSheet() { }
+    public BackupSheet() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

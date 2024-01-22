@@ -6,18 +6,15 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,7 +22,6 @@ import android.widget.TextView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.AppWidget;
 import com.google.android.material.textfield.TextInputEditText;
@@ -51,7 +47,9 @@ public class WidgetConfigureActivity extends Activity {
     private SimpleArrayAdapter adapter;
     private ListView listView;
 
-    public WidgetConfigureActivity() { super(); }
+    public WidgetConfigureActivity() {
+        super();
+    }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -70,10 +68,10 @@ public class WidgetConfigureActivity extends Activity {
             allArrayListNotes = new ArrayList<>();
             allNotes = AppData.getAllNotes(WidgetConfigureActivity.this);
 
-            for(Note currentNote: allNotes)
+            for (Note currentNote : allNotes)
                 allHashMapNotes.put(currentNote.getTitle(), currentNote.getNoteId());
 
-            if(allHashMapNotes.size() == 0)
+            if (allHashMapNotes.size() == 0)
                 allHashMapNotes.put("No notes or checklists found, search something else...", -1);
 
             initializeLayout();
@@ -93,7 +91,7 @@ public class WidgetConfigureActivity extends Activity {
         }
     }
 
-    private void initializeLayout(){
+    private void initializeLayout() {
         searchNoteLayout = (TextInputLayout) findViewById(R.id.search_edittext_layout);
         searchNoteEditText = (TextInputEditText) findViewById(R.id.search_edittext);
         listView = (ListView) findViewById(R.id.list);
@@ -115,19 +113,20 @@ public class WidgetConfigureActivity extends Activity {
 
         searchNoteEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(allNotes.isEmpty()) return;
+                if (allNotes.isEmpty()) return;
 
                 allHashMapNotes.clear();
                 allArrayListNotes.clear();
-                for(Note currentNote: allNotes)
+                for (Note currentNote : allNotes)
                     if (currentNote.getTitle().toLowerCase().contains(s.toString().toLowerCase()))
                         allHashMapNotes.put(currentNote.getTitle(), currentNote.getNoteId());
 
-                if(allHashMapNotes.size() == 0)
+                if (allHashMapNotes.size() == 0)
                     allHashMapNotes.put("No notes or checklists found, search something else...", -1);
 
                 updateArrayListNotes();
@@ -135,14 +134,15 @@ public class WidgetConfigureActivity extends Activity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            String  widgetText = (String) listView.getItemAtPosition(position);
+            String widgetText = (String) listView.getItemAtPosition(position);
 
-            if(widgetText.equals("No notes or checklists found, search something else...")) { }
-            else
+            if (widgetText.equals("No notes or checklists found, search something else...")) {
+            } else
                 createWidget(getApplicationContext(), widgetText, allHashMapNotes.get(widgetText));
         });
     }

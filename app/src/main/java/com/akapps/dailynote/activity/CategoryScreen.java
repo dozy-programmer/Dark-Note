@@ -28,8 +28,6 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
-import com.akapps.dailynote.classes.helpers.BackupRealm;
-import com.akapps.dailynote.classes.helpers.BackupRealmHelper;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -75,7 +73,6 @@ public class CategoryScreen extends AppCompatActivity {
 
     // on-device database
     private RealmResults<Note> allNotes;
-    private RealmResults<Folder> allCategories;
     private RealmResults<Note> allSelectedNotes;
     private RealmResults<Note> uncategorizedNotes;
     private RealmResults<Note> archivedAllNotes;
@@ -114,8 +111,6 @@ public class CategoryScreen extends AppCompatActivity {
             editingRegularNote = getIntent().getBooleanExtra("editing_reg_note", false);
             multiSelect = getIntent().getBooleanExtra("multi_select", false);
         }
-
-        allCategories = RealmSingleton.getInstance(context).where(Folder.class).sort("positionInList").findAll();
 
         allNotes = RealmSingleton.getInstance(context).where(Note.class).findAll();
         archivedAllNotes = RealmSingleton.getInstance(context).where(Note.class)
@@ -289,18 +284,18 @@ public class CategoryScreen extends AppCompatActivity {
                 int started = dragged.getAbsoluteAdapterPosition();
                 int ended = target.getAbsoluteAdapterPosition();
 
-                Folder item = allCategories.get(started);
-                Folder item2 = allCategories.get(ended);
+                Folder item = RealmHelper.getAllFolders(context).get(started);
+                Folder item2 = RealmHelper.getAllFolders(context).get(ended);
                 RealmSingleton.getInstance(context).beginTransaction();
                 if (Math.abs(ended - started) > 1) {
                     if (started < ended) {
-                        Folder item3 = allCategories.get(started + 1);
+                        Folder item3 = RealmHelper.getAllFolders(context).get(started + 1);
                         int middlePosition = item3.getPositionInList();
                         item.setPositionInList(ended);
                         item3.setPositionInList(started);
                         item2.setPositionInList(middlePosition);
                     } else {
-                        Folder item3 = allCategories.get(started - 1);
+                        Folder item3 = RealmHelper.getAllFolders(context).get(started - 1);
                         int middlePosition = item3.getPositionInList();
                         item.setPositionInList(ended);
                         item3.setPositionInList(started);
@@ -499,7 +494,7 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     private void populateCategories() {
-        categoriesAdapter = new categories_recyclerview(allCategories, CategoryScreen.this, context);
+        categoriesAdapter = new categories_recyclerview(RealmHelper.getAllFolders(context), CategoryScreen.this, context);
         customCategories.setAdapter(categoriesAdapter);
     }
 
@@ -514,7 +509,7 @@ public class CategoryScreen extends AppCompatActivity {
 
     private void checkEmpty() {
         showEmptyMessage.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-        if(RealmHelper.getUser(context, "in space").isDisableAnimation())
+        if (RealmHelper.getUser(context, "in space").isDisableAnimation())
             emptyNoAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
         else
             emptyAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
@@ -532,7 +527,8 @@ public class CategoryScreen extends AppCompatActivity {
         Intent home = new Intent();
         setResult(resultCode, home);
         finish();
-        if (!AppData.isDisableAnimation) overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
+        if (!AppData.isDisableAnimation)
+            overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 
     private void showInfoDialog() {
@@ -545,10 +541,10 @@ public class CategoryScreen extends AppCompatActivity {
         folderItemSheet.show(getSupportFragmentManager(), folderItemSheet.getTag());
     }
 
-    private int getNumberOfNotesWithPhotos(RealmResults<Note> allNotes){
+    private int getNumberOfNotesWithPhotos(RealmResults<Note> allNotes) {
         int notesWithPhotos = 0;
-        for(Note currentNote : allNotes){
-            if(RealmSingleton.getInstance(context).where(Photo.class)
+        for (Note currentNote : allNotes) {
+            if (RealmSingleton.getInstance(context).where(Photo.class)
                     .equalTo("noteId", currentNote.getNoteId()).findAll().size() > 0)
                 notesWithPhotos++;
         }

@@ -17,11 +17,9 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Place;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.AudioManager;
 import com.akapps.dailynote.classes.helpers.Helper;
-import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -104,8 +102,8 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
             if (audioManager != null && audioManager.isRecording())
                 audioManager.stopRecording();
             if (!Helper.isFileEmpty(recordToFilePath)) {
-                CheckListItem voiceItem = ((NoteEdit) getActivity()).addCheckList("", new Place(), "");
-                ((NoteEdit) getActivity()).addCheckList(voiceItem.getSubListId(), recordToFilePath, AppData.timerDuration);
+                CheckListItem item = ((NoteEdit) getActivity()).addCheckList("", new Place(), "");
+                ((NoteEdit) getActivity()).addCheckList(item.getSubListId(), recordToFilePath, AppData.timerDuration);
             }
             dismiss();
         });

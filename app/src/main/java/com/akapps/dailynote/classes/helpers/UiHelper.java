@@ -22,15 +22,15 @@ public class UiHelper {
         return context.getColor(colorName);
     }
 
-    public static User.Mode getTheme(Context context){
+    public static User.Mode getTheme(Context context) {
         return RealmHelper.getUser(context, "get theme style").getScreenMode();
     }
 
-    public static boolean getLightThemePreference(Context context){
+    public static boolean getLightThemePreference(Context context) {
         return Helper.getBooleanPreference(context, themePreferenceKey);
     }
 
-    public static void saveLightThemePreference(Context context, User.Mode newTheme){
+    public static void saveLightThemePreference(Context context, User.Mode newTheme) {
         Helper.saveBooleanPreference(context, newTheme == User.Mode.Light, themePreferenceKey);
     }
 
@@ -56,7 +56,7 @@ public class UiHelper {
         return String.format("#%06X", (0xFFFFFF & getColorFromTheme(activity, colorAttr)));
     }
 
-    public static CustomColor getImagePickerTheme(Activity activity){
+    public static CustomColor getImagePickerTheme(Activity activity) {
         CustomColor dialogColors = new CustomColor();
         dialogColors.setBackground(getColorFromThemeHex(activity, R.attr.primaryBackgroundColor));
         dialogColors.setStatusBar(getColorFromThemeHex(activity, R.attr.primaryBackgroundColor));
@@ -87,7 +87,8 @@ public class UiHelper {
 
     public static void setStatusBarColor(Activity activity) {
         activity.getWindow().setStatusBarColor(getColorFromTheme(activity, R.attr.primaryBackgroundColor));
-        if(getLightThemePreference(activity)) activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        if (getLightThemePreference(activity))
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
     }
 
     public static void setBottomSheetBehavior(View view, final Dialog dialog) {
@@ -95,7 +96,7 @@ public class UiHelper {
             if (dialog != null) {
                 FrameLayout bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
                 if (bottomSheet != null) {
-                    BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }

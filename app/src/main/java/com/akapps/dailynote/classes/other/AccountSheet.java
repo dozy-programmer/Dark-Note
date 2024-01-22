@@ -1,6 +1,5 @@
 package com.akapps.dailynote.classes.other;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.akapps.dailynote.R;
-import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -152,7 +150,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
                                 currentUser.setProUser(true);
                                 realm.commitTransaction();
                                 dialog.dismiss();
-                                Helper.restart(getActivity(), false);
+                                Helper.restart(getActivity());
                             } else {
                                 mAuth.getCurrentUser().sendEmailVerification()
                                         .addOnCompleteListener(task3 -> {

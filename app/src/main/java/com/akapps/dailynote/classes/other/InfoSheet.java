@@ -23,6 +23,7 @@ import com.akapps.dailynote.activity.SettingsScreen;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -107,7 +108,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         this.isAppLocked = isAppLocked;
     }
 
-    public InfoSheet(String title, String permission){
+    public InfoSheet(String title, String permission) {
         message = 13;
         this.titleText = title;
         this.permission = permission;
@@ -179,14 +180,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             backup.setVisibility(View.VISIBLE);
             securityWord.setVisibility(View.GONE);
             backup.setText("DELETE");
-            if(message == 14){
+            if (message == 14) {
                 title.setText("Deleting Link to Other Note...");
                 info.setText("Are you sure you want to delete link?");
                 backup.setText("YES");
                 delete.setText("No");
                 delete.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 if (message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
                     backup.setText("TRASH");
@@ -341,16 +341,16 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
-        } else if(message == 13){
+        } else if (message == 13) {
             title.setText(titleText);
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
             String feature = "Backup";
-            if(permission.equals(Manifest.permission.POST_NOTIFICATIONS))
+            if (permission.equals(Manifest.permission.POST_NOTIFICATIONS))
                 feature = "Reminders";
-            else if(permission.equals(Manifest.permission.RECORD_AUDIO))
+            else if (permission.equals(Manifest.permission.RECORD_AUDIO))
                 feature = "Audio";
-            else if(permission.equals(Manifest.permission.READ_MEDIA_IMAGES))
+            else if (permission.equals(Manifest.permission.READ_MEDIA_IMAGES))
                 feature = "Photos";
             info.setText("This permission needs to be enabled so that you can use the " + feature + " feature. " +
                     (feature.equals("Photos") ? "\n\nPlease Select [ALLOW ALL] for best image picking experience" : "") +
@@ -372,12 +372,11 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
         backup.setOnClickListener(v -> {
             if (message == 3 || message == -3 || message == 14) {
-                if(message == 14){
+                if (message == 14) {
                     redirectNote.setText("");
                     redirectNote.setVisibility(View.GONE);
                     dismiss();
-                }
-                else if (deleteMultipleNotes)
+                } else if (deleteMultipleNotes)
                     ((notes) fragmentActivity).deleteMultipleNotes(false);
                 else {
                     ((NoteEdit) getActivity()).deleteNote(false);
@@ -401,10 +400,10 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 currentUser.setEmail("");
                 currentUser.setProUser(false);
                 RealmSingleton.getInstance(getContext()).commitTransaction();
-                Helper.restart(getActivity(), false);
+                Helper.restart(getActivity());
             } else if (message == 9)
                 ((NoteEdit) getActivity()).removeFormatting();
-            else if (message == 13){
+            else if (message == 13) {
                 switch (permission) {
                     case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                         ((SettingsScreen) getActivity()).requestBackupPermissions();
@@ -425,7 +424,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         });
 
         delete.setOnClickListener(view1 -> {
-            if(message == 14)
+            if (message == 14)
                 this.dismiss();
             else if (deleteMultipleNotes)
                 ((notes) fragmentActivity).deleteMultipleNotes(true);
@@ -439,7 +438,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private Date addDate(String currentDate) {
-        String fileName = currentDate.replace("_backup.zip", "");
+        String fileName = currentDate.replace("_" + AppConstants.BACKUP_ZIP_FILE_NAME, "");
         String[] splitDate = fileName.split("~");
         String newDate = splitDate[0] + " " + splitDate[1];
         SimpleDateFormat formatter = new SimpleDateFormat("MMMM_dd_yyyy hh_mm_a");

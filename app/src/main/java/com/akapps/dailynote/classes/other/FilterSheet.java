@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -18,7 +20,9 @@ import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+
 import org.jetbrains.annotations.NotNull;
+
 import www.sanju.motiontoast.MotionToast;
 
 public class FilterSheet extends RoundedBottomSheetDialogFragment {
@@ -72,8 +76,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
             if (dateType.equals("dateCreatedMilli")) {
                 setColor(createdDateButton, primaryButtonColor);
                 createdDate = true;
-            }
-            else if (dateType.equals("dateEditedMilli")) {
+            } else if (dateType.equals("dateEditedMilli")) {
                 setColor(editedDateButton, primaryButtonColor);
                 editedDate = true;
             }

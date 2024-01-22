@@ -10,7 +10,7 @@ public class AlertDismissReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int notificationId = intent.getIntExtra("notificationId", -1);
 
-        if(notificationId != -1) {
+        if (notificationId != -1) {
             // cancel notification
             Helper.cancelNotification(context, notificationId);
         }

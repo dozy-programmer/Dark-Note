@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.text.Html;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,7 +44,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
-import androidx.documentfile.provider.DocumentFile;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
@@ -306,19 +304,16 @@ public class Helper {
         return calendar;
     }
 
-    public static String convertToTwentyFourHour(String input, boolean isTwentyFourHourFormat) {
+    public static String convertToTwentyFourHour(String input) {
         // Parse the original string into a Date object
         String inputBefore = input;
         input = input.replaceAll("\\.", "");
-        SimpleDateFormat format;
-        if(isTwentyFourHourFormat)
-            format = new SimpleDateFormat("E, MMM dd, yyyy\nHH:mm:ss");
-        else
-            format = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa");
-        Date dateFormatted = null;
+        SimpleDateFormat format = new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa");
+        SimpleDateFormat displayFormat = new SimpleDateFormat("E, MMM dd, yyyy\nHH:mm:ss");
+        Date dateFormatted;
         try {
             dateFormatted = format.parse(input);
-            return dateFormatted.toString();
+            return displayFormat.format(dateFormatted);
         } catch (Exception e) {
             Log.d("Here", "error occurred -> " + inputBefore);
             return inputBefore;
@@ -845,17 +840,14 @@ public class Helper {
                                 String filename = file.getFileName().toString();
                                 if (filename.contains(".zip")) {
                                     Files.delete(file);
-                                }
-                                else if(filename.contains(".txt") || filename.contains(".realm")){
+                                } else if (filename.contains(".txt") || filename.contains(".realm")) {
                                     Files.delete(file);
-                                }
-                                else if (filename.contains(".png")){
+                                } else if (filename.contains(".png")) {
                                     boolean isFileInUse = allImagePaths.stream().anyMatch(element -> element.toLowerCase().contains(filename.replace(".png", "").toLowerCase()));
-                                    if(!isFileInUse) Files.delete(file);
-                                }
-                                else if (filename.contains(".mp4") || filename.contains(".mp3")){
+                                    if (!isFileInUse) Files.delete(file);
+                                } else if (filename.contains(".mp4") || filename.contains(".mp3")) {
                                     boolean isFileInUse = allAudioPaths.stream().anyMatch(element -> element.toLowerCase().contains(filename.replace(".mp4", "").replace(".mp3", "").toLowerCase()));
-                                    if(!isFileInUse) Files.delete(file);
+                                    if (!isFileInUse) Files.delete(file);
                                 }
                             } catch (Exception e) {
                                 Log.e("Error", "Failed to process file: " + file, e);
@@ -1060,7 +1052,7 @@ public class Helper {
         return decimalFormat.format(number);
     }
 
-    public static void restart(Activity activity, boolean recreate) {
+    public static void restart(Activity activity) {
         RealmSingleton.setCloseRealm(false);
         Intent intent = new Intent(activity, activity.getClass());
         activity.startActivity(intent);

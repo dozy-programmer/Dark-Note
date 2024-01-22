@@ -4,16 +4,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.google.android.material.card.MaterialCardView;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses_recyclerview.MyViewHolder>{
+public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses_recyclerview.MyViewHolder> {
 
     // project data
     private ArrayList<SubExpense> expenses;
@@ -60,7 +63,7 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
         holder.expenseAmount.setText(expenseKey + Helper.formatToTwoDecimalPlaces(currentExpense.getTotalExpenseAmount()));
         holder.expensePercentage.setText(formatPercentage(currentExpense.getTotalExpenseAmount() / totalBudget));
 
-        if(position == expenses.size() - 1)
+        if (position == expenses.size() - 1)
             holder.background.setStrokeColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.primaryButtonColor));
     }
 
@@ -69,7 +72,7 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
         return expenses.size();
     }
 
-    private String formatPercentage(double number){
+    private String formatPercentage(double number) {
         DecimalFormat df = new DecimalFormat("#,##0.00%");
         return String.format("%7s", df.format(number));
     }

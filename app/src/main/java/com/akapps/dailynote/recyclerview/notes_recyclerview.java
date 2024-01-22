@@ -53,7 +53,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final Fragment noteFragment;
     private final boolean showPreview;
     private final boolean showPreviewNotesInfo;
-    private final boolean isTwentyFourHourFormat;
 
     // database
     private final User currentUser;
@@ -120,7 +119,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
         currentUser = RealmHelper.getUser(context, "notes_recyclerview");
-        isTwentyFourHourFormat = currentUser.isTwentyFourHourFormat();
         notesSize = allNotes.size();
     }
 
@@ -138,7 +136,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         try {
             currentNote = allNotes.get(position);
         } catch (Exception e) {
-            Helper.restart(activity, false);
+            Helper.restart(activity);
             return;
         }
         int noteId = currentNote.getNoteId();
@@ -151,11 +149,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         noteText = currentNote.getNote() == null ? "" : currentNote.getNote();
         boolean isNoteLocked = currentNote.getPinNumber() > 0;
         boolean hasReminder = currentNote.getReminderDateTime().length() > 0;
-        Note currentNoteUnmanaged = RealmSingleton.getInstance(context).copyFromRealm(currentNote);
 
         // populates note data into the recyclerview
         holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));
-        holder.note_edited.setText(Helper.convertToTwentyFourHour(currentNote.getDateEdited(), isTwentyFourHourFormat));
+        boolean isTwentyHourFormat = RealmHelper.getUser(context, "in recyclerview").isTwentyFourHourFormat();
+        holder.note_edited.setText(isTwentyHourFormat ?
+                Helper.convertToTwentyFourHour(currentNote.getDateEdited()) : currentNote.getDateEdited());
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
         if (Helper.isColorDark(currentNote.getBackgroundColor())) {
@@ -214,6 +213,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // if selecting multiple notes, it changes the color of the note outline
         // based on if it is selected or not
         if (enableSelectMultiple) {
+            if (!currentNote.isValid()) currentNote = RealmHelper.getCurrentNote(context, noteId);
             if (currentNote.isSelected())
                 holder.note_background.setStrokeColor(activity.getColor(R.color.red));
             else
@@ -470,11 +470,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (!enableSelectMultiple) {
                 openNoteActivity(noteId);
             } else {
-                if (currentNote.isSelected()) {
+                if (RealmHelper.getCurrentNote(context, noteId).isSelected()) {
                     saveSelected(noteId, false);
                     holder.note_background.setStrokeColor(RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark ?
-                            Helper.darkenColor(currentNote.getBackgroundColor(), 0)
-                            : currentNote.getBackgroundColor());
+                            Helper.darkenColor(RealmHelper.getCurrentNote(context, noteId).getBackgroundColor(), 0)
+                            : RealmHelper.getCurrentNote(context, noteId).getBackgroundColor());
                     holder.note_background.setStrokeWidth(10);
                     ((notes) noteFragment).numberSelected(0, 1, -1);
                 } else {
@@ -535,7 +535,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         try {
             return allNotes.size();
         } catch (Exception e) {
-            Helper.restart(activity, false);
+            Helper.restart(activity);
             return notesSize;
         }
     }

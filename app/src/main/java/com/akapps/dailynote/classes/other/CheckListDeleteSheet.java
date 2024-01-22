@@ -26,7 +26,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class CheckListDeleteSheet extends RoundedBottomSheetDialogFragment {
 
-    public CheckListDeleteSheet() { }
+    public CheckListDeleteSheet() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,18 +46,16 @@ public class CheckListDeleteSheet extends RoundedBottomSheetDialogFragment {
         });
 
         confirmButton.setOnClickListener(view1 -> {
-            if(isSelected.get() == 0){
+            if (isSelected.get() == 0) {
                 title.setText("Please Select One to Delete");
-            }
-            else if(counter.get() == 0){
+            } else if (counter.get() == 0) {
                 confirmButton.setStrokeColor(ColorStateList.valueOf(
                         UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor)
                 ));
                 title.setText("Are you sure you want to delete?");
                 confirmButton.setText("YES");
                 counter.getAndIncrement();
-            }
-            else{
+            } else {
                 String selectedText = selected.get().getText().toString().replace("Items", "").trim().toLowerCase();
                 ((NoteEdit) getActivity()).deleteChecklist(selectedText);
                 dismiss();

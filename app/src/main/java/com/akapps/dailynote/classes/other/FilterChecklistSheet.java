@@ -22,8 +22,6 @@ import com.google.android.material.card.MaterialCardView;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.realm.Realm;
-
 public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
 
     private Note currentNote;

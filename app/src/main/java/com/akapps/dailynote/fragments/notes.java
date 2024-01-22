@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.storage.StorageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -173,7 +172,7 @@ public class notes extends Fragment {
 
         // before getting all notes, make sure all their date and millisecond parameters match
         RealmHelper.verifyDateWithMilli(context);
-        //updateDateEditedMilli();
+        updateDateEditedMilli(0);
         unSelectAllNotes();
 
         allNotes = getAllNotes();
@@ -182,6 +181,7 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
+        // Delete Un-needed files
         //Helper.deleteFloatingFiles(getActivity());
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -202,7 +202,7 @@ public class notes extends Fragment {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (currentTheme != UiHelper.getTheme(context)) {
-                        refreshFragment(true, true);
+                        refreshFragment(true);
                     } else if (!AppData.isDisableAnimation)
                         getActivity().overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
                 });
@@ -236,14 +236,14 @@ public class notes extends Fragment {
         if (isSearchingNotes) return;
 
         if (getRealm().isClosed())
-            new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true, false), 800);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
         else {
             adapterNotes.notifyDataSetChanged();
             try {
                 // if list is empty, then it shows an empty layout
                 isListEmpty(adapterNotes.getItemCount(), isNotesFiltered && adapterNotes.getItemCount() == 0);
             } catch (Exception e) {
-                new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true, false), 800);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
             }
 
             if (RealmSingleton.getInstance(context).where(Note.class).findAll().size() == 0)
@@ -455,7 +455,7 @@ public class notes extends Fragment {
         });
     }
 
-    private void updateDateEditedMilli() {
+    private void updateDateEditedMilli(int counter) {
         RealmResults<Note> resultsCreated = getRealm().where(Note.class)
                 .equalTo("dateCreatedMilli", 0)
                 .findAll();
@@ -482,8 +482,9 @@ public class notes extends Fragment {
             }
         }
 
-        if (resultsCreated.size() > 0 || resultsEdited.size() > 0)
-            updateDateEditedMilli();
+        if (resultsCreated.size() > 0 || resultsEdited.size() > 0) {
+            if (counter < 3) updateDateEditedMilli(++counter);
+        }
     }
 
     public void clearMultipleSelect() {
@@ -933,10 +934,6 @@ public class notes extends Fragment {
     }
 
     public void unSelectAllNotes() {
-        if (getRealm().isClosed()) {
-            refreshFragment(true, false);
-            return;
-        }
         RealmResults<Note> realmResults = getRealm().where(Note.class).equalTo("isSelected", true).findAll();
         if (realmResults.size() != 0) {
             getRealm().beginTransaction();
@@ -965,10 +962,10 @@ public class notes extends Fragment {
         adapterNotes.notifyDataSetChanged();
     }
 
-    private void refreshFragment(boolean refresh, boolean recreate) {
+    private void refreshFragment(boolean refresh) {
         if (refresh) {
             getActivity().getSupportFragmentManager().beginTransaction().detach(this).commit();
-            Helper.restart(getActivity(), recreate);
+            Helper.restart(getActivity());
         } else {
             getActivity().getSupportFragmentManager().beginTransaction().detach(this).attach(this).commit();
             clearVariables();

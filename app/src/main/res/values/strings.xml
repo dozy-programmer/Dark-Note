@@ -5,8 +5,8 @@
     <string name="schema">46</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v15.3</string>
-    <string name="app_version_int">15.3</string>
+    <string name="app_version">v15.6</string>
+    <string name="app_version_int">15.6</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -66,7 +66,7 @@
         <font color='#7A9CC7'>Icons from Flaticon</font>\n
         www.flaticon.com\n\n
 
-        Github Libraries Used:\n\n
+        Libraries Used:\n\n
 
         <font color='#7A9CC7'>Messages</font>\n
         https://github.com/Spikeysanju/MotionToast\n\n

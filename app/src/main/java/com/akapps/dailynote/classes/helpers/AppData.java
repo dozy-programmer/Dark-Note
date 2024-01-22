@@ -98,7 +98,7 @@ public class AppData {
 
     public static void updateNoteWidget(Context context, int noteId, int widgetId) {
         Note currentNote = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
-        if(currentNote == null) return;
+        if (currentNote == null) return;
 
         getRealm(context).beginTransaction();
         currentNote.setWidgetId(widgetId);
@@ -112,33 +112,32 @@ public class AppData {
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
     }
 
-    public static void resetWordFoundPositions(){
-        if(wordFoundPositions != null ) {
+    public static void resetWordFoundPositions() {
+        if (wordFoundPositions != null) {
             wordFoundPositions.clear();
             wordIndex = -1;
         }
     }
 
-    public static void addWordFoundPositions(int position){
+    public static void addWordFoundPositions(int position) {
         if (!wordFoundPositions.contains(position)) {
             wordFoundPositions.add(position);
             Log.d("Here", "positions -> " + AppData.getWordFoundPositions());
         }
     }
 
-    public static ArrayList<Integer> getWordFoundPositions(){
+    public static ArrayList<Integer> getWordFoundPositions() {
         return wordFoundPositions;
     }
 
-    public static int getIndexPosition(boolean isGoingUp){
-        if(isGoingUp){
-            if(wordIndex == 0 || wordIndex == -1)
+    public static int getIndexPosition(boolean isGoingUp) {
+        if (isGoingUp) {
+            if (wordIndex == 0 || wordIndex == -1)
                 wordIndex = getWordFoundPositions().size() - 1;
             else
                 wordIndex--;
-        }
-        else{
-            if(wordIndex == getWordFoundPositions().size() - 1 || wordIndex == -1)
+        } else {
+            if (wordIndex == getWordFoundPositions().size() - 1 || wordIndex == -1)
                 wordIndex = 0;
             else
                 wordIndex++;

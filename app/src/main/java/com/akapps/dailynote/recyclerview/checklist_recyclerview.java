@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import www.sanju.motiontoast.MotionToast;
 
 public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyclerview.MyViewHolder> {
 
@@ -54,6 +53,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private Context context;
     private final FragmentActivity activity;
     private String searchingForWord;
+    private final int checklistSize;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -98,6 +98,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         this.currentNote = currentNote;
         this.activity = activity;
         this.searchingForWord = searchingForWord;
+        checklistSize = checkList.size();
     }
 
     @Override
@@ -110,7 +111,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        CheckListItem checkListItem = checkList.get(position);
+        CheckListItem checkListItem;
+        try {
+            checkListItem = checkList.get(position);
+        } catch (Exception e) {
+            Helper.restart(activity);
+            return;
+        }
 
         // search for duplicate sublist id
         int duplicateSize = RealmSingleton.getInstance(context).where(CheckListItem.class)
@@ -238,8 +245,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                 checkListItem.setItemImage("");
                 RealmSingleton.get(context).commitTransaction();
                 holder.itemImageLayout.setVisibility(View.GONE);
-            }
-            else
+            } else
                 Glide.with(context).load(checkListItem.getItemImage()).into(holder.itemImage);
         } else
             holder.itemImageLayout.setVisibility(View.GONE);
@@ -347,7 +353,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
     @Override
     public int getItemCount() {
-        return checkList.size();
+        try {
+            return checkList.size();
+        } catch (Exception e) {
+            Helper.restart(activity);
+            return checklistSize;
+        }
     }
 
     @Override

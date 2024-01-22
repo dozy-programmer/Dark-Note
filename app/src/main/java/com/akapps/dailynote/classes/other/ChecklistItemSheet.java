@@ -32,7 +32,6 @@ import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
@@ -46,7 +45,6 @@ import com.bumptech.glide.Glide;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -210,7 +208,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     }
                 }
                 int atIndex = s.toString().lastIndexOf("@");
-                if(isSubChecklist) return;
+                if (isSubChecklist) return;
                 if (atIndex != -1 && atIndex < s.length() - 1) { // Ensure "@" exists and isn't the last character
                     redirectToNote.setVisibility(View.GONE);
                     wordAfterAt = s.toString().substring(atIndex + 1); // Extract word
@@ -575,9 +573,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             ArrayList<Image> images = data.getParcelableArrayListExtra(Constants.EXTRA_IMAGES);
             if (!images.isEmpty()) {
                 createImageFile = Helper.createFile(getActivity(), "image", ".png");
-                filePath = Helper.createFile(getContext(),  images.get(0).getUri(), createImageFile).getAbsolutePath();
-            }
-            else return;
+                filePath = Helper.createFile(getContext(), images.get(0).getUri(), createImageFile).getAbsolutePath();
+            } else return;
 
             if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
                 File fdelete = new File(currentItem.getItemImage());

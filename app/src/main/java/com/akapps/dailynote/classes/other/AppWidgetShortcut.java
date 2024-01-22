@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -27,10 +28,10 @@ public class AppWidgetShortcut extends AppWidgetProvider {
         }
     }
 
-    private PendingIntent createPendingIntent(Context context, boolean isChecklist){
+    private PendingIntent createPendingIntent(Context context, boolean isChecklist) {
         // Create an Intent to launch NoteEdit
         Intent intent = new Intent(context, NoteEdit.class);
-        if(isChecklist) {
+        if (isChecklist) {
             intent.putExtra("isChecklist", true);
             intent.setAction(Intent.ACTION_CREATE_SHORTCUT);
         }

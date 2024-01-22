@@ -16,11 +16,11 @@ public class RealmSingleton {
         // Private constructor to prevent instantiation
     }
 
-    public static Realm getOnlyRealm(){
+    public static Realm getOnlyRealm() {
         return realmInstance;
     }
 
-    public static Realm get(Context context){
+    public static Realm get(Context context) {
         return getInstance(context);
     }
 
@@ -36,26 +36,26 @@ public class RealmSingleton {
         return realmInstance;
     }
 
-    public static User getUser(Context context){
-        if(user == null || !user.isValid()) RealmHelper.getUser(context, "");
+    public static User getUser(Context context) {
+        if (user == null || !user.isValid()) RealmHelper.getUser(context, "");
         return user;
     }
 
-    public static void updateUser(User updatedUser){
+    public static void updateUser(User updatedUser) {
         user = updatedUser;
     }
 
-    public static void setCloseRealm(boolean newValue){
+    public static void setCloseRealm(boolean newValue) {
         closeRealm = newValue;
     }
 
     public static void closeRealmInstance(String location) {
-        if(realmInstance == null || realmInstance.isClosed()){}
-        else if (closeRealm) {
+        if (realmInstance == null || realmInstance.isClosed()) {
+        } else if (closeRealm) {
             realmInstance.close();
             realmInstance = null;
         }
-        if(closeRealm)
+        if (closeRealm)
             Log.d("Here", "realm instance CLOSED at " + location);
 
         setCloseRealm(true);

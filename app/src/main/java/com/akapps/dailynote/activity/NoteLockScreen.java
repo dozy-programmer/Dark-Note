@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
@@ -23,7 +24,9 @@ import com.akapps.dailynote.classes.other.InfoSheet;
 import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
+
 import java.util.concurrent.Executor;
+
 import www.sanju.motiontoast.MotionToast;
 
 public class NoteLockScreen extends AppCompatActivity {

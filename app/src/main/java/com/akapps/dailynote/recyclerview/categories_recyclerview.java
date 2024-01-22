@@ -8,14 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -24,7 +25,7 @@ import com.akapps.dailynote.classes.other.FolderItemSheet;
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
-public class categories_recyclerview extends RecyclerView.Adapter<categories_recyclerview.MyViewHolder>{
+public class categories_recyclerview extends RecyclerView.Adapter<categories_recyclerview.MyViewHolder> {
 
     // project data
     private RealmResults<Folder> allCategories;
@@ -78,17 +79,16 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         Helper.addNotificationNumber(activity, holder.folder_icon, numberOfNotesInCategory,
                 20, false, background, textColor);
 
-        if(currentFolder.getColor() != 0)
+        if (currentFolder.getColor() != 0)
             holder.folder_icon.setColorFilter(currentFolder.getColor());
         else
             holder.folder_icon.setColorFilter(UiHelper.getColorFromTheme(activity, R.attr.primaryButtonColor));
 
         holder.view.setOnClickListener(v -> {
-            if(((CategoryScreen)activity).isEditing) {
-                FolderItemSheet checklistItemSheet = new FolderItemSheet(currentFolder,this, position);
+            if (((CategoryScreen) activity).isEditing) {
+                FolderItemSheet checklistItemSheet = new FolderItemSheet(currentFolder, this, position);
                 checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
-            }
-            else {
+            } else {
                 Intent home = new Intent();
 
                 if (allSelectedNotes.size() == 0)

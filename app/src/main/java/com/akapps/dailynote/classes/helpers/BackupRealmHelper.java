@@ -33,7 +33,7 @@ public class BackupRealmHelper {
                 DataType.NOTE.name,
                 DataType.FOLDER.name,
                 DataType.PHOTO.name
-            )
+        )
         );
     }
 
@@ -53,7 +53,7 @@ public class BackupRealmHelper {
         return (isAtTop ? "" : "\n") + String.format(fileSectionHeader, isAtTop ? fileSectionTop : fileSectionEnd, className) + "\n";
     }
 
-    public static String getSection(String className, boolean isAtTop){
+    public static String getSection(String className, boolean isAtTop) {
         return createSectionHeader(className, isAtTop).replaceAll("\n", "");
     }
 

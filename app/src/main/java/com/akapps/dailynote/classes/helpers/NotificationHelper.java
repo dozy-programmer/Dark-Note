@@ -7,8 +7,10 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.NoteLockScreen;
@@ -48,7 +50,7 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationManager getManager() {
         return mManager == null ?
-            mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE) : mManager;
+                mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE) : mManager;
     }
 
     public NotificationCompat.Builder getChannelNotification() {
@@ -72,7 +74,7 @@ public class NotificationHelper extends ContextWrapper {
 
         // pending intent to open Note when notification is clicked
         PendingIntent contentIntent = PendingIntent.getActivity(this,
-                    noteId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                noteId, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // pending intent to dismiss reminder notification when dismiss button is pressed
         Intent dIntent = new Intent(this, AlertDismissReceiver.class);

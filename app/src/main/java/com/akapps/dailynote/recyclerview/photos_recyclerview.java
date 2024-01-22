@@ -30,6 +30,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
     private final FragmentActivity activity;
     private final Context context;
     private final boolean showDelete;
+    private final int photosSize;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final ImageView image;
@@ -56,6 +57,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
         this.activity = activity;
         this.context = context;
         this.showDelete = showDelete;
+        photosSize = allPhotos.size();
     }
 
     @Override
@@ -68,7 +70,13 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current photo object
-        Photo currentPhoto = allPhotos.get(position);
+        Photo currentPhoto;
+        try {
+            currentPhoto = allPhotos.get(position);
+        } catch (Exception e) {
+            Helper.restart(activity);
+            return;
+        }
 
         if (!showDelete) {
             holder.delete.setVisibility(View.GONE);
@@ -115,7 +123,12 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
 
     @Override
     public int getItemCount() {
-        return allPhotos.size();
+        try {
+            return allPhotos.size();
+        } catch (Exception e) {
+            Helper.restart(activity);
+            return photosSize;
+        }
     }
 
     // dialog to ensure user wants to delete photo
