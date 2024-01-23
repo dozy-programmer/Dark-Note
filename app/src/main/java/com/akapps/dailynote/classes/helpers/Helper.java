@@ -839,12 +839,7 @@ public class Helper {
                         .forEach(file -> {
                             try {
                                 String filename = file.getFileName().toString();
-                                if (filename.contains(".zip")) {
-                                    if (delete)
-                                        Files.delete(file);
-                                    else
-                                        unusedFiles.add(filename);
-                                } else if (filename.contains(".txt") || filename.contains(".realm")) {
+                                if (filename.contains(".txt") || filename.contains(".realm")) {
                                     if (delete)
                                         Files.delete(file);
                                     else

@@ -57,6 +57,7 @@ import com.akapps.dailynote.classes.data.Place;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AlertReceiver;
+import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -192,6 +193,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private final String ACTION_ADD_CHECKLIST = "android.intent.action.CREATE_SHORTCUT";
 
     private ActivityResultLauncher<Intent> startAlarmPermission;
+    private ActivityResultLauncher<Intent> categoryLauncher;
+
+    private boolean showLockScreen = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,6 +237,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteId = savedInstanceState.getInt("id");
 
         initializeLayout(savedInstanceState);
+        changeTextSize(true, getCurrentNote(context, noteId).isCheckList());
+        changeTextSize(false, getCurrentNote(context, noteId).isCheckList());
         UiHelper.setStatusBarColor(this);
 
         scrollView.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
@@ -267,6 +273,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         }
                     }
                 });
+
+        categoryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Log.d("Here", "launcher");
+                    showLockScreen = false;
+                }
+        );
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -355,8 +369,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("Here", "on resume");
 
-        if (RealmHelper.getNotePin(context, noteId) != 0 && isAppPaused) {
+        if (RealmHelper.getNotePin(context, noteId) != 0 && isAppPaused && showLockScreen) {
             RealmSingleton.setCloseRealm(false);
             Intent lockScreen = new Intent(this, NoteLockScreen.class);
             lockScreen.putExtra("id", getCurrentNote(context, noteId).getNoteId());
@@ -372,6 +387,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             category.setText(getCategoryName());
         }
         isAppPaused = false;
+        showLockScreen = true;
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -609,7 +625,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             getRealm().commitTransaction();
             Intent category = new Intent(NoteEdit.this, CategoryScreen.class);
             category.putExtra("editing_reg_note", true);
-            startActivity(category);
+            categoryLauncher.launch(category);
+            if (!AppData.isDisableAnimation)
+                overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
         });
 
         title.addTextChangedListener(new TextWatcher() {
@@ -1351,7 +1369,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 FilterChecklistSheet filter = new FilterChecklistSheet(noteId);
                 filter.show(getSupportFragmentManager(), filter.getTag());
             } else if (item.getTitle().equals("Lock")) {
-                LockSheet lockSheet = new LockSheet(false);
+                LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_NOTE, null);
                 lockSheet.show(getSupportFragmentManager(), lockSheet.getTag());
             } else if (item.getTitle().equals("Locked")) {
                 unLockNote();
@@ -1489,11 +1507,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void lockNote(int pin, String securityWord, boolean fingerprint) {
-        getRealm().beginTransaction();
-        getCurrentNote(context, noteId).setPinNumber(pin);
-        getCurrentNote(context, noteId).setSecurityWord(securityWord);
-        getCurrentNote(context, noteId).setFingerprint(fingerprint);
-        getRealm().commitTransaction();
+        RealmHelper.lockNote(context, noteId, pin, securityWord, fingerprint);
         updateSaveDateEdited();
         Helper.showMessage(this, "Note Locked", "Note has been " +
                 "locked", MotionToast.TOAST_SUCCESS);

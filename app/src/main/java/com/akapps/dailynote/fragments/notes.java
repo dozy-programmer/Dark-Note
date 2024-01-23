@@ -232,6 +232,8 @@ public class notes extends Fragment {
             Intent category = new Intent(getActivity(), CategoryScreen.class);
             Helper.setOrientation(getActivity(), context);
             startActivityForResult(category, 5);
+            if (!AppData.isDisableAnimation)
+                getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
         }
 
         return view;

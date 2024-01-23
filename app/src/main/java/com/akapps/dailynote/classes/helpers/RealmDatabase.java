@@ -201,6 +201,13 @@ public class RealmDatabase {
 
             if (!schema.get("CheckListItem").hasField("redirectToOtherNote"))
                 schema.get("CheckListItem").addField("redirectToOtherNote", int.class);
+
+            if (!schema.get("Folder").hasField("pin"))
+                schema.get("Folder").addField("pin", int.class);
+            if (!schema.get("Folder").hasField("securityWord"))
+                schema.get("Folder").addField("securityWord", String.class);
+            if (!schema.get("Folder").hasField("isFingerprintAdded"))
+                schema.get("Folder").addField("isFingerprintAdded", boolean.class);
         }
     }
 }

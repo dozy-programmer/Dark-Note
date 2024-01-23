@@ -16,8 +16,10 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -31,6 +33,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -38,7 +42,7 @@ import www.sanju.motiontoast.MotionToast;
 
 public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
-    private Folder currentItem;
+    private int folderId;
     private boolean isAdding;
     private RecyclerView.Adapter adapter;
     private int position;
@@ -59,9 +63,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     private TextInputEditText itemName;
 
     // editing
-    public FolderItemSheet(Folder checkListItem, RecyclerView.Adapter adapter, int position) {
+    public FolderItemSheet(int folderId, RecyclerView.Adapter adapter, int position) {
         isAdding = false;
-        this.currentItem = checkListItem;
+        this.folderId = folderId;
         this.allSelectedNotes = RealmSingleton.getInstance(getContext()).where(Note.class).equalTo("isSelected", true).findAll();
         this.adapter = adapter;
         this.position = position;
@@ -69,7 +73,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet_folder_item, container, false);
+        View view = inflater.inflate(R.layout.bottom_sheet_folder, container, false);
 
         if (savedInstanceState != null) {
             isAdding = savedInstanceState.getBoolean("add");
@@ -85,6 +89,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
         MaterialButton next = view.findViewById(R.id.next_confirm);
         MaterialButton delete = view.findViewById(R.id.delete);
+        MaterialButton lockFolder = view.findViewById(R.id.lock);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
@@ -92,15 +97,19 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
         itemName.requestFocusFromTouch();
 
+        AtomicReference<Folder> currentFolder = new AtomicReference<>(RealmHelper.getCurrentFolder(getContext(), folderId));
+
         if (isAdding) {
             title.setText("Adding");
             delete.setVisibility(View.GONE);
         } else {
             title.setText("Editing");
             try {
-                itemName.setText(currentItem.getName());
-                folderColor.setCardBackgroundColor(currentItem.getColor() == 0 ? getContext().getColor(R.color.azure) : currentItem.getColor());
+                itemName.setText(currentFolder.get().getName());
+                folderColor.setCardBackgroundColor(currentFolder.get().getColor() == 0 ? getContext().getColor(R.color.azure) : currentFolder.get().getColor());
                 itemName.setSelection(itemName.getText().toString().length());
+                if (currentFolder.get().getPin() > 0)
+                    lockFolder.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
                 delete.setVisibility(View.VISIBLE);
                 next.setVisibility(View.GONE);
             } catch (Exception e) {
@@ -108,12 +117,43 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             }
         }
 
-        folderColor.setOnClickListener(v -> editColorDialog(currentItem));
+        folderColor.setOnClickListener(v -> editColorDialog(currentFolder.get()));
 
         delete.setOnClickListener(v -> {
             if (!isAdding) {
-                deleteCategory(currentItem);
-                this.dismiss();
+                deleteCategory(folderId);
+                dismiss();
+            }
+        });
+
+        lockFolder.setOnClickListener(view1 -> {
+            currentFolder.set(RealmHelper.getCurrentFolder(getContext(), folderId));
+            if (isAdding) {
+                if (AppData.pin > 0) {
+                    AppData.updateLockData(0, "", false);
+                    lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
+                    Helper.showMessage(getActivity(), "Folder Unlocked", "Folder has been unlocked", MotionToast.TOAST_SUCCESS);
+                } else {
+                    LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, lockFolder);
+                    lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
+                }
+            } else {
+                if (currentFolder.get().getPin() > 0) {
+                    getRealm().beginTransaction();
+                    currentFolder.get().setPin(0);
+                    currentFolder.get().setSecurityWord("");
+                    currentFolder.get().setFingerprintAdded(false);
+                    getRealm().commitTransaction();
+                    lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
+                    adapter.notifyDataSetChanged();
+                    RealmHelper.lockNotesInsideFolder(getContext(), folderId, false);
+                    Helper.showMessage(getActivity(), "Unlocked", "Folder & notes inside have been unlocked", MotionToast.TOAST_SUCCESS);
+
+                } else {
+                    LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder);
+                    lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
+                    this.dismiss();
+                }
             }
         });
 
@@ -164,24 +204,27 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private void editCategory(Folder current, String newName) {
-        allSelectedNotes = getRealm().where(Note.class).equalTo("category", current.getName()).findAll();
         // update database
-        getRealm().beginTransaction();
-        allSelectedNotes.setString("category", newName);
-        current.setName(newName);
-        getRealm().commitTransaction();
-        adapter.notifyItemChanged(position);
+        if (!current.getName().equals(newName)) {
+            allSelectedNotes = getRealm().where(Note.class).equalTo("category", current.getName()).findAll();
+            getRealm().beginTransaction();
+            allSelectedNotes.setString("category", newName);
+            current.setName(newName);
+            getRealm().commitTransaction();
+            adapter.notifyItemChanged(position);
+        }
         this.dismiss();
     }
 
-    private void deleteCategory(Folder current) {
+    private void deleteCategory(int folderId) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        allSelectedNotes = getRealm().where(Note.class).equalTo("category", current.getName()).findAll();
+        Folder folder = RealmHelper.getCurrentFolder(getContext(), folderId);
+        allSelectedNotes = getRealm().where(Note.class).equalTo("category", folder.getName()).findAll();
         // update database
+        RealmHelper.lockNotesInsideFolder(getContext(), folderId, false);
         getRealm().beginTransaction();
         allSelectedNotes.setString("category", "none");
-        current.deleteFromRealm();
+        folder.deleteFromRealm();
         getRealm().commitTransaction();
         adapter.notifyDataSetChanged();
     }
@@ -192,6 +235,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         RealmResults<Folder> results = getRealm().where(Folder.class)
                 .equalTo("name", itemText, Case.INSENSITIVE).findAll();
         Folder newItem = new Folder(itemText, allCategories.size());
+        if (AppData.pin > 0) {
+            newItem.setPin(AppData.pin);
+            newItem.setSecurityWord(AppData.securityWord);
+            newItem.setFingerprintAdded(AppData.isFingerprintAdded);
+        }
         newItem.setColor(color);
         if (results.size() == 0) {
             getRealm().beginTransaction();
@@ -205,11 +253,12 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout) {
+        Folder folder = RealmHelper.getCurrentFolder(getContext(), folderId);
         if (!itemName.getText().toString().isEmpty()) {
-            if (isAdding)
+            if (isAdding) {
                 addCategory(itemName.getText().toString(), color);
-            else
-                editCategory(currentItem, itemName.getText().toString());
+            } else
+                editCategory(folder, itemName.getText().toString());
             return true;
         } else
             itemNameLayout.setError("Required");

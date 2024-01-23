@@ -3,6 +3,7 @@ package com.akapps.dailynote.classes.helpers;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Backup;
@@ -245,6 +246,52 @@ public class RealmHelper {
 
     public static Note getCurrentNote(Context context, int noteId) {
         return getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
+    }
+
+    public static Folder getCurrentFolder(Context context, int folderId) {
+        return getRealm(context).where(Folder.class).equalTo("id", folderId).findFirst();
+    }
+
+    public static void lockNote(Context context, int noteId, int pin, String securityWord, boolean isFingerprintAdded) {
+        Note currentNote = getCurrentNote(context, noteId);
+        getRealm(context).beginTransaction();
+        currentNote.setPinNumber(pin);
+        currentNote.setSecurityWord(securityWord);
+        currentNote.setFingerprint(isFingerprintAdded);
+        getRealm(context).commitTransaction();
+    }
+
+    public static void lockNotesInsideFolder(Context context, int folderId, boolean lockFolders) {
+        Folder currentFolder = getCurrentFolder(context, folderId);
+        if (!currentFolder.isValid()) return;
+        RealmResults<Note> notesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
+                .equalTo("category", currentFolder.getName())
+                .findAll();
+
+        if (notesInsideFolder.size() > 0) {
+            getRealm(context).beginTransaction();
+            notesInsideFolder.setInt("pinNumber", lockFolders ? currentFolder.getPin() : 0);
+            notesInsideFolder.setString("securityWord", lockFolders ? currentFolder.getSecurityWord() : "");
+            notesInsideFolder.setBoolean("fingerprint", lockFolders && currentFolder.isFingerprintAdded());
+            getRealm(context).commitTransaction();
+        }
+    }
+
+    public static void lockNotesInsideFolder(Context context, int folderId, int pin, String securityWord, boolean isFingerprintAdded) {
+        RealmResults<Note> notesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
+                .equalTo("category", getCurrentFolder(context, folderId).getName())
+                .findAll();
+
+        Log.d("Here", "Folder -> " + getCurrentFolder(context, folderId).getName());
+        Log.d("Here", "Num Notes -> " + notesInsideFolder.size());
+
+        if (notesInsideFolder.size() > 0) {
+            getRealm(context).beginTransaction();
+            notesInsideFolder.setInt("pinNumber", pin);
+            notesInsideFolder.setString("securityWord", securityWord);
+            notesInsideFolder.setBoolean("fingerprint", isFingerprintAdded);
+            getRealm(context).commitTransaction();
+        }
     }
 
     public static boolean isNoteWidget(Context context, int noteId) {

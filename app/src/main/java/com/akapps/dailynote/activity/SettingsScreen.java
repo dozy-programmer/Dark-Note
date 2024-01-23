@@ -31,6 +31,7 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.BackupHelper;
 import com.akapps.dailynote.classes.helpers.FileHelper;
@@ -469,7 +470,7 @@ public class SettingsScreen extends AppCompatActivity {
 
         lockApp.setOnClickListener(view -> {
             if (getUser().getPinNumber() == 0) {
-                LockSheet lockSheet = new LockSheet(true);
+                LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_APP, null);
                 lockSheet.show(getSupportFragmentManager(), lockSheet.getTag());
             } else
                 unLockNote();
@@ -721,7 +722,7 @@ public class SettingsScreen extends AppCompatActivity {
         }
     }
 
-    public void lockNote(int pin, String securityWord, boolean fingerprint) {
+    public void lockApp(int pin, String securityWord, boolean fingerprint) {
         RealmSingleton.get(this).beginTransaction();
         getUser().setPinNumber(pin);
         getUser().setSecurityWord(securityWord);

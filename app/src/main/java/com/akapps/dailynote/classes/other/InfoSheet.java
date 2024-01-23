@@ -377,6 +377,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             if (message == 1) {
                 if (unUsedFiles != null & unUsedFiles.size() > 0) {
                     Helper.showFloatingFiles(getActivity(), true);
+                    Helper.showMessage(getActivity(), "Files Deleted", "Unused files no longer on device", MotionToast.TOAST_WARNING);
                 }
             } else if (message == 3 || message == -3 || message == 14) {
                 if (message == 14) {

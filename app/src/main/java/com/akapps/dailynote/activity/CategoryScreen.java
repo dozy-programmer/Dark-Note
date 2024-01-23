@@ -1,5 +1,6 @@
 package com.akapps.dailynote.activity;
 
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getRealm;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getColorFromTheme;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
@@ -496,6 +497,18 @@ public class CategoryScreen extends AppCompatActivity {
     private void populateCategories() {
         categoriesAdapter = new categories_recyclerview(RealmHelper.getAllFolders(context), CategoryScreen.this, context);
         customCategories.setAdapter(categoriesAdapter);
+    }
+
+    public void lockFolder(int folderId, int pin, String securityWord, boolean fingerprint) {
+        getRealm(context).beginTransaction();
+        RealmHelper.getCurrentFolder(context, folderId).setPin(pin);
+        RealmHelper.getCurrentFolder(context, folderId).setSecurityWord(securityWord);
+        RealmHelper.getCurrentFolder(context, folderId).setFingerprintAdded(fingerprint);
+        getRealm(context).commitTransaction();
+        RealmHelper.lockNotesInsideFolder(context, folderId, pin, securityWord, fingerprint);
+        categoriesAdapter.notifyDataSetChanged();
+        Helper.showMessage(this, "Folder Locked", "Folder and notes inside have been " +
+                "locked", MotionToast.TOAST_SUCCESS);
     }
 
     private void showErrorMessage() {

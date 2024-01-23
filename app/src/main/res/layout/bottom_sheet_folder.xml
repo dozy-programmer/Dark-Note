@@ -2,13 +2,11 @@
 
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbarThumbVertical="?primaryButtonColor"
     android:scrollbarSize="2dp"
-    android:scrollbars="vertical"
-    android:background="@android:color/transparent">
+    android:scrollbars="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -104,11 +102,11 @@
             app:layout_constraintTop_toTopOf="@+id/item_name_layout">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/color_icon"
-                android:tint="?primaryIconTintColor"/>
+                android:tint="?primaryIconTintColor" />
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
@@ -162,6 +160,23 @@
             android:layout_marginLeft="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/lock"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            app:backgroundTint="?secondaryBackgroundColor"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/unlock_icon"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="24dp"
+            app:iconTint="?primaryIconTintColor"
+            android:layout_marginStart="65dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8"
+            app:strokeColor="?primaryStrokeColor"
+            app:strokeWidth="2dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

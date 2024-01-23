@@ -7,4 +7,10 @@ public class AppConstants {
     public static String ZIP_EXTENSION = "zip";
 
     public static String UNUSED_FILES_MESSAGE = "unused_files_key";
+
+    public enum LockType {
+        LOCK_NOTE,
+        LOCK_APP,
+        LOCK_FOLDER
+    }
 }

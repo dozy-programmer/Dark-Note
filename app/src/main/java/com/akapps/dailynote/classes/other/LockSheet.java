@@ -13,12 +13,16 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.biometric.BiometricManager;
 
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
+import com.akapps.dailynote.classes.helpers.AppConstants.LockType;
+import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -28,14 +32,25 @@ import www.sanju.motiontoast.MotionToast;
 
 public class LockSheet extends RoundedBottomSheetDialogFragment {
 
-    private boolean isAppLock;
+    private LockType lockType;
+    private int folderId;
+    private MaterialButton lockIcon;
 
     public LockSheet() {
     }
 
-    public LockSheet(boolean isAppLock) {
-        this.isAppLock = isAppLock;
+    public LockSheet(LockType lockType, MaterialButton lockIcon) {
+        this.lockType = lockType;
+        folderId = -1;
+        this.lockIcon = lockIcon;
     }
+
+    public LockSheet(LockType lockType, int folderId, MaterialButton lockIcon) {
+        this.lockType = lockType;
+        this.folderId = folderId;
+        this.lockIcon = lockIcon;
+    }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,21 +64,19 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
         SwitchCompat fingerprint = view.findViewById(R.id.fingerprint);
         TextView title = view.findViewById(R.id.title);
 
-        if (isAppLock)
+        if (lockType == LockType.LOCK_APP) {
             title.setText("Lock App");
-        else
+            if (lockIcon != null) lockIcon.setVisibility(View.GONE);
+        } else if (lockType == LockType.LOCK_NOTE) {
             title.setText("Lock Note");
+            if (lockIcon != null) lockIcon.setVisibility(View.GONE);
+        } else if (lockType == LockType.LOCK_FOLDER)
+            title.setText("Lock Folder");
 
         boolean fingerprintFeatureExists;
         final boolean[] isFingerprintSelected = new boolean[1];
         BiometricManager biometricManager = BiometricManager.from(getActivity());
-        switch (biometricManager.canAuthenticate()) {
-            case BiometricManager.BIOMETRIC_SUCCESS:
-                fingerprintFeatureExists = true;
-                break;
-            default:
-                fingerprintFeatureExists = false;
-        }
+        fingerprintFeatureExists = biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS;
 
         lock.setOnClickListener(v -> {
             String pinText = pin.getText().toString();
@@ -71,10 +84,18 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
 
             if (pinText.length() >= 4 && pinText.length() <= 10) {
                 if (securityWordText.length() > 0) {
-                    if (isAppLock)
-                        ((SettingsScreen) getActivity()).lockNote(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
-                    else
+                    if (lockType == LockType.LOCK_APP)
+                        ((SettingsScreen) getActivity()).lockApp(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                    else if (lockType == LockType.LOCK_NOTE)
                         ((NoteEdit) getActivity()).lockNote(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                    else if (lockType == LockType.LOCK_FOLDER) {
+                        if (folderId == -1)
+                            AppData.updateLockData(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                        else
+                            ((CategoryScreen) getActivity()).lockFolder(folderId, Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                        if (lockIcon != null)
+                            lockIcon.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
+                    }
                     this.dismiss();
                 } else
                     securityWordLayout.setError("Required");

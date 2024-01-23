@@ -3,36 +3,55 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Required for functionalities (images, backups, audio note, fingerprint to unlock notes) !-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" tools:replace="android:maxSdkVersion"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="30" tools:replace="android:maxSdkVersion"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" android:minSdkVersion="30"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29"
+        tools:replace="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="30"
+        tools:replace="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
+        android:minSdkVersion="30" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <!-- Needed Analytics !-->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <!-- Needed for reminders !-->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- Needed for cloud backup and attaching locations to checklist items !-->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- List on Google Play that I use but don't !-->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" tools:node="remove"/>
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.ACCESS_WIFI_STATE"
+        tools:node="remove" />
+    <uses-permission
+        android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.USE_FINGERPRINT"
+        tools:node="remove" />
     <!-- Remove Places API Location Permission !-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:node="remove" />
 
     <application
         tools:replace="allowBackup"
@@ -47,13 +66,16 @@
         android:extractNativeLibs="false"
         android:enableOnBackInvokedCallback="true">
 
-        <receiver android:name=".classes.helpers.AlertReceiver"
+        <receiver
+            android:name=".classes.helpers.AlertReceiver"
             android:exported="false" />
 
-        <receiver android:name=".classes.helpers.AlertDismissReceiver"
+        <receiver
+            android:name=".classes.helpers.AlertDismissReceiver"
             android:exported="false" />
 
-        <receiver android:name=".classes.other.AppWidget"
+        <receiver
+            android:name=".classes.other.AppWidget"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -64,7 +86,8 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <receiver android:name=".classes.other.AppWidgetShortcut"
+        <receiver
+            android:name=".classes.other.AppWidgetShortcut"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -77,12 +100,12 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}"/>
+            android:value="${MAPS_API_KEY}" />
 
         <service
             android:name=".activity.WidgetListView"
             android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".activity.WidgetConfigureActivity"
@@ -98,7 +121,7 @@
             android:name=".activity.CategoryScreen"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activity.NoteLockScreen"
             android:exported="false" />
@@ -141,7 +164,8 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
 
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
@@ -149,11 +173,11 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"
-                tools:replace="android:resource"/>
+                tools:replace="android:resource" />
         </provider>
 
         <meta-data

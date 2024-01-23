@@ -22,6 +22,10 @@ public class AppData {
     public static ArrayList<Integer> wordFoundPositions;
     public static int wordIndex;
 
+    public static int pin;
+    public static String securityWord;
+    public static boolean isFingerprintAdded;
+
     private AppData() {
     }
 
@@ -32,6 +36,9 @@ public class AppData {
             isDisableAnimation = false;
             wordFoundPositions = new ArrayList<>();
             wordIndex = -1;
+            pin = 0;
+            securityWord = "";
+            isFingerprintAdded = false;
             appData = new AppData();
         }
         return appData;
@@ -39,6 +46,12 @@ public class AppData {
 
     private static Realm getRealm(Context context) {
         return RealmSingleton.getInstance(context);
+    }
+
+    public static void updateLockData(int pin, String securityWord, boolean isFingerprintAdded) {
+        AppData.pin = pin;
+        AppData.securityWord = securityWord;
+        AppData.isFingerprintAdded = isFingerprintAdded;
     }
 
     public static ArrayList<Note> getAllNotes(Context context) {

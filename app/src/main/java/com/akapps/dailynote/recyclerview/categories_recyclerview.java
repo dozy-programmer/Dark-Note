@@ -18,6 +18,7 @@ import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.FolderItemSheet;
@@ -36,6 +37,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView item_category;
         private final ImageView folder_icon;
+        private final ImageView lock_icon;
         private View view;
         private ConstraintLayout background;
 
@@ -43,6 +45,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
             super(v);
             item_category = v.findViewById(R.id.item_category);
             folder_icon = v.findViewById(R.id.folder_icon);
+            lock_icon = v.findViewById(R.id.lock_icon);
             view = v;
             background = v.findViewById(R.id.background);
         }
@@ -67,6 +70,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         // retrieves current photo object
         Folder currentFolder = allCategories.get(position);
+        int folderId = currentFolder.getId();
         int numberOfNotesInCategory =
                 RealmSingleton.getInstance(context).where(Note.class).equalTo("archived", false)
                         .equalTo("trash", false)
@@ -79,6 +83,8 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         Helper.addNotificationNumber(activity, holder.folder_icon, numberOfNotesInCategory,
                 20, false, background, textColor);
 
+        holder.lock_icon.setVisibility(currentFolder.getPin() > 0 ? View.VISIBLE : View.GONE);
+
         if (currentFolder.getColor() != 0)
             holder.folder_icon.setColorFilter(currentFolder.getColor());
         else
@@ -86,7 +92,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
 
         holder.view.setOnClickListener(v -> {
             if (((CategoryScreen) activity).isEditing) {
-                FolderItemSheet checklistItemSheet = new FolderItemSheet(currentFolder, this, position);
+                FolderItemSheet checklistItemSheet = new FolderItemSheet(folderId, this, position);
                 checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
             } else {
                 Intent home = new Intent();
@@ -111,6 +117,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                     Log.d("Here", "keep realm open in categories_recyclerview");
                     activity.setResult(5, home);
                     activity.finish();
+                    RealmHelper.lockNotesInsideFolder(context, folderId, true);
                 }
             }
         });
