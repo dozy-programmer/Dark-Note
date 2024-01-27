@@ -7,12 +7,14 @@ import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -254,7 +256,7 @@ public class CategoryScreen extends AppCompatActivity {
                 findViewById(R.id.locked_layout).setVisibility(View.GONE);
             } else {
                 int backgroundColor = getColorFromTheme(this, R.attr.primaryStrokeColor);
-                int noBackgroundColor = getColorFromTheme(this, R.attr.secondaryBackgroundColor);
+                int noBackgroundColor = getColor(R.color.transparent);
                 int textColor = getColorFromTheme(this, R.attr.primaryTextColor);
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
                         true, backgroundColor, textColor);
@@ -265,13 +267,13 @@ public class CategoryScreen extends AppCompatActivity {
                 Helper.addNotificationNumber(this, trash, trashAllNotes.size(), 0,
                         true, backgroundColor, textColor);
                 // buttons
-                Helper.addNotificationNumber(this, locked, lockedAllNotes.size(), 75,
+                Helper.addNotificationNumber(this, locked, lockedAllNotes.size(), 65,
                         true, noBackgroundColor, textColor);
-                Helper.addNotificationNumber(this, reminder, reminderAllNotes.size(), 75,
+                Helper.addNotificationNumber(this, reminder, reminderAllNotes.size(), 65,
                         true, noBackgroundColor, textColor);
-                Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 75,
+                Helper.addNotificationNumber(this, pinned, pinnedAllNotes.size(), 65,
                         true, noBackgroundColor, textColor);
-                Helper.addNotificationNumber(this, photos, getNumberOfNotesWithPhotos(allNotes), 75,
+                Helper.addNotificationNumber(this, photos, getNumberOfNotesWithPhotos(allNotes), 65,
                         true, noBackgroundColor, textColor);
             }
         }

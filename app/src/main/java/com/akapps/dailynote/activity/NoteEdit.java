@@ -469,10 +469,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         initializeEditor();
         updateColors();
 
+        if(getCurrentNote(context, noteId) == null){
+            finish("checklist is null");
+            return;
+        }
+
         if (getCurrentNote(context, noteId).isCheckList()) {
             sortChecklist("");
             showCheckListLayout(true);
-            //searchLayout.setVisibility(View.GONE);
             formatMenu.setVisibility(View.GONE);
             checkListRecyclerview.requestFocus();
         } else {

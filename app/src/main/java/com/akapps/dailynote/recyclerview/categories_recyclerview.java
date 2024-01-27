@@ -33,6 +33,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
     private RealmResults<Note> allSelectedNotes;
     private final FragmentActivity activity;
     private final Context context;
+    private final int categorySize;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView item_category;
@@ -57,6 +58,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         this.activity = activity;
         this.context = context;
         allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
+        categorySize = allCategories.size();
     }
 
     @Override
@@ -125,6 +127,11 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
 
     @Override
     public int getItemCount() {
-        return allCategories.size();
+        try {
+            return allCategories.size();
+        }catch (Exception e){
+            Helper.restart(activity);
+            return categorySize;
+        }
     }
 }

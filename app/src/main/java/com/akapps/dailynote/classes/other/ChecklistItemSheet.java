@@ -466,28 +466,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
         adapter.notifyDataSetChanged();
-        isAllSubItemsSelected();
     }
-
-    private void isAllSubItemsSelected() {
-        RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.getInstance(getContext())
-                .where(SubCheckListItem.class).equalTo("id", parentCurrentSubItem.getSubListId()).findAll();
-        RealmResults<SubCheckListItem> checkedSubCheckListItems = RealmSingleton.getInstance(getContext())
-                .where(SubCheckListItem.class)
-                .equalTo("id", parentCurrentSubItem.getSubListId())
-                .equalTo("checked", true)
-                .findAll();
-
-        if (subCheckListItems.size() == checkedSubCheckListItems.size()) {
-            if (!parentCurrentSubItem.isChecked()) {
-                getRealm().beginTransaction();
-                parentCurrentSubItem.setChecked(true);
-                getRealm().commitTransaction();
-                ((NoteEdit) getActivity()).checklistAdapter.notifyDataSetChanged();
-            }
-        }
-    }
-
 
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout) {
         String checklistItemsSeparator = user.getItemsSeparator();

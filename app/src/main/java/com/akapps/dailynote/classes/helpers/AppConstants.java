@@ -1,5 +1,9 @@
 package com.akapps.dailynote.classes.helpers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AppConstants {
 
     public static String REALM_EXPORT_FILE_NAME = "default.realm";
@@ -8,9 +12,17 @@ public class AppConstants {
 
     public static String UNUSED_FILES_MESSAGE = "unused_files_key";
 
+
+    public static String getMonthDay(){
+        DateFormat dateFormat = new SimpleDateFormat("MMM_dd"); // Use "MMM dd" format
+        Date date = new Date();
+        return dateFormat.format(date).toLowerCase();
+    }
+
     public enum LockType {
         LOCK_NOTE,
         LOCK_APP,
         LOCK_FOLDER
     }
+
 }

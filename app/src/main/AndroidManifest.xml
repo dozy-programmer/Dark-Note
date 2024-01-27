@@ -16,12 +16,11 @@
         android:minSdkVersion="30" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
 
     <!-- Needed Analytics !-->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
@@ -42,9 +41,6 @@
     <uses-permission
         android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"
         tools:node="remove" />
-    <uses-permission
-        android:name="android.permission.USE_FINGERPRINT"
-        tools:node="remove" />
     <!-- Remove Places API Location Permission !-->
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
@@ -54,7 +50,7 @@
         tools:node="remove" />
 
     <application
-        tools:replace="allowBackup"
+        tools:replace="allowBackup, android:supportsRtl"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"

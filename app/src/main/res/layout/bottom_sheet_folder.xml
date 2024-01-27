@@ -2,6 +2,7 @@
 
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbarThumbVertical="?primaryButtonColor"
@@ -58,12 +59,11 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/item_name_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textColorHint="?primaryTextColor"
-            app:hintTextColor="?primaryTextColor"
+            android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
             app:boxBackgroundColor="?primaryBackgroundColor"
             app:boxStrokeColor="?primaryButtonColor"
             app:boxStrokeErrorColor="?tertiaryIconTintColor"
@@ -71,9 +71,10 @@
             app:endIconMode="clear_text"
             app:endIconTint="?tertiaryIconTintColor"
             app:errorIconTint="?tertiaryIconTintColor"
+            app:hintTextColor="?primaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/folder_color"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/confirm_filter"
             app:layout_constraintTop_toBottomOf="@+id/title">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -96,6 +97,7 @@
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardCornerRadius="15dp"
             app:strokeWidth="2dp"
+            app:iconPadding="0dp"
             app:strokeColor="?primaryStrokeColor"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -112,7 +114,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/next_confirm"
             android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginHorizontal="10dp"
             android:layout_marginStart="8dp"
             android:padding="10dp"
@@ -120,7 +122,7 @@
             app:cornerRadius="15dp"
             app:strokeWidth="2dp"
             app:strokeColor="?primaryStrokeColor"
-            app:icon="@drawable/add_icon"
+            app:icon="@drawable/unlock_icon"
             app:iconTint="?primaryIconTintColor"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
@@ -129,7 +131,7 @@
             app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/confirm_filter"
+            android:id="@+id/lock"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_marginHorizontal="10dp"
@@ -162,19 +164,21 @@
             app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/lock"
+            android:id="@+id/confirm_filter"
             android:layout_width="50dp"
             android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="10dp"
             app:backgroundTint="?secondaryBackgroundColor"
             app:cornerRadius="15dp"
-            app:icon="@drawable/unlock_icon"
+            app:icon="@drawable/add_icon"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconSize="24dp"
             app:iconTint="?primaryIconTintColor"
-            android:layout_marginStart="65dp"
+            app:layout_constraintBottom_toBottomOf="@+id/folder_color"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView8"
+            app:layout_constraintTop_toTopOf="@+id/folder_color"
             app:strokeColor="?primaryStrokeColor"
             app:strokeWidth="2dp" />
 

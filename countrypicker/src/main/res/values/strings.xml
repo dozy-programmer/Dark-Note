@@ -1,0 +1,4 @@
+<resources>
+    <string name="search">Search&#8230;</string>
+    <string name="error_no_countries_found">No Countries Found! Did you call build()</string>
+</resources>

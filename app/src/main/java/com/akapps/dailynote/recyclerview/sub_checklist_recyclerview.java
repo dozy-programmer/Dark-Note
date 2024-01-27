@@ -154,25 +154,11 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         checkListItem.setChecked(status);
         RealmSingleton.getInstance(context).commitTransaction();
         ((NoteEdit) context).updateSaveDateEdited();
-        isAllSubItemsSelected();
     }
 
     // opens dialog that allows user to edit or delete checklist item
     private void openEditDialog(CheckListItem parentSubItem, SubCheckListItem checkListItem, int position) {
         ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(parentSubItem, checkListItem, position, this);
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
-    }
-
-    private void isAllSubItemsSelected() {
-        RealmResults<SubCheckListItem> checkedSubCheckListItems = RealmSingleton.getInstance(context)
-                .where(SubCheckListItem.class)
-                .equalTo("id", parentSublistListItem.getSubListId())
-                .equalTo("checked", true)
-                .findAll();
-
-        RealmSingleton.getInstance(context).beginTransaction();
-        parentSublistListItem.setChecked(checkList.size() == checkedSubCheckListItems.size());
-        RealmSingleton.getInstance(context).commitTransaction();
-        ((NoteEdit) activity).checklistAdapter.notifyDataSetChanged();
     }
 }

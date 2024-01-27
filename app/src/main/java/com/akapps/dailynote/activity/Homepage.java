@@ -69,8 +69,11 @@ public class Homepage extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        if (notes != null && notes.isVisible() && !notes.isStateSaved())
-            getSupportFragmentManager().beginTransaction().detach(notes).commit();
+        if (notes != null && notes.isVisible() && !notes.isStateSaved()) {
+            try {
+                getSupportFragmentManager().beginTransaction().detach(notes).commit();
+            } catch (Exception ignored) {  }
+        }
         super.onDestroy();
     }
 }

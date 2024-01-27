@@ -300,38 +300,38 @@ public class BackupHelper {
                 restoreBackupFromRealmFile(uri);
             } else if (fileName.contains(".zip")) {
                 Log.d("Here", "restoring zip backup");
-//                try {
-                // delete realm before restoring
-                if (!RealmHelper.deleteRealmDatabase(activity)) return;
+                try {
+                    // delete realm before restoring
+                    if (!RealmHelper.deleteRealmDatabase(activity)) return;
 
-                // delete all files first
-                FilesKt.deleteRecursively(new File(context.getExternalFilesDir(null) + ""));
+                    // delete all files first
+                    FilesKt.deleteRecursively(new File(context.getExternalFilesDir(null) + ""));
 
-                // make a copy of the backup zip file selected by user and unzip it
-                backupRealm.restore(uri, AppConstants.BACKUP_ZIP_FILE_NAME);
+                    // make a copy of the backup zip file selected by user and unzip it
+                    backupRealm.restore(uri, AppConstants.BACKUP_ZIP_FILE_NAME);
 
-                ArrayList<String> images = getImagesPath();
-                ArrayList<String> recordings = getRecordingsPath();
-                backupRealm.restoreRealmFileIntoDatabase(getBackupPath(), AppConstants.REALM_EXPORT_FILE_NAME);
+                    ArrayList<String> images = getImagesPath();
+                    ArrayList<String> recordings = getRecordingsPath();
+                    backupRealm.restoreRealmFileIntoDatabase(getBackupPath(), AppConstants.REALM_EXPORT_FILE_NAME);
 
-                // update image paths from restored database so it knows where the images are
-                Realm realm = RealmSingleton.getInstance(context);
-                updateAlarms(activity, realm.where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false).findAll());
-                updateImages(context, images);
-                updateRecordings(context, recordings);
-                resetWidgets(context);
+                    // update image paths from restored database so it knows where the images are
+                    Realm realm = RealmSingleton.getInstance(context);
+                    updateAlarms(activity, realm.where(Note.class)
+                            .equalTo("archived", false)
+                            .equalTo("trash", false).findAll());
+                    updateImages(context, images);
+                    updateRecordings(context, recordings);
+                    resetWidgets(context);
 
-                Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
-                // delete all zip files
-                Helper.deleteZipFile(context);
+                    // delete all zip files
+                    Helper.deleteZipFile(context);
 
-                ((SettingsScreen) activity).close();
-//                } catch (Exception e) {
-//                    Helper.showMessage(activity, "Error Restoring", "An issue occurred, Try again!", MotionToast.TOAST_ERROR);
-//                }
+                    ((SettingsScreen) activity).close();
+                } catch (Exception e) {
+                    Helper.showMessage(activity, "Error Restoring", "An issue occurred, Try again!", MotionToast.TOAST_ERROR);
+                }
             } else {
                 Helper.showMessage(activity, "Error\uD83D\uDE14", "Dark Note Backup Files end in '.zip' or '.realm'. Try again!", MotionToast.TOAST_ERROR);
             }
@@ -456,7 +456,7 @@ public class BackupHelper {
         Intent emailIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         emailIntent.addCategory(Intent.CATEGORY_OPENABLE);
         emailIntent.setType("application/zip");
-        emailIntent.putExtra(Intent.EXTRA_TITLE, "dark_note_backup");
+        emailIntent.putExtra(Intent.EXTRA_TITLE, AppConstants.getMonthDay() + "_dark_note_backup");
 
         Intent shareIntent = Intent.createChooser(emailIntent, "Share Dark Note Backup File");
         activity.startActivityForResult(shareIntent, 2);

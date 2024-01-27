@@ -129,7 +129,7 @@
             android:scaleX="0.85"
             android:scaleY="0.85"
             android:textColor="?primaryTextColor"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:theme="@style/ThemeOverlay.SwitchTheme"
             app:layout_constraintBottom_toBottomOf="@+id/title"

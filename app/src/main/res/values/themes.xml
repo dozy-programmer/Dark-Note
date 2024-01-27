@@ -257,4 +257,11 @@
         <item name="colorControlActivated">@color/azure</item>
     </style>
 
+    <style name="CountryPickerStyle">
+        <item name="android:actionMenuTextColor">?primaryStrokeColor</item>
+        <item name="android:textColor">?primaryTextColor</item>
+        <item name="android:textColorHint">?primaryTextColor</item>
+        <item name="android:background">?primaryBackgroundColor</item>
+    </style>
+
 </resources>

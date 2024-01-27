@@ -49,6 +49,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
+//import com.mukesh.countrypicker.CountryPicker;
+import com.mukesh.countrypicker.CountryPicker;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -146,6 +148,8 @@ public class SettingsScreen extends AppCompatActivity {
 
     private BackupHelper backupHelper;
 
+    private CountryPicker picker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(getThemeStyle(this));
@@ -168,6 +172,13 @@ public class SettingsScreen extends AppCompatActivity {
                 close();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        if(picker != null)
+            picker.dismissDialogs();
+        super.onPause();
     }
 
     @Override
@@ -386,25 +397,56 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         budgetSymbolLayout.setOnClickListener(v -> {
-            List<IconPowerMenuItem> options = new ArrayList<>();
-            options.add(new IconPowerMenuItem(null, "+$"));
-            options.add(new IconPowerMenuItem(null, "+₹"));
-            options.add(new IconPowerMenuItem(null, "+£"));
-            options.add(new IconPowerMenuItem(null, "+€"));
-            options.add(new IconPowerMenuItem(null, "+¥"));
             isEditingBudgetSymbol = true;
-            expandListMenu(options, budgetSymbol);
+            isEditingExpenseSymbol = false;
+            try {
+                CountryPicker.Builder builder = new CountryPicker.Builder()
+                        .with(context)
+                        .listener(country -> {
+                            RealmSingleton.get(this).beginTransaction();
+                            getUser().setBudgetCharacter("+" + country.getCurrencySymbol());
+                            RealmSingleton.get(this).commitTransaction();
+                            budgetSymbol.setText(getUser().getBudgetCharacter());
+                        });
+                builder.style(R.style.CountryPickerStyle);
+                picker = builder.build();
+                picker.showBottomSheet(this);
+            } catch (Exception e){
+                List<IconPowerMenuItem> options = new ArrayList<>();
+                options.add(new IconPowerMenuItem(null, "+$"));
+                options.add(new IconPowerMenuItem(null, "+₹"));
+                options.add(new IconPowerMenuItem(null, "+£"));
+                options.add(new IconPowerMenuItem(null, "+€"));
+                options.add(new IconPowerMenuItem(null, "+¥"));
+                expandListMenu(options, budgetSymbol);
+            }
         });
 
         expenseSymbolLayout.setOnClickListener(v -> {
-            List<IconPowerMenuItem> options = new ArrayList<>();
-            options.add(new IconPowerMenuItem(null, "$"));
-            options.add(new IconPowerMenuItem(null, "₹"));
-            options.add(new IconPowerMenuItem(null, "£"));
-            options.add(new IconPowerMenuItem(null, "€"));
-            options.add(new IconPowerMenuItem(null, "¥"));
             isEditingExpenseSymbol = true;
-            expandListMenu(options, expenseSymbol);
+            isEditingBudgetSymbol = false;
+            try{
+                CountryPicker.Builder builder = new CountryPicker.Builder()
+                        .with(context)
+                        .listener(country -> {
+                            RealmSingleton.get(this).beginTransaction();
+                            getUser().setExpenseCharacter(country.getCurrencySymbol());
+                            RealmSingleton.get(this).commitTransaction();
+                            expenseSymbol.setText(getUser().getExpenseCharacter());
+                        });
+                builder.style(R.style.CountryPickerStyle);
+                builder.theme(UiHelper.getBottomSheetThemeInt(context));
+                picker = builder.build();
+                picker.showBottomSheet(this);
+            } catch (Exception e) {
+                List<IconPowerMenuItem> options = new ArrayList<>();
+                options.add(new IconPowerMenuItem(null, "$"));
+                options.add(new IconPowerMenuItem(null, "₹"));
+                options.add(new IconPowerMenuItem(null, "£"));
+                options.add(new IconPowerMenuItem(null, "€"));
+                options.add(new IconPowerMenuItem(null, "¥"));
+                expandListMenu(options, expenseSymbol);
+            }
         });
 
         appSettings.setOnClickListener(v -> openAppInSettings());

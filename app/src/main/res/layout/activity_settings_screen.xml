@@ -506,6 +506,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
                         android:tint="?primaryIconTintColor"></ImageView>
@@ -553,6 +554,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
                         android:tint="?primaryIconTintColor"></ImageView>
@@ -804,16 +806,17 @@
                         android:text="Default"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
-                        android:textStyle="bold"></TextView>
+                        android:textStyle="bold"/>
 
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
-                        android:tint="?primaryIconTintColor"></ImageView>
+                        android:tint="?primaryIconTintColor"/>
 
                 </LinearLayout>
 
@@ -857,6 +860,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
                         android:tint="?primaryIconTintColor"></ImageView>
@@ -903,6 +907,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
                         android:tint="?primaryIconTintColor"></ImageView>
@@ -930,7 +935,7 @@
                         android:gravity="center_vertical"
                         android:text="Expense Symbol"
                         android:textColor="?tertiaryTextColor"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"></TextView>
 
                     <TextView
@@ -949,6 +954,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
                         android:tint="?primaryIconTintColor"></ImageView>
