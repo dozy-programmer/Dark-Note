@@ -3,24 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Required for functionalities (images, backups, audio note, fingerprint to unlock notes) !-->
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29"
-        tools:replace="android:maxSdkVersion" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="30"
-        tools:replace="android:maxSdkVersion" />
-    <uses-permission
-        android:name="android.permission.READ_MEDIA_IMAGES"
-        android:minSdkVersion="30" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" tools:replace="android:maxSdkVersion" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="30" tools:replace="android:maxSdkVersion" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" android:minSdkVersion="30" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"  android:maxSdkVersion="28"/>
 
     <!-- Needed Analytics !-->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
@@ -34,20 +29,12 @@
     <!-- Needed for cloud backup and attaching locations to checklist items !-->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- List on Google Play that I use but don't !-->
-    <uses-permission
-        android:name="android.permission.ACCESS_WIFI_STATE"
-        tools:node="remove" />
-    <uses-permission
-        android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"
-        tools:node="remove" />
+    <!-- List of permissions on Google Play it says I use but don't !-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" tools:node="remove" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" tools:node="remove" />
     <!-- Remove Places API Location Permission !-->
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
-        tools:node="remove" />
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION"
-        tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove" />
 
     <application
         tools:replace="allowBackup, android:supportsRtl"
