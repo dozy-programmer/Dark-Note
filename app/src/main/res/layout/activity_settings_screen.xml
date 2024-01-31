@@ -249,7 +249,7 @@
                     android:id="@+id/space_one"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryStrokeColor"
+                    android:background="?primaryDividerColor"
                     android:visibility="gone"></ImageView>
 
                 <LinearLayout
@@ -305,7 +305,7 @@
                     android:id="@+id/space_two"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="?primaryStrokeColor"
+                    android:background="?primaryDividerColor"
                     android:visibility="gone"></ImageView>
 
                 <LinearLayout

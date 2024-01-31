@@ -506,15 +506,6 @@ public class Helper {
         }
     }
 
-    public static void deleteAppFiles(Context context) {
-        try {
-            // delete backup folder
-            File mainDir = new File(context.getExternalFilesDir(null) + "");
-            FilesKt.deleteRecursively(mainDir);
-        } catch (Exception e) {
-        }
-    }
-
     public static void deleteFile(String path) {
         File file = new File(path);
         if (file.exists())

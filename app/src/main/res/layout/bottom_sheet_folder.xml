@@ -74,7 +74,7 @@
             app:hintTextColor="?primaryTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/folder_color"
-            app:layout_constraintStart_toEndOf="@+id/confirm_filter"
+            app:layout_constraintStart_toEndOf="@+id/next_confirm"
             app:layout_constraintTop_toBottomOf="@+id/title">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -112,7 +112,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/next_confirm"
+            android:id="@+id/lock"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_marginHorizontal="10dp"
@@ -131,7 +131,7 @@
             app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/lock"
+            android:id="@+id/confirm_filter"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_marginHorizontal="10dp"
@@ -164,7 +164,7 @@
             app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/confirm_filter"
+            android:id="@+id/next_confirm"
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:layout_gravity="center_vertical"

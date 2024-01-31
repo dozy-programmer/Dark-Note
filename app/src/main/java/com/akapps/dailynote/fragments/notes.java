@@ -211,8 +211,18 @@ public class notes extends Fragment {
                 result -> {
                     if (currentTheme != UiHelper.getTheme(context)) {
                         refreshFragment(true);
-                    } else if (!AppData.isDisableAnimation)
+                    } else if (!AppData.isDisableAnimation) {
                         getActivity().overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
+                        setRecyclerviewLayout();
+                        getSortDataAndSort();
+                        if (getUser().isIncreaseFabSize()) {
+                            addMenuLarge.setVisibility(View.VISIBLE);
+                            addMenu.setVisibility(View.GONE);
+                        } else {
+                            addMenuLarge.setVisibility(View.GONE);
+                            addMenu.setVisibility(View.VISIBLE);
+                        }
+                    }
                 });
     }
 
@@ -255,9 +265,6 @@ public class notes extends Fragment {
             } catch (Exception e) {
                 new Handler(Looper.getMainLooper()).postDelayed(() -> refreshFragment(true), 800);
             }
-
-            if (RealmSingleton.getInstance(context).where(Note.class).findAll().size() == 0)
-                Helper.deleteAppFiles(context);
         }
     }
 
@@ -889,9 +896,6 @@ public class notes extends Fragment {
                             "have been deleted", MotionToast.TOAST_SUCCESS);
                     closeMultipleNotesLayout();
                     showData();
-
-                    if (getAllNotes().size() == 0)
-                        Helper.deleteAppFiles(context);
                 } else {
                     getRealm().beginTransaction();
                     selectedNotes.setBoolean("trash", true);

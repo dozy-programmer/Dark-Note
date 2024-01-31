@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?primaryBackgroundColor">
+    android:background="?primaryBackgroundColor"
+    android:paddingTop="2dp">
 
     <ImageView
         android:id="@+id/folder_icon"

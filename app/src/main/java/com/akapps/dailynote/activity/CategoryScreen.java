@@ -7,14 +7,12 @@ import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -356,18 +354,15 @@ public class CategoryScreen extends AppCompatActivity {
             }
         });
 
-        info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isEditing)
-                    showInfoDialog();
-                else {
-                    isEditing = false;
-                    title.setText(titleBefore);
-                    info.setImageDrawable(getDrawable(R.drawable.info_icon));
-                    edit.setVisibility(View.VISIBLE);
-                    selections.setVisibility(View.VISIBLE);
-                }
+        info.setOnClickListener(view -> {
+            if (!isEditing)
+                showInfoDialog();
+            else {
+                isEditing = false;
+                title.setText(titleBefore);
+                info.setImageDrawable(getDrawable(R.drawable.info_icon));
+                edit.setVisibility(View.VISIBLE);
+                selections.setVisibility(View.VISIBLE);
             }
         });
 

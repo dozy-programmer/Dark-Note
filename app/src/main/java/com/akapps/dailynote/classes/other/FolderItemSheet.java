@@ -108,10 +108,13 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                 itemName.setText(currentFolder.get().getName());
                 folderColor.setCardBackgroundColor(currentFolder.get().getColor() == 0 ? getContext().getColor(R.color.azure) : currentFolder.get().getColor());
                 itemName.setSelection(itemName.getText().toString().length());
-                if (currentFolder.get().getPin() > 0)
-                    lockFolder.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
+                if (currentFolder.get().getPin() > 0) {
+                    next.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
+                }
+                else
+                    next.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
                 delete.setVisibility(View.VISIBLE);
-                next.setVisibility(View.GONE);
+                lockFolder.setVisibility(View.GONE);
             } catch (Exception e) {
                 this.dismiss();
             }
@@ -126,49 +129,53 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             }
         });
 
-        lockFolder.setOnClickListener(view1 -> {
-            currentFolder.set(RealmHelper.getCurrentFolder(getContext(), folderId));
-            if (isAdding) {
-                if (AppData.pin > 0) {
-                    AppData.updateLockData(0, "", false);
-                    lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
-                    Helper.showMessage(getActivity(), "Folder Unlocked", "Folder has been unlocked", MotionToast.TOAST_SUCCESS);
-                } else {
-                    LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, lockFolder);
-                    lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
-                }
-            } else {
-                if (currentFolder.get().getPin() > 0) {
-                    getRealm().beginTransaction();
-                    currentFolder.get().setPin(0);
-                    currentFolder.get().setSecurityWord("");
-                    currentFolder.get().setFingerprintAdded(false);
-                    getRealm().commitTransaction();
-                    lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
-                    adapter.notifyDataSetChanged();
-                    RealmHelper.lockNotesInsideFolder(getContext(), folderId, false);
-                    Helper.showMessage(getActivity(), "Unlocked", "Folder & notes inside have been unlocked", MotionToast.TOAST_SUCCESS);
-
-                } else {
-                    LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder);
-                    lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
-                    this.dismiss();
-                }
-            }
-        });
+        lockFolder.setOnClickListener(view1 -> onLockClick(currentFolder, lockFolder));
 
         confirmFilter.setOnClickListener(v -> {
             confirmEntry(itemName, itemNameLayout);
         });
 
         next.setOnClickListener(v -> {
-            if (confirmEntry(itemName, itemNameLayout)) {
+            if(!isAdding)
+                onLockClick(currentFolder, lockFolder);
+            else if (confirmEntry(itemName, itemNameLayout)) {
                 FolderItemSheet checklistItemSheet = new FolderItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
             }
         });
 
         return view;
+    }
+
+    private void onLockClick(AtomicReference<Folder> currentFolder, MaterialButton lockFolder){
+        currentFolder.set(RealmHelper.getCurrentFolder(getContext(), folderId));
+        if (isAdding) {
+            if (AppData.pin > 0) {
+                AppData.updateLockData(0, "", false);
+                lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
+                Helper.showMessage(getActivity(), "Folder Unlocked", "Folder has been unlocked", MotionToast.TOAST_SUCCESS);
+            } else {
+                LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, lockFolder);
+                lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
+            }
+        } else {
+            if (currentFolder.get().getPin() > 0) {
+                getRealm().beginTransaction();
+                currentFolder.get().setPin(0);
+                currentFolder.get().setSecurityWord("");
+                currentFolder.get().setFingerprintAdded(false);
+                getRealm().commitTransaction();
+                lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
+                adapter.notifyDataSetChanged();
+                RealmHelper.lockNotesInsideFolder(getContext(), folderId, false);
+                Helper.showMessage(getActivity(), "Unlocked", "Folder & notes inside have been unlocked", MotionToast.TOAST_SUCCESS);
+
+            } else {
+                LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder);
+                lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
+                this.dismiss();
+            }
+        }
     }
 
     private void editColorDialog(Folder current) {
@@ -255,9 +262,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout) {
         Folder folder = RealmHelper.getCurrentFolder(getContext(), folderId);
         if (!itemName.getText().toString().isEmpty()) {
-            if (isAdding) {
+            if (isAdding)
                 addCategory(itemName.getText().toString(), color);
-            } else
+            else
                 editCategory(folder, itemName.getText().toString());
             return true;
         } else

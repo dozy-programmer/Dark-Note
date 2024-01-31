@@ -23,6 +23,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.github.mukeshsolanki.R;
@@ -86,10 +87,10 @@ public class CountryPicker implements BottomSheetInteractionListener, LifecycleO
         }
         if(isSearching && countries.size() == 0)
             message.setText("No countries found...");
-        else if(countries.size() == 0)
+        else if(countries.size() == 0 || !isSearching)
             message.setText("Select from the following countries...");
         else
-            message.setText("Select from " + countries.size() + " found");
+            message.setText(countries.size() + " found, click on search icon to view all results");
     }
 
     public void showBottomSheet(AppCompatActivity activity) {
@@ -127,10 +128,12 @@ public class CountryPicker implements BottomSheetInteractionListener, LifecycleO
                         searchIcon = null;
                     }
                 },
-                textColor);
+                textColor,
+                swipeDownIconColor);
         LinearLayoutManager layoutManager = new LinearLayoutManager(sheetView.getContext());
         countriesRecyclerView.setLayoutManager(layoutManager);
         countriesRecyclerView.setAdapter(adapter);
+        countriesRecyclerView.addItemDecoration(new DividerItemDecoration(sheetView.getContext(), layoutManager.getOrientation()));
     }
 
     @Override
