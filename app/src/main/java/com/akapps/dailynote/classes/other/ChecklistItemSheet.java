@@ -71,7 +71,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
 public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
@@ -356,7 +355,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     deleteItem(currentItem);
                 dismiss();
             }
-            return false;
+            return true;
         });
 
         dropDownMenu.setOnClickListener(view1 -> openMenuDialog());

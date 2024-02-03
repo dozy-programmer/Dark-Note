@@ -1,477 +1,459 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:contentInsetStart="7dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/scroll"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:contentInsetStart="7dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <ImageView
-                        android:id="@+id/search_close"
-                        android:layout_width="25dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:src="@drawable/back_icon"
-                        android:tint="?primaryIconTintColor"
-                        android:visibility="gone"></ImageView>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/close_note"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:cardBackgroundColor="?secondaryBackgroundColor"
-                            app:cardCornerRadius="15dp"
-                            app:cardElevation="0dp">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:padding="9dp"
-                                android:src="@drawable/back_icon"
-                                android:tint="?primaryIconTintColor"></ImageView>
-                        </androidx.cardview.widget.CardView>
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:orientation="horizontal"
-                        android:weightSum="100">
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/search_padding"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginRight="8dp"
-                            android:layout_weight="5"
-                            android:visibility="gone"
-                            app:cardBackgroundColor="?secondaryBackgroundColor"
-                            app:cardCornerRadius="15dp"
-                            app:cardElevation="0dp">
-
-                            <EditText
-                                android:id="@+id/search_text"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="5dp"
-                                android:backgroundTint="@android:color/transparent"
-                                android:hint="Search inside note"
-                                android:maxLines="1"
-                                android:textCursorDrawable="@drawable/cursor"
-                                android:textColor="?primaryTextColor"
-                                android:textColorHint="?secondaryTextColor"
-                                android:visibility="gone"></EditText>
-
-                            <ImageView
-                                android:id="@+id/search"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:padding="9dp"
-                                android:src="@drawable/search_icon"
-                                android:tint="?primaryIconTintColor"></ImageView>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/menu"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginRight="8dp"
-                            android:layout_weight="5"
-                            app:cardBackgroundColor="?secondaryBackgroundColor"
-                            app:cardCornerRadius="15dp"
-                            app:cardElevation="0dp">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:padding="9dp"
-                                android:src="@drawable/expand_menu_icon"
-                                android:tint="?primaryIconTintColor"></ImageView>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/noteColor"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginRight="8dp"
-                            android:layout_weight="5"
-                            app:cardBackgroundColor="?secondaryBackgroundColor"
-                            app:cardCornerRadius="15dp"
-                            app:cardElevation="0dp">
-
-                            <ImageView
-                                android:id="@+id/pallete_icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:padding="9dp"
-                                android:src="@drawable/color_icon"
-                                android:tint="?primaryIconTintColor"></ImageView>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/camera"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginRight="8dp"
-                            android:layout_weight="5"
-                            app:cardBackgroundColor="?secondaryBackgroundColor"
-                            app:cardCornerRadius="15dp"
-                            app:cardElevation="0dp">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:padding="9dp"
-                                android:src="@drawable/camera_2_icon"
-                                android:tint="?primaryIconTintColor"></ImageView>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/pinButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginRight="8dp"
-                            android:layout_weight="5"
-                            app:cardBackgroundColor="?secondaryBackgroundColor"
-                            app:cardCornerRadius="15dp"
-                            app:cardElevation="0dp">
-
-                            <ImageView
-                                android:id="@+id/pinIcon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:padding="9dp"
-                                android:src="@drawable/pin_icon"
-                                android:tint="?primaryIconTintColor"></ImageView>
-                        </androidx.cardview.widget.CardView>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.appcompat.widget.Toolbar>
+            <ImageView
+                android:id="@+id/search_close"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/back_icon"
+                android:tint="?primaryIconTintColor"
+                android:visibility="gone"></ImageView>
 
             <LinearLayout
-                android:id="@+id/reminderLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/close_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="9dp"
+                        android:src="@drawable/back_icon"
+                        android:tint="?primaryIconTintColor"></ImageView>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/search_padding"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="5"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp">
+
+                    <EditText
+                        android:id="@+id/search_text"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:hint="Search inside note"
+                        android:maxLines="1"
+                        android:textColor="?primaryTextColor"
+                        android:textColorHint="?secondaryTextColor"
+                        android:textCursorDrawable="@drawable/cursor"
+                        android:visibility="gone"></EditText>
+
+                    <ImageView
+                        android:id="@+id/search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="9dp"
+                        android:src="@drawable/search_icon"
+                        android:tint="?primaryIconTintColor"></ImageView>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="5"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="9dp"
+                        android:src="@drawable/expand_menu_icon"
+                        android:tint="?primaryIconTintColor"></ImageView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/noteColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="5"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:id="@+id/pallete_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="9dp"
+                        android:src="@drawable/color_icon"
+                        android:tint="?primaryIconTintColor"></ImageView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="5"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="9dp"
+                        android:src="@drawable/camera_2_icon"
+                        android:tint="?primaryIconTintColor"></ImageView>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/pinButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="5"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="0dp">
+
+                    <ImageView
+                        android:id="@+id/pinIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="9dp"
+                        android:src="@drawable/pin_icon"
+                        android:tint="?primaryIconTintColor"></ImageView>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/reminderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="100"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/cancel"
+            android:tint="?primaryIconTintColor"></ImageView>
+
+        <TextView
+            android:id="@+id/reminderDate"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="right"
+            android:text="Notification"
+            android:textColor="?secondaryTextColor"
+            android:textSize="14sp"></TextView>
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/reminder_icon"
+            android:tint="?primaryIconTintColor"></ImageView>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="-10dp"
+        android:backgroundTint="@android:color/transparent"
+        android:hint="Title"
+        android:inputType="textCapSentences"
+        android:textColor="?primaryTextColor"
+        android:textColorHint="?quaternaryBackgroundColor"
+        android:textCursorDrawable="@drawable/cursor"
+        android:textSize="26sp"
+        app:layout_constraintEnd_toStartOf="@id/budget"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reminderLayout"></EditText>
+
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/budget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:elevation="2dp"
+        android:src="@drawable/money_icon"
+        android:visibility="gone"
+        app:fab_colorNormal="@color/not_too_dark_gray"
+        app:fab_colorPressed="@color/gray"
+        app:fab_colorRipple="@color/gray_100"
+        app:fab_label="Budget"
+        app:fab_size="mini"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="-5dp"
+        android:layout_weight="50"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="left"
+        android:maxLines="2"
+        android:text="Date"
+        android:textColor="?primaryTextColor"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"></TextView>
+
+    <LinearLayout
+        android:id="@+id/category_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/note_photos">
+
+        <TextView
+            android:id="@+id/folderWord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:gravity="left"
+            android:text="Folder:"
+            android:textColor="?secondaryTextColor"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"></TextView>
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="left|bottom"
+            android:text="none"
+            android:textColor="?primaryTextColor"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"></TextView>
+
+    </LinearLayout>
+
+    <jp.wasabeef.richeditor.RichEditor
+        android:id="@+id/note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="?primaryBackgroundColor"
+        android:gravity="top|start"
+        android:inputType="textCapSentences"
+        android:textColorHint="?quaternaryBackgroundColor"
+        android:textCursorDrawable="@drawable/cursor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_layout"
+        app:layout_constraintVertical_bias="0" />
+
+    <EditText
+        android:id="@+id/searchEdittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="-4dp"
+        android:layout_marginRight="15dp"
+        android:backgroundTint="?primaryBackgroundColor"
+        android:gravity="top|start"
+        android:hint="Type something..."
+        android:textColor="?primaryTextColor"
+        android:textColorHint="?secondaryTextColor"
+        android:textCursorDrawable="@drawable/cursor"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_layout"
+        app:layout_constraintVertical_bias="0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/note_photos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/checklist"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="10dp"
+        android:paddingBottom="70dp"
+        android:clipToPadding="false"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_layout" />
+
+    <ScrollView
+        android:id="@+id/empty_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/note">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:id="@+id/empty_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:weightSum="100"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar">
+                android:text="Don't get lost in the universe trying to remember."
+                android:textColor="?secondaryTextColor"
+                android:textSize="20sp" />
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/cancel"
-                    android:tint="?primaryIconTintColor"></ImageView>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/empty_view"
+                android:layout_width="256dp"
+                android:layout_height="256dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/waiting_astronaut"
+                app:lottie_speed="1.0" />
 
-                <TextView
-                    android:id="@+id/reminderDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="right"
-                    android:layout_marginHorizontal="10dp"
-                    android:text="Notification"
-                    android:textColor="?secondaryTextColor"
-                    android:textSize="14sp"></TextView>
-
-                <ImageView
-                    android:layout_width="17dp"
-                    android:layout_height="17dp"
-                    android:layout_marginRight="5dp"
-                    android:src="@drawable/reminder_icon"
-                    android:tint="?primaryIconTintColor"></ImageView>
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="Title"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="-10dp"
-                android:textColor="?primaryTextColor"
-                android:textColorHint="?quaternaryBackgroundColor"
-                android:textCursorDrawable="@drawable/cursor"
-                android:textSize="26sp"
-                android:inputType="textCapSentences"
-                app:layout_constraintEnd_toStartOf="@id/budget"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reminderLayout"></EditText>
-
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/budget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/money_icon"
-                android:elevation="2dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                app:fab_colorNormal="@color/not_too_dark_gray"
-                app:fab_colorPressed="@color/gray"
-                app:fab_colorRipple="@color/gray_100"
-                app:fab_label="Budget"
-                app:fab_size="mini"
-                app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
+            <ImageView
+                android:id="@+id/empty_view_no_animation"
+                android:layout_width="196dp"
+                android:layout_height="196dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:src="@drawable/no_results_icon"
+                android:tint="?primaryIconTintColor"
+                android:visibility="gone" />
 
             <TextView
-                android:id="@+id/date"
-                android:layout_width="0dp"
+                android:id="@+id/empty_subtitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="50"
-                android:autoSizeMaxTextSize="100sp"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeStepGranularity="2sp"
-                android:autoSizeTextType="uniform"
-                android:gravity="left"
-                android:maxLines="2"
-                android:layout_marginLeft="10dp"
-                android:text="Date"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Let me do it for you"
+                android:textColor="?secondaryTextColor"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/empty_sub_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="44dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="Tap the bottom right button to create a note"
                 android:textColor="?primaryTextColor"
-                android:textSize="14sp"
-                android:visibility="gone"
-                android:layout_marginTop="-5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title"></TextView>
+                android:textSize="18sp" />
 
-            <LinearLayout
-                android:id="@+id/category_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/note_photos">
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/folderWord"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="left"
-                    android:text="Folder:"
-                    android:textColor="?secondaryTextColor"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:visibility="gone"></TextView>
-
-                <TextView
-                    android:id="@+id/category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="left|bottom"
-                    android:text="none"
-                    android:textColor="?primaryTextColor"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:visibility="gone"></TextView>
-
-            </LinearLayout>
-
-            <jp.wasabeef.richeditor.RichEditor
-                android:id="@+id/note"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="top|start"
-                android:backgroundTint="?primaryBackgroundColor"
-                android:textColorHint="?quaternaryBackgroundColor"
-                android:inputType="textCapSentences"
-                android:textCursorDrawable="@drawable/cursor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/category_layout"
-                app:layout_constraintVertical_bias="0" />
-
-            <EditText
-                android:id="@+id/searchEdittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="6dp"
-                android:layout_marginTop="-4dp"
-                android:backgroundTint="?primaryBackgroundColor"
-                android:gravity="top|start"
-                android:hint="Type something..."
-                android:textColor="?primaryTextColor"
-                android:textColorHint="?secondaryTextColor"
-                android:textSize="20sp"
-                android:visibility="gone"
-                android:textCursorDrawable="@drawable/cursor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/category_layout"
-                app:layout_constraintVertical_bias="0" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/note_photos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/date" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/checklist"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="10dp"
-                android:clipToPadding="false"
-                android:paddingBottom="70dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/category_layout" />
-
-            <ScrollView
-                android:id="@+id/empty_Layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/note">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="10dp">
-
-                    <TextView
-                        android:id="@+id/empty_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:gravity="center"
-                        android:text="Don't get lost in the universe trying to remember."
-                        android:textColor="?secondaryTextColor"
-                        android:textSize="20sp" />
-
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/empty_view"
-                        android:layout_width="256dp"
-                        android:layout_height="256dp"
-                        android:layout_gravity="center_horizontal|center_vertical"
-                        app:lottie_autoPlay="true"
-                        app:lottie_loop="true"
-                        app:lottie_rawRes="@raw/waiting_astronaut"
-                        app:lottie_speed="1.0" />
-
-                    <ImageView
-                        android:id="@+id/empty_view_no_animation"
-                        android:layout_width="196dp"
-                        android:layout_height="196dp"
-                        android:src="@drawable/no_results_icon"
-                        android:tint="?primaryIconTintColor"
-                        android:layout_gravity="center_horizontal|center_vertical"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/empty_subtitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginTop="20dp"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:text="Let me do it for you"
-                        android:textColor="?secondaryTextColor"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/empty_sub_subtitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginVertical="44dp"
-                        android:gravity="center_horizontal|center_vertical"
-                        android:text="Tap the bottom right button to create a note"
-                        android:textColor="?primaryTextColor"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-            </ScrollView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/text_size_layout"
@@ -487,8 +469,8 @@
             android:id="@+id/close_Layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:elevation="0dp"
             app:backgroundTint="?tertiaryButtonColor"
+            app:elevation="0dp"
             app:srcCompat="@drawable/close_icon"
             app:tint="?primaryIconTintColor" />
 
@@ -496,9 +478,9 @@
             android:id="@+id/increase_textsize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:elevation="0dp"
             android:layout_marginVertical="10dp"
             app:backgroundTint="?primaryButtonColor"
+            app:elevation="0dp"
             app:srcCompat="@drawable/arrow_up_icon"
             app:tint="?primaryIconTintColor" />
 
@@ -506,8 +488,8 @@
             android:id="@+id/decrease_textsize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:elevation="0dp"
             app:backgroundTint="?primaryButtonColor"
+            app:elevation="0dp"
             app:srcCompat="@drawable/arrow_down"
             app:tint="?primaryIconTintColor" />
 
@@ -517,15 +499,15 @@
         android:id="@+id/open_budget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="5dp"
+        android:layout_marginRight="5dp"
+        android:tint="?primaryIconTintColor"
         android:visibility="gone"
         app:backgroundTint="@color/money_green"
         app:fabCustomSize="40dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginVertical="5dp"
         app:layout_constraintBottom_toTopOf="@+id/add_checklist_item"
         app:layout_constraintEnd_toEndOf="@+id/add_checklist_item"
-        app:srcCompat="@drawable/money_icon"
-        android:tint="?primaryIconTintColor" />
+        app:srcCompat="@drawable/money_icon" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_checklist_item"
@@ -540,14 +522,30 @@
         app:srcCompat="@drawable/add_icon"
         app:tint="?primaryIconTintColor" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/confirm_reorder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginBottom="15dp"
+        android:text="CONFIRM / CANCEL REORDER"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:backgroundTint="?primaryButtonColor"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/add_icon"
+        app:tint="?primaryIconTintColor" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_audio_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
         android:visibility="gone"
         app:backgroundTint="@color/golden_rod"
         app:fabCustomSize="40dp"
-        android:layout_marginRight="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/add_checklist_item"
         app:layout_constraintEnd_toStartOf="@+id/add_checklist_item"
         app:layout_constraintTop_toTopOf="@+id/add_checklist_item"
@@ -566,9 +564,9 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="15dp"
+            android:layout_margin="2dp"
             app:cardBackgroundColor="?secondaryBackgroundColor"
-            android:layout_margin="2dp">
+            app:cardCornerRadius="15dp">
 
             <LinearLayout
                 android:id="@+id/styleFormat"

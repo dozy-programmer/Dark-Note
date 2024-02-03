@@ -38,6 +38,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
@@ -45,6 +46,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -79,6 +81,7 @@ import com.akapps.dailynote.recyclerview.photos_recyclerview;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.material.button.MaterialButton;
 import com.nguyenhoanglam.imagepicker.helper.Constants;
 import com.nguyenhoanglam.imagepicker.model.CustomMessage;
 import com.nguyenhoanglam.imagepicker.model.Image;
@@ -98,7 +101,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import io.realm.Realm;
@@ -183,6 +188,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public RecyclerView.Adapter checklistAdapter;
     private com.google.android.material.floatingactionbutton.FloatingActionButton addCheckListItem;
     private com.google.android.material.floatingactionbutton.FloatingActionButton addAudioItem;
+    private MaterialButton reorderButton;
+
+    // drag and drop
+    private List<CheckListItem> checkListItemsUnmanaged;
+    private ItemTouchHelper.Callback callback;
+    private ItemTouchHelper helper;
 
     // empty list layout
     private ScrollView empty_Layout;
@@ -320,6 +331,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
     }
 
+    private void swap(int initialFrom, int initialTo) {
+        int oldInitialPosition = checkListItemsUnmanaged.get(initialFrom).getPositionInList();
+        int oldInitialToPosition = checkListItemsUnmanaged.get(initialTo).getPositionInList();
+        checkListItemsUnmanaged.get(initialFrom).setPositionInList(oldInitialToPosition);
+        checkListItemsUnmanaged.get(initialTo).setPositionInList(oldInitialPosition);
+        Collections.swap(checkListItemsUnmanaged, initialFrom, initialTo);
+    }
+
     // when orientation changes, then note data is saved
     @Override
     public void onSaveInstanceState(@NotNull Bundle savedInstanceState) {
@@ -413,6 +432,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         closeTextLayout = findViewById(R.id.close_Layout);
         addCheckListItem = findViewById(R.id.add_checklist_item);
         addAudioItem = findViewById(R.id.add_audio_note);
+        reorderButton = findViewById(R.id.confirm_reorder);
         checkListRecyclerview = findViewById(R.id.checklist);
         empty_Layout = findViewById(R.id.empty_Layout);
         empty_title = findViewById(R.id.empty_title);
@@ -469,7 +489,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         initializeEditor();
         updateColors();
 
-        if(getCurrentNote(context, noteId) == null){
+        if (getCurrentNote(context, noteId) == null) {
             finish("checklist is null");
             return;
         }
@@ -520,7 +540,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
         if (getCurrentNote(context, noteId).isPin())
             pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
-
 
         // if orientation changes, then it updates note data
         if (savedInstanceState != null) {
@@ -708,6 +727,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         });
 
+        reorderButton.setOnClickListener(view -> {
+            RealmHelper.updateChecklistOrdering(context, checkListItemsUnmanaged, noteId);
+            disableSorting();
+        });
+
         decreaseTextSize.setOnClickListener(view -> {
             if (isChangingTextSize)
                 changeTextSize(false, getCurrentNote(context, noteId).isCheckList());
@@ -768,7 +792,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             } else
                 Helper.showMessage(NoteEdit.this, "Mic Error",
                         "No mic detected on device", MotionToast.TOAST_ERROR);
-            return false;
+            return true;
         });
 
         addAudioItem.setOnClickListener(view -> {
@@ -1157,9 +1181,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         int initialPosition = -1;
 
         if (getCurrentNote(context, noteId).getChecklist().size() != 0) {
-            if (getCurrentNote(context, noteId).getSort() == 6)
+            if (RealmHelper.getNoteSorting(context, noteId) == 6)
                 initialPosition = getCurrentNote(context, noteId).getChecklist().min("positionInList").intValue() - 1;
-            else if (getCurrentNote(context, noteId).getSort() == 5)
+            else if (RealmHelper.getNoteSorting(context, noteId) == 5)
                 initialPosition = getCurrentNote(context, noteId).getChecklist().max("positionInList").intValue() + 1;
         } else
             initialPosition = getCurrentNote(context, noteId).getChecklist().size();
@@ -1174,18 +1198,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
                 .format(Calendar.getInstance().getTime()), place, redirectId);
         getCurrentNote(context, noteId).getChecklist().add(currentItem);
-        if (getCurrentNote(context, noteId).getSort() == 8)
+        if (RealmHelper.getNoteSorting(context, noteId) == 8)
             getRealm().where(CheckListItem.class).equalTo("id", noteId).findAll().setLong("lastCheckedDate", lastCheckedDate);
         getCurrentNote(context, noteId).setChecked(false);
         getRealm().commitTransaction();
         updateSaveDateEdited();
         isListEmpty(getCurrentNote(context, noteId).getChecklist().size());
 
-        if (checklistAdapter != null)
-            checklistAdapter.notifyDataSetChanged();
-        else {
-            sortChecklist("");
-        }
+        sortChecklist("");
 
         if (title.getText().length() == 0)
             title.requestFocus();
@@ -1213,9 +1233,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         int initialPosition = -1;
 
         if (getCurrentNote(context, noteId).getChecklist().size() != 0) {
-            if (getCurrentNote(context, noteId).getSort() == 6)
+            if (RealmHelper.getNoteSorting(context, noteId) == 6)
                 initialPosition = getCurrentNote(context, noteId).getChecklist().min("positionInList").intValue() - 1;
-            else if (getCurrentNote(context, noteId).getSort() == 5)
+            else if (RealmHelper.getNoteSorting(context, noteId) == 5)
                 initialPosition = getCurrentNote(context, noteId).getChecklist().max("positionInList").intValue() + 1;
         } else
             initialPosition = getCurrentNote(context, noteId).getChecklist().size();
@@ -1499,6 +1519,81 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         isListEmpty(getCurrentNote(context, noteId).getChecklist().size(), true);
     }
 
+    public void enableSorting() {
+        callback = new ItemTouchHelper.Callback() {
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0);
+            }
+
+            @Override
+            public boolean isLongPressDragEnabled() {
+                checkListItemsUnmanaged = getRealm().copyFromRealm(checkListItems);
+                return super.isLongPressDragEnabled();
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                int fromPosition = viewHolder.getAbsoluteAdapterPosition();
+                int toPosition = target.getAbsoluteAdapterPosition();
+                // Determine direction and calculate number of items to shift
+                int shiftDirection = Integer.compare(toPosition, fromPosition);
+
+                // Handle shifting to lower position (3 to 0):
+                if (shiftDirection < 0) {
+                    // Shift items to the right starting from the new position
+                    for (int i = fromPosition; i > toPosition; i--) {
+                        swap(i, i - 1);
+                    }
+                }
+                // Handle shifting to higher position (0 to 3):
+                else {
+                    // Shift items to the left starting from the original position
+                    for (int i = fromPosition; i < toPosition; i++) {
+                        swap(i, i + 1);
+                    }
+                }
+
+                checklistAdapter.notifyItemMoved(fromPosition, toPosition);
+                return true;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            }
+
+            @Override
+            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                super.clearView(recyclerView, viewHolder);
+//                    StringBuilder builder = new StringBuilder();
+//                    builder.append("[");
+//                    for (CheckListItem checkListItem : checkListItemsUnmanaged) {
+//                        builder
+//                                .append("(" + checkListItem.getId() + ") ")
+//                                .append(checkListItem.getText())
+//                                .append(" @ ")
+//                                .append(checkListItem.getPositionInList())
+//                                .append(", ");
+//                    }
+//                    builder.append("]");
+//                    Log.d("Here", builder.toString());
+                RealmHelper.updateChecklistOrdering(context, checkListItemsUnmanaged, noteId);
+                checklistAdapter.notifyDataSetChanged();
+            }
+        };
+
+        helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(checkListRecyclerview);
+    }
+
+    private void disableSorting() {
+        try {
+            helper.attachToRecyclerView(null);
+        } catch (Exception e) {
+        }
+    }
+
     private void checkNote(boolean status) {
         getRealm().beginTransaction();
         getCurrentNote(context, noteId).setChecked(status);
@@ -1574,8 +1669,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         GridLayoutManager layout = new GridLayoutManager(context, span);
         checkListRecyclerview.setLayoutManager(layout);
         checkListRecyclerview.setHasFixedSize(true);
-        checklistAdapter = new checklist_recyclerview(currentList, getCurrentNote(context, noteId), this, word);
-        checklistAdapter.setHasStableIds(true);
+        if (Helper.isDragDropEnabled(context, noteId))
+            enableSorting();
+        else {
+            disableSorting();
+        }
+        checklistAdapter = new checklist_recyclerview(currentList, noteId, this, word);
+        //checklistAdapter.setHasStableIds(true);
         checkListRecyclerview.setAdapter(checklistAdapter);
         checkListRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

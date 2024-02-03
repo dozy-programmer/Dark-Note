@@ -40,6 +40,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     private final FragmentActivity activity;
     private final int parentPosition;
     private final String searchingForWord;
+    public RecyclerView.Adapter parentChecklistAdapter;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -58,8 +59,9 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         }
     }
 
-    public sub_checklist_recyclerview(CheckListItem parentSublistListItem, RealmResults<SubCheckListItem> checkList, Note currentNote,
+    public sub_checklist_recyclerview(RecyclerView.Adapter checklistAdapter, CheckListItem parentSublistListItem, RealmResults<SubCheckListItem> checkList, Note currentNote,
                                       FragmentActivity activity, int parentPosition, String searchingForWord) {
+        this.parentChecklistAdapter = checklistAdapter;
         this.parentSublistListItem = parentSublistListItem;
         this.checkList = checkList;
         this.currentNote = currentNote;
@@ -123,12 +125,26 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             saveSelected(checkListItem, !isSelected);
             notifyItemChanged(position);
         });
-
         // if checklist item is clicked, then it updates the status of the item
         // this is added to support clickable links
         holder.checklistText.setOnClickListener(v -> {
             saveSelected(checkListItem, !isSelected);
             notifyItemChanged(position);
+        });
+
+        holder.checkItem.setOnLongClickListener(view -> {
+            if (parentSublistListItem.getSubChecklist().size() != 0) {
+                updateSublistView(parentSublistListItem);
+                parentChecklistAdapter.notifyItemChanged(parentPosition);
+            }
+            return true;
+        });
+        holder.checklistText.setOnLongClickListener(view -> {
+            if (parentSublistListItem.getSubChecklist().size() != 0) {
+                updateSublistView(parentSublistListItem);
+                parentChecklistAdapter.notifyItemChanged(parentPosition);
+            }
+            return true;
         });
 
         holder.edit.setOnClickListener(v -> {
@@ -154,6 +170,12 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         checkListItem.setChecked(status);
         RealmSingleton.getInstance(context).commitTransaction();
         ((NoteEdit) context).updateSaveDateEdited();
+    }
+
+    private void updateSublistView(CheckListItem checkListItem) {
+        RealmSingleton.getInstance(context).beginTransaction();
+        checkListItem.setSublistExpanded(true);
+        RealmSingleton.getInstance(context).commitTransaction();
     }
 
     // opens dialog that allows user to edit or delete checklist item

@@ -49,7 +49,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
     // project data
     private final RealmResults<CheckListItem> checkList;
-    private final Note currentNote;
+    private final int noteId;
     private Context context;
     private final FragmentActivity activity;
     private String searchingForWord;
@@ -93,9 +93,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
     }
 
-    public checklist_recyclerview(RealmResults<CheckListItem> checkList, Note currentNote, FragmentActivity activity, String searchingForWord) {
+    public checklist_recyclerview(RealmResults<CheckListItem> checkList, int noteId, FragmentActivity activity, String searchingForWord) {
         this.checkList = checkList;
-        this.currentNote = currentNote;
+        this.noteId = noteId;
         this.activity = activity;
         this.searchingForWord = searchingForWord;
         checklistSize = checkList.size();
@@ -175,7 +175,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         holder.subChecklist.setAdapter(null);
         RecyclerView.Adapter subChecklistAdapter = null;
-        if (RealmHelper.getUser(context, "checklist_recyclerview").isEnableSublists() && currentNote.isEnableSublist()) {
+        if (RealmHelper.getUser(context, "checklist_recyclerview").isEnableSublists() && getNote().isEnableSublist()) {
             holder.addSubChecklist.setVisibility(View.VISIBLE);
             if (null == checkListItem.getSubChecklist()) {
                 RealmSingleton.getInstance(context).beginTransaction();
@@ -185,9 +185,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             } else {
                 if (checkListItem.getSubChecklist().size() != 0) {
                     holder.subChecklist.setVisibility(View.VISIBLE);
-                    subChecklistAdapter = new sub_checklist_recyclerview(checkListItem, RealmSingleton.getInstance(context).where(SubCheckListItem.class)
+                    subChecklistAdapter = new sub_checklist_recyclerview(this, checkListItem, RealmSingleton.getInstance(context).where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
-                            .sort("positionInList").findAll(), currentNote, activity, position, searchingForWord);
+                            .sort("positionInList").findAll(), getNote(), activity, position, searchingForWord);
                     holder.subChecklist.setAdapter(subChecklistAdapter);
                     holder.subChecklist.setHasFixedSize(true);
                     subChecklistAdapter.notifyItemChanged(position);
@@ -220,7 +220,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         // to be filled and changes text color to gray
         if (isSelected) {
             holder.checklistText.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-            holder.checklistText.setTextColor(Helper.darkenColor(RealmHelper.getTextColorBasedOnTheme(context, currentNote.getNoteId()), 100));
+            holder.checklistText.setTextColor(Helper.darkenColor(RealmHelper.getTextColorBasedOnTheme(context, getNote().getNoteId()), 100));
             if (RealmHelper.getUser(context, "checklist_recyclerview").isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_checked));
             } else {
@@ -228,7 +228,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             }
         } else {
             holder.checklistText.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-            holder.checklistText.setTextColor(RealmHelper.getTextColorBasedOnTheme(context, currentNote.getNoteId()));
+            holder.checklistText.setTextColor(RealmHelper.getTextColorBasedOnTheme(context, getNote().getNoteId()));
             if (RealmHelper.getUser(context, "checklist_recyclerview").isShowChecklistCheckbox()) {
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.icon_checkbox_unchecked));
             } else {
@@ -282,24 +282,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         });
 
         holder.expandSublist.setOnClickListener(view -> {
-            updateSublistView(checkListItem, false);
+            updateSublistView(checkListItem, false, position);
             notifyItemChanged(position);
         });
-        // minimize sublist
-        holder.checklistText.setOnLongClickListener(view -> {
-            if (checkListItem.getSubChecklist().size() != 0) {
-                updateSublistView(checkListItem, true);
-                notifyItemChanged(position);
-            }
-            return true;
-        });
-        holder.checkItem.setOnLongClickListener(view -> {
-            if (checkListItem.getSubChecklist().size() != 0) {
-                updateSublistView(checkListItem, true);
-                notifyItemChanged(position);
-            }
-            return true;
-        });
+
+
+        holder.checklistText.setOnLongClickListener(view -> handleLongClick(checkListItem, position));
+        holder.checkItem.setOnLongClickListener(view -> handleLongClick(checkListItem, position));
 
         holder.edit.setOnClickListener(v -> {
             openEditDialog(checkListItem, position);
@@ -307,7 +296,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         holder.redirectToNote.setOnClickListener(view -> {
             Note redirectNote = RealmHelper.getNote(context, checkListItem.getRedirectToOtherNote());
-            if (currentNote.getPinNumber() == 0) {
+            if (getNote().getPinNumber() == 0) {
                 Intent note = new Intent(activity, NoteEdit.class);
                 note.putExtra("id", redirectNote.getNoteId());
                 note.putExtra("isChecklist", redirectNote.isCheckList());
@@ -340,6 +329,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         });
 
         holder.deleteIcon.setOnClickListener(view -> {
+            Note currentNote = getNote();
             RealmHelper.deleteChecklistItem(checkListItem, context, false);
             RealmSingleton.getInstance(context).beginTransaction();
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
@@ -366,21 +356,24 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         return position;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
     private void updateChecklistStatus(CheckListItem checkListItem, boolean isSelected, int position) {
         saveSelected(checkListItem, !isSelected);
         isAllItemsSelected();
         notifyDataSetChanged();
     }
 
-    private void updateSublistView(CheckListItem checkListItem, boolean newState) {
+    private void updateSublistView(CheckListItem checkListItem, boolean newState, int position) {
         RealmSingleton.getInstance(context).beginTransaction();
         checkListItem.setSublistExpanded(newState);
         RealmSingleton.getInstance(context).commitTransaction();
+        notifyItemChanged(position);
+    }
+
+    private boolean handleLongClick(CheckListItem checkListItem, int position) {
+        if (!Helper.isDragDropEnabled(context, noteId))
+            if (checkListItem.getSubChecklist() != null && checkListItem.getSubChecklist().size() > 0)
+                updateSublistView(checkListItem, true, position);
+        return true;
     }
 
     // updates select status of note in database
@@ -411,6 +404,10 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
     }
 
+    private Note getNote() {
+        return RealmHelper.getCurrentNote(context, noteId);
+    }
+
     // determines if all items are select and if they are, checklist is set to check or "finished"
     private void isAllItemsSelected() {
         RealmResults<CheckListItem> select = checkList.where()
@@ -421,7 +418,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         if (select.size() == 0 && checkList.size() == 0)
             isAllChecked = false;
 
-        if (currentNote.isChecked() != isAllChecked) {
+        if (getNote().isChecked() != isAllChecked) {
+            Note currentNote = getNote();
             RealmSingleton.getInstance(context).beginTransaction();
             currentNote.setChecked(isAllChecked);
             RealmSingleton.getInstance(context).commitTransaction();

@@ -56,6 +56,7 @@ import com.akapps.dailynote.classes.other.AppWidget;
 import com.akapps.dailynote.classes.other.AppWidgetShortcut;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -72,15 +73,9 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -928,6 +923,12 @@ public class Helper {
      * if added top + checked top = 17
      * if added top + checked bottom = 18
      */
+
+    public static boolean isDragDropEnabled(Context context, int noteId) {
+        Note currentNote = RealmHelper.getNote(context, noteId);
+        int currentSort = currentNote.getSort();
+        return currentSort == 5 || currentSort == 6;
+    }
 
     public static RealmResults<Note> getSelectedNotes(Realm realm, Activity activity) {
         RealmResults<Note> selectedNotes = realm.where(Note.class).equalTo("isSelected", true).findAll();

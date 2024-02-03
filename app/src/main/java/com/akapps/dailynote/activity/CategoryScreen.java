@@ -39,6 +39,9 @@ import com.akapps.dailynote.recyclerview.categories_recyclerview;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Collections;
+import java.util.List;
+
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
@@ -81,6 +84,9 @@ public class CategoryScreen extends AppCompatActivity {
     private RealmResults<Note> trashAllNotes;
     private RealmResults<Note> lockedAllNotes;
     private RealmResults<Note> reminderAllNotes;
+
+    // for drag and drop
+    private List<Folder> allFolders;
 
     // activity data
     private boolean editingRegularNote;
@@ -281,42 +287,71 @@ public class CategoryScreen extends AppCompatActivity {
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_DRAG | ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
 
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
-                int started = dragged.getAbsoluteAdapterPosition();
-                int ended = target.getAbsoluteAdapterPosition();
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN |
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+                return makeMovementFlags(dragFlags, 0);
+            }
 
-                Folder item = RealmHelper.getAllFolders(context).get(started);
-                Folder item2 = RealmHelper.getAllFolders(context).get(ended);
-                RealmSingleton.getInstance(context).beginTransaction();
-                if (Math.abs(ended - started) > 1) {
-                    if (started < ended) {
-                        Folder item3 = RealmHelper.getAllFolders(context).get(started + 1);
-                        int middlePosition = item3.getPositionInList();
-                        item.setPositionInList(ended);
-                        item3.setPositionInList(started);
-                        item2.setPositionInList(middlePosition);
-                    } else {
-                        Folder item3 = RealmHelper.getAllFolders(context).get(started - 1);
-                        int middlePosition = item3.getPositionInList();
-                        item.setPositionInList(ended);
-                        item3.setPositionInList(started);
-                        item2.setPositionInList(middlePosition);
+            @Override
+            public boolean isLongPressDragEnabled() {
+                allFolders = RealmSingleton.get(context).copyFromRealm(RealmHelper.getAllFolders(context));
+                return super.isLongPressDragEnabled();
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
+                int fromPosition = dragged.getAbsoluteAdapterPosition();
+                int toPosition = target.getAbsoluteAdapterPosition();
+
+                // Determine direction and calculate number of items to shift
+                int shiftDirection = Integer.compare(toPosition, fromPosition);
+
+                // Handle shifting to lower position (3 to 0):
+                if (shiftDirection < 0) {
+                    // Shift items to the right starting from the new position
+                    for (int i = fromPosition; i > toPosition; i--) {
+                        swap(i, i - 1);
                     }
-                } else {
-                    item.setPositionInList(ended);
-                    item2.setPositionInList(started);
                 }
-                RealmSingleton.getInstance(context).commitTransaction();
-                categoriesAdapter.notifyItemMoved(started, ended);
-                return false;
+                // Handle shifting to higher position (0 to 3):
+                else {
+                    // Shift items to the left starting from the original position
+                    for (int i = fromPosition; i < toPosition; i++) {
+                        swap(i, i + 1);
+                    }
+                }
+
+//                StringBuilder builder = new StringBuilder();
+//                builder.append("[");
+//                for (Folder folder : allFolders) {
+//                    builder
+//                            .append("(" + folder.getId() + ") ")
+//                            .append(folder.getName())
+//                            .append(" @ ")
+//                            .append(folder.getPositionInList())
+//                            .append(", ");
+//                }
+//                builder.append("]");
+//                Log.d("Here", builder.toString());
+
+                categoriesAdapter.notifyItemMoved(fromPosition, toPosition);
+                return true;
+            }
+
+            private void swap(int initialFrom, int initialTo) {
+                int oldInitialPosition = allFolders.get(initialFrom).getPositionInList();
+                int oldInitialToPosition = allFolders.get(initialTo).getPositionInList();
+                allFolders.get(initialFrom).setPositionInList(oldInitialToPosition);
+                allFolders.get(initialTo).setPositionInList(oldInitialPosition);
+                Collections.swap(allFolders, initialFrom, initialTo);
             }
 
             @Override
             public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
-                if (!recyclerView.isComputingLayout()) {
-                    categoriesAdapter.notifyDataSetChanged();
-                }
+                RealmHelper.updateFolderOrdering(context, allFolders);
+                categoriesAdapter.notifyDataSetChanged();
             }
 
             @Override

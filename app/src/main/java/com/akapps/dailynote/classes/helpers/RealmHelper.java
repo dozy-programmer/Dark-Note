@@ -16,6 +16,7 @@ import com.akapps.dailynote.classes.data.User;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -242,6 +243,111 @@ public class RealmHelper {
 
     public static RealmResults<Folder> getAllFolders(Context context) {
         return RealmSingleton.getInstance(context).where(Folder.class).sort("positionInList").findAll();
+    }
+
+    public static int getNoteSorting(Context context, int noteId) {
+        return getCurrentNote(context, noteId).getSort();
+    }
+
+    public static void updateAudioExtensions(Context context) {
+        getRealm(context).beginTransaction();
+        List<CheckListItem> audioPaths = getRealm(context).copyToRealm(getRealm(context).where(CheckListItem.class)
+                .isNotEmpty("audioPath").findAll());
+        getRealm(context).commitTransaction();
+
+        for (CheckListItem item : audioPaths) {
+            if (item.getAudioPath() != null && !item.getAudioPath().isEmpty()) {
+                if (item.getAudioPath().contains(".mp4")) {
+                    File originalFile = new File(item.getAudioPath());
+                    String newFilename = originalFile.getName().replaceFirst(".mp4", ".mp3"); // Replace the existing extension with ".pdf"
+                    File newFile = new File(originalFile.getParent(), newFilename);
+
+                    boolean renamed = originalFile.renameTo(newFile);
+
+                    if (renamed) {
+                        Log.d("Here", "Audio path: " + item.getAudioPath() + " was successfully updated");
+                        updateAudioPath(context, item, newFilename);
+                    } else
+                        Log.d("Here", "Audio path: " + item.getAudioPath() + " [ERROR]");
+                } else
+                    Log.d("Here", "Audio path: " + item.getAudioPath() + " is already MP3");
+            }
+        }
+
+    }
+
+    public static void updateAudioPath(Context context, CheckListItem item, String newPath) {
+        getRealm(context).beginTransaction();
+        item.setAudioPath(newPath);
+        getRealm(context).commitTransaction();
+    }
+
+    public static void updateChecklistOrdering(Context context, List<CheckListItem> newChecklist, int noteId) {
+        for (CheckListItem checkListItem : newChecklist) {
+            CheckListItem item = getCurrentNote(context, noteId).getChecklist().where()
+                    .equalTo("id", checkListItem.getId())
+                    .equalTo("subListId", checkListItem.getSubListId())
+                    .equalTo("text", checkListItem.getText())
+                    .findFirst();
+            getRealm(context).beginTransaction();
+            updateCheckListPosition(context, item, checkListItem.getPositionInList());
+            getRealm(context).commitTransaction();
+        }
+
+        RealmResults<CheckListItem> oldChecklist = getCurrentNote(context, noteId).getChecklist().sort("positionInList");
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (CheckListItem checkListItem : oldChecklist) {
+            builder
+                    .append("(" + checkListItem.getId() + ") ")
+                    .append(checkListItem.getText())
+                    .append(" @ ")
+                    .append(checkListItem.getPositionInList())
+                    .append(", ");
+        }
+        builder.append("]");
+        Log.d("Here", builder.toString());
+    }
+
+    public static void updateFolderOrdering(Context context, List<Folder> newFolder) {
+        for (Folder folder : newFolder) {
+            Folder item = getRealm(context).where(Folder.class)
+                    .equalTo("id", folder.getId())
+                    .equalTo("name", folder.getName())
+                    .findFirst();
+            getRealm(context).beginTransaction();
+            updateFolderPosition(context, item, folder.getPositionInList());
+            getRealm(context).commitTransaction();
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (Folder folder : getRealm(context).where(Folder.class).sort("positionInList").findAll()) {
+            builder
+                    .append("(" + folder.getId() + ") ")
+                    .append(folder.getName())
+                    .append(" @ ")
+                    .append(folder.getPositionInList())
+                    .append(", ");
+        }
+        builder.append("]");
+        Log.d("Here", builder.toString());
+    }
+
+    public static void updateCheckListPosition(Context context, CheckListItem item, int newPosition) {
+        try {
+            item.setPositionInList(newPosition);
+        } catch (Exception e) {
+            getRealm(context).cancelTransaction();
+        }
+    }
+
+    public static void updateFolderPosition(Context context, Folder item, int newPosition) {
+        try {
+            item.setPositionInList(newPosition);
+        } catch (Exception e) {
+            getRealm(context).cancelTransaction();
+        }
     }
 
     public static Note getCurrentNote(Context context, int noteId) {

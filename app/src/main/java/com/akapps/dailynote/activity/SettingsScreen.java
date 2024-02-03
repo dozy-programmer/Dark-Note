@@ -49,7 +49,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
-//import com.mukesh.countrypicker.CountryPicker;
 import com.mukesh.countrypicker.CountryPicker;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
@@ -176,7 +175,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if(picker != null)
+        if (picker != null)
             picker.dismissDialogs();
         super.onPause();
     }
@@ -411,7 +410,7 @@ public class SettingsScreen extends AppCompatActivity {
                 builder.style(R.style.CountryPickerStyle);
                 picker = builder.build();
                 picker.showBottomSheet(this);
-            } catch (Exception e){
+            } catch (Exception e) {
                 List<IconPowerMenuItem> options = new ArrayList<>();
                 options.add(new IconPowerMenuItem(null, "+$"));
                 options.add(new IconPowerMenuItem(null, "+₹"));
@@ -425,7 +424,7 @@ public class SettingsScreen extends AppCompatActivity {
         expenseSymbolLayout.setOnClickListener(v -> {
             isEditingExpenseSymbol = true;
             isEditingBudgetSymbol = false;
-            try{
+            try {
                 CountryPicker.Builder builder = new CountryPicker.Builder()
                         .with(context)
                         .listener(country -> {
@@ -624,12 +623,13 @@ public class SettingsScreen extends AppCompatActivity {
                 CreditsSheet creditSheet = new CreditsSheet();
                 creditSheet.show(getSupportFragmentManager(), creditSheet.getTag());
             }
+            Log.d("Here", "Counter -> " + upgradeToProCounter);
         });
 
         about.setOnLongClickListener(v -> {
             if (upgradeToProCounter == 12)
                 upgradeToPro();
-            return false;
+            return true;
         });
     }
 

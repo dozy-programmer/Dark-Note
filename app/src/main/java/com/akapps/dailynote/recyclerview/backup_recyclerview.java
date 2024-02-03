@@ -93,7 +93,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         String finalFileSize = fileSize;
         holder.sync.setOnLongClickListener(view -> {
             ((SettingsScreen) activity).restoreFromDatabase(RealmHelper.getBackup(context, actualFilename).getFileName(), finalFileSize);
-            return false;
+            return true;
         });
 
         holder.delete.setOnClickListener(view -> {
@@ -102,7 +102,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
 
         holder.delete.setOnLongClickListener(view -> {
             deleteBackupFile(currentBackup);
-            return false;
+            return true;
         });
     }
 

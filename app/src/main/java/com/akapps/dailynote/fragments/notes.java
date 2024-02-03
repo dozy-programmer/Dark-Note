@@ -175,6 +175,7 @@ public class notes extends Fragment {
         RealmHelper.verifyDateWithMilli(context);
         updateDateEditedMilli(0);
         unSelectAllNotes();
+        RealmHelper.updateAudioExtensions(context);
 
         allNotes = getAllNotes();
 

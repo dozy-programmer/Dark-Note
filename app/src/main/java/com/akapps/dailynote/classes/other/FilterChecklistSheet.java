@@ -93,7 +93,7 @@ public class FilterChecklistSheet extends RoundedBottomSheetDialogFragment {
         }
 
         /** sorting
-         if no sort or cleared, then it is -1
+         if no sort or cleared, then it is 5
          if aToZ 1
          if zToA 2
          if checked top 3

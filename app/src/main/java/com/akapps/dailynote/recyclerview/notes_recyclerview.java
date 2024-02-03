@@ -141,10 +141,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
         int noteId = currentNote.getNoteId();
 
-        // retrieves all photos that belong to note
-        RealmResults<Photo> allPhotos = RealmSingleton.getInstance(context).where(Photo.class)
-                .equalTo("noteId", currentNote.getNoteId()).findAll();
-
         // retrieves note text, the lock status of note and reminder status
         noteText = currentNote.getNote() == null ? "" : currentNote.getNote();
         boolean isNoteLocked = currentNote.getPinNumber() > 0;
@@ -337,34 +333,34 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // if note has photos, it displays them under note preview (up to 3)
         // if there are more, it shows a text underneath them with
         // the number of photos that are left
-        if (allPhotos.size() > 0 & !isNoteLocked && showPreview) {
-            if (allPhotos.size() == 1) {
+        if (getNotePhotos(noteId).size() > 0 & !isNoteLocked && showPreview) {
+            if (getNotePhotos(noteId).size() == 1) {
                 holder.preview_1.setVisibility(View.GONE);
                 holder.preview_3.setVisibility(View.GONE);
                 holder.preview_2.setVisibility(View.VISIBLE);
                 preview_2_position = 0;
-                if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
-                    Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                if (new File(getNotePhotos(noteId).get(0).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(getNotePhotos(noteId).get(0).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_2);
                 }
-            } else if (allPhotos.size() == 2) {
+            } else if (getNotePhotos(noteId).size() == 2) {
                 holder.preview_1.setVisibility(View.VISIBLE);
                 holder.preview_2.setVisibility(View.GONE);
                 holder.preview_3.setVisibility(View.VISIBLE);
                 preview_1_position = 0;
                 preview_3_position = 1;
 
-                if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
-                    Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                if (new File(getNotePhotos(noteId).get(0).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(getNotePhotos(noteId).get(0).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_1);
                 }
 
-                if (new File(allPhotos.get(1).getPhotoLocation()).exists()) {
-                    Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
+                if (new File(getNotePhotos(noteId).get(1).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(getNotePhotos(noteId).get(1).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_3);
@@ -378,31 +374,31 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 preview_2_position = 1;
                 preview_3_position = 2;
 
-                if (new File(allPhotos.get(0).getPhotoLocation()).exists()) {
-                    Glide.with(activity).load(allPhotos.get(0).getPhotoLocation())
+                if (new File(getNotePhotos(noteId).get(0).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(getNotePhotos(noteId).get(0).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_1);
                 }
 
-                if (new File(allPhotos.get(1).getPhotoLocation()).exists()) {
-                    Glide.with(activity).load(allPhotos.get(1).getPhotoLocation())
+                if (new File(getNotePhotos(noteId).get(1).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(getNotePhotos(noteId).get(1).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_2);
                 }
 
-                if (new File(allPhotos.get(2).getPhotoLocation()).exists()) {
-                    Glide.with(activity).load(allPhotos.get(2).getPhotoLocation())
+                if (new File(getNotePhotos(noteId).get(2).getPhotoLocation()).exists()) {
+                    Glide.with(activity).load(getNotePhotos(noteId).get(2).getPhotoLocation())
                             .centerCrop()
                             .placeholder(activity.getDrawable(R.drawable.placeholder_image_icon))
                             .into(holder.preview_3);
                 }
             }
 
-            if (allPhotos.size() > 3) {
+            if (getNotePhotos(noteId).size() > 3) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
-                holder.preview_photo_message.setText("..." + (allPhotos.size() - 3) + " more");
+                holder.preview_photo_message.setText("..." + (getNotePhotos(noteId).size() - 3) + " more");
             } else
                 holder.preview_photo_message.setVisibility(View.GONE);
         } else {
@@ -414,11 +410,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
 
         int finalPreview_1_position = preview_1_position;
-        holder.preview_1_layout.setOnClickListener(view -> showPhotos(finalPreview_1_position, allPhotos, holder.preview_1));
+        holder.preview_1_layout.setOnClickListener(view -> showPhotos(finalPreview_1_position, noteId, holder.preview_1));
         int finalPreview_2_position = preview_2_position;
-        holder.preview_2_layout.setOnClickListener(view -> showPhotos(finalPreview_2_position, allPhotos, holder.preview_2));
+        holder.preview_2_layout.setOnClickListener(view -> showPhotos(finalPreview_2_position, noteId, holder.preview_2));
         int finalPreview_3_position = preview_3_position;
-        holder.preview_3_layout.setOnClickListener(view -> showPhotos(finalPreview_3_position, allPhotos, holder.preview_3));
+        holder.preview_3_layout.setOnClickListener(view -> showPhotos(finalPreview_3_position, noteId, holder.preview_3));
 
         holder.preview_1_layout.setOnLongClickListener(view -> {
             // prevent opening of images when multi-selecting
@@ -431,7 +427,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
             }
-            return false;
+            return true;
         });
 
         holder.preview_2_layout.setOnLongClickListener(view -> {
@@ -445,7 +441,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
             }
-            return false;
+            return true;
         });
 
         holder.preview_3_layout.setOnLongClickListener(view -> {
@@ -459,7 +455,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
             }
-            return false;
+            return true;
         });
 
         // if user is selecting multiple notes, it updates status of select in note,
@@ -510,7 +506,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         });
     }
 
-    private void showPhotos(int position, RealmResults<Photo> allPhotos, ImageView currentImage) {
+    private void showPhotos(int position, int noteId, ImageView currentImage) {
+        RealmResults<Photo> allPhotos = getNotePhotos(noteId);
         if (!enableSelectMultiple) {
             ArrayList<String> images = new ArrayList<>();
             for (int i = 0; i < allPhotos.size(); i++) {
@@ -566,5 +563,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         RealmSingleton.get(context).beginTransaction();
         RealmHelper.getNote(context, noteId).setSelected(status);
         RealmSingleton.get(context).commitTransaction();
+    }
+
+    private RealmResults<Photo> getNotePhotos(int noteId) {
+        // retrieves all photos that belong to note
+        return RealmSingleton.getInstance(context).where(Photo.class)
+                .equalTo("noteId", noteId).findAll();
     }
 }

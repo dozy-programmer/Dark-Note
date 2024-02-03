@@ -49,14 +49,12 @@ public class sub_expenses_recyclerview extends RecyclerView.Adapter<sub_expenses
     @Override
     public sub_expenses_recyclerview.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_sub_expense_layout, parent, false);
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+        return new MyViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         SubExpense currentExpense = expenses.get(position);
-
         String expenseName = Helper.capitalize(Helper.removeAllMoneyAmounts(currentExpense.getExpenseName(), expenseKey));
 
         holder.expenseName.setText(expenseName);
