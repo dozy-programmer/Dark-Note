@@ -1758,8 +1758,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 if (!alarmManager.canScheduleExactAlarms()) {
-                    Helper.showMessage(this, "Alarm Not Set", "Please Enable " +
-                            "Alarms & Reminders ", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(this, "Alarm Not Set", "Enable " +
+                            "Alarms & try again", MotionToast.TOAST_ERROR);
                     startAlarmPermission.launch(new Intent(
                             Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                             Uri.parse("package:" + getPackageName())
