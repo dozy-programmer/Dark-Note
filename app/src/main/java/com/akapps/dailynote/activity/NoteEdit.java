@@ -637,7 +637,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         budget.setOnClickListener(v -> {
-            BudgetSheet budget = new BudgetSheet(getCurrentNote(context, noteId).getChecklist(), getUser().getBudgetCharacter(), getUser().getExpenseCharacter());
+            BudgetSheet budget = new BudgetSheet(noteId, getUser().getBudgetCharacter(), getUser().getExpenseCharacter());
             budget.show(this.getSupportFragmentManager(), budget.getTag());
         });
 

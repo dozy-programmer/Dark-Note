@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">InstantApp</string>
+
+    <string name="app_info">This is the simple Instant App for Dark Not and is completely useless.\n\nDownload the useful Dark Note by pressing the button below.</string>
+
+    <string name="button_download">Download</string>
+</resources>

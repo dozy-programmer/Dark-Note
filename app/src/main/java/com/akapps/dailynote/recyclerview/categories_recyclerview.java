@@ -30,7 +30,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
 
     // project data
     private RealmResults<Folder> allCategories;
-    private RealmResults<Note> allSelectedNotes;
     private final FragmentActivity activity;
     private final Context context;
     private final int categorySize;
@@ -57,7 +56,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         this.allCategories = allCategories;
         this.activity = activity;
         this.context = context;
-        allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
         categorySize = allCategories.size();
     }
 
@@ -93,6 +91,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
             holder.folder_icon.setColorFilter(UiHelper.getColorFromTheme(activity, R.attr.primaryButtonColor));
 
         holder.view.setOnClickListener(v -> {
+            RealmResults<Note> allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
             if (((CategoryScreen) activity).isEditing) {
                 FolderItemSheet checklistItemSheet = new FolderItemSheet(folderId, this, position);
                 checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());

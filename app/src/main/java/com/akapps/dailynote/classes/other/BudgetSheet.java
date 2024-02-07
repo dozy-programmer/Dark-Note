@@ -20,6 +20,7 @@ import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.SubExpense;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.recyclerview.expenses_recyclerview;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -39,7 +40,7 @@ import io.realm.RealmList;
 
 public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
-    private RealmList<CheckListItem> checkListItems;
+    private int noteId;
     private final ArrayList<Expense> expensesList = new ArrayList<>();
     private List<DonutSection> expensesListGraph = new ArrayList<>();
 
@@ -57,8 +58,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
     public BudgetSheet() {
     }
 
-    public BudgetSheet(RealmList<CheckListItem> checkListItems, String budgetKey, String expenseKey) {
-        this.checkListItems = checkListItems;
+    public BudgetSheet(int noteId, String budgetKey, String expenseKey) {
+        this.noteId = noteId;
         this.budgetKey = budgetKey;
         this.expenseKey = expenseKey;
     }
@@ -70,6 +71,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
         double budget = 0;
         String errorMessageString = "";
+
+        RealmList<CheckListItem> checkListItems = RealmHelper.getCurrentNote(getContext(), noteId).getChecklist();
 
         ImageButton budgetInfo = view.findViewById(R.id.budget_info);
         budgetProgress = view.findViewById(R.id.budget_progress_view);

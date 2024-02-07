@@ -295,6 +295,11 @@ public class BackupHelper {
             Uri uri = data.getData();
             String fileName = getFileName(uri);
 
+            if(fileName == null){
+                Helper.showMessage(activity, "Restoring Error", "File not received due to error", MotionToast.TOAST_ERROR);
+                return;
+            }
+
             if (fileName.endsWith(".realm")) {
                 Log.d("Here", "restoring realm backup");
                 restoreBackupFromRealmFile(uri);
