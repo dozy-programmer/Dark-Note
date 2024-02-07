@@ -158,6 +158,12 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         dismiss();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
+    }
+
     private void initializeLayout(boolean isDarkMode) {
         exportText.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.blue : R.color.transparent)));
         exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.azure : R.color.transparent)));

@@ -5,8 +5,8 @@
     <string name="schema">47</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v16.5</string>
-    <string name="app_version_int">16.5</string>
+    <string name="app_version">v16.6</string>
+    <string name="app_version_int">16.6</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>

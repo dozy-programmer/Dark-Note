@@ -34,7 +34,6 @@ import io.realm.Realm;
 
 public class ColorSheet extends RoundedBottomSheetDialogFragment {
 
-    private Note currentNote;
     private int noteId;
     private AlertDialog colorPickerView;
     private TextView titleColor;
@@ -43,7 +42,8 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
     private TextView backgroundText;
     private ImageView backgroundIcon;
 
-    public ColorSheet() {
+    public ColorSheet(int noteId) {
+        this.noteId = noteId;
     }
 
     @Override
@@ -58,26 +58,21 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         ImageView textColorIcon = view.findViewById(R.id.text_color_icon);
         backgroundText = view.findViewById(R.id.background_text);
 
-        noteId = ((NoteEdit) getActivity()).noteId;
-        currentNote = RealmHelper.getCurrentNote(getContext(), noteId);
-
-        backgroundIcon.setOnClickListener(v -> {
-            openDialog("b");
-        });
+        backgroundIcon.setOnClickListener(v -> openDialog("b"));
 
         titleColorIcon.setOnClickListener(v -> openDialog("title"));
         textColorIcon.setOnClickListener(v -> openDialog("text"));
 
         if (RealmHelper.getUser(getContext(), "color sheet").getScreenMode() == User.Mode.Dark) {
-            backgroundText.setTextColor(currentNote.getBackgroundColor());
-            backgroundColor.setStrokeColor(currentNote.getBackgroundColor());
+            backgroundText.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
+            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
             backgroundColor.setCardBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.quaternaryBackgroundColor));
         } else {
-            backgroundColor.setCardBackgroundColor(currentNote.getBackgroundColor());
-            backgroundColor.setStrokeColor(currentNote.getBackgroundColor());
+            backgroundColor.setCardBackgroundColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
+            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
             checkColor();
         }
-        titleColor.setTextColor(currentNote.getTitleColor());
+        titleColor.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getTitleColor());
         textColor.setTextColor(RealmHelper.getTextColorBasedOnTheme(getContext(), noteId));
 
         return view;
@@ -87,9 +82,9 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         // if it's a new note, initial color is gray. Otherwise it is set to color of note
         int initialColor;
         if (colorChanging.equals("b"))
-            initialColor = currentNote.getBackgroundColor();
+            initialColor = RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor();
         else if (colorChanging.equals("title"))
-            initialColor = currentNote.getTitleColor();
+            initialColor = RealmHelper.getCurrentNote(getContext(), noteId).getTitleColor();
         else
             initialColor = RealmHelper.getTextColorBasedOnTheme(getContext(), noteId);
 
@@ -104,13 +99,13 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                     Realm realm = RealmSingleton.getInstance(getContext());
                     realm.beginTransaction();
                     if (colorChanging.equals("b")) {
-                        currentNote.setBackgroundColor(selectedColor);
+                        RealmHelper.getCurrentNote(getContext(), noteId).setBackgroundColor(selectedColor);
                     } else if (colorChanging.equals("title"))
-                        currentNote.setTitleColor(selectedColor);
+                        RealmHelper.getCurrentNote(getContext(), noteId).setTitleColor(selectedColor);
                     else {
                         RealmHelper.setTextColorBasedOnTheme(getContext(), noteId, selectedColor);
                     }
-                    currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
+                    RealmHelper.getCurrentNote(getContext(), noteId).setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
                     realm.commitTransaction();
                     ((NoteEdit) getActivity()).updateDateEdited();
                     ((NoteEdit) getActivity()).updateColors();
@@ -123,7 +118,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private void checkColor() {
-        if (!Helper.isColorDark(currentNote.getBackgroundColor())) {
+        if (!Helper.isColorDark(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor())) {
             backgroundText.setTextColor(getContext().getColor(R.color.black));
             backgroundIcon.setColorFilter(getContext().getColor(R.color.black));
         } else {
@@ -134,15 +129,15 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
 
     private void updateColors() {
         if (RealmHelper.getUser(getContext(), "color sheet").getScreenMode() == User.Mode.Dark) {
-            backgroundText.setTextColor(currentNote.getBackgroundColor());
-            backgroundColor.setStrokeColor(currentNote.getBackgroundColor());
+            backgroundText.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
+            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
             backgroundColor.setCardBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.quaternaryBackgroundColor));
         } else {
-            backgroundColor.setStrokeColor(currentNote.getBackgroundColor());
-            backgroundColor.setCardBackgroundColor(currentNote.getBackgroundColor());
+            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
+            backgroundColor.setCardBackgroundColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
             checkColor();
         }
-        titleColor.setTextColor(currentNote.getTitleColor());
+        titleColor.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getTitleColor());
         textColor.setTextColor(RealmHelper.getTextColorBasedOnTheme(getContext(), noteId));
     }
 

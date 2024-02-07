@@ -76,12 +76,17 @@ public class BackupHelper {
         ArrayList<String> allRecordings = new ArrayList<>();
         if (includeImages) {
             allPhotos = getAllPhotoPaths(RealmSingleton.get(activity).where(Photo.class)
-                    .not().isNull("photoLocation").or().equalTo("photoLocation", "")
+                    .isNotNull("photoLocation")
+                    .and()
+                    .isNotEmpty("photoLocation")
                     .findAll(), checklistPhotos);
         }
         if (includeAudio) {
-            allRecordings = getAllRecordingsPaths(RealmSingleton.get(activity).where(CheckListItem.class).not()
-                    .isNull("audioPath").or().equalTo("audioPath", "").findAll());
+            allRecordings = getAllRecordingsPaths(RealmSingleton.get(activity).where(CheckListItem.class)
+                    .isNotNull("audioPath")
+                    .and()
+                    .isNotEmpty("audioPath")
+                    .findAll());
         }
 
         // duplicate database realm to backup
@@ -169,7 +174,7 @@ public class BackupHelper {
         if (fileSize.toLowerCase().contains("mb")) {
             try {
                 double fileSizeNumber = Double.parseDouble(fileSize.toLowerCase().replace("mb", "").trim());
-                if (fileSizeNumber > 100.0) {
+                if (fileSizeNumber > 50) {
                     Helper.showMessage(activity, "Upload Failed", "File size is too big, backup locally",
                             MotionToast.TOAST_ERROR);
                     return;

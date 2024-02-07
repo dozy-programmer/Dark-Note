@@ -834,7 +834,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 openMenuDialog());
 
         noteColor.setOnClickListener(v -> {
-            ColorSheet colorSheet = new ColorSheet();
+            ColorSheet colorSheet = new ColorSheet(noteId);
             colorSheet.show(getSupportFragmentManager(), colorSheet.getTag());
         });
 
@@ -1579,7 +1579,24 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 //                    builder.append("]");
 //                    Log.d("Here", builder.toString());
                 RealmHelper.updateChecklistOrdering(context, checkListItemsUnmanaged, noteId);
-                checklistAdapter.notifyDataSetChanged();
+                new Handler().post(() -> {
+                    while (true) {
+                        try{
+                            checklistAdapter.notifyDataSetChanged();
+                            Log.d("Here", "Updated Checklist");
+                            break;
+                        } catch (Exception e){
+                            try {
+                                Log.d("Here", "Sleeping for 1/10th of a second...");
+                                Thread.sleep(100);
+                            } catch (InterruptedException ex) {
+                                Log.d("Here", "Error even sleeping...");
+                                break;
+                            }
+                        }
+                    }
+                });
+                Log.d("Here", "Continuing");
             }
         };
 
