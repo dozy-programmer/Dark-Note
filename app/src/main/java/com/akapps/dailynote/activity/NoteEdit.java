@@ -2031,6 +2031,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             note.setUnderline();
         });
 
+        findViewById(R.id.action_insert_image).setOnClickListener(v -> {
+            updateSaveDateEdited();
+            note.insertImage("https://raw.githubusercontent.com/wasabeef/art/master/twitter.png","twitter", 200, 200);
+        });
+
         findViewById(R.id.action_indent).setOnClickListener(v -> {
             updateSaveDateEdited();
             note.setIndent();

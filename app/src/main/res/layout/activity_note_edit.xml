@@ -625,6 +625,14 @@
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
+                    android:id="@+id/action_insert_image"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@null"
+                    android:src="@drawable/icon_image"
+                    android:tint="?primaryIconTintColor" />
+
+                <ImageButton
                     android:id="@+id/action_insert_bullets"
                     android:layout_width="44dp"
                     android:layout_height="44dp"

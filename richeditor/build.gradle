@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+
+android {
+  namespace 'jp.wasabeef.richeditor'
+  compileSdk 34
+
+  defaultConfig {
+    minSdkVersion 24
+    targetSdkVersion 34
+  }
+}
+
+
+dependencies {
+  testImplementation "junit:junit:4.13"
+  testImplementation "org.robolectric:robolectric:4.3.1"
+}

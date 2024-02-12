@@ -2,3 +2,4 @@ include ':app'
 rootProject.name = "Daily Note"
 include ':countrypicker'
 include ':instantapp'
+include ':richeditor'
