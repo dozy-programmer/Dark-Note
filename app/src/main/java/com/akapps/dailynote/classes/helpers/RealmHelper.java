@@ -473,8 +473,19 @@ public class RealmHelper {
 
     public static ArrayList<String> getAllImagePaths(Context context) {
         RealmResults<Photo> allNotePhotos = getRealm(context).where(Photo.class).findAll();
+        RealmResults<Note> allMarkdownPhotos = getRealm(context)
+                .where(Note.class)
+                .contains("note", "<img src=")
+                .findAll();
         ArrayList<String> allPhotoPaths = new ArrayList<>();
+        // images in note images and checklist images
         for (Photo image : allNotePhotos) allPhotoPaths.add(image.getPhotoLocation());
+        // images in just note in markdown
+        for(Note note: allMarkdownPhotos){
+            for(String fileName: Helper.extractFileNames(note.getNote())){
+                allPhotoPaths.add(fileName);
+            }
+        }
         return allPhotoPaths;
     }
 

@@ -74,8 +74,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -862,6 +865,20 @@ public class Helper {
             Log.e("Error", "Failed to walk directory: " + path, e);
         }
         return null;
+    }
+
+    public static List<String> extractFileNames(String text){
+        String regex = "<img[^>]+src=\"([^\">]+)";
+        Matcher matcher = Pattern.compile(regex).matcher(text);
+
+        List<String> srcStrings = new ArrayList<>();
+        while (matcher.find()) srcStrings.add(matcher.group(1));
+
+        Log.d("Here", "Extracting image strings...");
+        for (String src : srcStrings) {
+            Log.d("Here", "extracted -> " + src);
+        }
+        return srcStrings;
     }
 
     public static RealmResults<CheckListItem> sortChecklist(Context context, int noteId, Realm realm) {

@@ -399,7 +399,7 @@ public class RichEditor extends WebView {
    */
   public void insertImage(String url, String alt, int width, int height) {
     exec("javascript:RE.prepareInsert();");
-    exec("javascript:RE.insertImageWH('" + url + "', '" + alt + "','" + width + "', '" + height + "');");
+    exec("javascript:RE.insertImageWH('" + url + "', '" + alt + "','" + width + "', '" + height + "'); ");
   }
 
   public void insertVideo(String url) {
@@ -464,21 +464,12 @@ public class RichEditor extends WebView {
     if (isReady) {
       load(trigger);
     } else {
-      postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          exec(trigger);
-        }
-      }, 100);
+      postDelayed(() -> exec(trigger), 100);
     }
   }
 
   private void load(String trigger) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-      evaluateJavascript(trigger, null);
-    } else {
-      loadUrl(trigger);
-    }
+    evaluateJavascript(trigger, null);
   }
 
   protected class EditorWebViewClient extends WebViewClient {
@@ -505,7 +496,6 @@ public class RichEditor extends WebView {
       return super.shouldOverrideUrlLoading(view, url);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
       final String url = request.getUrl().toString();

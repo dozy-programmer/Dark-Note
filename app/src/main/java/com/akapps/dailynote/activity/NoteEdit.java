@@ -25,6 +25,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -73,6 +74,7 @@ import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterChecklistSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
+import com.akapps.dailynote.classes.other.InsertImageSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.classes.other.RecordAudioSheet;
@@ -214,6 +216,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
 
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         context = this;
         noteId = getIntent().getIntExtra("id", -1);
 
@@ -454,6 +457,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         note.setPlaceholder("Type something...");
         note.setEditorFontColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
         note.setPadding(5, 10, 0, 100);
+        note.getSettings().setAllowFileAccess(true);
         note.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
         note.focusEditor();
 
@@ -2032,8 +2036,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         findViewById(R.id.action_insert_image).setOnClickListener(v -> {
-            updateSaveDateEdited();
-            note.insertImage("https://raw.githubusercontent.com/wasabeef/art/master/twitter.png","twitter", 200, 200);
+            InsertImageSheet insertImageSheet = new InsertImageSheet(note);
+            insertImageSheet.show(getSupportFragmentManager(), insertImageSheet.getTag());
         });
 
         findViewById(R.id.action_indent).setOnClickListener(v -> {
