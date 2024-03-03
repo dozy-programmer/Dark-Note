@@ -617,36 +617,40 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 Helper.showMessage(getActivity(), "Success!",
                         "Copied successfully", MotionToast.TOAST_SUCCESS);
             } else if (item.getTitle().equals("Send")) {
-                Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                emailIntent.setType("*/*");
+                try {
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                    emailIntent.setType("*/*");
 
-                ArrayList<Uri> uris = new ArrayList<>();
+                    ArrayList<Uri> uris = new ArrayList<>();
 
-                if (!isSubChecklist) {
-                    File file = new File(currentItem.getItemImage());
-                    if (file.exists()) {
-                        uris.add(FileProvider.getUriForFile(
-                                getContext(),
-                                "com.akapps.dailynote.fileprovider",
-                                file));
-                        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                    }
-                    if (currentItem.getAudioPath() != null && !currentItem.getAudioPath().isEmpty()) {
-                        file = new File(currentItem.getAudioPath());
+                    if (!isSubChecklist) {
+                        File file = new File(currentItem.getItemImage());
                         if (file.exists()) {
                             uris.add(FileProvider.getUriForFile(
                                     getContext(),
                                     "com.akapps.dailynote.fileprovider",
                                     file));
+                            emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
                         }
-                    }
-                    emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-                    emailIntent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
-                } else
-                    emailIntent.putExtra(Intent.EXTRA_TEXT, currentSubItem.getText());
+                        if (currentItem.getAudioPath() != null && !currentItem.getAudioPath().isEmpty()) {
+                            file = new File(currentItem.getAudioPath());
+                            if (file.exists()) {
+                                uris.add(FileProvider.getUriForFile(
+                                        getContext(),
+                                        "com.akapps.dailynote.fileprovider",
+                                        file));
+                            }
+                        }
+                        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, currentItem.getText());
+                    } else
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, currentSubItem.getText());
 
-                // adds email subject and email body to intent
-                getContext().startActivity(Intent.createChooser(emailIntent, "Share Checklist Item"));
+                    // adds email subject and email body to intent
+                    getContext().startActivity(Intent.createChooser(emailIntent, "Share Checklist Item"));
+                } catch (Exception e) {
+                    Helper.showMessage(getActivity(), "Sharing Error", "Size too large v20, email developer", MotionToast.TOAST_ERROR);
+                }
             }
             noteMenu.dismiss();
         }

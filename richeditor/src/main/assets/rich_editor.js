@@ -176,85 +176,18 @@ RE.setJustifyRight = function() {
     document.execCommand('justifyRight', false, null);
 }
 
-RE.setBlockquote = function() {
-    document.execCommand('formatBlock', false, '<blockquote>');
-}
-
-RE.insertImage = function(url, alt) {
-    var html = '<img src="' + url + '" alt="' + alt + '" />';
-    RE.insertHTML(html);
-}
-
-RE.insertImageW = function(url, alt, width) {
-    var html = '<img src="' + url + '" alt="' + alt + '" width="' + width + '"/>';
-    RE.insertHTML(html);
-}
-
 RE.insertImageWH = function(url, alt, width, height) {
     var html = '<img src="' + url + '" alt="' + alt + '" width="' + width + '" height="' + height +'"/>';
     RE.insertHTML(html);
 }
 
-RE.insertVideo = function(url, alt) {
-    var html = '<video src="' + url + '" controls></video><br>';
-    RE.insertHTML(html);
-}
-
-RE.insertVideoW = function(url, width) {
-    var html = '<video src="' + url + '" width="' + width + '" controls></video><br>';
-    RE.insertHTML(html);
-}
-
-RE.insertVideoWH = function(url, width, height) {
-    var html = '<video src="' + url + '" width="' + width + '" height="' + height + '" controls></video><br>';
-    RE.insertHTML(html);
-}
-
-RE.insertAudio = function(url, alt) {
-    var html = '<audio src="' + url + '" controls></audio><br>';
-    RE.insertHTML(html);
-}
-
-RE.insertYoutubeVideo = function(url) {
-    var html = '<iframe width="100%" height="100%" src="' + url + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>'
-    RE.insertHTML(html);
-}
-
-RE.insertYoutubeVideoW = function(url, width) {
-    var html = '<iframe width="' + width + '" src="' + url + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>'
-    RE.insertHTML(html);
-}
-
 RE.insertYoutubeVideoWH = function(url, width, height) {
-    var html = '<iframe width="' + width + '" height="' + height + '" src="' + url + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>'
+    var html = '<iframe width="' + width + '" height="' + height + '" src="' + url + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"></iframe><br>'
     RE.insertHTML(html);
 }
 
 RE.insertHTML = function(html) {
     RE.restorerange();
-    document.execCommand('insertHTML', false, html);
-}
-
-RE.insertLink = function(url, title) {
-    RE.restorerange();
-    var sel = document.getSelection();
-    if (sel.toString().length == 0) {
-        document.execCommand("insertHTML",false,"<a href='"+url+"'>"+title+"</a>");
-    } else if (sel.rangeCount) {
-       var el = document.createElement("a");
-       el.setAttribute("href", url);
-       el.setAttribute("title", title);
-
-       var range = sel.getRangeAt(0).cloneRange();
-       range.surroundContents(el);
-       sel.removeAllRanges();
-       sel.addRange(range);
-   }
-    RE.callback();
-}
-
-RE.setTodo = function(text) {
-    var html = '<input type="checkbox" name="'+ text +'" value="'+ text +'"/> &nbsp;';
     document.execCommand('insertHTML', false, html);
 }
 
@@ -358,4 +291,35 @@ RE.editor.addEventListener("keyup", function(e) {
         RE.enabledEditingItems(e);
     }
 });
-RE.editor.addEventListener("click", RE.enabledEditingItems);
+var isSingleClick = Boolean(true)
+RE.editor.addEventListener("click",  function(e) {
+    if(!isSingleClick) return;
+     //console.log("click for -> " + e.target.tagName);
+    // Check if the clicked element is an image and not text
+    if (e.target.tagName === 'IMG') {
+        var imageSrc = event.target.src;
+        if(imageSrc.startsWith("file://"))
+            imageSrc = imageSrc.replace("file://", "");
+        DarkNote.getImagePath(imageSrc);
+    }
+    else {
+        RE.enabledEditingItems(e);
+    }
+});
+
+RE.editor.oncontextmenu = function(e) {
+    isSingleClick = Boolean(false);
+    const imageElement = e.target;
+    const source = imageElement.src.replace("file://", "")
+    const reconstructedHTML = `<img src="${source}" alt="${imageElement.alt}" width="${imageElement.width}" height="${imageElement.height}">`;
+    if (e.target.tagName === 'IMG') {
+        const imageSrc = event.target.src;
+        var width = Number(event.target.width);
+        var height = Number(event.target.height);
+        DarkNote.getImagePath(imageSrc, reconstructedHTML, width, height);
+    }
+    else {
+        RE.enabledEditingItems(e);
+    }
+    isSingleClick = Boolean(true);
+};

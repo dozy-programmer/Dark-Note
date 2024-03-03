@@ -145,8 +145,11 @@ sup {
  * Remove the border on images inside links in IE 10.
  */
 
+
 img {
-  border-style: none;
+  border-radius: 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 
 /* Forms

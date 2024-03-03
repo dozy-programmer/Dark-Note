@@ -118,7 +118,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
             deleteDialog(position);
         });
 
-        holder.share.setOnClickListener(view -> Helper.shareFile(context, "image", "*", currentPhoto.getPhotoLocation(), ""));
+        holder.share.setOnClickListener(view -> Helper.shareFile(activity, "image", "*", currentPhoto.getPhotoLocation(), ""));
     }
 
     @Override

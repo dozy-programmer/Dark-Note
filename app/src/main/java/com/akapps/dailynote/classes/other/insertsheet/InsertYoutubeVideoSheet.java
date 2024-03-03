@@ -1,4 +1,4 @@
-package com.akapps.dailynote.classes.other;
+package com.akapps.dailynote.classes.other.insertsheet;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -19,12 +19,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.nguyenhoanglam.imagepicker.helper.Constants;
@@ -42,16 +42,11 @@ import java.util.ArrayList;
 import jp.wasabeef.richeditor.RichEditor;
 import www.sanju.motiontoast.MotionToast;
 
-public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
-
-    private ArrayList<String> filePaths = new ArrayList<>();
-    private int width = 150;
-    private int height = 150;
+public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
 
     private RichEditor note;
     private RichEditor imageEditor;
     private TextView title;
-    private TextView numImages;
     private TextView message;
     private TextInputLayout linkLayout;
     private TextInputEditText linkInput;
@@ -59,50 +54,43 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
     private TextInputEditText widthInput;
     private TextInputLayout heightLayout;
     private TextInputEditText heightInput;
-    private MaterialButton storageButton;
-    private MaterialButton linkButton;
     private MaterialButton confirm;
 
-    private boolean isLocalImage;
+    private boolean isEditing;
+    private String srcImage;
+    private String html;
+    private int width = 0;
+    private int maxWidth = 0;
+    private int height = 150;
 
-    private ActivityResultLauncher<Intent> pickImageLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent data = result.getData();
-                            ArrayList<Image> images = data.getParcelableArrayListExtra(Constants.EXTRA_IMAGES);
-                            if (!images.isEmpty()) {
-                                Log.d("Here", "returning images " + images.size());
-                                for (int i = 0; i < images.size(); i++) {
-                                    File newFile = Helper.createFile(getActivity(), "image", ".png");
-                                    filePaths.add(Helper.createFile(getContext(), images.get(i).getUri(), newFile).getPath());
+    public InsertYoutubeVideoSheet() {
+    }
 
-                                    if (i == 0) setImage(false, false);
-                                }
-                                numImages.setText("+" + (images.size() - 1));
-                                numImages.setVisibility(View.VISIBLE);
-                                message.setVisibility(View.VISIBLE);
-                                storageButton.setVisibility(View.GONE);
-                                linkButton.setVisibility(View.GONE);
-                                imageEditor.setVisibility(View.VISIBLE);
-                                widthLayout.setVisibility(View.VISIBLE);
-                                heightLayout.setVisibility(View.VISIBLE);
-                                confirm.setVisibility(View.VISIBLE);
-                                title.setText("Photo(s) Selected");
-                            }
-                        }
-                    });
-
-    public InsertImageSheet(RichEditor note) {
-        this.note = note;
+    public InsertYoutubeVideoSheet(String imageSrc, String html, int width, int height) {
+        this.srcImage = imageSrc;
+        this.html = html;
+        this.width = width;
+        this.height = height;
+        isEditing = true;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet_insert_image, container, false);
+        View view = inflater.inflate(R.layout.bottom_sheet_insert_youtube, container, false);
+
+        /**
+         * TODO
+         * create another sheet for editing, add all logic there for editing
+         * for inserting, finish supporting local image, online images, and youtube video support
+         * for inserting, edit UI for inserting youtube link
+         *
+         * FAQ:
+         * Start and Finish
+         */
+
+        note = ((NoteEdit) getActivity()).note;
 
         title = view.findViewById(R.id.title);
-        numImages = view.findViewById(R.id.num_images);
         message = view.findViewById(R.id.message);
         imageEditor = view.findViewById(R.id.image);
         widthLayout = view.findViewById(R.id.width_layout);
@@ -111,8 +99,6 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         linkInput = view.findViewById(R.id.image_link);
         heightLayout = view.findViewById(R.id.height_layout);
         heightInput = view.findViewById(R.id.height);
-        storageButton = view.findViewById(R.id.from_storage);
-        linkButton = view.findViewById(R.id.from_link);
         confirm = view.findViewById(R.id.confirm);
 
         imageEditor.getSettings().setAllowFileAccess(true);
@@ -123,63 +109,40 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         heightLayout.setVisibility(View.GONE);
         confirm.setVisibility(View.GONE);
 
+        title.setText("Inserting Youtube Video...");
+        linkLayout.setVisibility(View.VISIBLE);
+        confirm.setVisibility(View.VISIBLE);
+        confirm.setText("Add Video");
+
+        maxWidth = (int) Helper.getScreenWidth(getActivity()) - 20;
+        width = maxWidth;
         setText(widthInput, width);
-        setText(heightInput, width);
-
-        storageButton.setOnClickListener(view12 -> {
-            title.setText("Selecting Photo(s)");
-            isLocalImage = true;
-            confirm.setText("Confirm");
-            linkLayout.setVisibility(View.GONE);
-            addSizeListeners();
-            showImageSelectionDialog();
-        });
-
-        linkButton.setOnClickListener(view13 -> {
-            title.setText("Inserting Link...");
-            storageButton.setVisibility(View.GONE);
-            linkButton.setVisibility(View.GONE);
-            filePaths = new ArrayList<>();
-            isLocalImage = false;
-            linkLayout.setVisibility(View.VISIBLE);
-            confirm.setVisibility(View.VISIBLE);
-            confirm.setText("Add Link");
-        });
+        setText(heightInput, height);
+        Log.d("Here", "width " + width);
+        Log.d("Here", "height " + height);
 
         confirm.setOnClickListener(view1 -> {
-            if(confirm.getText().toString().equals("Add Link")){
+            if (confirm.getText().toString().equals("Add Video")) {
                 String inputText = linkInput.getText().toString();
-                if(URLUtil.isValidUrl(inputText)) {
+                if (URLUtil.isValidUrl(inputText)) {
                     confirm.setText("Confirm");
-                    title.setText("Image Retrieved");
+                    title.setText("Youtube Video Retrieved");
                     linkLayout.setVisibility(View.GONE);
                     imageEditor.setVisibility(View.VISIBLE);
-                    imageEditor.focusEditor();
-                    setLinkImage(inputText, false, false);
-                    imageEditor.clearFocusEditor();
+                    setYoutubeVideo(inputText, false, true);
                     widthLayout.setVisibility(View.VISIBLE);
                     heightLayout.setVisibility(View.VISIBLE);
                     message.setVisibility(View.VISIBLE);
                     addSizeListeners();
-                }
-                else{
+                } else {
                     Helper.showMessage(getActivity(), "Link Error", "Link is not valid, try again!", MotionToast.TOAST_ERROR);
                 }
-            }
-            else {
+            } else {
                 if (!note.hasFocus()) note.focusEditor();
-                if (imagesValid() && isLocalImage) {
-                    for (String filePath : filePaths) {
-                        note.insertImage(filePath, "image", width, height);
-                    }
+                String inputLink = linkInput.getText().toString();
+                if (!inputLink.isEmpty() && URLUtil.isValidUrl(inputLink)) {
+                    note.insertYoutubeVideo(inputLink, width, height);
                     dismiss();
-                }
-                else if(!isLocalImage){
-                    String inputLink = linkInput.getText().toString();
-                    if(!inputLink.isEmpty() && URLUtil.isValidUrl(inputLink)) {
-                        note.insertImage(linkInput.getText().toString(), "image", width, height);
-                        dismiss();
-                    }
                 }
             }
         });
@@ -196,14 +159,7 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (checkNumberAndSetError(s.toString(), widthLayout, true)) {
-                    if(isLocalImage) {
-                        imageEditor.setEnabled(true);
-                        setImage(true, false);
-                        imageEditor.setEnabled(false);
-                    }
-                    else {
-                        setLinkImage(linkInput.getText().toString(), true, false);
-                    }
+                    setYoutubeVideo(linkInput.getText().toString(), true, false);
                 }
             }
 
@@ -221,14 +177,7 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (checkNumberAndSetError(s.toString(), heightLayout, false)) {
-                    if(isLocalImage) {
-                        imageEditor.setEnabled(true);
-                        setImage(false, true);
-                        imageEditor.setEnabled(false);
-                    }
-                    else {
-                        setLinkImage(linkInput.getText().toString(), false, true);
-                    }
+                    setYoutubeVideo(linkInput.getText().toString(), false, true);
                 }
             }
 
@@ -246,10 +195,17 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             if (number < 50) {
                 layout.setError("Number must be at least 50");
                 layout.setErrorEnabled(true);
+                confirm.setEnabled(false);
+            }
+            else if(number > maxWidth){
+                layout.setError("Max is " + maxWidth);
+                layout.setErrorEnabled(true);
+                confirm.setEnabled(false);
             }
             else {
                 layout.setError(null);
                 layout.setErrorEnabled(false);
+                confirm.setEnabled(true);
                 if (isWidth)
                     width = number;
                 else
@@ -261,37 +217,20 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         return true;
     }
 
-    private boolean imagesValid(){
-        return filePaths != null && filePaths.size() > 0;
-    }
 
-    private void setImage(boolean isEditingWidth, boolean isEditingHeight) {
-        if(!imagesValid()) return;
+    private void setYoutubeVideo(String path, boolean isEditingWidth, boolean isEditingHeight) {
+        imageEditor.setEnabled(true);
         imageEditor.focusEditor();
         imageEditor.setHtml("");
-        imageEditor.insertImage(filePaths.get(0), "image", width, height);
+        imageEditor.insertYoutubeVideo(path, width, height);
         imageEditor.clearFocusEditor();
-        if (isEditingWidth) widthInput.requestFocus();
-        else if (isEditingHeight) heightInput.requestFocus();
-    }
-
-    private void setLinkImage(String path, boolean isEditingWidth, boolean isEditingHeight) {
-        imageEditor.focusEditor();
-        imageEditor.setHtml("");
-        imageEditor.insertImage(path, "image", width, height);
-        imageEditor.clearFocusEditor();
+        imageEditor.setEnabled(false);
         if (isEditingWidth) widthInput.requestFocus();
         else if (isEditingHeight) heightInput.requestFocus();
     }
 
     private void setText(TextInputEditText field, int value) {
         field.setText(String.valueOf(value));
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        widthInput.addTextChangedListener(null);
     }
 
     private boolean isNumberDigitsOnly(String str) {
@@ -306,20 +245,14 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         return true;
     }
 
-    public void showImageSelectionDialog() {
-        ImagePickerConfig config = new ImagePickerConfig();
-        config.setShowCamera(true);
-        config.setLimitSize(20);
-        config.setCustomColor(UiHelper.getImagePickerTheme(getActivity()));
-        CustomMessage customMessage = new CustomMessage();
-        customMessage.setReachLimitSize("You can only select up to 20 images.");
-        customMessage.setNoImage("No image found.");
-        customMessage.setNoPhotoAccessPermission("Please allow permission to access photos and media.");
-        customMessage.setNoCamera("Please allow permission to access camera.");
-        config.setCustomMessage(customMessage);
-        config.setStatusBarContentMode(UiHelper.getLightThemePreference(getContext()) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
-        Intent intent = ImagePickerLauncher.Companion.createIntent(getContext(), config);
-        pickImageLauncher.launch(intent);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            widthInput.addTextChangedListener(null);
+            heightInput.addTextChangedListener(null);
+        } catch (Exception ignored) {
+        }
     }
 
     @Override

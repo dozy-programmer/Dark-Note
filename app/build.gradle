@@ -86,13 +86,12 @@ dependencies {
     implementation "com.airbnb.android:lottie:5.0.3"                           // lottie animation
     implementation("app.futured.donut:donut:2.2.2")                            // graph
 
-    // google maps
+    // google locations
     implementation 'com.google.android.libraries.places:places:3.2.0'
-
     // image loader
     implementation 'com.github.bumptech.glide:glide:4.16.0'
-
     // currency picker
     implementation project(':countrypicker')
+    // rich-text editor
     implementation project(':richeditor')
 }

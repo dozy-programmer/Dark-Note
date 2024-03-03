@@ -82,6 +82,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
     private ArrayList<String> unUsedFiles;
 
+    private boolean isInMainScreen = false;
+
     public InfoSheet() {
     }
 
@@ -121,11 +123,12 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         this.permission = permission;
     }
 
-    public InfoSheet(int message, boolean deleteMultipleNotes, Fragment fragmentActivity, boolean isTrashSelected) {
+    public InfoSheet(int message, boolean deleteMultipleNotes, Fragment fragmentActivity, boolean isTrashSelected, boolean isInMainScreen) {
         this.message = message;
         this.deleteMultipleNotes = deleteMultipleNotes;
         this.fragmentActivity = fragmentActivity;
         this.isTrashSelected = isTrashSelected;
+        this.isInMainScreen = isInMainScreen;
     }
 
     @Override
@@ -384,7 +387,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     redirectNote.setText("");
                     redirectNote.setVisibility(View.GONE);
                     dismiss();
-                } else if (deleteMultipleNotes)
+                } else if (deleteMultipleNotes && isInMainScreen)
                     ((notes) fragmentActivity).deleteMultipleNotes(false);
                 else {
                     ((NoteEdit) getActivity()).deleteNote(false);

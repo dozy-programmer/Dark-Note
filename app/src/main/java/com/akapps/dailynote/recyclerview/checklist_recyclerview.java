@@ -211,7 +211,6 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             String modifiedString = pattern.matcher(holder.checklistText.getText()).replaceAll("<font color='#8CA9CF'><b>$1</b></font>");
             holder.checklistText.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
             holder.background.setStrokeColor(context.getColor(R.color.azure));
-            AppData.addWordFoundPositions(position);
         }
 
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, RealmHelper.getUserTextSize(context));

@@ -4,7 +4,6 @@ import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentNote;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -17,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
@@ -25,10 +25,11 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -74,12 +75,16 @@ import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterChecklistSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
-import com.akapps.dailynote.classes.other.InsertImageSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.classes.other.RecordAudioSheet;
+import com.akapps.dailynote.classes.other.insertsheet.InsertImageSheet;
+import com.akapps.dailynote.classes.other.insertsheet.InsertLinkSheet;
+import com.akapps.dailynote.classes.other.insertsheet.InsertYoutubeVideoSheet;
+import com.akapps.dailynote.classes.other.insertsheet.MediaTypeSheet;
 import com.akapps.dailynote.recyclerview.checklist_recyclerview;
 import com.akapps.dailynote.recyclerview.photos_recyclerview;
+import com.bumptech.glide.Glide;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
@@ -93,11 +98,10 @@ import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerLauncher;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
+import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -107,7 +111,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import jp.wasabeef.richeditor.RichEditor;
@@ -119,7 +122,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     // layout
     public EditText title;
     public TextView date;
-    private RichEditor note;
+    public RichEditor note;
     private EditText noteSearching;
     private CardView closeNote;
     public CardView photosNote;
@@ -137,6 +140,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private TextView folderText;
     private ConstraintLayout scrollView;
     private FloatingActionButton budget;
+    private HorizontalScrollView editorScroll;
     // search
     private EditText searchEditText;
     private ImageView searchClose;
@@ -155,6 +159,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private String oldNote;
     private boolean currentPin;
     private boolean dismissDialog;
+    private boolean isShowingImagePreviewDialog = false;
     private boolean isAppPaused;
     private boolean isShowingPhotos;
     private boolean isEditLockedMode = true;
@@ -446,6 +451,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         folderText = findViewById(R.id.folderWord);
         formatMenu = findViewById(R.id.styleFormat);
         scrollView = findViewById(R.id.scroll);
+        editorScroll = findViewById(R.id.horizontalScrollView);
 
         // search
         searchEditText = findViewById(R.id.search_text);
@@ -482,6 +488,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         oldNote = getCurrentNote(context, noteId).getNote();
         title.setText(getCurrentNote(context, noteId).getTitle());
         note.setHtml(getCurrentNote(context, noteId).getNote());
+        Log.d("Here", "note -> " + note.getHtml());
         note.setEditorFontSize(RealmHelper.getUser(context, "checklist_recyclerview").getTextSize());
         note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
@@ -615,7 +622,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 if (getCurrentNote(context, noteId).isCheckList()) {
                     if (s == null) return;
                     AppData.resetWordFoundPositions();
-                    sortChecklist(s.toString());
+                    RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, getRealm());
+                    boolean updateRecyclerview = false;
+                    for (int i = 0; i < results.size(); i++) {
+                        CheckListItem item = results.get(i);
+                        if (item.getText().contains(s.toString())) {
+                            AppData.addWordFoundPositions(i);
+                            updateRecyclerview = true;
+                        }
+                    }
+                    if (updateRecyclerview) sortChecklist(s.toString());
                 } else {
                     currentWordIndex = 0;
                     if (isSearchingNotes) {
@@ -690,6 +706,49 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     }
                 }
             });
+            note.setOnImageClickListener(new RichEditor.ImageClickListener() {
+                @Override
+                public void onImageClick(String imageSrc) {
+                    if (!isShowingImagePreviewDialog) {
+                        isShowingImagePreviewDialog = true;
+                        Log.d("Here", "NoteEdit: recieved -> " + imageSrc);
+                        ArrayList<String> images = new ArrayList<>();
+                        images.add(imageSrc);
+                        Handler mainHandler = new Handler(Looper.getMainLooper());
+                        Runnable myRunnable = () ->
+                                new StfalconImageViewer.Builder<>(context, images, (imageView, image) -> {
+                                    Glide.with(context).load(image).into(imageView);
+                                })
+                                        .withBackgroundColor(context.getColor(R.color.gray))
+                                        .allowZooming(true)
+                                        .allowSwipeToDismiss(true)
+                                        .withHiddenStatusBar(false)
+                                        .withStartPosition(0)
+                                        .withDismissListener(() -> isShowingImagePreviewDialog = false)
+                                        .show();
+                        mainHandler.post(myRunnable);
+                    }
+                    Helper.toggleKeyboard(context, note, false);
+                }
+
+                @Override
+                public void onImageClick(String imageSrc, String html, int width, int height) {
+                    Helper.toggleKeyboard(context, note, false);
+                    if ((imageSrc.contains("embed") && imageSrc.contains("you")) || imageSrc.contains("youtube")) {
+                        InsertYoutubeVideoSheet insertYoutubeVideoSheet = new InsertYoutubeVideoSheet(imageSrc, html, width, height);
+                        insertYoutubeVideoSheet.show(getSupportFragmentManager(), insertYoutubeVideoSheet.getTag());
+                        Log.d("Here", "youtube");
+                    } else if (imageSrc.contains("www") || imageSrc.contains("http")) {
+                        InsertLinkSheet insertLinkSheet = new InsertLinkSheet(imageSrc, html, width, height);
+                        insertLinkSheet.show(getSupportFragmentManager(), insertLinkSheet.getTag());
+                        Log.d("Here", "online image");
+                    } else {
+                        InsertImageSheet insertImageSheet = new InsertImageSheet(imageSrc, html, width, height);
+                        insertImageSheet.show(getSupportFragmentManager(), insertImageSheet.getTag());
+                        Log.d("Here", "local image");
+                    }
+                }
+            });
         }
 
         closeTextLayout.setOnClickListener(v -> {
@@ -713,6 +772,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         increaseTextSize.setOnClickListener(view -> {
+            Helper.toggleKeyboard(context, note, false);
             if (isChangingTextSize)
                 changeTextSize(true, getCurrentNote(context, noteId).isCheckList());
             else if (getCurrentNote(context, noteId).isCheckList()) {
@@ -727,6 +787,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                             : currentWordIndex - 1;
                     nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
                     noteSearching.setSelection(nextIndex);
+                    Helper.toggleKeyboard(context, note, false);
                 }
             }
         });
@@ -737,6 +798,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         decreaseTextSize.setOnClickListener(view -> {
+            Helper.toggleKeyboard(context, note, false);
             if (isChangingTextSize)
                 changeTextSize(false, getCurrentNote(context, noteId).isCheckList());
             else if (getCurrentNote(context, noteId).isCheckList()) {
@@ -751,6 +813,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                             currentWordIndex + 1;
                     nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
                     noteSearching.setSelection(nextIndex);
+                    Helper.toggleKeyboard(context, note, false);
                 }
             }
         });
@@ -958,21 +1021,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void showButtons() {
-        float elevation = -1 * (getCurrentNote(context, noteId).isCheckList() ? 50f : getResources().getDisplayMetrics().heightPixels / 2f);
-        new Handler().postDelayed(() -> {
-            ObjectAnimator refreshAnimation = ObjectAnimator.ofFloat(textSizeLayout, "translationY", elevation);
-            refreshAnimation.setDuration(500);
-            refreshAnimation.start();
-        }, 100);
+        textSizeLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideButtons() {
-        ObjectAnimator refreshAnimation = ObjectAnimator.ofFloat(textSizeLayout, "translationY", 0f);
-        refreshAnimation.setDuration(500);
-        refreshAnimation.start();
-        new Handler().postDelayed(() -> {
-            textSizeLayout.setVisibility(View.GONE);
-        }, 500);
+        textSizeLayout.setVisibility(View.GONE);
     }
 
     private void showChecklistButtons() {
@@ -1585,11 +1638,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 RealmHelper.updateChecklistOrdering(context, checkListItemsUnmanaged, noteId);
                 new Handler().post(() -> {
                     while (true) {
-                        try{
+                        try {
                             checklistAdapter.notifyDataSetChanged();
                             Log.d("Here", "Updated Checklist");
                             break;
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             try {
                                 Log.d("Here", "Sleeping for 1/10th of a second...");
                                 Thread.sleep(100);
@@ -1685,19 +1738,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     private void populateChecklist(RealmResults<CheckListItem> currentList, String word) {
         int span = 1;
-        if (Helper.isTablet(context))
-            span = 2;
-        GridLayoutManager layout = new GridLayoutManager(context, span);
-        checkListRecyclerview.setLayoutManager(layout);
+        if (Helper.isTablet(context)) span = 2;
+        checkListRecyclerview.setLayoutManager(new GridLayoutManager(context, span));
         checkListRecyclerview.setHasFixedSize(true);
         if (Helper.isDragDropEnabled(context, noteId))
             enableSorting();
         else {
             disableSorting();
         }
-        checklistAdapter = new checklist_recyclerview(currentList, noteId, this, word);
-        //checklistAdapter.setHasStableIds(true);
-        checkListRecyclerview.setAdapter(checklistAdapter);
         checkListRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -1705,6 +1753,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 if (title.hasFocus()) title.clearFocus();
             }
         });
+        checklistAdapter = new checklist_recyclerview(currentList, noteId, this, word);
+        checkListRecyclerview.setAdapter(checklistAdapter);
     }
 
     private void timeDialog() {
@@ -2007,6 +2057,24 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void initializeEditor() {
+        if (!getCurrentNote(context, noteId).isCheckList()) {
+            note.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                private int prevScrollY;
+
+                @Override
+                public void onScrollChanged() {
+                    int newScrollY = note.getScrollY();
+                    if (newScrollY > prevScrollY) {
+                        editorScroll.setVisibility(View.GONE);
+
+                    } else if (newScrollY < prevScrollY) {
+                        editorScroll.setVisibility(View.VISIBLE);
+                    }
+                    prevScrollY = newScrollY;
+                }
+            });
+        }
+
         findViewById(R.id.action_undo).setOnClickListener(v -> {
             note.undo();
         });
@@ -2036,8 +2104,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         findViewById(R.id.action_insert_image).setOnClickListener(v -> {
-            InsertImageSheet insertImageSheet = new InsertImageSheet(note);
-            insertImageSheet.show(getSupportFragmentManager(), insertImageSheet.getTag());
+            MediaTypeSheet mediaTypeSheet = new MediaTypeSheet();
+            mediaTypeSheet.show(getSupportFragmentManager(), mediaTypeSheet.getTag());
+        });
+
+        findViewById(R.id.action_youtube).setOnClickListener(v -> {
+            InsertYoutubeVideoSheet insertYoutubeVideoSheet = new InsertYoutubeVideoSheet();
+            insertYoutubeVideoSheet.show(getSupportFragmentManager(), insertYoutubeVideoSheet.getTag());
         });
 
         findViewById(R.id.action_indent).setOnClickListener(v -> {
@@ -2098,10 +2171,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isChanged = !isChanged;
         });
 
-        findViewById(R.id.action_format_clear).setOnClickListener(v -> {
-            InfoSheet info = new InfoSheet(9);
-            info.show(getSupportFragmentManager(), info.getTag());
-        });
+//        findViewById(R.id.action_format_clear).setOnClickListener(v -> {
+//            InfoSheet info = new InfoSheet(9);
+//            info.show(getSupportFragmentManager(), info.getTag());
+//        });
 
         findViewById(R.id.action_text_size).setOnClickListener(v -> {
             isChangingTextSize = true;
@@ -2113,12 +2186,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void removeFormatting() {
         updateSaveDateEdited();
-        String removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
-        getRealm().beginTransaction();
-        getCurrentNote(context, noteId).setNote(removedFormat);
-        getRealm().commitTransaction();
-        note.setHtml(removedFormat);
-        note.focusEditor();
+        note.removeFormat();
+//        String removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n"), Html.FROM_HTML_MODE_COMPACT).toString();
+//        removedFormat = removedFormat.replaceAll("\n", "<br>");
+//        getRealm().beginTransaction();
+//        getCurrentNote(context, noteId).setNote(removedFormat);
+//        getRealm().commitTransaction();
+//        note.setHtml(removedFormat);
+//        note.focusEditor();
         Helper.showMessage(this, "Removed", "Formatting has been removed",
                 MotionToast.TOAST_SUCCESS);
     }

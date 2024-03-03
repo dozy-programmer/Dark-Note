@@ -463,27 +463,34 @@ public class BackupHelper {
     }
 
     private void shareZipFileAndroid10Plus() {
-        Intent emailIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        emailIntent.addCategory(Intent.CATEGORY_OPENABLE);
-        emailIntent.setType("application/zip");
-        emailIntent.putExtra(Intent.EXTRA_TITLE, AppConstants.getMonthDay() + "_dark_note_backup");
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            emailIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            emailIntent.setType("application/zip");
+            emailIntent.putExtra(Intent.EXTRA_TITLE, AppConstants.getMonthDay() + "_dark_note_backup");
 
-        Intent shareIntent = Intent.createChooser(emailIntent, "Share Dark Note Backup File");
-        activity.startActivityForResult(shareIntent, 2);
+            Intent shareIntent = Intent.createChooser(emailIntent, "Share Dark Note Backup File");
+            activity.startActivityForResult(shareIntent, 2);
+        } catch (Exception e){
+            Helper.showMessage(activity, "Sharing Error", "Size too large v3, email developer", MotionToast.TOAST_ERROR);        }
     }
 
     private void shareFileAndroid10Under(File backup) {
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("*/*");
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("*/*");
 
-        Uri fileBackingUp = FileProvider.getUriForFile(
-                context,
-                "com.akapps.dailynote.fileprovider",
-                backup);
-        emailIntent.putExtra(Intent.EXTRA_STREAM, fileBackingUp);
+            Uri fileBackingUp = FileProvider.getUriForFile(
+                    context,
+                    "com.akapps.dailynote.fileprovider",
+                    backup);
+            emailIntent.putExtra(Intent.EXTRA_STREAM, fileBackingUp);
 
-        Intent shareIntent = Intent.createChooser(emailIntent, "Share Dark Note Backup File");
-        activity.startActivity(shareIntent);
+            Intent shareIntent = Intent.createChooser(emailIntent, "Share Dark Note Backup File");
+            activity.startActivity(shareIntent);
+        } catch (Exception e) {
+            Helper.showMessage(activity, "Sharing Error", "Size too large v4, email developer", MotionToast.TOAST_ERROR);
+        }
     }
 
     private String getFileName(Uri uri) {

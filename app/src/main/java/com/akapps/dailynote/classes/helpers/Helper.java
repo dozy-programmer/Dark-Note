@@ -19,6 +19,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -32,6 +33,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowMetrics;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -709,96 +712,51 @@ public class Helper {
         return new File(file);
     }
 
-    public static void shareFile(Context context, String fileType, String fileExtension, String filePath, String bodyText) {
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType(fileType + "/" + fileExtension);
-        Uri uri = null;
+    public static void shareFile(Activity activity, String fileType, String fileExtension, String filePath, String bodyText) {
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType(fileType + "/" + fileExtension);
+            Uri uri = null;
 
-        File file = new File(filePath);
-        if (file.exists()) {
-            uri = FileProvider.getUriForFile(
-                    context,
-                    "com.akapps.dailynote.fileprovider",
-                    file);
+            File file = new File(filePath);
+            if (file.exists()) {
+                uri = FileProvider.getUriForFile(
+                        activity,
+                        "com.akapps.dailynote.fileprovider",
+                        file);
+            }
+
+            if (!bodyText.isEmpty())
+                emailIntent.putExtra(Intent.EXTRA_TEXT, bodyText);
+            // adds email subject and email body to intent
+            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+
+            activity.startActivity(Intent.createChooser(emailIntent, fileExtension.equals("mp3") ? "Share Audio" : "Share Photo"));
+        } catch (Exception e) {
+            Helper.showMessage(activity, "Sharing Error", "Size too large v7, email developer", MotionToast.TOAST_ERROR);
         }
-
-        if (!bodyText.isEmpty())
-            emailIntent.putExtra(Intent.EXTRA_TEXT, bodyText);
-        // adds email subject and email body to intent
-        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
-
-        context.startActivity(Intent.createChooser(emailIntent, fileExtension.equals("mp3") ? "Share Audio" : "Share Photo"));
     }
 
     public static void shareFile(Activity activity, String text) {
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("text/plain");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, text);
-        activity.startActivity(Intent.createChooser(emailIntent, "Share Text"));
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("text/plain");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, text);
+            activity.startActivity(Intent.createChooser(emailIntent, "Share Text"));
+        } catch (Exception e) {
+            Helper.showMessage(activity, "Sharing Error", "Size too large v10, email developer", MotionToast.TOAST_ERROR);
+        }
     }
 
-    private static void shareFiles(Context context, ArrayList<File> files) {
-        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        emailIntent.setType("text/*");
+    private static void shareFiles(Activity activity, ArrayList<File> files) {
+        try {
+            final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            emailIntent.setType("text/*");
 
-        // attaching to intent to send folders
-        ArrayList<Uri> uris = new ArrayList<>();
+            // attaching to intent to send folders
+            ArrayList<Uri> uris = new ArrayList<>();
 
-        for (File file : files) {
-            if (file.exists()) {
-                uris.add(FileProvider.getUriForFile(
-                        context,
-                        "com.akapps.dailynote.fileprovider",
-                        file));
-            }
-        }
-
-        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        context.startActivity(Intent.createChooser(emailIntent, "Export Files"));
-    }
-
-    public static void shareNote(Activity activity, int noteId, Realm realm) {
-        Note currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
-        final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        emailIntent.setType("text/plain");
-
-        // attaching to intent to send folders
-        ArrayList<Uri> uris = new ArrayList<>();
-
-        // need to get all photos (for note and checklist)
-        RealmResults<Photo> allNotePhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
-        RealmResults<CheckListItem> checkListItems = realm.where(CheckListItem.class).equalTo("id",
-                currentNote.getNoteId()).not().isEmpty("itemImage").findAll();
-        // need to get all audio files
-        RealmResults<CheckListItem> audioPaths = realm.where(CheckListItem.class).equalTo("id",
-                currentNote.getNoteId()).not().isEmpty("audioPath").findAll();
-
-        for (int i = 0; i < allNotePhotos.size(); i++) {
-            assert allNotePhotos.get(i) != null;
-            File file = new File(allNotePhotos.get(i).getPhotoLocation());
-            if (file.exists()) {
-                uris.add(FileProvider.getUriForFile(
-                        activity,
-                        "com.akapps.dailynote.fileprovider",
-                        file));
-            }
-        }
-
-        for (int i = 0; i < checkListItems.size(); i++) {
-            assert checkListItems.get(i) != null;
-            File file = new File(checkListItems.get(i).getItemImage());
-            if (file.exists()) {
-                uris.add(FileProvider.getUriForFile(
-                        activity,
-                        "com.akapps.dailynote.fileprovider",
-                        file));
-            }
-        }
-
-        for (int i = 0; i < audioPaths.size(); i++) {
-            assert audioPaths.get(i) != null;
-            if (audioPaths.get(i).getAudioPath() != null) {
-                File file = new File(audioPaths.get(i).getAudioPath());
+            for (File file : files) {
                 if (file.exists()) {
                     uris.add(FileProvider.getUriForFile(
                             activity,
@@ -806,19 +764,80 @@ public class Helper {
                             file));
                 }
             }
-        }
 
-        String noteString = currentNote.isCheckList() ? getNoteString(activity, noteId, realm)
-                : Helper.removeMarkdownFormatting(currentNote.getNote());
-
-        // adds email subject and email body to intent
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, currentNote.getTitle());
-        emailIntent.putExtra(Intent.EXTRA_TEXT, noteString);
-
-        if (uris.size() > 0)
             emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+            activity.startActivity(Intent.createChooser(emailIntent, "Export Files"));
+        } catch (Exception e) {
+            Helper.showMessage(activity, "Sharing Error", "Size too large v2, email developer", MotionToast.TOAST_ERROR);
+        }
+    }
 
-        activity.startActivity(Intent.createChooser(emailIntent, "Share Note"));
+    public static void shareNote(Activity activity, int noteId, Realm realm) {
+        try {
+            Note currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
+            final Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            emailIntent.setType("text/plain");
+
+            // attaching to intent to send folders
+            ArrayList<Uri> uris = new ArrayList<>();
+
+            // need to get all photos (for note and checklist)
+            RealmResults<Photo> allNotePhotos = realm.where(Photo.class).equalTo("noteId", currentNote.getNoteId()).findAll();
+            RealmResults<CheckListItem> checkListItems = realm.where(CheckListItem.class).equalTo("id",
+                    currentNote.getNoteId()).not().isEmpty("itemImage").findAll();
+            // need to get all audio files
+            RealmResults<CheckListItem> audioPaths = realm.where(CheckListItem.class).equalTo("id",
+                    currentNote.getNoteId()).not().isEmpty("audioPath").findAll();
+
+            for (int i = 0; i < allNotePhotos.size(); i++) {
+                assert allNotePhotos.get(i) != null;
+                File file = new File(allNotePhotos.get(i).getPhotoLocation());
+                if (file.exists()) {
+                    uris.add(FileProvider.getUriForFile(
+                            activity,
+                            "com.akapps.dailynote.fileprovider",
+                            file));
+                }
+            }
+
+            for (int i = 0; i < checkListItems.size(); i++) {
+                assert checkListItems.get(i) != null;
+                File file = new File(checkListItems.get(i).getItemImage());
+                if (file.exists()) {
+                    uris.add(FileProvider.getUriForFile(
+                            activity,
+                            "com.akapps.dailynote.fileprovider",
+                            file));
+                }
+            }
+
+            for (int i = 0; i < audioPaths.size(); i++) {
+                assert audioPaths.get(i) != null;
+                if (audioPaths.get(i).getAudioPath() != null) {
+                    File file = new File(audioPaths.get(i).getAudioPath());
+                    if (file.exists()) {
+                        uris.add(FileProvider.getUriForFile(
+                                activity,
+                                "com.akapps.dailynote.fileprovider",
+                                file));
+                    }
+                }
+            }
+
+            String noteString = currentNote.isCheckList() ? getNoteString(activity, noteId, realm)
+                    : Helper.removeMarkdownFormatting(currentNote.getNote());
+
+            // adds email subject and email body to intent
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, currentNote.getTitle());
+            emailIntent.putExtra(Intent.EXTRA_TEXT, noteString);
+
+            if (uris.size() > 0)
+                emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+
+            activity.startActivity(Intent.createChooser(emailIntent, "Share Note"));
+        } catch (Exception e) {
+            Helper.showMessage(activity, "Sharing Error", "Size too large v1, email developer", MotionToast.TOAST_ERROR);
+        }
     }
 
     public static ArrayList<String> showFloatingFiles(Activity activity, boolean delete) {
@@ -867,7 +886,7 @@ public class Helper {
         return null;
     }
 
-    public static List<String> extractFileNames(String text){
+    public static List<String> extractFileNames(String text) {
         String regex = "<img[^>]+src=\"([^\">]+)";
         Matcher matcher = Pattern.compile(regex).matcher(text);
 
@@ -1086,6 +1105,11 @@ public class Helper {
         activity.startActivity(intent);
         activity.finish();
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    public static float getScreenWidth(Activity activity) {
+        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+        return displayMetrics.widthPixels / displayMetrics.density;
     }
 
 }

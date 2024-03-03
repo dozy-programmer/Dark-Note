@@ -414,7 +414,7 @@ public class notes extends Fragment {
             addMenuLarge.close(true);
             if (deletingMultipleNotes) {
                 isAllSelected = false;
-                InfoSheet info = new InfoSheet(3, true, notes.this, isTrashSelected);
+                InfoSheet info = new InfoSheet(3, true, notes.this, isTrashSelected, true);
                 info.show(getActivity().getSupportFragmentManager(), info.getTag());
             } else {
                 showSearchBar();

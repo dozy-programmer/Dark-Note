@@ -2,13 +2,12 @@
 
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbarThumbVertical="?primaryButtonColor"
+    android:background="@android:color/transparent"
     android:scrollbarSize="2dp"
-    android:scrollbars="vertical"
-    android:background="@android:color/transparent">
+    android:scrollbarThumbVertical="?primaryButtonColor"
+    android:scrollbars="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -59,20 +58,20 @@
             android:id="@+id/image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
             android:backgroundTint="?primaryBackgroundColor"
-            android:layout_marginHorizontal="20dp"
+            android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title"/>
+            app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <TextView
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginTop="10dp"
+            android:gravity="center"
             android:text="Adjust size of image, this is how it will look in your note"
             android:textColor="?primaryTextColor"
             android:textSize="16sp"
@@ -84,66 +83,106 @@
             android:id="@+id/price_q_w_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
+            android:orientation="vertical"
             android:weightSum="100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/message">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/width_layout"
+                android:id="@+id/image_link_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:layout_weight="50"
-                android:hint="Width"
+                android:layout_marginTop="10dp"
+                android:hint="Image Link"
                 android:textColorHint="?primaryTextColor"
                 android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
+                android:visibility="gone"
                 app:boxBackgroundColor="?primaryBackgroundColor"
                 app:boxStrokeColor="?primaryButtonColor"
                 app:boxStrokeErrorColor="?tertiaryIconTintColor"
                 app:boxStrokeWidth="2dp"
-                app:hintTextColor="?primaryTextColor">
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/red"
+                app:hintTextColor="?primaryTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/message">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/width"
+                    android:id="@+id/image_link"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:imeOptions="actionDone"
+                    android:inputType="text"
                     android:textColor="?primaryTextColor"
                     android:textColorHint="?secondaryTextColor" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/height_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_weight="50"
-                android:hint="Height"
-                android:textColorHint="?primaryTextColor"
-                android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
-                app:boxBackgroundColor="?primaryBackgroundColor"
-                app:boxStrokeColor="?primaryButtonColor"
-                app:boxStrokeErrorColor="?tertiaryIconTintColor"
-                app:boxStrokeWidth="2dp"
-                app:hintTextColor="?primaryTextColor">
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/height"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/width_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:imeOptions="actionDone"
-                    android:textColor="?primaryTextColor"
-                    android:textColorHint="?secondaryTextColor" />
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="50"
+                    android:hint="Width"
+                    android:textColorHint="?primaryTextColor"
+                    android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
+                    app:boxBackgroundColor="?primaryBackgroundColor"
+                    app:boxStrokeColor="?primaryButtonColor"
+                    app:boxStrokeErrorColor="?tertiaryIconTintColor"
+                    app:boxStrokeWidth="2dp"
+                    app:hintTextColor="?primaryTextColor">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/width"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:textColor="?primaryTextColor"
+                        android:textColorHint="?secondaryTextColor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/height_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="50"
+                    android:hint="Height"
+                    android:textColorHint="?primaryTextColor"
+                    android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
+                    app:boxBackgroundColor="?primaryBackgroundColor"
+                    app:boxStrokeColor="?primaryButtonColor"
+                    app:boxStrokeErrorColor="?tertiaryIconTintColor"
+                    app:boxStrokeWidth="2dp"
+                    app:hintTextColor="?primaryTextColor">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/height"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:textColor="?primaryTextColor"
+                        android:textColorHint="?secondaryTextColor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -151,20 +190,20 @@
             android:id="@+id/confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
             android:backgroundTint="?secondaryBackgroundColor"
             android:padding="15dp"
-            android:textSize="14sp"
-            app:strokeWidth="2dp"
-            app:strokeColor="?primaryStrokeColor"
             android:text="Confirm"
             android:textColor="?primaryTextColor"
+            android:textSize="14sp"
             app:cornerRadius="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/price_q_w_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/price_q_w_layout"
+            app:strokeColor="?primaryStrokeColor"
+            app:strokeWidth="2dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
