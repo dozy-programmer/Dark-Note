@@ -8,6 +8,8 @@ Thank you for being a Dark Note User. This FAQ should cover most, if not all, yo
 ### Important
 - Please take a look at the Dark Note Settings so that you can customize the app how you want.
 
+***
+
 <details>
   <summary>Notes</summary>
     <details><summary>Note text not showing up</summary>
@@ -27,6 +29,8 @@ Thank you for being a Dark Note User. This FAQ should cover most, if not all, yo
     </details>
 </details>
 
+***
+
 <details>
   <summary>Checklists</summary>
      <details><summary>Duplicate a checklist</summary>
@@ -39,6 +43,8 @@ Thank you for being a Dark Note User. This FAQ should cover most, if not all, yo
         You can add the following to your checklist: a location after adding a note by going to edit, click on ellipse on the top left, and "Location", redirect to another note from a checklist item (not sublist) by insert an @ and selecting desired note, a image by clicking on edit after adding a checklist (not sublist) and clicking image icon. You can also send a checklist to another app by clicking on ellipse on top left and "Send".
     </details>
 </details>
+
+***
 
 <details>
   <summary>Budget</summary>
