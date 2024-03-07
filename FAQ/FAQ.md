@@ -37,10 +37,14 @@ Thank you for being a Dark Note User. This FAQ should cover most, if not all, yo
         In homepage, click on info icon and click on clip icon next to title. The checklist text is now in your clipboard. Create a new checklist -> add a checklist item ->  paste the text inside -> click confirm button -> viola. You can also access checklist info directly inside checklist by going to toolbar -> drop down -> Info and then follow the steps from above.
     </details>
     <details><summary>Searching inside checklist</summary>
-        Searching is best suited for main checklist items, not sublists. If item found is a sublist, it will scroll down to the parent of the subchecklist and you need to scroll to find it. The text is marked with a different color so it is easy to find.
+        Searching is best suited for main checklist items, not sublists. If item found is a sublist, it will scroll down to the parent of the sublist and you need to scroll to find it. The text is marked with a different color so it is easy to find.
     </details>
     <details><summary>Cool features</summary>
-        You can add the following to your checklist: a location after adding a note by going to edit, click on ellipse on the top left, and "Location", redirect to another note from a checklist item (not sublist) by insert an @ and selecting desired note, a image by clicking on edit after adding a checklist (not sublist) and clicking image icon. You can also send a checklist to another app by clicking on ellipse on top left and "Send".
+        You can add the following to your checklist: <br>
+        1. a location after adding a note by going to edit, click on ellipse on the top left, and "Location" <br>
+        2. redirect to another note from a checklist item (not sublist) by inserting an @ and selecting desired note <br>
+        3. an image by clicking on edit after adding a checklist (not sublist) and clicking image icon. <br>
+        4. You can also send a checklist to another app by clicking on ellipse on top left and "Send". <br>
     </details>
 </details>
 
@@ -52,9 +56,10 @@ Thank you for being a Dark Note User. This FAQ should cover most, if not all, yo
         Make sure budget is not disabled in settings (the toggle should be off) and set your budget and expense symbols.
     </details>
     <details><summary>How to use?</summary>
-        To use, you need to set your budget inside a checklist item (or sublist item) by using your budget symbol and amount. For example, if my budget symbol is "+$", in a checklist item, I just set +$2000. Then I am all set. For expenses, you do the same except you use your expense symol. For example, let's say my budget symbol is $, I just put $100.
+        You need to set your budget inside a checklist item (or sublist item) by using your budget symbol and amount. For example, if my budget symbol is "+$", in a checklist item, I just set +$2000. Then I am all set. For expenses, you do the same except you use your expense symol. For example, let's say my budget symbol is $, I just put $100.
     </details>
     <details><summary>Good to know?</summary>
-        You can specify your budget or expense anywhere in a checklist or sublist and you can use your notes alongside it. For example, you can put "Mike owes me $20" or "-$20 refund from amazon", it will be understood by the app. Keep in mind, a negative number will subtract from your expenses.
+        You can specify your budget or expense anywhere in a checklist or sublist and you can use your notes alongside it. For example, you can put "Mike owes me $20" or "-$20 refund from amazon", it will be understood by the app. Keep in mind, a negative number will be subtracted from your expenses.
     </details>
 </details>
+
