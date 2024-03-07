@@ -2,6 +2,7 @@
 
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
@@ -72,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="Adjust size of image, this is how it will look in your note"
+            android:text="Adjust size of image, this is how it will look in your note."
             android:textColor="?primaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -204,6 +205,24 @@
             app:layout_constraintTop_toBottomOf="@+id/price_q_w_layout"
             app:strokeColor="?primaryStrokeColor"
             app:strokeWidth="2dp" />
+
+<!--        <androidx.appcompat.widget.SwitchCompat-->
+<!--            android:id="@+id/download"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="10"-->
+<!--            android:checked="false"-->
+<!--            android:gravity="center"-->
+<!--            android:scaleX="0.85"-->
+<!--            android:scaleY="0.85"-->
+<!--            android:text="Download\t\t"-->
+<!--            android:textColor="?primaryTextColor"-->
+<!--            android:textSize="16sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:theme="@style/ThemeOverlay.SwitchTheme"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

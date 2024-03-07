@@ -101,7 +101,9 @@ import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -111,6 +113,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import jp.wasabeef.richeditor.RichEditor;
@@ -213,13 +216,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private ActivityResultLauncher<Intent> startAlarmPermission;
     private ActivityResultLauncher<Intent> categoryLauncher;
 
-    private boolean showLockScreen = true;
+    public boolean showLockScreen = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
+
+        AppData.getAppData();
 
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         context = this;
@@ -505,6 +510,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             return;
         }
 
+        if (getCurrentNote(context, noteId).isChecked())
+            title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        if (getCurrentNote(context, noteId).isPin())
+            pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
+
         if (getCurrentNote(context, noteId).isCheckList()) {
             sortChecklist("");
             showCheckListLayout(true);
@@ -526,9 +536,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 note.focusEditor();
         }
 
-        if (getCurrentNote(context, noteId).isChecked())
-            title.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-
         // sets background of color icon to whatever the current note color is
         if (!isNewNote)
             noteColor.setCardBackgroundColor(getCurrentNote(context, noteId).getBackgroundColor());
@@ -549,8 +556,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         "get rid of this message!", MotionToast.TOAST_WARNING);
             }
         }
-        if (getCurrentNote(context, noteId).isPin())
-            pinNoteIcon.setImageDrawable(getDrawable(R.drawable.pin_filled_icon));
 
         // if orientation changes, then it updates note data
         if (savedInstanceState != null) {
@@ -2060,17 +2065,21 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (!getCurrentNote(context, noteId).isCheckList()) {
             note.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                 private int prevScrollY;
+                private final int SCROLL_THRESHOLD = 50;
 
                 @Override
                 public void onScrollChanged() {
                     int newScrollY = note.getScrollY();
-                    if (newScrollY > prevScrollY) {
-                        editorScroll.setVisibility(View.GONE);
+                    int scrollDifference = Math.abs(newScrollY - prevScrollY);
 
-                    } else if (newScrollY < prevScrollY) {
-                        editorScroll.setVisibility(View.VISIBLE);
+                    if (scrollDifference > SCROLL_THRESHOLD) {
+                        if (newScrollY > prevScrollY) {
+                            editorScroll.setVisibility(View.GONE);
+                        } else if (newScrollY < prevScrollY) {
+                            editorScroll.setVisibility(View.VISIBLE);
+                        }
+                        prevScrollY = newScrollY;
                     }
-                    prevScrollY = newScrollY;
                 }
             });
         }

@@ -208,6 +208,9 @@ public class RealmDatabase {
                 schema.get("Folder").addField("securityWord", String.class);
             if (!schema.get("Folder").hasField("isFingerprintAdded"))
                 schema.get("Folder").addField("isFingerprintAdded", boolean.class);
+
+            if (!schema.get("User").hasField("showPreviewNoteInfoAtBottom"))
+                schema.get("User").addField("showPreviewNoteInfoAtBottom", boolean.class);
         }
     }
 }

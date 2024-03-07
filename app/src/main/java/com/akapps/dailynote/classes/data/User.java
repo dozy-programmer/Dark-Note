@@ -19,6 +19,7 @@ public class User extends RealmObject {
     private boolean showFolderNotes;
 
     private boolean showPreview;
+    private boolean showPreviewNoteInfoAtBottom;
     private boolean showPreviewNoteInfo;
     private boolean modeSettings;
     private int screenMode;
@@ -86,7 +87,8 @@ public class User extends RealmObject {
         sublistSeparator = "space";
         budgetCharacter = "+$";
         expenseCharacter = "$";
-        enableEditableNoteButton = disableAnimation = showChecklistCheckbox = disableLastEditInfo = false;
+        enableEditableNoteButton = disableAnimation = showChecklistCheckbox =
+                disableLastEditInfo = showPreviewNoteInfoAtBottom = false;
         screenMode = 1;
         textSize = 20;
     }
@@ -386,5 +388,11 @@ public class User extends RealmObject {
         this.disableLastEditInfo = disableLastEditInfo;
     }
 
+    public boolean isShowPreviewNoteInfoAtBottom() {
+        return showPreviewNoteInfoAtBottom;
+    }
 
+    public void setShowPreviewNoteInfoAtBottom(boolean showPreviewNoteInfoAtBottom) {
+        this.showPreviewNoteInfoAtBottom = showPreviewNoteInfoAtBottom;
+    }
 }

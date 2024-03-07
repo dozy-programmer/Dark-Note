@@ -61,7 +61,6 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
     private TextInputEditText heightInput;
     private MaterialButton confirm;
 
-    private boolean isImageSelectionSucessful = false;
     private boolean isEditing;
     private String srcImage;
     private String html;
@@ -142,7 +141,7 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         title.setText("Selecting Photo(s)");
         confirm.setText("Confirm");
 
-        maxWidth = (int) Helper.getScreenWidth(getActivity()) - 40;
+        maxWidth = (int) Helper.getScreenWidth(getActivity()) - 30;
         Log.d("Here", "width " + width);
         Log.d("Here", "height " + height);
         setText(widthInput, width);
@@ -166,8 +165,9 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         confirm.setOnClickListener(view1 -> {
             if (!note.hasFocus()) note.focusEditor();
             if (imagesValid()) {
-                for (String filePath : filePaths) note.insertImage(filePath, "image", width, height);
-                isImageSelectionSucessful = true;
+                for (String filePath : filePaths) {
+                    note.insertImage(filePath, "image", width, height);
+                }
                 dismiss();
             }
         });
@@ -222,7 +222,7 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
             }
-            else if(number > maxWidth){
+            else if(number > maxWidth && isWidth){
                 layout.setError("Max is " + maxWidth);
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
@@ -297,24 +297,6 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         config.setStatusBarContentMode(UiHelper.getLightThemePreference(getContext()) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
         Intent intent = ImagePickerLauncher.Companion.createIntent(getContext(), config);
         pickImageLauncher.launch(intent);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        try {
-            widthInput.addTextChangedListener(null);
-            heightInput.addTextChangedListener(null);
-            if (!isImageSelectionSucessful && !isEditing) {
-                if (filePaths.size() > 0) {
-                    for (String path : filePaths) {
-                        Log.d("Here", "Deleting " + path);
-                        new File(path).delete();
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-        }
     }
 
     @Override

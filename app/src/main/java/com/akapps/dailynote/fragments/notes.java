@@ -643,7 +643,6 @@ public class notes extends Fragment {
     public void filterAndSortNotes(String dateType, boolean oldestToNewest,
                                    boolean newestToOldest, boolean aToZ, boolean zToA) {
         isNotesFiltered = true;
-
         RealmResults<Note> result = getRealm().where(Note.class)
                 .equalTo("archived", false)
                 .equalTo("trash", false)
@@ -766,7 +765,7 @@ public class notes extends Fragment {
     private void populateAdapter(RealmResults<Note> allNotes) {
         filteredNotes = allNotes;
         adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes : allNotes, context, getActivity(),
-                notes.this, getUser().isShowPreview(), getUser().isShowPreviewNoteInfo());
+                notes.this, getUser().isShowPreview(), getUser().isShowPreviewNoteInfo(), getUser().isShowPreviewNoteInfoAtBottom());
         recyclerViewNotes.setAdapter(adapterNotes);
     }
 

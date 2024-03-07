@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.realm.RealmResults;
 
@@ -53,6 +56,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final Fragment noteFragment;
     private final boolean showPreview;
     private final boolean showPreviewNotesInfo;
+    private final boolean showPreviewNoteInfoAtBottom;
 
     // database
     private final User currentUser;
@@ -63,6 +67,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final ImageView note_info;
+        private final ImageView note_info_2;
         private final TextView note_title;
         private final TextView note_edited;
         private final TextView note_preview;
@@ -88,6 +93,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             super(v);
             note_title = v.findViewById(R.id.note_title);
             note_info = v.findViewById(R.id.note_info);
+            note_info_2 = v.findViewById(R.id.note_info_2);
             note_edited = v.findViewById(R.id.note_edited);
             note_background = v.findViewById(R.id.note_background);
             note_preview = v.findViewById(R.id.note_preview);
@@ -111,13 +117,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     }
 
     public notes_recyclerview(RealmResults<Note> allNotes, Context context, Activity activity, Fragment fragment,
-                              boolean showPreview, boolean showPreviewNotesInfo) {
+                              boolean showPreview, boolean showPreviewNotesInfo, boolean showPreviewNoteInfoAtBottom) {
         this.allNotes = allNotes;
         this.context = context;
         this.activity = activity;
         this.noteFragment = fragment;
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
+        this.showPreviewNoteInfoAtBottom = showPreviewNoteInfoAtBottom;
         currentUser = RealmHelper.getUser(context, "notes_recyclerview");
         notesSize = allNotes.size();
     }
@@ -147,7 +154,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         boolean hasReminder = currentNote.getReminderDateTime().length() > 0;
 
         // populates note data into the recyclerview
-        holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));
+        if (currentNote.getTitle().replaceAll("\n", " ").isEmpty())
+            holder.note_title.setText("~ No Title ~");
+        else
+            holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));
         boolean isTwentyHourFormat = RealmHelper.getUser(context, "in recyclerview").isTwentyFourHourFormat();
         holder.note_edited.setText(isTwentyHourFormat ?
                 Helper.convertToTwentyFourHour(currentNote.getDateEdited()) : currentNote.getDateEdited());
@@ -180,15 +190,31 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_title.setMaxLines(titleLines);
         holder.note_preview.setMaxLines(contentLines);
 
-        if (showPreviewNotesInfo)
-            holder.note_info.setVisibility(View.VISIBLE);
-        else
+        if (showPreviewNotesInfo) {
+            if (showPreviewNoteInfoAtBottom) {
+                holder.note_info_2.setVisibility(View.VISIBLE);
+                holder.note_info.setVisibility(View.GONE);
+            } else {
+                holder.note_info.setVisibility(View.VISIBLE);
+                holder.note_info_2.setVisibility(View.GONE);
+            }
+        } else {
             holder.note_info.setVisibility(View.GONE);
+            holder.note_info_2.setVisibility(View.GONE);
+        }
 
+
+        String pattern = "<img[^>]+src=\"([^\">]+).*?>";
+        String pattern_2 = "<iframe[^>]*?(?:\\/>|>[^<]*?<\\/iframe>)";
+        String replacement = "️\uD83D\uDDBC\uFE0F";
+        String currentNoteImageLinksRemovedAndReplaced = Pattern.compile(pattern).matcher(currentNote.getNote().replace("<br>", " ")).replaceAll(replacement);
+        String removeIframe = Pattern.compile(pattern_2).matcher(currentNoteImageLinksRemovedAndReplaced).replaceAll("\uD83C\uDFA5");
         // format note to remove all new line characters and any spaces more than a length of 1
-        String preview = Html.fromHtml(currentNote.getNote(), Html.FROM_HTML_MODE_COMPACT).toString();
+        String preview = Html.fromHtml(removeIframe, Html.FROM_HTML_MODE_COMPACT).toString();
         preview = preview.replaceAll("\n+", "\n");
+        // Define the pattern to match
         holder.note_preview.setText(preview);
+        Log.d("Here", "preview -> " + preview);
 
         // if note has a category, then it shows it
         if (currentNote.getCategory().equals("none"))
@@ -240,8 +266,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.note_preview.setText(checkListString.toString());
             holder.note_preview.setTextSize(13);
             holder.note_preview.setGravity(Gravity.LEFT);
-        } else
+        } else {
             holder.checklist_icon.setVisibility(View.GONE);
+        }
 
         // if a note is in the trash, show user
         if (currentNote.isTrash()) {
@@ -300,13 +327,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.note_preview.setPaintFlags(Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         }
 
-        if (currentNote.getTitle().isEmpty())
-            holder.note_title.setVisibility(View.GONE);
-        else
-            holder.note_title.setVisibility(View.VISIBLE);
-
         // if preview is empty and it is note locked, then the note will show a sad emoji instead
-        if (noteText.isEmpty() && !isNoteLocked) {
+        if ((preview.isEmpty() || preview.equals("\n")) && !isNoteLocked) {
             if (!currentNote.isCheckList()) {
                 holder.note_preview.setText("\uD83E\uDD7A");
                 holder.note_preview.setGravity(Gravity.CENTER);
@@ -504,6 +526,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
             }
         });
+        holder.note_info_2.setOnClickListener(view -> {
+            if (!enableSelectMultiple) {
+                NoteInfoSheet noteInfoSheet = new NoteInfoSheet(noteId, true);
+                noteInfoSheet.show(noteFragment.getParentFragmentManager(), noteInfoSheet.getTag());
+            }
+        });
     }
 
     private void showPhotos(int position, int noteId, ImageView currentImage) {
@@ -540,7 +568,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     // Checks to see if note is locked, if it is then user is sent to lock screen activity
     // where they need to enter a pin. If not locked, it opens note
     private void openNoteActivity(int noteId) {
-        Note currentNote = RealmHelper.getNote(context, noteId);
+        Note currentNote = RealmHelper.getRealm(context).copyFromRealm(RealmHelper.getNote(context, noteId));
         if (currentNote.getPinNumber() == 0) {
             Intent note = new Intent(activity, NoteEdit.class);
             note.putExtra("id", currentNote.getNoteId());

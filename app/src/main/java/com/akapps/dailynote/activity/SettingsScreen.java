@@ -102,6 +102,7 @@ public class SettingsScreen extends AppCompatActivity {
     private boolean isTitleSelected;
     private SwitchCompat showPreview;
     private SwitchCompat showPreviewNoteInfo;
+    private SwitchCompat showPreviewNoteInfoAtBottom;
     private SwitchCompat openFoldersOnStart;
     private SwitchCompat showFolderNotes;
     private MaterialButtonToggleGroup themeToggle;
@@ -209,6 +210,7 @@ public class SettingsScreen extends AppCompatActivity {
         expenseSymbolLayout = findViewById(R.id.expense_char_layout);
         showPreview = findViewById(R.id.show_preview_switch);
         showPreviewNoteInfo = findViewById(R.id.show_info_switch);
+        showPreviewNoteInfoAtBottom = findViewById(R.id.show_info_at_bottomswitch);
         openFoldersOnStart = findViewById(R.id.open_folder_switch);
         showFolderNotes = findViewById(R.id.show_folder_switch);
         themeToggle = findViewById(R.id.theme_mode_toggle_group);
@@ -527,6 +529,14 @@ public class SettingsScreen extends AppCompatActivity {
             RealmSingleton.get(this).beginTransaction();
             getUser().setShowPreviewNoteInfo(isChecked);
             RealmSingleton.get(this).commitTransaction();
+            if(!isChecked) showPreviewNoteInfoAtBottom.setChecked(false);
+        });
+
+        showPreviewNoteInfoAtBottom.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setShowPreviewNoteInfoAtBottom(isChecked);
+            RealmSingleton.get(this).commitTransaction();
+            if(isChecked) showPreviewNoteInfo.setChecked(true);
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -711,6 +721,7 @@ public class SettingsScreen extends AppCompatActivity {
         User currentUser = getUser();
         showPreview.setChecked(currentUser.isShowPreview());
         showPreviewNoteInfo.setChecked(currentUser.isShowPreviewNoteInfo());
+        showPreviewNoteInfoAtBottom.setChecked(currentUser.isShowPreviewNoteInfoAtBottom());
         openFoldersOnStart.setChecked(currentUser.isOpenFoldersOnStart());
         showFolderNotes.setChecked(currentUser.isShowFolderNotes());
         int getSelectTheme = R.id.dark_mode;

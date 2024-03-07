@@ -82,6 +82,10 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         SubCheckListItem checkListItem = checkList.get(position);
 
+        if(checkListItem == null || !checkListItem.isValid()){
+            notifyDataSetChanged();
+        }
+
         // retrieves checkList text and select status of checkListItem
         String checkListText = checkListItem.getText();
         boolean isSelected = checkListItem.isChecked();

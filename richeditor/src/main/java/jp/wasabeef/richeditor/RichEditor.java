@@ -427,7 +427,6 @@ public class RichEditor extends WebView {
         Pattern compiledPattern = Pattern.compile(pattern);
         Matcher matcher = compiledPattern.matcher(url);
         if (matcher.find()) youtubeVideoId = matcher.group();
-        Log.d("Here", "id -> " + youtubeVideoId);
         String fullYoutubeLink = "https://www.youtube.com/embed/" + youtubeVideoId;
         exec("javascript:RE.prepareInsert();");
         exec("javascript:RE.insertYoutubeVideoWH('" + fullYoutubeLink + "', '" + width + "', '" + height + "');");

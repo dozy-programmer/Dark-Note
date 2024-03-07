@@ -704,8 +704,12 @@ public class Helper {
         return activity.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
     }
 
+    public static String getRandomUUID(){
+        return UUID.randomUUID().toString();
+    }
+
     public static File createFile(Activity activity, String fileType, String fileExtension) {
-        String randomString = UUID.randomUUID().toString();
+        String randomString = getRandomUUID();
         String file = getInternalFileDir(activity) + File.separator +
                 fileType + randomString.substring(0, randomString.length() / 3).replaceAll("-", "_") +
                 fileExtension;

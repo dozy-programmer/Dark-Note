@@ -19,7 +19,7 @@ public class AppData {
     public static int timerDuration;
     public static boolean isKeyboardOpen;
     public static boolean isDisableAnimation;
-    public static ArrayList<Integer> wordFoundPositions;
+    public static ArrayList<Integer> wordFoundPositions = new ArrayList<>();
     public static int wordIndex;
 
     public static int pin;
@@ -133,7 +133,7 @@ public class AppData {
     }
 
     public static void addWordFoundPositions(int position) {
-        if (!wordFoundPositions.contains(position)) {
+        if (wordFoundPositions != null && !wordFoundPositions.contains(position)) {
             wordFoundPositions.add(position);
             Log.d("Here", "positions -> " + AppData.getWordFoundPositions());
         }

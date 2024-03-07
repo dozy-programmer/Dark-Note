@@ -1,6 +1,10 @@
 package com.akapps.dailynote.classes.other.insertsheet;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,6 +26,9 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+
 import jp.wasabeef.richeditor.RichEditor;
 import www.sanju.motiontoast.MotionToast;
 
@@ -40,6 +47,7 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
     private MaterialButton confirm;
 
     private boolean isEditing;
+    private String path;
     private String html;
     private String srcImage;
     private int maxWidth = 0;
@@ -62,16 +70,6 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_insert_link, container, false);
 
-        /**
-         * TODO
-         * create another sheet for editing, add all logic there for editing
-         * for inserting, finish supporting local image, online images, and youtube video support
-         * for inserting, edit UI for inserting youtube link
-         *
-         * FAQ:
-         * Start and Finish
-         */
-
         note = ((NoteEdit) getActivity()).note;
 
         title = view.findViewById(R.id.title);
@@ -93,7 +91,7 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
         heightLayout.setVisibility(View.GONE);
         confirm.setVisibility(View.GONE);
 
-        maxWidth = (int) Helper.getScreenWidth(getActivity()) - 40;
+        maxWidth = (int) Helper.getScreenWidth(getActivity()) - 30;
         Log.d("Here", "width " + width + ", height " + height);
         setText(widthInput, width);
         setText(heightInput, height);
@@ -122,7 +120,17 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
                 if (!note.hasFocus()) note.focusEditor();
                 String inputLink = linkInput.getText().toString();
                 if (!inputLink.isEmpty() && URLUtil.isValidUrl(inputLink)) {
-                    note.insertImage(inputLink, "image", width, height);
+                    //path = downloadImage("download_from_link_" + Helper.getRandomUUID(), inputLink);
+                    path = "";
+                    if(!path.isEmpty()) {
+                        note.insertImage(path, "image", width, height);
+                        Helper.showMessage(getActivity(), "Image Downloading...",
+                                "After download complete, close and open note to see it",
+                                MotionToast.TOAST_WARNING);
+                    }
+                    else {
+                        note.insertImage(inputLink, "image", width, height);
+                    }
                     dismiss();
                 }
             }
@@ -140,6 +148,27 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
         }
 
         return view;
+    }
+
+    private String downloadImage(String filename, String downloadUrlOfImage){
+        try{
+            DownloadManager dm = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri downloadUri = Uri.parse(downloadUrlOfImage);
+            DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                    .setAllowedOverRoaming(false)
+                    .setTitle(filename)
+                    .setMimeType("image/png")
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_DOCUMENTS, File.separator + filename + ".png");
+            dm.enqueue(request);
+            String fileName = getContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + File.separator + filename + ".png";
+            Log.d("Here", "Success " + fileName);
+            return fileName;
+        } catch (Exception e){
+            Log.d("Here", "Fail");
+        }
+        return "";
     }
 
     private void addSizeListeners() {
@@ -200,7 +229,7 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
             }
-            else if(number > maxWidth){
+            else if(number > maxWidth && isWidth){
                 layout.setError("Max is " + maxWidth);
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);

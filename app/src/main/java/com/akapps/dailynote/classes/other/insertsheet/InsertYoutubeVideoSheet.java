@@ -114,7 +114,7 @@ public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
         confirm.setVisibility(View.VISIBLE);
         confirm.setText("Add Video");
 
-        maxWidth = (int) Helper.getScreenWidth(getActivity()) - 20;
+        maxWidth = (int) Helper.getScreenWidth(getActivity()) - 15;
         width = maxWidth;
         setText(widthInput, width);
         setText(heightInput, height);
@@ -197,7 +197,7 @@ public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
             }
-            else if(number > maxWidth){
+            else if(number > maxWidth && isWidth){
                 layout.setError("Max is " + maxWidth);
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);

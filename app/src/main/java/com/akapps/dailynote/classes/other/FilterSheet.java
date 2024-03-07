@@ -196,9 +196,9 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
                     if (isAlphabeticalChosen || (!dateTypeSelected.equals("null") && isDateCorrectlySelected)) {
                         saveSortData(dateTypeSelected,
                                 oldestToLatest, latestToOldest, aToZ, zToA, false);
-                        this.dismiss();
                         ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest,
                                 latestToOldest, aToZ, zToA);
+                        this.dismiss();
                     } else {
                         Helper.showMessage(getActivity(), "Save Sort Requirement", "Select Note & " +
                                 "Checklist & sorting method", MotionToast.TOAST_ERROR);

@@ -177,12 +177,12 @@ RE.setJustifyRight = function() {
 }
 
 RE.insertImageWH = function(url, alt, width, height) {
-    var html = '<img src="' + url + '" alt="' + alt + '" width="' + width + '" height="' + height +'"/>';
+    var html = '<img src="' + url + '" alt="' + alt + '" width="' + width + '" height="' + height +'"/><br>';
     RE.insertHTML(html);
 }
 
 RE.insertYoutubeVideoWH = function(url, width, height) {
-    var html = '<iframe width="' + width + '" height="' + height + '" src="' + url + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"></iframe><br>'
+    var html = '<iframe width="' + width + '" height="' + height + '" src="' + url + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"/><br>'
     RE.insertHTML(html);
 }
 

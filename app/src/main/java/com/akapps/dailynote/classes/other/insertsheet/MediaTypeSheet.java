@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -37,6 +38,7 @@ public class MediaTypeSheet extends RoundedBottomSheetDialogFragment {
     private void openSelectedBottomSheet(int selection) {
         switch (selection) {
             case 0:
+                ((NoteEdit) getActivity()).showLockScreen = false;
                 InsertImageSheet insertImageSheet = new InsertImageSheet();
                 insertImageSheet.show(getActivity().getSupportFragmentManager(), insertImageSheet.getTag());
                 break;
