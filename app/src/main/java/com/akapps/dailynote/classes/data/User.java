@@ -80,7 +80,8 @@ public class User extends RealmObject {
         backupReminderOccurrence = pinNumber = 0;
         layoutSelected = "stag";
         showPreview = showPreviewNoteInfo = increaseFabSize =
-                modeSettings = enableSublists = showAudioButton = hideBudget = true;
+                modeSettings = enableSublists = showAudioButton
+                        = hideBudget = showPreviewNoteInfoAtBottom = true;
         titleLines = contentLines = 3;
         lastUpload = backupReminderDate = email = securityWord = "";
         itemsSeparator = "newline";
@@ -88,7 +89,7 @@ public class User extends RealmObject {
         budgetCharacter = "+$";
         expenseCharacter = "$";
         enableEditableNoteButton = disableAnimation = showChecklistCheckbox =
-                disableLastEditInfo = showPreviewNoteInfoAtBottom = false;
+                disableLastEditInfo = false;
         screenMode = 1;
         textSize = 20;
     }

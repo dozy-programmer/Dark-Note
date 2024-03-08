@@ -22,7 +22,6 @@ import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
-import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -295,7 +294,8 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         holder.redirectToNote.setOnClickListener(view -> {
             Note redirectNote = RealmHelper.getNote(context, checkListItem.getRedirectToOtherNote());
-            if (getNote().getPinNumber() == 0) {
+            ((NoteEdit) activity).showLockScreen = false;
+            if (redirectNote.getPinNumber() == 0) {
                 Intent note = new Intent(activity, NoteEdit.class);
                 note.putExtra("id", redirectNote.getNoteId());
                 note.putExtra("isChecklist", redirectNote.isCheckList());

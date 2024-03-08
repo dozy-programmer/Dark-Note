@@ -47,6 +47,7 @@ import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
+import com.akapps.dailynote.classes.other.WhatsNewSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -183,14 +184,10 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        // Delete Un-needed files
-        if (!Helper.getBooleanPreference(context, AppConstants.UNUSED_FILES_MESSAGE)) {
-            ArrayList<String> unUsedFiles = Helper.showFloatingFiles(getActivity(), false);
-            if (unUsedFiles != null && unUsedFiles.size() > 0) {
-                Helper.saveBooleanPreference(context, true, AppConstants.UNUSED_FILES_MESSAGE);
-                InfoSheet info = new InfoSheet(1, unUsedFiles);
-                info.show(getActivity().getSupportFragmentManager(), info.getTag());
-            }
+        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_16_8)) {
+            WhatsNewSheet whatsNewSheet = new WhatsNewSheet(notes.this);
+            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_16_8);
         }
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

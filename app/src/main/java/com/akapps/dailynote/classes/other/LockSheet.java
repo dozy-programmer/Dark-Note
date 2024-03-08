@@ -82,6 +82,12 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
             String pinText = pin.getText().toString();
             String securityWordText = securityWord.getText().toString();
 
+            try {
+                Integer.parseInt(pinText);
+            } catch (NumberFormatException e) {
+                pinText = pinText.replaceAll("[^0-9]", "");
+            }
+
             if (pinText.length() >= 4 && pinText.length() <= 10) {
                 if (securityWordText.length() > 0) {
                     if (lockType == LockType.LOCK_APP)

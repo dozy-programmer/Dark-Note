@@ -1,114 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/top_icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        android:layout_marginTop="5dp"
+        app:cardBackgroundColor="?secondaryBackgroundColor"
+        app:cardElevation="2dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/note_background"
+        app:layout_constraintTop_toTopOf="@+id/note_background">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="97"
+            android:paddingVertical="2dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/reminder_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/reminder_icon"
+                android:tint="?primaryIconTintColor"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/pin_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/pin_filled_icon"
+                android:tint="?primaryIconTintColor"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/lock_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/lock_icon"
+                android:tint="?primaryIconTintColor"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/note_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         app:cardBackgroundColor="@color/gray_100"
-        android:layout_marginHorizontal="5dp"
-        android:layout_marginVertical="5dp"
-        app:cardCornerRadius="15dp">
+        app:cardCornerRadius="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="100">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/note_info"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginTop="5dp"
-                    app:shapeAppearanceOverlay="@style/circular"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_weight="3"
-                    android:background="?secondaryBackgroundColor"
-                    android:src="@drawable/info_icon"
-                    android:tint="?primaryIconTintColor"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="97"
-                    android:gravity="right"
-                    android:layout_marginRight="10dp"
-                    android:weightSum="100"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/pin_icon"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/pin_filled_icon"
-                        android:visibility="visible"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginHorizontal="5dp"
-                        android:tint="?primaryIconTintColor">
-                    </ImageView>
-
-                    <ImageView
-                        android:id="@+id/reminder_icon"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/reminder_icon"
-                        android:tint="?primaryIconTintColor"
-                        android:visibility="visible"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginHorizontal="5dp">
-                    </ImageView>
-
-                    <ImageView
-                        android:id="@+id/lock_icon"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_weight="1"
-                        android:visibility="visible"
-                        android:src="@drawable/lock_icon"
-                        android:layout_marginTop="5dp"
-                        android:tint="?primaryIconTintColor"
-                        android:layout_marginStart="5dp">
-                    </ImageView>
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/note_info"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="5dp"
+                android:background="?secondaryBackgroundColor"
+                android:src="@drawable/info_icon"
+                android:tint="?primaryIconTintColor"
+                app:shapeAppearanceOverlay="@style/circular" />
 
             <TextView
                 android:id="@+id/note_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="5"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginHorizontal="15dp"
+                android:maxLines="5"
                 android:text="Note title"
                 android:textColor="@color/black"
-                android:textSize="18sp">
-            </TextView>
+                android:textSize="18sp"></TextView>
 
             <TextView
                 android:id="@+id/note_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="3"
-                android:layout_marginHorizontal="15dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="5dp"
+                android:maxLines="3"
                 android:text="note preview"
                 android:textColor="@color/gray"
-                android:textSize="12sp">
-            </TextView>
+                android:textSize="12sp"></TextView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -125,15 +118,15 @@
                         android:id="@+id/preview_1_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="33"
                         android:layout_marginTop="5dp"
+                        android:layout_weight="33"
                         android:gravity="center">
 
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:cardCornerRadius="15dp"
                             app:cardBackgroundColor="?primaryBackgroundColor"
+                            app:cardCornerRadius="15dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -142,12 +135,11 @@
                             <ImageView
                                 android:id="@+id/preview_1"
                                 android:layout_width="50dp"
-                                android:visibility="gone"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center"
                                 android:background="?primaryBackgroundColor"
-                                android:src="@drawable/placeholder_image_icon">
-                            </ImageView>
+                                android:src="@drawable/placeholder_image_icon"
+                                android:visibility="gone"></ImageView>
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -165,8 +157,8 @@
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:cardCornerRadius="15dp"
                             app:cardBackgroundColor="?primaryBackgroundColor"
+                            app:cardCornerRadius="15dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -175,30 +167,29 @@
                             <ImageView
                                 android:id="@+id/preview_2"
                                 android:layout_width="50dp"
-                                android:visibility="gone"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center"
                                 android:background="?primaryBackgroundColor"
-                                android:src="@drawable/placeholder_image_icon">
-                            </ImageView>
+                                android:src="@drawable/placeholder_image_icon"
+                                android:visibility="gone"></ImageView>
 
                         </com.google.android.material.card.MaterialCardView>
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/preview_3_layout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/preview_3_layout"
-                        android:layout_weight="33"
                         android:layout_marginTop="5dp"
+                        android:layout_weight="33"
                         android:gravity="center">
 
                         <com.google.android.material.card.MaterialCardView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:cardCornerRadius="15dp"
                             app:cardBackgroundColor="?primaryBackgroundColor"
+                            app:cardCornerRadius="15dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -208,11 +199,10 @@
                                 android:id="@+id/preview_3"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:visibility="gone"
                                 android:layout_gravity="center"
                                 android:background="?primaryBackgroundColor"
-                                android:src="@drawable/placeholder_image_icon">
-                            </ImageView>
+                                android:src="@drawable/placeholder_image_icon"
+                                android:visibility="gone"></ImageView>
 
                         </com.google.android.material.card.MaterialCardView>
 
@@ -225,24 +215,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
+                android:layout_marginHorizontal="10dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/preview_photos_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
                     android:layout_gravity="right|center_vertical"
-                    android:visibility="gone"
-                    android:textColor="@color/main"
-                    android:textSize="10sp">
-                </TextView>
+                    android:text=""
+                    android:textColor="@color/gray"
+                    android:textSize="10sp"
+                    android:visibility="gone"></TextView>
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <ImageView
                     android:id="@+id/checklist_icon"
@@ -251,62 +240,59 @@
                     android:layout_gravity="bottom"
                     android:src="@drawable/checklist_icon"
                     android:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/trash_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:visibility="gone"
                     android:layout_gravity="bottom"
                     android:layout_marginLeft="2dp"
                     android:src="@drawable/delete_icon"
-                    android:tint="@color/white">
-                </ImageView>
+                    android:tint="@color/white"
+                    android:visibility="gone"></ImageView>
 
                 <ImageView
                     android:id="@+id/archived_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:visibility="gone"
                     android:layout_gravity="bottom"
                     android:layout_marginLeft="2dp"
-                    android:src="@drawable/archive_icon">
-                </ImageView>
+                    android:src="@drawable/archive_icon"
+                    android:visibility="gone"></ImageView>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginHorizontal="15dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="5dp"
                 android:gravity="right">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/category_background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
                     android:layout_gravity="right"
-                    app:strokeColor="?primaryBackgroundColor"
                     app:cardBackgroundColor="?primaryBackgroundColor"
-                    app:strokeWidth="2dp">
+                    app:cardCornerRadius="8dp"
+                    app:strokeColor="?primaryBackgroundColor"
+                    app:strokeWidth="2dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="insert category"
-                        android:visibility="gone"
                         android:layout_gravity="center"
                         android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp"
+                        android:text="insert category"
                         android:textColor="?primaryTextColor"
                         android:textSize="10sp"
-                        android:textStyle="bold"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="5dp">
-                    </TextView>
+                        android:textStyle="bold" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -315,35 +301,35 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginBottom="10dp">
+                android:gravity="center_vertical">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/note_info_2"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    app:shapeAppearanceOverlay="@style/circular"
                     android:background="?secondaryBackgroundColor"
                     android:src="@drawable/info_icon"
                     android:tint="?primaryIconTintColor"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:shapeAppearanceOverlay="@style/circular" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/note_edited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="right"
                     android:maxLines="2"
                     android:text="December 12, 2020"
-                    android:gravity="right"
-                    android:textColor="@color/main"
-                    android:textSize="10sp">
-                </TextView>
+                    android:textColor="@color/gray"
+                    android:textSize="10sp"></TextView>
 
             </LinearLayout>
 
@@ -351,4 +337,4 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

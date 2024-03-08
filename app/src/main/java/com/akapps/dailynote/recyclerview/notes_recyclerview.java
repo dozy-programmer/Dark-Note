@@ -41,7 +41,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.realm.RealmResults;
@@ -154,10 +153,13 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         boolean hasReminder = currentNote.getReminderDateTime().length() > 0;
 
         // populates note data into the recyclerview
-        if (currentNote.getTitle().replaceAll("\n", " ").isEmpty())
+        if (currentNote.getTitle().replaceAll("\n", " ").isEmpty()) {
             holder.note_title.setText("~ No Title ~");
-        else
+            holder.note_title.setAlpha(0.40f);
+        } else {
             holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));
+            holder.note_title.setAlpha(1f);
+        }
         boolean isTwentyHourFormat = RealmHelper.getUser(context, "in recyclerview").isTwentyFourHourFormat();
         holder.note_edited.setText(isTwentyHourFormat ?
                 Helper.convertToTwentyFourHour(currentNote.getDateEdited()) : currentNote.getDateEdited());
@@ -169,11 +171,14 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.note_preview.setTextColor(activity.getColor(R.color.white));
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.white));
             holder.checklist_icon.setColorFilter(activity.getColor(R.color.white));
+            holder.archived_icon.setColorFilter(activity.getColor(R.color.white));
         } else {
             holder.note_title.setTextColor(activity.getColor(R.color.black));
             holder.note_edited.setTextColor(activity.getColor(R.color.gray));
             holder.note_preview.setTextColor(activity.getColor(R.color.gray));
-            holder.preview_photo_message.setTextColor(activity.getColor(R.color.main));
+            holder.preview_photo_message.setTextColor(activity.getColor(R.color.gray));
+            holder.checklist_icon.setColorFilter(activity.getColor(R.color.gray));
+            holder.archived_icon.setColorFilter(activity.getColor(R.color.gray));
         }
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
@@ -194,6 +199,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (showPreviewNoteInfoAtBottom) {
                 holder.note_info_2.setVisibility(View.VISIBLE);
                 holder.note_info.setVisibility(View.GONE);
+                changeMargin(holder.note_title, 55);
             } else {
                 holder.note_info.setVisibility(View.VISIBLE);
                 holder.note_info_2.setVisibility(View.GONE);
@@ -597,5 +603,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // retrieves all photos that belong to note
         return RealmSingleton.getInstance(context).where(Photo.class)
                 .equalTo("noteId", noteId).findAll();
+    }
+
+    private void changeMargin(View view, int topMargin) {
+        ViewGroup.MarginLayoutParams mParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        mParams.setMargins(mParams.leftMargin, topMargin, mParams.rightMargin, mParams.bottomMargin);
+        view.setLayoutParams(mParams);
     }
 }

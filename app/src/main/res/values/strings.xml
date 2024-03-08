@@ -5,8 +5,8 @@
     <string name="schema">48</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v16.8</string>
-    <string name="app_version_int">16.8</string>
+    <string name="app_version">v16.9</string>
+    <string name="app_version_int">16.9</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -110,6 +110,26 @@
         <font color='#7A9CC7'>Country Picker</font>\n
         https://github.com/vplacinta-dev/currency-picker-android\n\n
 
+    </string>
+
+    <string name="version_16_8_whats_new_text">
+
+        <font color='#8CA9CF'><b>New</b></font>\n
+        • UI Improvements to Homepage: Enabled new Move Info Button to Bottom setting (disable below or use Settings)\n
+        • Note Editor now supports inlining images* and youtube videos* (Try it out!)\n
+        • FAQ added in settings (currently in progress 🚧)\n\n
+
+        <font color='#8CA9CF'><b>Note Worthy</b></font>\n
+        • Redirect to other notes from checklist items (not sub-list) by using \"@\"\n
+        • You can add location* 📍 to checklist items (not sub-list) when adding or editing\n
+        • Folders are lockable 🔒: you can lock it when adding or editing folders\n\n
+
+        <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
+        • fixed redirect feature opening locked note without entering passcode\n
+        • working hard to ensure a pleasant crash-free experience:
+        99%+ of users do not experience any issues or crashes!\n\n
+
+        * - uses internet
     </string>
 
 </resources>

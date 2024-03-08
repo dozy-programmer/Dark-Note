@@ -45,6 +45,7 @@ import com.akapps.dailynote.classes.other.CreditsSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
+import com.akapps.dailynote.classes.other.WhatsNewSheet;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
@@ -119,6 +120,7 @@ public class SettingsScreen extends AppCompatActivity {
     private SwitchCompat enableSqaureStyleForChecklists;
     private SwitchCompat hideLastEditInfo;
     private TextView about;
+    private TextView about_version;
     private MaterialButton signUp;
     private MaterialButton logIn;
     private MaterialButton sync;
@@ -137,6 +139,7 @@ public class SettingsScreen extends AppCompatActivity {
     private MaterialCardView contact;
     private MaterialCardView reddit;
     private MaterialCardView removedUnneededFiles;
+    private MaterialCardView faq;
     private MaterialCardView review;
     private LottieAnimationView coffeeAnimation;
 
@@ -194,8 +197,10 @@ public class SettingsScreen extends AppCompatActivity {
         contact = findViewById(R.id.contact);
         reddit = findViewById(R.id.reddit);
         removedUnneededFiles = findViewById(R.id.delete_unneeded_files);
+        faq = findViewById(R.id.faq_layout);
         review = findViewById(R.id.review);
         about = findViewById(R.id.about);
+        about_version = findViewById(R.id.version_text);
         titleLines = findViewById(R.id.title_lines);
         previewLines = findViewById(R.id.preview_lines);
         checklistSeparator = findViewById(R.id.item_separator);
@@ -507,6 +512,8 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+        faq.setOnClickListener(view -> openFAQ());
+
         review.setOnClickListener(v -> openAppInPlayStore());
 
         close.setOnClickListener(v -> close());
@@ -529,14 +536,14 @@ public class SettingsScreen extends AppCompatActivity {
             RealmSingleton.get(this).beginTransaction();
             getUser().setShowPreviewNoteInfo(isChecked);
             RealmSingleton.get(this).commitTransaction();
-            if(!isChecked) showPreviewNoteInfoAtBottom.setChecked(false);
+            if (!isChecked) showPreviewNoteInfoAtBottom.setChecked(false);
         });
 
         showPreviewNoteInfoAtBottom.setOnCheckedChangeListener((buttonView, isChecked) -> {
             RealmSingleton.get(this).beginTransaction();
             getUser().setShowPreviewNoteInfoAtBottom(isChecked);
             RealmSingleton.get(this).commitTransaction();
-            if(isChecked) showPreviewNoteInfo.setChecked(true);
+            if (isChecked) showPreviewNoteInfo.setChecked(true);
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -634,6 +641,11 @@ public class SettingsScreen extends AppCompatActivity {
                 creditSheet.show(getSupportFragmentManager(), creditSheet.getTag());
             }
             Log.d("Here", "Counter -> " + upgradeToProCounter);
+        });
+
+        about_version.setOnClickListener(v -> {
+            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
+            whatsNewSheet.show(getSupportFragmentManager(), whatsNewSheet.getTag());
         });
 
         about.setOnLongClickListener(v -> {
@@ -962,6 +974,13 @@ public class SettingsScreen extends AppCompatActivity {
     private void openReddit() {
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com/r/darknoteapp/")));
+        } catch (Exception exception) {
+        }
+    }
+
+    private void openFAQ() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/dozy-programmer/Dark-Note/blob/main/FAQ/FAQ.md")));
         } catch (Exception exception) {
         }
     }

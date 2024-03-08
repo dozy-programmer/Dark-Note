@@ -593,7 +593,7 @@
                         android:layout_marginRight="5dp"
                         android:layout_weight="10"
                         android:checked="true"
-                        android:theme="@style/ThemeOverlay.SwitchTheme"/>
+                        android:theme="@style/ThemeOverlay.SwitchTheme" />
 
                 </LinearLayout>
 
@@ -842,7 +842,7 @@
                         android:text="Default"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="30dp"
@@ -852,7 +852,7 @@
                         android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
-                        android:tint="?primaryIconTintColor"/>
+                        android:tint="?primaryIconTintColor" />
 
                 </LinearLayout>
 
@@ -1691,7 +1691,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/review"
+            app:layout_constraintTop_toBottomOf="@+id/faq_layout"
             app:layout_constraintVertical_bias="1.0">
 
             <LinearLayout
@@ -1713,6 +1713,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/version_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
@@ -1722,6 +1723,50 @@
                     android:textColor="?tertiaryTextColor"
                     android:textSize="12sp"
                     android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/faq_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/review"
+            app:layout_constraintVertical_bias="1.0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="8"
+                    android:gravity="center|left"
+                    android:text="Frequently Asked Questions (FAQ)"
+                    android:textColor="?tertiaryTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold"></TextView>
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:src="@drawable/info_icon"
+                    android:tint="?primaryIconTintColor"></ImageView>
 
             </LinearLayout>
 
