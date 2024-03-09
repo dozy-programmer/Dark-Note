@@ -151,6 +151,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         noteText = currentNote.getNote() == null ? "" : currentNote.getNote();
         boolean isNoteLocked = currentNote.getPinNumber() > 0;
         boolean hasReminder = currentNote.getReminderDateTime().length() > 0;
+        boolean isPinned = currentNote.isPin();
 
         // populates note data into the recyclerview
         if (currentNote.getTitle().replaceAll("\n", " ").isEmpty()) {
@@ -199,7 +200,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (showPreviewNoteInfoAtBottom) {
                 holder.note_info_2.setVisibility(View.VISIBLE);
                 holder.note_info.setVisibility(View.GONE);
-                changeMargin(holder.note_title, 55);
+                if(isPinned || isNoteLocked || hasReminder)
+                    changeMargin(holder.note_title, 55);
             } else {
                 holder.note_info.setVisibility(View.VISIBLE);
                 holder.note_info_2.setVisibility(View.GONE);
@@ -301,7 +303,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
 
         // if note is pinned, it shows a pin icon
-        if (currentNote.isPin())
+        if (isPinned)
             holder.pin_icon.setVisibility(View.VISIBLE);
         else
             holder.pin_icon.setVisibility(View.GONE);
