@@ -980,7 +980,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void openFAQ() {
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/dozy-programmer/Dark-Note/blob/main/FAQ/FAQ.md")));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/dozy-programmer/Dark-Note-FAQ")));
         } catch (Exception exception) {
         }
     }
