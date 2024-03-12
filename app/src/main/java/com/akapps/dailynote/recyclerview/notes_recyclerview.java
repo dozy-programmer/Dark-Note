@@ -74,6 +74,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         private final TextView category;
         private final View view;
         private final MaterialCardView note_background;
+        private final LinearLayout folder_layout;
         private final MaterialCardView category_background;
         private final ImageView preview_1;
         private final ImageView preview_2;
@@ -84,6 +85,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         private final ImageView checklist_icon;
         private final ImageView trash_icon;
         private final ImageView archived_icon;
+        private final ImageView checklist_icon_2;
+        private final ImageView trash_icon_2;
+        private final ImageView archived_icon_2;
         private final LinearLayout preview_1_layout;
         private final LinearLayout preview_2_layout;
         private final LinearLayout preview_3_layout;
@@ -106,8 +110,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             checklist_icon = v.findViewById(R.id.checklist_icon);
             trash_icon = v.findViewById(R.id.trash_icon);
             archived_icon = v.findViewById(R.id.archived_icon);
+            checklist_icon_2 = v.findViewById(R.id.checklist_icon_2);
+            trash_icon_2 = v.findViewById(R.id.trash_icon_2);
+            archived_icon_2 = v.findViewById(R.id.archived_icon_2);
             category = v.findViewById(R.id.category);
             category_background = v.findViewById(R.id.category_background);
+            folder_layout = v.findViewById(R.id.folder_layout);
             preview_1_layout = v.findViewById(R.id.preview_1_layout);
             preview_2_layout = v.findViewById(R.id.preview_2_layout);
             preview_3_layout = v.findViewById(R.id.preview_3_layout);
@@ -173,6 +181,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.white));
             holder.checklist_icon.setColorFilter(activity.getColor(R.color.white));
             holder.archived_icon.setColorFilter(activity.getColor(R.color.white));
+            holder.trash_icon.setColorFilter(activity.getColor(R.color.white));
+            holder.checklist_icon_2.setColorFilter(activity.getColor(R.color.white));
+            holder.archived_icon_2.setColorFilter(activity.getColor(R.color.white));
+            holder.trash_icon_2.setColorFilter(activity.getColor(R.color.white));
         } else {
             holder.note_title.setTextColor(activity.getColor(R.color.black));
             holder.note_edited.setTextColor(activity.getColor(R.color.gray));
@@ -180,6 +192,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.preview_photo_message.setTextColor(activity.getColor(R.color.gray));
             holder.checklist_icon.setColorFilter(activity.getColor(R.color.gray));
             holder.archived_icon.setColorFilter(activity.getColor(R.color.gray));
+            holder.trash_icon.setColorFilter(activity.getColor(R.color.gray));
+            holder.checklist_icon_2.setColorFilter(activity.getColor(R.color.gray));
+            holder.archived_icon_2.setColorFilter(activity.getColor(R.color.gray));
+            holder.trash_icon_2.setColorFilter(activity.getColor(R.color.gray));
         }
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
@@ -196,22 +212,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_title.setMaxLines(titleLines);
         holder.note_preview.setMaxLines(contentLines);
 
-        if (showPreviewNotesInfo) {
-            if (showPreviewNoteInfoAtBottom) {
-                holder.note_info_2.setVisibility(View.VISIBLE);
-                holder.note_info.setVisibility(View.GONE);
-                if(isPinned || isNoteLocked || hasReminder)
-                    changeMargin(holder.note_title, 55);
-            } else {
-                holder.note_info.setVisibility(View.VISIBLE);
-                holder.note_info_2.setVisibility(View.GONE);
-            }
-        } else {
-            holder.note_info.setVisibility(View.GONE);
-            holder.note_info_2.setVisibility(View.GONE);
-        }
-
-
         String pattern = "<img[^>]+src=\"([^\">]+).*?>";
         String pattern_2 = "<iframe[^>]*?(?:\\/>|>[^<]*?<\\/iframe>)";
         String replacement = "️\uD83D\uDDBC\uFE0F";
@@ -219,20 +219,23 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         String removeIframe = Pattern.compile(pattern_2).matcher(currentNoteImageLinksRemovedAndReplaced).replaceAll("\uD83C\uDFA5");
         // format note to remove all new line characters and any spaces more than a length of 1
         String preview = Html.fromHtml(removeIframe, Html.FROM_HTML_MODE_COMPACT).toString();
-        preview = preview.replaceAll("\n+", "\n");
+        preview = preview.replaceAll("\n+", " ");
         // Define the pattern to match
         holder.note_preview.setText(preview);
         Log.d("Here", "preview -> " + preview);
 
         // if note has a category, then it shows it
-        if (currentNote.getCategory().equals("none"))
+        if (currentNote.getCategory().equals("none")) {
             holder.category_background.setVisibility(View.GONE);
+            holder.folder_layout.setVisibility(View.GONE);
+        }
         else {
             Folder folder = RealmSingleton.getInstance(context).where(Folder.class)
                     .equalTo("name", currentNote.getCategory())
                     .findFirst();
 
             holder.category_background.setVisibility(View.VISIBLE);
+            holder.folder_layout.setVisibility(View.VISIBLE);
             holder.category.setText(currentNote.getCategory());
             holder.category.setTextColor(folder.getColor() == 0 ?
                     activity.getColor(R.color.azure) : folder.getColor());
@@ -260,12 +263,16 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
             RealmResults<CheckListItem> checklist = Helper.sortChecklist(context, noteId, RealmSingleton.getInstance(context));
-            if (!isNoteLocked) {
+            for (int i = 0; i < checklist.size(); i++) {
+                checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
+            }
+
+            if (showPreview && !isNoteLocked && checklist.size() > 0) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText(checklist.size() + " items");
             }
-            for (int i = 0; i < checklist.size(); i++) {
-                checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
+            else{
+                holder.preview_photo_message.setVisibility(View.GONE);
             }
 
             RealmSingleton.getInstance(context).beginTransaction();
@@ -282,7 +289,6 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if (currentNote.isTrash()) {
             holder.trash_icon.setVisibility(View.VISIBLE);
             holder.trash_icon.setImageDrawable(activity.getDrawable(R.drawable.delete_icon));
-            holder.trash_icon.setImageTintList(ColorStateList.valueOf(UiHelper.getColorFromTheme(context, R.attr.tertiaryButtonColor)));
         } else
             holder.trash_icon.setVisibility(View.GONE);
 
@@ -347,13 +353,28 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.note_preview.setTextSize(13);
         }
 
-        if (showPreview && !isNoteLocked) {
-            holder.preview_photo_message.setVisibility(View.VISIBLE);
-            holder.note_preview.setVisibility(View.VISIBLE);
-            holder.preview_photo_message.setText(currentNote.getChecklist().size() + " items");
+        if (showPreviewNotesInfo) {
+            if (showPreviewNoteInfoAtBottom) {
+                holder.note_info_2.setVisibility(View.VISIBLE);
+                holder.note_info.setVisibility(View.GONE);
+                if(isPinned || isNoteLocked || hasReminder)
+                    changeMargin(holder.note_title, 55);
+            } else {
+                holder.note_info.setVisibility(View.VISIBLE);
+                holder.note_info_2.setVisibility(View.GONE);
+                holder.checklist_icon.setVisibility(View.GONE);
+                holder.archived_icon.setVisibility(View.GONE);
+                holder.trash_icon.setVisibility(View.GONE);
+                if(currentNote.isCheckList())
+                    holder.checklist_icon_2.setVisibility(View.VISIBLE);
+                if(currentNote.isArchived())
+                    holder.archived_icon_2.setVisibility(View.VISIBLE);
+                if(currentNote.isTrash())
+                    holder.trash_icon_2.setVisibility(View.VISIBLE);
+            }
         } else {
-            holder.note_preview.setVisibility(View.GONE);
-            holder.preview_photo_message.setVisibility(View.GONE);
+            holder.note_info.setVisibility(View.GONE);
+            holder.note_info_2.setVisibility(View.GONE);
         }
 
         int preview_1_position = 0;

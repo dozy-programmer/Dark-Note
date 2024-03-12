@@ -184,11 +184,11 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_16_8)) {
-            WhatsNewSheet whatsNewSheet = new WhatsNewSheet(notes.this);
-            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_16_8);
-        }
+//        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_16_8)) {
+//            WhatsNewSheet whatsNewSheet = new WhatsNewSheet(notes.this);
+//            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
+//            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_16_8);
+//        }
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override

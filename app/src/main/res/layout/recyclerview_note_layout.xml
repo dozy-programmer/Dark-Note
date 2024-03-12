@@ -87,7 +87,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="5dp"
-                android:maxLines="5"
                 android:text="Note title"
                 android:textColor="@color/black"
                 android:textSize="18sp"></TextView>
@@ -98,7 +97,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="5dp"
-                android:maxLines="3"
                 android:text="note preview"
                 android:textColor="@color/gray"
                 android:textSize="12sp"></TextView>
@@ -216,6 +214,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="2dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -243,6 +242,15 @@
                     android:visibility="gone" />
 
                 <ImageView
+                    android:id="@+id/archived_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/archive_icon"
+                    android:visibility="gone"></ImageView>
+
+                <ImageView
                     android:id="@+id/trash_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -252,18 +260,10 @@
                     android:tint="@color/white"
                     android:visibility="gone"></ImageView>
 
-                <ImageView
-                    android:id="@+id/archived_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="2dp"
-                    android:src="@drawable/archive_icon"
-                    android:visibility="gone"></ImageView>
-
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/folder_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -315,6 +315,34 @@
                     android:tint="?primaryIconTintColor"
                     android:visibility="gone"
                     app:shapeAppearanceOverlay="@style/circular" />
+
+                <ImageView
+                    android:id="@+id/checklist_icon_2"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/checklist_icon"
+                    android:tint="@color/black"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/archived_icon_2"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/archive_icon"
+                    android:visibility="gone"></ImageView>
+
+                <ImageView
+                    android:id="@+id/trash_icon_2"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/delete_icon"
+                    android:tint="@color/white"
+                    android:visibility="gone"></ImageView>
 
                 <View
                     android:layout_width="0dp"
