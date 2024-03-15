@@ -532,7 +532,8 @@ public class CategoryScreen extends AppCompatActivity {
         RealmHelper.getCurrentFolder(context, folderId).setSecurityWord(securityWord);
         RealmHelper.getCurrentFolder(context, folderId).setFingerprintAdded(fingerprint);
         getRealm(context).commitTransaction();
-        RealmHelper.lockNotesInsideFolder(context, folderId, pin, securityWord, fingerprint);
+        // user is locking folder for the first time
+        RealmHelper.lockNotesInsideFolder(this, context, folderId);
         categoriesAdapter.notifyDataSetChanged();
         Helper.showMessage(this, "Folder Locked", "Folder and notes inside have been " +
                 "locked", MotionToast.TOAST_SUCCESS);
@@ -555,11 +556,11 @@ public class CategoryScreen extends AppCompatActivity {
             emptyAnimation.setVisibility(categoriesAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
-    private RealmResults<Note> getAllNotes(){
+    private RealmResults<Note> getAllNotes() {
         return RealmSingleton.getInstance(context).where(Note.class).findAll();
     }
 
-    private RealmResults<Note> getSelectedNotes(){
+    private RealmResults<Note> getSelectedNotes() {
         return getAllNotes().where().equalTo("isSelected", true).findAll();
     }
 

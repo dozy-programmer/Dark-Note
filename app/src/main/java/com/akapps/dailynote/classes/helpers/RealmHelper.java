@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.CheckListItem;
@@ -13,6 +15,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.other.LockFolderSheet;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -358,6 +361,12 @@ public class RealmHelper {
         return getRealm(context).where(Folder.class).equalTo("id", folderId).findFirst();
     }
 
+    public static int getFolderSize(Context context, int folderId) {
+        return RealmSingleton.getInstance(context).where(Note.class)
+                .equalTo("category", getCurrentFolder(context, folderId).getName())
+                .findAll().size();
+    }
+
     public static void lockNote(Context context, int noteId, int pin, String securityWord, boolean isFingerprintAdded) {
         Note currentNote = getCurrentNote(context, noteId);
         getRealm(context).beginTransaction();
@@ -367,7 +376,8 @@ public class RealmHelper {
         getRealm(context).commitTransaction();
     }
 
-    public static void lockNotesInsideFolder(Context context, int folderId, boolean lockFolders) {
+    // unlock the notes
+    public static void unlockNotesInsideFolder(Context context, int folderId) {
         Folder currentFolder = getCurrentFolder(context, folderId);
         if (!currentFolder.isValid()) return;
         RealmResults<Note> notesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
@@ -376,27 +386,38 @@ public class RealmHelper {
 
         if (notesInsideFolder.size() > 0) {
             getRealm(context).beginTransaction();
-            notesInsideFolder.setInt("pinNumber", lockFolders ? currentFolder.getPin() : 0);
-            notesInsideFolder.setString("securityWord", lockFolders ? currentFolder.getSecurityWord() : "");
-            notesInsideFolder.setBoolean("fingerprint", lockFolders && currentFolder.isFingerprintAdded());
+            notesInsideFolder.setInt("pinNumber", 0);
+            notesInsideFolder.setString("securityWord", "");
+            notesInsideFolder.setBoolean("fingerprint", false);
             getRealm(context).commitTransaction();
         }
     }
 
-    public static void lockNotesInsideFolder(Context context, int folderId, int pin, String securityWord, boolean isFingerprintAdded) {
+    public static void lockNotesInsideFolder(FragmentActivity activity, Context context, int folderId) {
         RealmResults<Note> notesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
                 .equalTo("category", getCurrentFolder(context, folderId).getName())
+                .equalTo("pinNumber", 0)
                 .findAll();
 
-        Log.d("Here", "Folder -> " + getCurrentFolder(context, folderId).getName());
-        Log.d("Here", "Num Notes -> " + notesInsideFolder.size());
+        RealmResults<Note> lockedNotesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
+                .equalTo("category", getCurrentFolder(context, folderId).getName())
+                .greaterThan("pinNumber", 0)
+                .findAll();
 
-        if (notesInsideFolder.size() > 0) {
-            getRealm(context).beginTransaction();
-            notesInsideFolder.setInt("pinNumber", pin);
-            notesInsideFolder.setString("securityWord", securityWord);
-            notesInsideFolder.setBoolean("fingerprint", isFingerprintAdded);
-            getRealm(context).commitTransaction();
+        if (lockedNotesInsideFolder.size() > 0) {
+            // TODO - get rid of this message and create a bottom sheet that allows user to continue
+            LockFolderSheet lockFolderSheet = new LockFolderSheet(folderId, notesInsideFolder, lockedNotesInsideFolder, false, null);
+            lockFolderSheet.show(activity.getSupportFragmentManager(), lockFolderSheet.getTag());
+        } else {
+            Log.d("Here", "Folder -> " + getCurrentFolder(context, folderId).getName());
+            Log.d("Here", "Num Notes -> " + notesInsideFolder.size());
+            if (notesInsideFolder.size() > 0) {
+                getRealm(context).beginTransaction();
+                notesInsideFolder.setInt("pinNumber", getCurrentFolder(context, folderId).getPin());
+                notesInsideFolder.setString("securityWord", getCurrentFolder(context, folderId).getSecurityWord());
+                notesInsideFolder.setBoolean("fingerprint", getCurrentFolder(context, folderId).isFingerprintAdded());
+                getRealm(context).commitTransaction();
+            }
         }
     }
 
@@ -481,8 +502,8 @@ public class RealmHelper {
         // images in note images and checklist images
         for (Photo image : allNotePhotos) allPhotoPaths.add(image.getPhotoLocation());
         // images in just note in markdown
-        for(Note note: allMarkdownPhotos){
-            for(String fileName: Helper.extractFileNames(note.getNote())){
+        for (Note note : allMarkdownPhotos) {
+            for (String fileName : Helper.extractFileNames(note.getNote())) {
                 allPhotoPaths.add(fileName);
             }
         }

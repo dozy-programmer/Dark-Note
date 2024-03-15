@@ -1,8 +1,5 @@
 package com.akapps.dailynote.classes.other.insertsheet;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,8 +10,6 @@ import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -27,17 +22,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.nguyenhoanglam.imagepicker.helper.Constants;
-import com.nguyenhoanglam.imagepicker.model.CustomMessage;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.model.ImagePickerConfig;
-import com.nguyenhoanglam.imagepicker.model.StatusBarContent;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerLauncher;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.util.ArrayList;
 
 import jp.wasabeef.richeditor.RichEditor;
 import www.sanju.motiontoast.MotionToast;
@@ -77,16 +63,6 @@ public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_insert_youtube, container, false);
-
-        /**
-         * TODO
-         * create another sheet for editing, add all logic there for editing
-         * for inserting, finish supporting local image, online images, and youtube video support
-         * for inserting, edit UI for inserting youtube link
-         *
-         * FAQ:
-         * Start and Finish
-         */
 
         note = ((NoteEdit) getActivity()).note;
 
@@ -196,13 +172,11 @@ public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
                 layout.setError("Number must be at least 50");
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
-            }
-            else if(number > maxWidth && isWidth){
+            } else if (number > maxWidth && isWidth) {
                 layout.setError("Max is " + maxWidth);
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
-            }
-            else {
+            } else {
                 layout.setError(null);
                 layout.setErrorEnabled(false);
                 confirm.setEnabled(true);

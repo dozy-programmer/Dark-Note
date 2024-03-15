@@ -1,5 +1,11 @@
 package com.akapps.dailynote.classes.other;
 
+import static android.app.Activity.RESULT_OK;
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentFolder;
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getFolderSize;
+
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +13,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -14,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
+import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppConstants;
@@ -47,12 +56,43 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     private RecyclerView.Adapter adapter;
     private int position;
     private int color;
+    private boolean isFolderUnlocked;
+    AtomicReference<Folder> currentFolder;
 
     // firebase
     private RealmResults<Note> allSelectedNotes;
     private RealmResults<Folder> allCategories;
 
     private MaterialCardView folderColor;
+    private MaterialButton next;
+    private MaterialButton lockFolder;
+
+    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    isFolderUnlocked = true;
+                    onLockClick();
+                } else {
+                    isFolderUnlocked = false;
+                    Helper.showMessage(getActivity(), "Folder not Unlocked", "Unlock folder to open", MotionToast.TOAST_WARNING);
+                }
+            }
+    );
+
+    private ActivityResultLauncher<Intent> deleteCategoryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    if (!isAdding) {
+                        deleteCategory(folderId);
+                        dismiss();
+                    }
+                } else {
+                    Helper.showMessage(getActivity(), "Folder not Unlocked", "Unlock folder to delete", MotionToast.TOAST_WARNING);
+                }
+            }
+    );
 
     // adding
     public FolderItemSheet() {
@@ -87,9 +127,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
         folderColor = view.findViewById(R.id.folder_color);
         MaterialButton confirmFilter = view.findViewById(R.id.confirm_filter);
-        MaterialButton next = view.findViewById(R.id.next_confirm);
+        next = view.findViewById(R.id.next_confirm);
         MaterialButton delete = view.findViewById(R.id.delete);
-        MaterialButton lockFolder = view.findViewById(R.id.lock);
+        lockFolder = view.findViewById(R.id.lock);
 
         TextInputLayout itemNameLayout = view.findViewById(R.id.item_name_layout);
         itemName = view.findViewById(R.id.item_name);
@@ -97,7 +137,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
         itemName.requestFocusFromTouch();
 
-        AtomicReference<Folder> currentFolder = new AtomicReference<>(RealmHelper.getCurrentFolder(getContext(), folderId));
+        currentFolder = new AtomicReference<>(getCurrentFolder(getContext(), folderId));
 
         if (isAdding) {
             title.setText("Adding");
@@ -110,8 +150,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                 itemName.setSelection(itemName.getText().toString().length());
                 if (currentFolder.get().getPin() > 0) {
                     next.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
-                }
-                else
+                } else
                     next.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
                 delete.setVisibility(View.VISIBLE);
                 lockFolder.setVisibility(View.GONE);
@@ -124,20 +163,31 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
         delete.setOnClickListener(v -> {
             if (!isAdding) {
-                deleteCategory(folderId);
-                dismiss();
+                if (getFolderSize(getContext(), folderId) > 0 && getCurrentFolder(getContext(), folderId).getPin() > 0) {
+                    Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
+                    lockScreen.putExtra("id", -12);
+                    lockScreen.putExtra("title", "Unlock Folder");
+                    lockScreen.putExtra("pin", currentFolder.get().getPin());
+                    lockScreen.putExtra("securityWord", currentFolder.get().getSecurityWord());
+                    lockScreen.putExtra("fingerprint", currentFolder.get().isFingerprintAdded());
+                    lockScreen.putExtra("isFolderLocked", true);
+                    deleteCategoryLauncher.launch(lockScreen);
+                } else {
+                    deleteCategory(folderId);
+                    dismiss();
+                }
             }
         });
 
-        lockFolder.setOnClickListener(view1 -> onLockClick(currentFolder, lockFolder));
+        lockFolder.setOnClickListener(view1 -> onLockClick());
 
         confirmFilter.setOnClickListener(v -> {
             confirmEntry(itemName, itemNameLayout);
         });
 
         next.setOnClickListener(v -> {
-            if(!isAdding)
-                onLockClick(currentFolder, lockFolder);
+            if (!isAdding)
+                onLockClick();
             else if (confirmEntry(itemName, itemNameLayout)) {
                 FolderItemSheet checklistItemSheet = new FolderItemSheet();
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
@@ -147,12 +197,12 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         return view;
     }
 
-    private void onLockClick(AtomicReference<Folder> currentFolder, MaterialButton lockFolder){
-        currentFolder.set(RealmHelper.getCurrentFolder(getContext(), folderId));
+    private void onLockClick() {
+        currentFolder.set(getCurrentFolder(getContext(), folderId));
         if (isAdding) {
             if (AppData.pin > 0) {
                 AppData.updateLockData(0, "", false);
-                lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
+                lockFolder.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
                 Helper.showMessage(getActivity(), "Folder Unlocked", "Folder has been unlocked", MotionToast.TOAST_SUCCESS);
             } else {
                 LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, lockFolder);
@@ -160,20 +210,47 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             }
         } else {
             if (currentFolder.get().getPin() > 0) {
-                getRealm().beginTransaction();
-                currentFolder.get().setPin(0);
-                currentFolder.get().setSecurityWord("");
-                currentFolder.get().setFingerprintAdded(false);
-                getRealm().commitTransaction();
-                lockFolder.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
-                adapter.notifyDataSetChanged();
-                RealmHelper.lockNotesInsideFolder(getContext(), folderId, false);
-                Helper.showMessage(getActivity(), "Unlocked", "Folder & notes inside have been unlocked", MotionToast.TOAST_SUCCESS);
-
+                if (isFolderUnlocked) {
+                    getRealm().beginTransaction();
+                    currentFolder.get().setPin(0);
+                    currentFolder.get().setSecurityWord("");
+                    currentFolder.get().setFingerprintAdded(false);
+                    getRealm().commitTransaction();
+                    adapter.notifyDataSetChanged();
+                    RealmHelper.unlockNotesInsideFolder(getContext(), folderId);
+                    next.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
+                    Helper.showMessage(getActivity(), "Unlocked", "Folder & notes inside have been unlocked", MotionToast.TOAST_SUCCESS);
+                } else {
+                    Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
+                    lockScreen.putExtra("id", -12);
+                    lockScreen.putExtra("title", "Unlock Folder");
+                    lockScreen.putExtra("pin", currentFolder.get().getPin());
+                    lockScreen.putExtra("securityWord", currentFolder.get().getSecurityWord());
+                    lockScreen.putExtra("fingerprint", currentFolder.get().isFingerprintAdded());
+                    lockScreen.putExtra("isFolderLocked", true);
+                    launcher.launch(lockScreen);
+                }
             } else {
-                LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder);
-                lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
-                this.dismiss();
+                RealmResults<Note> lockedNotesInsideFolder = RealmSingleton.getInstance(getContext()).where(Note.class)
+                        .equalTo("category", getCurrentFolder(getContext(), folderId).getName())
+                        .greaterThan("pinNumber", 0)
+                        .findAll();
+
+                if (lockedNotesInsideFolder.size() > 0) {
+                    // TODO - finish this
+                    StringBuilder lockedNotes = new StringBuilder();
+                    lockedNotes.append("\n\nThe following notes need to be unlocked:");
+                    for (Note lockedNote : lockedNotesInsideFolder) {
+                        lockedNotes.append("\n" + (lockedNote.getTitle().isEmpty() ? "~ No Title ~" : lockedNote.getTitle()));
+                    }
+                    GenericInfoSheet infoSheet = new GenericInfoSheet("Lock Folder", "To" +
+                            " lock a folder, all notes inside of it need to be unlocked for security purposes." + lockedNotes);
+                    infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
+                } else {
+                    LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder);
+                    lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
+                    this.dismiss();
+                }
             }
         }
     }
@@ -225,10 +302,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
     private void deleteCategory(int folderId) {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        Folder folder = RealmHelper.getCurrentFolder(getContext(), folderId);
+        Folder folder = getCurrentFolder(getContext(), folderId);
         allSelectedNotes = getRealm().where(Note.class).equalTo("category", folder.getName()).findAll();
         // update database
-        RealmHelper.lockNotesInsideFolder(getContext(), folderId, false);
+        RealmHelper.unlockNotesInsideFolder(getContext(), folderId);
         getRealm().beginTransaction();
         allSelectedNotes.setString("category", "none");
         folder.deleteFromRealm();
@@ -260,7 +337,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private boolean confirmEntry(TextInputEditText itemName, TextInputLayout itemNameLayout) {
-        Folder folder = RealmHelper.getCurrentFolder(getContext(), folderId);
+        Folder folder = getCurrentFolder(getContext(), folderId);
         if (!itemName.getText().toString().isEmpty()) {
             if (isAdding)
                 addCategory(itemName.getText().toString(), color);
@@ -271,6 +348,12 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             itemNameLayout.setError("Required");
 
         return false;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        AppData.updateLockData(0, "", false);
     }
 
     private Realm getRealm() {

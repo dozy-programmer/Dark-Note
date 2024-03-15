@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.URLUtil;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -38,10 +37,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import jp.wasabeef.richeditor.RichEditor;
-import www.sanju.motiontoast.MotionToast;
 
 public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
 
@@ -94,7 +91,8 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                         }
                     });
 
-    public InsertImageSheet() {}
+    public InsertImageSheet() {
+    }
 
     public InsertImageSheet(String imageSrc, String html, int width, int height) {
         this.srcImage = imageSrc;
@@ -107,16 +105,6 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_insert_image, container, false);
-
-        /**
-         * TODO
-         * create another sheet for editing, add all logic there for editing
-         * for inserting, finish supporting local image, online images, and youtube video support
-         * for inserting, edit UI for inserting youtube link
-         *
-         * FAQ:
-         * Start and Finish
-         */
 
         note = ((NoteEdit) getActivity()).note;
 
@@ -148,8 +136,8 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         setText(heightInput, height);
         addSizeListeners();
 
-        if(isEditing){
-            if(srcImage != null && !srcImage.isEmpty()){
+        if (isEditing) {
+            if (srcImage != null && !srcImage.isEmpty()) {
                 filePaths.add(srcImage);
             }
             message.setVisibility(View.VISIBLE);
@@ -158,8 +146,7 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             widthLayout.setVisibility(View.VISIBLE);
             heightLayout.setVisibility(View.VISIBLE);
             confirm.setVisibility(View.VISIBLE);
-        }
-        else
+        } else
             showImageSelectionDialog();
 
         confirm.setOnClickListener(view1 -> {
@@ -221,13 +208,11 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                 layout.setError("Number must be at least 50");
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
-            }
-            else if(number > maxWidth && isWidth){
+            } else if (number > maxWidth && isWidth) {
                 layout.setError("Max is " + maxWidth);
                 layout.setErrorEnabled(true);
                 confirm.setEnabled(false);
-            }
-            else {
+            } else {
                 layout.setError(null);
                 layout.setErrorEnabled(false);
                 confirm.setEnabled(true);

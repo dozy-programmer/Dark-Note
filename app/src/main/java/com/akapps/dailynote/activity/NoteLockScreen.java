@@ -47,6 +47,7 @@ public class NoteLockScreen extends AppCompatActivity {
     private String noteTitle;
     private boolean fingerprint;
     private boolean isAppLocked;
+    private boolean isFolderLocked;
     private boolean dismissNotification;
     private Context context;
 
@@ -73,6 +74,7 @@ public class NoteLockScreen extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 if (!isAppLocked) {
+                    setResult(RESULT_CANCELED);
                     finish();
                     if (!AppData.isDisableAnimation)
                         overridePendingTransition(R.anim.stay, R.anim.right_out);
@@ -88,6 +90,7 @@ public class NoteLockScreen extends AppCompatActivity {
         noteTitle = getIntent().getStringExtra("title");
         fingerprint = getIntent().getBooleanExtra("fingerprint", false);
         isAppLocked = getIntent().getBooleanExtra("isAppLocked", false);
+        isFolderLocked = getIntent().getBooleanExtra("isFolderLocked", false);
         dismissNotification = getIntent().getBooleanExtra("dismissNotification", false);
 
         executor = ContextCompat.getMainExecutor(this);
@@ -179,6 +182,8 @@ public class NoteLockScreen extends AppCompatActivity {
             homepage = new Intent(this, Homepage.class);
             homepage.putExtra("openApp", true);
             startActivity(homepage);
+        } else if (isFolderLocked) {
+            setResult(RESULT_OK);
         } else {
             Intent note;
             note = new Intent(this, NoteEdit.class);

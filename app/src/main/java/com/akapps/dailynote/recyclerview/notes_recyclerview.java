@@ -3,10 +3,8 @@ package com.akapps.dailynote.recyclerview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +27,6 @@ import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
-import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
@@ -222,14 +219,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         preview = preview.replaceAll("\n+", " ");
         // Define the pattern to match
         holder.note_preview.setText(preview);
-        Log.d("Here", "preview -> " + preview);
 
         // if note has a category, then it shows it
         if (currentNote.getCategory().equals("none")) {
             holder.category_background.setVisibility(View.GONE);
             holder.folder_layout.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             Folder folder = RealmSingleton.getInstance(context).where(Folder.class)
                     .equalTo("name", currentNote.getCategory())
                     .findFirst();
@@ -270,8 +265,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (showPreview && !isNoteLocked && checklist.size() > 0) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText(checklist.size() + " items");
-            }
-            else{
+            } else {
                 holder.preview_photo_message.setVisibility(View.GONE);
             }
 
@@ -357,7 +351,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (showPreviewNoteInfoAtBottom) {
                 holder.note_info_2.setVisibility(View.VISIBLE);
                 holder.note_info.setVisibility(View.GONE);
-                if(isPinned || isNoteLocked || hasReminder)
+                if (isPinned || isNoteLocked || hasReminder)
                     changeMargin(holder.note_title, 55);
             } else {
                 holder.note_info.setVisibility(View.VISIBLE);
@@ -365,11 +359,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 holder.checklist_icon.setVisibility(View.GONE);
                 holder.archived_icon.setVisibility(View.GONE);
                 holder.trash_icon.setVisibility(View.GONE);
-                if(currentNote.isCheckList())
+                if (currentNote.isCheckList())
                     holder.checklist_icon_2.setVisibility(View.VISIBLE);
-                if(currentNote.isArchived())
+                if (currentNote.isArchived())
                     holder.archived_icon_2.setVisibility(View.VISIBLE);
-                if(currentNote.isTrash())
+                if (currentNote.isTrash())
                     holder.trash_icon_2.setVisibility(View.VISIBLE);
             }
         } else {
