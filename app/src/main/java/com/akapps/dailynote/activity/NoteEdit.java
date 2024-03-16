@@ -2062,28 +2062,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void initializeEditor() {
-        if (!getCurrentNote(context, noteId).isCheckList()) {
-            note.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                private int prevScrollY;
-                private final int SCROLL_THRESHOLD = 50;
-
-                @Override
-                public void onScrollChanged() {
-                    int newScrollY = note.getScrollY();
-                    int scrollDifference = Math.abs(newScrollY - prevScrollY);
-
-                    if (scrollDifference > SCROLL_THRESHOLD) {
-                        if (newScrollY > prevScrollY) {
-                            editorScroll.setVisibility(View.GONE);
-                        } else if (newScrollY < prevScrollY) {
-                            editorScroll.setVisibility(View.VISIBLE);
-                        }
-                        prevScrollY = newScrollY;
-                    }
-                }
-            });
-        }
-
         findViewById(R.id.action_undo).setOnClickListener(v -> {
             note.undo();
         });

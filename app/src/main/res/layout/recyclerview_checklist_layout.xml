@@ -33,7 +33,7 @@
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/audio"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/mic_icon"
                     app:tint="?primaryIconTintColor"
@@ -73,45 +73,43 @@
             <LinearLayout
                 android:id="@+id/edit"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_weight="1">
 
                 <ImageView
                     android:id="@+id/delete_checklist_item"
-                    android:layout_width="28dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_marginRight="5dp"
                     android:src="@drawable/delete_icon"
                     android:tint="?tertiaryIconTintColor" />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginRight="5dp"
                     android:src="@drawable/edit_icon"
                     android:tint="?secondaryIconTintColor" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/add_subchecklist"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:src="@drawable/add_icon"
                     app:tint="?primaryIconTintColor"
                     app:elevation="0dp"
                     app:backgroundTint="?primaryButtonColor"
-                    app:fabCustomSize="30dp" />
+                    app:fabCustomSize="32dp" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/item_image_layout"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:layout_marginTop="2dp"
                     android:layout_marginRight="10dp"
-                    app:cardCornerRadius="10dp"
+                    app:cardCornerRadius="8dp"
                     android:backgroundTint="?primaryButtonColor">
 
                     <ImageView
@@ -158,6 +156,13 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="-10dp"
             android:elevation="-5dp">
+
+            <View
+                android:id="@+id/move_redirect_right"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="100"
+                android:visibility="gone"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/redirect_to_note"

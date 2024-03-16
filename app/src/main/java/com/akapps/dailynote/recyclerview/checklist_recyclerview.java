@@ -70,6 +70,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final ImageView itemImage;
         private final MaterialCardView background;
         private final MaterialButton redirectToNote;
+        private final View moveRedirectToNoteToRight;
 
         public MyViewHolder(View v) {
             super(v);
@@ -89,6 +90,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             background = v.findViewById(R.id.background);
             expandSublist = v.findViewById(R.id.sublist_view);
             redirectToNote = v.findViewById(R.id.redirect_to_note);
+            moveRedirectToNoteToRight = v.findViewById(R.id.move_redirect_right);
         }
     }
 
@@ -146,6 +148,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         if (isPlaceShown && !isRedirectShown) {
             holder.redirectToNote.setVisibility(View.INVISIBLE);
             holder.redirectToNote.setClickable(false);
+        }
+
+        if(isRedirectShown && !isPlaceShown){
+            holder.moveRedirectToNoteToRight.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.moveRedirectToNoteToRight.setVisibility(View.GONE);
         }
 
         boolean recordingExists = false;

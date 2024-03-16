@@ -324,14 +324,13 @@
         android:layout_height="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"
         android:backgroundTint="?primaryBackgroundColor"
         android:gravity="top|start"
         android:inputType="textCapSentences"
         android:textColorHint="?quaternaryBackgroundColor"
         android:textCursorDrawable="@drawable/cursor"
         android:windowSoftInputMode="adjustResize"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category_layout" />
@@ -339,7 +338,7 @@
     <EditText
         android:id="@+id/searchEdittext"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="6dp"
         android:layout_marginTop="-4dp"
         android:layout_marginRight="15dp"
@@ -351,11 +350,10 @@
         android:textCursorDrawable="@drawable/cursor"
         android:textSize="20sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/note"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_layout"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintTop_toBottomOf="@+id/category_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/note_photos"

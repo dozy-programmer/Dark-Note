@@ -184,7 +184,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         // initialize recyclerview
         allNotesRecyclerview = view.findViewById(R.id.all_notes);
 
-        allNotes = AppData.getAllNotes(getActivity());
+        allNotes = AppData.getAllNotes(getActivity(), true);
         allNotesRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         populateSearchAdapter(allNotes);
         allNotesRecyclerview.setVisibility(View.GONE);

@@ -38,7 +38,6 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -47,7 +46,6 @@ import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
-import com.akapps.dailynote.classes.other.WhatsNewSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -657,6 +655,11 @@ public class notes extends Fragment {
         if (zToA)
             result = result.where().sort("title", Sort.DESCENDING).findAll();
 
+        if (RealmHelper.getUser(context, "RealmHelper").isShowFolderNotes())
+            result = result.where().equalTo("category", "none").findAll();
+
+        result = result.where().sort("pin", Sort.DESCENDING).findAll();
+
         if (result != null)
             filteringAllNotesRealm(result, false);
     }
@@ -675,6 +678,7 @@ public class notes extends Fragment {
     }
 
     private void filteringByCategory(RealmResults<Note> query, boolean isCategory) {
+        query = RealmHelper.sortNotes(context, query);
         isNotesFiltered = true;
         isListEmpty(query.size(), false);
         populateAdapter(query);
@@ -705,56 +709,14 @@ public class notes extends Fragment {
     }
 
     public void getSortDataAndSort() {
-        String dateType = Helper.getPreference(getContext(), "_dateType");
-        boolean oldestToNewest = Helper.getBooleanPreference(getContext(), "_oldestToNewest");
-        boolean newestToOldest = Helper.getBooleanPreference(getContext(), "_newestToOldest");
-
-        boolean aToZ = Helper.getBooleanPreference(getContext(), "_aToZ");
-        boolean zToA = Helper.getBooleanPreference(getContext(), "_zToA");
-
         sortedBy.setVisibility(View.GONE);
-
-        if (dateType != null || aToZ || zToA) {
-            if (oldestToNewest) {
-                allNotes = getRealm().where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false)
-                        .sort(dateType, Sort.ASCENDING).findAll();
-
-                if (getUser().isShowFolderNotes())
-                    allNotes = allNotes.where().equalTo("category", "none").findAll();
-                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-            } else if (newestToOldest) {
-                allNotes = getRealm().where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false)
-                        .sort(dateType, Sort.DESCENDING).findAll();
-
-                if (getUser().isShowFolderNotes())
-                    allNotes = allNotes.where().equalTo("category", "none").findAll();
-                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-            } else if (aToZ) {
-                allNotes = getRealm().where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false)
-                        .sort("title").findAll();
-
-                if (getUser().isShowFolderNotes())
-                    allNotes = allNotes.where().equalTo("category", "none").findAll();
-                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-            } else if (zToA) {
-                allNotes = getRealm().where(Note.class)
-                        .equalTo("archived", false)
-                        .equalTo("trash", false)
-                        .sort("title", Sort.DESCENDING).findAll();
-
-                if (getUser().isShowFolderNotes())
-                    allNotes = allNotes.where().equalTo("category", "none").findAll();
-                allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
-            }
+        RealmResults<Note> sortedNotes = RealmHelper.getDefaultNotesSorted(context);
+        if (sortedNotes != null) {
+            allNotes = sortedNotes;
             populateAdapter(allNotes);
             isListEmpty(allNotes.size(), false);
-        } else
+        }
+        else
             showDefaultSort();
     }
 

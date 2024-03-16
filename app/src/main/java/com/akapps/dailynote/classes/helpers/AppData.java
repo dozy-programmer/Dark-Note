@@ -54,9 +54,9 @@ public class AppData {
         AppData.isFingerprintAdded = isFingerprintAdded;
     }
 
-    public static ArrayList<Note> getAllNotes(Context context) {
+    public static ArrayList<Note> getAllNotes(Context context, Boolean includeArchive) {
         Realm realm = getRealm(context);
-        RealmResults<Note> allNotes = getCurrentNoteSort(realm);
+        RealmResults<Note> allNotes = getCurrentNoteSort(realm, includeArchive);
         ArrayList<Note> noteArrayList = new ArrayList<>();
 
         noteArrayList.addAll(realm.copyFromRealm(allNotes));
@@ -118,11 +118,17 @@ public class AppData {
         getRealm(context).commitTransaction();
     }
 
-    public static RealmResults<Note> getCurrentNoteSort(Realm realm) {
-        return realm.where(Note.class)
-                .equalTo("archived", false)
+    public static RealmResults<Note> getCurrentNoteSort(Realm realm, Boolean includeArchive) {
+        RealmResults<Note> notes = realm.where(Note.class)
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
+
+        if(!includeArchive){
+            notes = notes.where()
+                    .equalTo("archived", false)
+                    .findAll();
+        }
+        return notes;
     }
 
     public static void resetWordFoundPositions() {

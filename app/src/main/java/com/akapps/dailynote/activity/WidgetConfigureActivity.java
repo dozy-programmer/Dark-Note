@@ -66,7 +66,7 @@ public class WidgetConfigureActivity extends Activity {
         new Handler(Looper.getMainLooper()).post(() -> {
             allHashMapNotes = new HashMap<>();
             allArrayListNotes = new ArrayList<>();
-            allNotes = AppData.getAllNotes(WidgetConfigureActivity.this);
+            allNotes = AppData.getAllNotes(WidgetConfigureActivity.this, false);
 
             for (Note currentNote : allNotes)
                 allHashMapNotes.put(currentNote.getTitle(), currentNote.getNoteId());

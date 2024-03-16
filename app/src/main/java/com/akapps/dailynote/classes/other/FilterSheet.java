@@ -196,8 +196,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
                     if (isAlphabeticalChosen || (!dateTypeSelected.equals("null") && isDateCorrectlySelected)) {
                         saveSortData(dateTypeSelected,
                                 oldestToLatest, latestToOldest, aToZ, zToA, false);
-                        ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest,
-                                latestToOldest, aToZ, zToA);
+                        ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest, latestToOldest, aToZ, zToA);
                         this.dismiss();
                     } else {
                         Helper.showMessage(getActivity(), "Save Sort Requirement", "Select Note & " +
@@ -205,8 +204,7 @@ public class FilterSheet extends RoundedBottomSheetDialogFragment {
                     }
                 } else {
                     this.dismiss();
-                    ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest,
-                            latestToOldest, aToZ, zToA);
+                    ((notes) fragment).filterAndSortNotes(dateTypeSelected, oldestToLatest, latestToOldest, aToZ, zToA);
                 }
             } else {
                 if (!isDateCorrectlySelected)

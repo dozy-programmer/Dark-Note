@@ -24,6 +24,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
 
 public class RealmHelper {
@@ -520,4 +521,81 @@ public class RealmHelper {
         return allAudioPaths;
     }
 
+    public static RealmResults<Note> getDefaultNotesSorted(Context context){
+        String dateType = Helper.getPreference(context, "_dateType");
+        boolean oldestToNewest = Helper.getBooleanPreference(context, "_oldestToNewest");
+        boolean newestToOldest = Helper.getBooleanPreference(context, "_newestToOldest");
+
+        boolean aToZ = Helper.getBooleanPreference(context, "_aToZ");
+        boolean zToA = Helper.getBooleanPreference(context, "_zToA");
+
+        RealmResults<Note> notes = null;
+
+        if (dateType != null || aToZ || zToA) {
+            if (oldestToNewest) {
+                notes = getRealm(context).where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort(dateType, Sort.ASCENDING).findAll();
+
+                if (getUser(context, "RealmHelper").isShowFolderNotes())
+                    notes = notes.where().equalTo("category", "none").findAll();
+            } else if (newestToOldest) {
+                notes = getRealm(context).where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort(dateType, Sort.DESCENDING).findAll();
+
+                if (getUser(context, "RealmHelper").isShowFolderNotes())
+                    notes = notes.where().equalTo("category", "none").findAll();
+            } else if (aToZ) {
+                notes = getRealm(context).where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort("title").findAll();
+
+                if (getUser(context, "RealmHelper").isShowFolderNotes())
+                    notes = notes.where().equalTo("category", "none").findAll();
+            } else if (zToA) {
+                notes = getRealm(context).where(Note.class)
+                        .equalTo("archived", false)
+                        .equalTo("trash", false)
+                        .sort("title", Sort.DESCENDING).findAll();
+
+                if (getUser(context, "RealmHelper").isShowFolderNotes())
+                    notes = notes.where().equalTo("category", "none").findAll();
+            }
+            notes = notes.where().sort("pin", Sort.DESCENDING).findAll();
+        }
+        return notes;
+    }
+
+    public static RealmResults<Note> sortNotes(Context context, RealmResults<Note> oldNotes){
+        String dateType = Helper.getPreference(context, "_dateType");
+        boolean oldestToNewest = Helper.getBooleanPreference(context, "_oldestToNewest");
+        boolean newestToOldest = Helper.getBooleanPreference(context, "_newestToOldest");
+
+        boolean aToZ = Helper.getBooleanPreference(context, "_aToZ");
+        boolean zToA = Helper.getBooleanPreference(context, "_zToA");
+
+        RealmResults<Note> notes = null;
+
+        if (dateType != null || aToZ || zToA) {
+            if (oldestToNewest) {
+                notes = oldNotes.where()
+                        .sort(dateType, Sort.ASCENDING).findAll();
+            } else if (newestToOldest) {
+                notes = oldNotes.where()
+                        .sort(dateType, Sort.DESCENDING).findAll();
+            } else if (aToZ) {
+                notes = oldNotes.where()
+                        .sort("title").findAll();
+            } else if (zToA) {
+                notes = oldNotes.where()
+                        .sort("title", Sort.DESCENDING).findAll();
+            }
+            notes = notes.where().sort("pin", Sort.DESCENDING).findAll();
+        }
+        return (notes == null) ? oldNotes : notes;
+    }
 }
