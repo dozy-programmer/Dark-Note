@@ -727,9 +727,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         images.add(imageSrc);
                         Handler mainHandler = new Handler(Looper.getMainLooper());
                         Runnable myRunnable = () ->
-                                new StfalconImageViewer.Builder<>(context, images, (imageView, image) -> {
-                                    Glide.with(context).load(image).into(imageView);
-                                })
+                                new StfalconImageViewer.Builder<>(context, images, (imageView, image) -> Glide.with(context).load(image).into(imageView))
                                         .withBackgroundColor(context.getColor(R.color.gray))
                                         .allowZooming(true)
                                         .allowSwipeToDismiss(true)

@@ -455,11 +455,11 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
 
         int finalPreview_1_position = preview_1_position;
-        holder.preview_1_layout.setOnClickListener(view -> showPhotos(finalPreview_1_position, noteId, holder.preview_1));
+        holder.preview_1_layout.setOnClickListener(view -> showPhotos(position, finalPreview_1_position, noteId, holder.preview_1));
         int finalPreview_2_position = preview_2_position;
-        holder.preview_2_layout.setOnClickListener(view -> showPhotos(finalPreview_2_position, noteId, holder.preview_2));
+        holder.preview_2_layout.setOnClickListener(view -> showPhotos(position, finalPreview_2_position, noteId, holder.preview_2));
         int finalPreview_3_position = preview_3_position;
-        holder.preview_3_layout.setOnClickListener(view -> showPhotos(finalPreview_3_position, noteId, holder.preview_3));
+        holder.preview_3_layout.setOnClickListener(view -> showPhotos(position, finalPreview_3_position, noteId, holder.preview_3));
 
         holder.preview_1_layout.setOnLongClickListener(view -> {
             // prevent opening of images when multi-selecting
@@ -557,7 +557,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         });
     }
 
-    private void showPhotos(int position, int noteId, ImageView currentImage) {
+    private void showPhotos(int notePosition, int position, int noteId, ImageView currentImage) {
         RealmResults<Photo> allPhotos = getNotePhotos(noteId);
         if (!enableSelectMultiple) {
             ArrayList<String> images = new ArrayList<>();
@@ -571,6 +571,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                     .withBackgroundColor(noteFragment.getContext().getColor(R.color.gray))
                     .allowZooming(true)
                     .allowSwipeToDismiss(true)
+                    .withDismissListener(() -> notifyItemChanged(notePosition))
                     .withHiddenStatusBar(false)
                     .withStartPosition(position)
                     .withTransitionFrom(currentImage)

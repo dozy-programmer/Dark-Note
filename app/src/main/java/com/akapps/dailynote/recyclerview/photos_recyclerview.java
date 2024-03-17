@@ -17,6 +17,7 @@ import com.akapps.dailynote.classes.other.InfoSheet;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.stfalcon.imageviewer.StfalconImageViewer;
+import com.stfalcon.imageviewer.listeners.OnDismissListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -106,6 +107,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
                     Glide.with(context).load(image).into(imageView))
                     .withBackgroundColor(context.getColor(R.color.gray))
                     .allowZooming(true)
+                    .withDismissListener(() -> notifyItemChanged(position))
                     .allowSwipeToDismiss(true)
                     .withHiddenStatusBar(false)
                     .withStartPosition(position)
