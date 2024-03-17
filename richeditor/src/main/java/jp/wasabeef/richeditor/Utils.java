@@ -62,7 +62,4 @@ public final class Utils {
         return BitmapFactory.decodeResource(context.getResources(), resId);
     }
 
-    public static long getCurrentTime() {
-        return System.currentTimeMillis();
-    }
 }

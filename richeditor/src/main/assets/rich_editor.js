@@ -287,16 +287,16 @@ function setCursorAtPosition(node, index) {
   let selection = window.getSelection();
   let currentPos = 0;
   let found = false;
-  let breakCount = 0;
 
   function searchNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
+      let text = node.textContent;
       if (currentPos + node.length >= index) {
         range.setStart(node, index - currentPos);
-        range.setEnd(node, (index - currentPos) + 1);
         range.collapse(true);
         found = true;
-      } else {
+      }
+      else {
         currentPos += node.length;
       }
     } else {
@@ -325,11 +325,9 @@ RE.getAbsoluteCaretYPosition = function() {
       }
     }
 
-    // Add the window's vertical scroll position to get absolute Y position
     y += window.pageYOffset;
   }
   window.scrollTo(0, y);
-  //DarkNote.getCursorPositionY(y);
 };
 
 RE.blurFocus = function() {

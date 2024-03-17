@@ -760,10 +760,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     }
                 }
             });
-            note.setOnyPositionListener(yPosition -> {
-//                Log.d("Here", "Offset " + yPosition);
-//                note.scrollTo(0, yPosition);
-            });
         }
 
         closeTextLayout.setOnClickListener(v -> {
@@ -1080,15 +1076,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (!getCurrentNote(context, noteId).isCheckList()) {
 
             String originalString = note.getHtml();
-
             if (originalString.toLowerCase().contains(target.toLowerCase())) {
                 this.target = target;
-                // Replace the specified text/word with formatted text/word
-                String modifiedString = originalString.replaceAll("(?i)" + target,
-                        "<font color='#ff8000'>" + "$0" + "</font>");
-                // Update the edit text
-                // TODO - update editor target word colors
-                //noteSearching.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
                 findAllTextIndexes(target);
                 decreaseTextSize.setAlpha(new Float(1.0));
                 increaseTextSize.setAlpha(new Float(1.0));
@@ -1104,13 +1093,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         wordOccurences = new ArrayList<String>();
         target = target.toLowerCase();
         String text = Html.fromHtml(getCurrentNote(context, noteId).getNote().toLowerCase(), Html.FROM_HTML_MODE_COMPACT).toString();
-        //Log.d("Here", "html -> " + text);
         int index = 0;
         while (index >= 0) {
             index = text.indexOf(target, index);
             if (index != -1) {
                 int numBreaks = text.substring(0, index).split("\\n").length - 1;
-                //Log.d("Here", "text -> " + text.substring(0, index));
                 Log.d("Here", "before -> " + index + ", after -> " + (index - numBreaks) + "  -- num <br> -> " + numBreaks);
                 wordOccurences.add(index - numBreaks);
                 index++;

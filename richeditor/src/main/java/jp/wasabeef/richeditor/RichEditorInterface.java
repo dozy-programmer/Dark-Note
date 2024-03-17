@@ -20,9 +20,4 @@ public class RichEditorInterface {
         richEditor.setImagePath(imagePath, html, width, height);
     }
 
-    @JavascriptInterface
-    public void getCursorPositionY(int position) {
-        richEditor.setYPosition(position);
-    }
-
 }

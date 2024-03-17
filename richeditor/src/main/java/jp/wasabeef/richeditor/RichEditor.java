@@ -91,25 +91,6 @@ public class RichEditor extends WebView {
 
     }
 
-//  public static class RichEditorInterface {
-//    private final Context mContext;
-//    private final RichEditor richEditor;
-//
-//    /** Instantiate the interface and set the context. */
-//    public RichEditorInterface(Context c, RichEditor richEditor) {
-//      mContext = c;
-//      this.richEditor = richEditor;
-//    }
-//
-//    /** Show a toast from the web page. */
-//    @JavascriptInterface
-//    public void getImage(String toast) {
-//      Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
-//      richEditor.mIm
-//    }
-//
-//  }
-
     private static final String SETUP_HTML = "file:///android_asset/editor.html";
     private static final String CALLBACK_SCHEME = "re-callback://";
     private static final String STATE_SCHEME = "re-state://";
@@ -119,7 +100,6 @@ public class RichEditor extends WebView {
     private OnDecorationStateListener mDecorationStateListener;
     private AfterInitialLoadListener mLoadListener;
     private ImageClickListener mImageClickListener;
-    private YPositionListener yPositionListener;
 
     public RichEditor(Context context) {
         this(context, null);
@@ -168,10 +148,6 @@ public class RichEditor extends WebView {
         mImageClickListener = listener;
     }
 
-    public void setOnyPositionListener(YPositionListener listener) {
-        yPositionListener = listener;
-    }
-
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
         if (mTextChangeListener != null) {
@@ -196,12 +172,6 @@ public class RichEditor extends WebView {
     public void setImagePath(String imagePath) {
         if (mImageClickListener != null) {
             mImageClickListener.onImageClick(imagePath);
-        }
-    }
-
-    public void setYPosition(int yPosition) {
-        if (yPositionListener != null) {
-            yPositionListener.onYPosition(yPosition);
         }
     }
 
