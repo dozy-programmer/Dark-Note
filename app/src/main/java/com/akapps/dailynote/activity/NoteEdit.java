@@ -22,7 +22,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -126,7 +125,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public EditText title;
     public TextView date;
     public RichEditor note;
-    private EditText noteSearching;
     private CardView closeNote;
     public CardView photosNote;
     private ImageView pinNoteIcon;
@@ -172,12 +170,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean isSearchingNotes;
     private int currentWordIndex;
     private String target;
-    private ArrayList wordOccurences = new ArrayList();
+    private ArrayList wordOccurences = new ArrayList<String>();
     private boolean isChangingTextSize;
     private boolean isChanged;
     private boolean isWidget;
     private Handler handler;
     private boolean dismissNotification;
+    private boolean isReverseScroll = false;
     // dialog
     private AlertDialog colorPickerView;
     private CustomPowerMenu noteMenu;
@@ -428,7 +427,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         title = findViewById(R.id.title);
         date = findViewById(R.id.date);
         note = findViewById(R.id.note);
-        noteSearching = findViewById(R.id.searchEdittext);
         closeNote = findViewById(R.id.close_note);
         photosNote = findViewById(R.id.camera);
         pinNoteButton = findViewById(R.id.pinButton);
@@ -493,7 +491,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         oldNote = getCurrentNote(context, noteId).getNote();
         title.setText(getCurrentNote(context, noteId).getTitle());
         note.setHtml(getCurrentNote(context, noteId).getNote());
-        Log.d("Here", "note -> " + note.getHtml());
+        //Log.d("Here", "note -> " + note.getHtml());
         note.setEditorFontSize(RealmHelper.getUser(context, "checklist_recyclerview").getTextSize());
         note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
@@ -638,14 +636,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     }
                     if (updateRecyclerview) sortChecklist(s.toString());
                 } else {
-                    currentWordIndex = 0;
+                    currentWordIndex = -1;
                     if (isSearchingNotes) {
                         textSizeLayout.setVisibility(View.VISIBLE);
                         if (!s.toString().isEmpty() && s.toString().length() > 1)
                             findText(s.toString().toLowerCase());
                         else {
                             wordOccurences = new ArrayList();
-                            noteSearching.setText(Html.fromHtml(getCurrentNote(context, noteId).getNote(), Html.FROM_HTML_MODE_COMPACT));
                         }
                     }
                 }
@@ -710,6 +707,15 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         saveChanges(text, 1);
                     }
                 }
+                if (isSearchingNotes) {
+                    textSizeLayout.setVisibility(View.VISIBLE);
+                    if (currentWordIndex > 0)
+                        currentWordIndex = -1;
+                    wordOccurences = new ArrayList();
+                    String s = searchEditText.getText().toString();
+                    if (!s.isEmpty() && s.length() > 1)
+                        findText(s.toString().toLowerCase());
+                }
             });
             note.setOnImageClickListener(new RichEditor.ImageClickListener() {
                 @Override
@@ -754,6 +760,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     }
                 }
             });
+            note.setOnyPositionListener(yPosition -> {
+//                Log.d("Here", "Offset " + yPosition);
+//                note.scrollTo(0, yPosition);
+            });
         }
 
         closeTextLayout.setOnClickListener(v -> {
@@ -771,7 +781,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 }
             } else {
                 hideSearchBar();
-                noteSearching.clearFocus();
                 title.clearFocus();
             }
         });
@@ -785,13 +794,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 int currentIndex = AppData.getIndexPosition(true);
                 checkListRecyclerview.smoothScrollToPosition(currentIndex);
             } else if (isSearchingNotes) {
-                if (currentWordIndex != -1 && wordOccurences.size() != 0) {
+                if (wordOccurences.size() != 0) {
                     int nextIndex;
-                    noteSearching.requestFocus();
-                    currentWordIndex = currentWordIndex == 0 ? wordOccurences.size() - 1
+                    currentWordIndex = (currentWordIndex <= 0) ? wordOccurences.size() - 1
                             : currentWordIndex - 1;
                     nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
-                    noteSearching.setSelection(nextIndex);
+                    note.requestFocus();
+                    isReverseScroll = (currentWordIndex <= 0) ? false : true;
+                    note.setSelection(nextIndex);
                     Helper.toggleKeyboard(context, note, false);
                 }
             }
@@ -812,19 +822,19 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 checkListRecyclerview.smoothScrollToPosition(currentIndex);
             } else if (isSearchingNotes) {
                 int nextIndex;
-                if (currentWordIndex != -1 && wordOccurences.size() != 0) {
-                    noteSearching.requestFocus();
-                    currentWordIndex = currentWordIndex == wordOccurences.size() - 1 ? 0 :
+                if (wordOccurences.size() != 0) {
+                    currentWordIndex = (currentWordIndex == -1 || currentWordIndex == wordOccurences.size() - 1) ? 0 :
                             currentWordIndex + 1;
                     nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
-                    noteSearching.setSelection(nextIndex);
+                    note.requestFocus();
+                    isReverseScroll = false;
+                    note.setSelection(nextIndex);
                     Helper.toggleKeyboard(context, note, false);
                 }
             }
         });
 
-        note.setOnClickListener(view -> {
-        });
+        //note.setOnClickListener(view -> {});
 
         remindNote.setOnClickListener(v -> {
             cancelAlarm(getCurrentNote(context, noteId).getNoteId());
@@ -969,11 +979,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             addAudioItem.setVisibility(View.GONE);
             if (isShowingPhotos)
                 photosScrollView.setVisibility(View.GONE);
-        } else {
-            note.setVisibility(View.GONE);
-            noteSearching.setTextSize(TypedValue.COMPLEX_UNIT_SP, RealmHelper.getUserTextSize(context));
-            noteSearching.setVisibility(View.VISIBLE);
-            noteSearching.setText(Html.fromHtml(note.getHtml(), Html.FROM_HTML_MODE_COMPACT));
         }
 
         showButtons();
@@ -1001,16 +1006,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
 
-        noteSearching.setText("");
         searchEditText.setText("");
         if (getCurrentNote(context, noteId).isCheckList()) {
             note.setVisibility(View.GONE);
-            noteSearching.setVisibility(View.GONE);
             sortChecklist("");
         } else {
             note.setHtml(getCurrentNote(context, noteId).getNote());
             note.setVisibility(View.VISIBLE);
-            noteSearching.setVisibility(View.GONE);
         }
 
         hideButtons();
@@ -1022,6 +1024,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 addCheckListItem.setImageDrawable(getDrawable(
                         isEditLockedMode ? R.drawable.edit_icon : R.drawable.do_not_edit_icon));
             }
+            note.focusEditor();
+            currentWordIndex = -1;
+            wordOccurences = new ArrayList();
         }
     }
 
@@ -1082,13 +1087,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 String modifiedString = originalString.replaceAll("(?i)" + target,
                         "<font color='#ff8000'>" + "$0" + "</font>");
                 // Update the edit text
-                noteSearching.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
+                // TODO - update editor target word colors
+                //noteSearching.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
                 findAllTextIndexes(target);
                 decreaseTextSize.setAlpha(new Float(1.0));
                 increaseTextSize.setAlpha(new Float(1.0));
             } else {
                 currentWordIndex = -1;
-                noteSearching.setText(Html.fromHtml(getCurrentNote(context, noteId).getNote(), Html.FROM_HTML_MODE_COMPACT));
                 decreaseTextSize.setAlpha(new Float(0.5));
                 increaseTextSize.setAlpha(new Float(0.5));
             }
@@ -1099,13 +1104,23 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         wordOccurences = new ArrayList<String>();
         target = target.toLowerCase();
         String text = Html.fromHtml(getCurrentNote(context, noteId).getNote().toLowerCase(), Html.FROM_HTML_MODE_COMPACT).toString();
-
+        //Log.d("Here", "html -> " + text);
         int index = 0;
         while (index >= 0) {
             index = text.indexOf(target, index);
-            if (index != -1)
-                wordOccurences.add(index++);
+            if (index != -1) {
+                int numBreaks = text.substring(0, index).split("\\n").length - 1;
+                //Log.d("Here", "text -> " + text.substring(0, index));
+                Log.d("Here", "before -> " + index + ", after -> " + (index - numBreaks) + "  -- num <br> -> " + numBreaks);
+                wordOccurences.add(index - numBreaks);
+                index++;
+            }
         }
+        String word = "";
+        for (Object found : wordOccurences) {
+            word += found + ",";
+        }
+        //Log.d("Here", " -> " + word);
     }
 
     private void saveChanges(String text, int size) {

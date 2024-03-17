@@ -1,5 +1,8 @@
 package com.akapps.dailynote.recyclerview;
 
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentFolder;
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getRealm;
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -72,7 +75,8 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         Folder currentFolder = allCategories.get(position);
         int folderId = currentFolder.getId();
         int numberOfNotesInCategory =
-                RealmSingleton.getInstance(context).where(Note.class).equalTo("archived", false)
+                RealmSingleton.getInstance(context).where(Note.class)
+                        .equalTo("archived", false)
                         .equalTo("trash", false)
                         .equalTo("category", currentFolder.getName())
                         .findAll().size();
@@ -93,7 +97,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         holder.view.setOnClickListener(v -> {
             RealmResults<Note> allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
             if (((CategoryScreen) activity).isEditing) {
-                FolderItemSheet checklistItemSheet = new FolderItemSheet(folderId, this, position);
+                FolderItemSheet checklistItemSheet = new FolderItemSheet(folderId, this, position, true);
                 checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
             } else {
                 Intent home = new Intent();
@@ -111,9 +115,22 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                             .equalTo("pinNumber", 0)
                             .findAll();
                     // user has selected notes to put in folder
-                    LockFolderSheet lockFolderSheet = new LockFolderSheet(currentFolder.getId(), allSelectedNotes, lockedNotesInsideFolder, true, home);
+                    LockFolderSheet lockFolderSheet = new LockFolderSheet(currentFolder.getId(), allSelectedNotes, lockedNotesInsideFolder, home);
                     lockFolderSheet.show(activity.getSupportFragmentManager(), lockFolderSheet.getTag());
-                } else if (allSelectedNotes.size() == 0 && numberOfNotesInCategory == 0) {
+                }
+                else if(currentFolder.getPin() > 0){
+                    getRealm(context).beginTransaction();
+                    allSelectedNotes.setString("category", currentFolder.getName());
+                    allSelectedNotes.setInt("pinNumber", currentFolder.getPin());
+                    allSelectedNotes.setString("securityWord", currentFolder.getSecurityWord());
+                    allSelectedNotes.setBoolean("fingerprint", currentFolder.isFingerprintAdded());
+                    allSelectedNotes.setBoolean("isSelected", false);
+                    getRealm(context).commitTransaction();
+                    RealmSingleton.setCloseRealm(false);
+                    Log.d("Here", "keep realm open in categories_recyclerview");
+                    activity.setResult(5, home);
+                    activity.finish();
+                }else if (allSelectedNotes.size() == 0 && numberOfNotesInCategory == 0) {
                     Helper.showMessage(activity, "Folder Empty", "Folder is empty, cannot open",
                             MotionToast.TOAST_ERROR);
                 } else {

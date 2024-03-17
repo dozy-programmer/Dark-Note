@@ -335,26 +335,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category_layout" />
 
-    <EditText
-        android:id="@+id/searchEdittext"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginTop="-4dp"
-        android:layout_marginRight="15dp"
-        android:backgroundTint="?primaryBackgroundColor"
-        android:gravity="top|start"
-        android:hint="Type something..."
-        android:textColor="?primaryTextColor"
-        android:textColorHint="?secondaryTextColor"
-        android:textCursorDrawable="@drawable/cursor"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/note"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_layout" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/note_photos"
         android:layout_width="match_parent"
@@ -457,7 +437,8 @@
         android:id="@+id/text_size_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/add_checklist_item"

@@ -85,6 +85,12 @@ public class RichEditor extends WebView {
         void onImageClick(String imageSrc, String html, int width, int height);
     }
 
+    public interface YPositionListener {
+
+        void onYPosition(int yPosition);
+
+    }
+
 //  public static class RichEditorInterface {
 //    private final Context mContext;
 //    private final RichEditor richEditor;
@@ -113,6 +119,7 @@ public class RichEditor extends WebView {
     private OnDecorationStateListener mDecorationStateListener;
     private AfterInitialLoadListener mLoadListener;
     private ImageClickListener mImageClickListener;
+    private YPositionListener yPositionListener;
 
     public RichEditor(Context context) {
         this(context, null);
@@ -161,6 +168,10 @@ public class RichEditor extends WebView {
         mImageClickListener = listener;
     }
 
+    public void setOnyPositionListener(YPositionListener listener) {
+        yPositionListener = listener;
+    }
+
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
         if (mTextChangeListener != null) {
@@ -185,6 +196,12 @@ public class RichEditor extends WebView {
     public void setImagePath(String imagePath) {
         if (mImageClickListener != null) {
             mImageClickListener.onImageClick(imagePath);
+        }
+    }
+
+    public void setYPosition(int yPosition) {
+        if (yPositionListener != null) {
+            yPositionListener.onYPosition(yPosition);
         }
     }
 
@@ -430,6 +447,10 @@ public class RichEditor extends WebView {
         String fullYoutubeLink = "https://www.youtube.com/embed/" + youtubeVideoId;
         exec("javascript:RE.prepareInsert();");
         exec("javascript:RE.insertYoutubeVideoWH('" + fullYoutubeLink + "', '" + width + "', '" + height + "');");
+    }
+
+    public void setSelection(int position) {
+        exec("javascript:RE.setSelection('" + position + "');");
     }
 
     public void focusEditor() {

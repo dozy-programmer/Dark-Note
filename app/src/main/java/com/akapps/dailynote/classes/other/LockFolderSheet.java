@@ -32,18 +32,15 @@ public class LockFolderSheet extends RoundedBottomSheetDialogFragment {
     private int folderId;
     private RealmResults<Note> selectedNotes;
     private RealmResults<Note> lockedNotes;
-    private boolean isUpdatingUI;
     private Intent goHome;
 
     public LockFolderSheet() {
     }
 
-    public LockFolderSheet(int folderId, RealmResults<Note> selectedNotes, RealmResults<Note> lockedNotes,
-                           boolean isUpdatingUi, Intent goHome) {
+    public LockFolderSheet(int folderId, RealmResults<Note> selectedNotes, RealmResults<Note> lockedNotes, Intent goHome) {
         this.folderId = folderId;
         this.selectedNotes = selectedNotes;
         this.lockedNotes = lockedNotes;
-        this.isUpdatingUI = isUpdatingUi;
         this.goHome = goHome;
     }
 
@@ -78,22 +75,18 @@ public class LockFolderSheet extends RoundedBottomSheetDialogFragment {
             Log.d("Here", "Num Notes -> " + selectedNotes.size());
             if (selectedNotes.size() > 0) {
                 getRealm(getContext()).beginTransaction();
+                selectedNotes.setString("category", getCurrentFolder(getContext(), folderId).getName());
+                selectedNotes.setBoolean("isSelected", false);
                 selectedNotes.setInt("pinNumber", getCurrentFolder(getContext(), folderId).getPin());
                 selectedNotes.setString("securityWord", getCurrentFolder(getContext(), folderId).getSecurityWord());
                 selectedNotes.setBoolean("fingerprint", getCurrentFolder(getContext(), folderId).isFingerprintAdded());
                 getRealm(getContext()).commitTransaction();
             }
-            if (isUpdatingUI) {
-                RealmSingleton.getInstance(getContext()).beginTransaction();
-                selectedNotes.setString("category", getCurrentFolder(getContext(), folderId).getName());
-                selectedNotes.setBoolean("isSelected", false);
-                RealmSingleton.getInstance(getContext()).commitTransaction();
-                RealmSingleton.setCloseRealm(false);
-                Log.d("Here", "keep realm open in categories_recyclerview");
-                if (goHome != null) {
-                    getActivity().setResult(5, goHome);
-                    getActivity().finish();
-                }
+            RealmSingleton.setCloseRealm(false);
+            Log.d("Here", "keep realm open in categories_recyclerview");
+            if (goHome != null) {
+                getActivity().setResult(5, goHome);
+                getActivity().finish();
             }
             this.dismiss();
         });

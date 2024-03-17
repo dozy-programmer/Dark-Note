@@ -526,11 +526,13 @@ public class CategoryScreen extends AppCompatActivity {
         customCategories.setAdapter(categoriesAdapter);
     }
 
-    public void lockFolder(int folderId, int pin, String securityWord, boolean fingerprint) {
+    public void lockFolder(int folderId, int pin, String securityWord, boolean fingerprint, boolean isEditing) {
         getRealm(context).beginTransaction();
         RealmHelper.getCurrentFolder(context, folderId).setPin(pin);
         RealmHelper.getCurrentFolder(context, folderId).setSecurityWord(securityWord);
         RealmHelper.getCurrentFolder(context, folderId).setFingerprintAdded(fingerprint);
+        if(!isEditing)
+            getSelectedNotes().setString("category", RealmHelper.getCurrentFolder(context, folderId).getName());
         getRealm(context).commitTransaction();
         // user is locking folder for the first time
         RealmHelper.lockNotesInsideFolder(this, context, folderId);
@@ -586,7 +588,7 @@ public class CategoryScreen extends AppCompatActivity {
     }
 
     private void openNewItemDialog() {
-        FolderItemSheet folderItemSheet = new FolderItemSheet();
+        FolderItemSheet folderItemSheet = new FolderItemSheet(isEditing);
         folderItemSheet.show(getSupportFragmentManager(), folderItemSheet.getTag());
     }
 

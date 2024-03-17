@@ -58,6 +58,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     private int color;
     private boolean isFolderUnlocked;
     AtomicReference<Folder> currentFolder;
+    private boolean isEditing;
 
     // firebase
     private RealmResults<Note> allSelectedNotes;
@@ -95,20 +96,22 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     );
 
     // adding
-    public FolderItemSheet() {
+    public FolderItemSheet(boolean isEditing) {
         isAdding = true;
+        this.isEditing = isEditing;
     }
 
     // layout
     private TextInputEditText itemName;
 
     // editing
-    public FolderItemSheet(int folderId, RecyclerView.Adapter adapter, int position) {
+    public FolderItemSheet(int folderId, RecyclerView.Adapter adapter, int position, boolean isEditing) {
         isAdding = false;
         this.folderId = folderId;
         this.allSelectedNotes = RealmSingleton.getInstance(getContext()).where(Note.class).equalTo("isSelected", true).findAll();
         this.adapter = adapter;
         this.position = position;
+        this.isEditing = isEditing;
     }
 
     @Override
@@ -189,7 +192,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             if (!isAdding)
                 onLockClick();
             else if (confirmEntry(itemName, itemNameLayout)) {
-                FolderItemSheet checklistItemSheet = new FolderItemSheet();
+                FolderItemSheet checklistItemSheet = new FolderItemSheet(isEditing);
                 checklistItemSheet.show(getActivity().getSupportFragmentManager(), checklistItemSheet.getTag());
             }
         });
@@ -247,7 +250,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                             " lock a folder, all notes inside of it need to be unlocked for security purposes." + lockedNotes);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
-                    LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder);
+                    LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder, isEditing);
                     lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
                     this.dismiss();
                 }

@@ -273,8 +273,9 @@ public class RealmHelper {
                         updateAudioPath(context, item, newFilename);
                     } else
                         Log.d("Here", "Audio path: " + item.getAudioPath() + " [ERROR]");
-                } else
-                    Log.d("Here", "Audio path: " + item.getAudioPath() + " is already MP3");
+                } else {
+                    //Log.d("Here", "Audio path: " + item.getAudioPath() + " is already MP3");
+                }
             }
         }
 
@@ -406,12 +407,9 @@ public class RealmHelper {
                 .findAll();
 
         if (lockedNotesInsideFolder.size() > 0) {
-            // TODO - get rid of this message and create a bottom sheet that allows user to continue
-            LockFolderSheet lockFolderSheet = new LockFolderSheet(folderId, notesInsideFolder, lockedNotesInsideFolder, false, null);
+            LockFolderSheet lockFolderSheet = new LockFolderSheet(folderId, notesInsideFolder, lockedNotesInsideFolder, null);
             lockFolderSheet.show(activity.getSupportFragmentManager(), lockFolderSheet.getTag());
         } else {
-            Log.d("Here", "Folder -> " + getCurrentFolder(context, folderId).getName());
-            Log.d("Here", "Num Notes -> " + notesInsideFolder.size());
             if (notesInsideFolder.size() > 0) {
                 getRealm(context).beginTransaction();
                 notesInsideFolder.setInt("pinNumber", getCurrentFolder(context, folderId).getPin());

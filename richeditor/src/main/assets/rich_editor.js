@@ -24,7 +24,8 @@ RE.currentSelection = {
     "startContainer": 0,
     "startOffset": 0,
     "endContainer": 0,
-    "endOffset": 0};
+    "endOffset": 0
+};
 
 RE.editor = document.getElementById('editor');
 
@@ -203,7 +204,8 @@ RE.backuprange = function(){
           "startContainer": range.startContainer,
           "startOffset": range.startOffset,
           "endContainer": range.endContainer,
-          "endOffset": range.endOffset};
+          "endOffset": range.endOffset
+      };
     }
 }
 
@@ -274,6 +276,61 @@ RE.focus = function() {
     selection.addRange(range);
     RE.editor.focus();
 }
+
+RE.setSelection = function(position) {
+    setCursorAtPosition(RE.editor, position);
+    RE.getAbsoluteCaretYPosition()
+}
+
+function setCursorAtPosition(node, index) {
+  let range = document.createRange();
+  let selection = window.getSelection();
+  let currentPos = 0;
+  let found = false;
+  let breakCount = 0;
+
+  function searchNode(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      if (currentPos + node.length >= index) {
+        range.setStart(node, index - currentPos);
+        range.setEnd(node, (index - currentPos) + 1);
+        range.collapse(true);
+        found = true;
+      } else {
+        currentPos += node.length;
+      }
+    } else {
+      for (let child of node.childNodes) {
+        if (found) break;
+        searchNode(child);
+      }
+    }
+  }
+
+  searchNode(node);
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+RE.getAbsoluteCaretYPosition = function() {
+  var y = 0;
+  var sel = window.getSelection();
+  if (sel.rangeCount) {
+    var range = sel.getRangeAt(0);
+
+    if (range.getClientRects) {
+      var rects = range.getClientRects();
+      if (rects.length > 0) {
+        y = rects[0].top;
+      }
+    }
+
+    // Add the window's vertical scroll position to get absolute Y position
+    y += window.pageYOffset;
+  }
+  window.scrollTo(0, y);
+  //DarkNote.getCursorPositionY(y);
+};
 
 RE.blurFocus = function() {
     RE.editor.blur();

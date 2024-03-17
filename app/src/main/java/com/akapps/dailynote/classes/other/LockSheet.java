@@ -35,9 +35,9 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
     private LockType lockType;
     private int folderId;
     private MaterialButton lockIcon;
+    private boolean isEditing;
 
-    public LockSheet() {
-    }
+    public LockSheet() {}
 
     public LockSheet(LockType lockType, MaterialButton lockIcon) {
         this.lockType = lockType;
@@ -45,10 +45,11 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
         this.lockIcon = lockIcon;
     }
 
-    public LockSheet(LockType lockType, int folderId, MaterialButton lockIcon) {
+    public LockSheet(LockType lockType, int folderId, MaterialButton lockIcon, boolean isEditing) {
         this.lockType = lockType;
         this.folderId = folderId;
         this.lockIcon = lockIcon;
+        this.isEditing= isEditing;
     }
 
 
@@ -89,7 +90,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
             }
 
             if (pinText.length() >= 4 && pinText.length() <= 10) {
-                if (securityWordText.length() > 0) {
+                if (securityWordText.length() > 2) {
                     if (lockType == LockType.LOCK_APP)
                         ((SettingsScreen) getActivity()).lockApp(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
                     else if (lockType == LockType.LOCK_NOTE)
@@ -98,13 +99,13 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
                         if (folderId == -1)
                             AppData.updateLockData(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
                         else
-                            ((CategoryScreen) getActivity()).lockFolder(folderId, Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                            ((CategoryScreen) getActivity()).lockFolder(folderId, Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0], isEditing);
                         if (lockIcon != null)
                             lockIcon.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
                     }
                     this.dismiss();
                 } else
-                    securityWordLayout.setError("Required");
+                    securityWordLayout.setError("Min = 3 Letters");
             } else
                 pinLayout.setError("Min = 4 , Max = 10");
         });
