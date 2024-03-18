@@ -79,9 +79,9 @@ class InstantActivity : ComponentActivity() {
         setContent {
             DailyNoteTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    //InstantMessage()
+                    InstantMessage()
                     //ResizeableLazyGrid(notesList)
-                    StaggeredList()
+                    //StaggeredList()
                 }
             }
         }

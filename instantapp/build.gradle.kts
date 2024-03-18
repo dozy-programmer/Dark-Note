@@ -11,8 +11,8 @@ android {
         applicationId = "com.akapps.dailynote"
         minSdk = 28
         targetSdk = 34
-        versionCode = 160
-        versionName = "1.1"
+        versionCode = 161
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
