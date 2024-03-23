@@ -309,7 +309,7 @@
             android:id="@+id/add_checklist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/checklist_icon_2"
+            android:src="@drawable/checklist_icon"
             fab:fab_colorNormal="?primaryStrokeColor"
             fab:fab_colorPressed="?primaryStrokeColor"
             fab:fab_label="Check List"

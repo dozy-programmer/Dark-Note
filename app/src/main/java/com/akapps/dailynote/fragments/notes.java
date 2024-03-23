@@ -38,6 +38,7 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
@@ -46,6 +47,7 @@ import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
+import com.akapps.dailynote.classes.other.WhatsNewSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -182,11 +184,11 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-//        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_16_8)) {
-//            WhatsNewSheet whatsNewSheet = new WhatsNewSheet(notes.this);
-//            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-//            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_16_8);
-//        }
+        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_17_3)) {
+            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
+            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_17_3);
+        }
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override

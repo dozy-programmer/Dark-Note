@@ -33,7 +33,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:paddingVertical="5dp"
-            android:text="What's New? v16.8"
+            android:text="What's New? v17.3"
             android:textColor="?secondaryTextColor"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,44 +46,13 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:text="@string/version_16_8_whats_new_text"
+            android:text="@string/version_17_3_whats_new_text"
             android:gravity="left"
             android:textColor="?primaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
-
-        <TextView
-            android:id="@+id/info_icon_bottom"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="15dp"
-            android:text="Move Info Icon to Bottom"
-            android:textColor="?primaryTextColor"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/move_info_icon_switch"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/info" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/move_info_icon_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:checked="false"
-            android:gravity="center"
-            android:scaleX="0.85"
-            android:scaleY="0.85"
-            android:textColor="?primaryTextColor"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:theme="@style/ThemeOverlay.SwitchTheme"
-            app:layout_constraintBottom_toBottomOf="@+id/info_icon_bottom"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/info_icon_bottom" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

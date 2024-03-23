@@ -329,7 +329,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                     Glide.with(context).load(image).into(imageView))
                     .withBackgroundColor(context.getColor(R.color.gray))
                     .allowZooming(true)
-                    .withDismissListener(() -> notifyItemChanged(position))
+                    .withDismissListener(() -> {
+                        notifyItemChanged(position);
+                    })
                     .allowSwipeToDismiss(true)
                     .withHiddenStatusBar(false)
                     .withStartPosition(0)

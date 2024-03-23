@@ -21,30 +21,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class WhatsNewSheet extends RoundedBottomSheetDialogFragment {
 
-    private Fragment fragmentActivity;
-
-    public WhatsNewSheet() {
-    }
-
-    public WhatsNewSheet(Fragment fragmentActivity) {
-        this.fragmentActivity = fragmentActivity;
-    }
+    public WhatsNewSheet() { }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bottom_sheet_whats_new, container, false);
-
-        SwitchCompat moveInfoToBottom = view.findViewById(R.id.move_info_icon_switch);
-        moveInfoToBottom.setOnCheckedChangeListener((compoundButton, checked) -> {
-            RealmHelper.getRealm(getContext()).beginTransaction();
-            RealmHelper.getUser(getContext(), "Whats New").setShowPreviewNoteInfoAtBottom(checked);
-            RealmHelper.getRealm(getContext()).commitTransaction();
-            if (fragmentActivity != null)
-                ((notes) fragmentActivity).showDefaultSort();
-        });
-        moveInfoToBottom.performClick();
-
-        return view;
+        return inflater.inflate(R.layout.bottom_sheet_whats_new, container, false);
     }
 
     @Override

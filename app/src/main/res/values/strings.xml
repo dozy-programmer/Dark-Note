@@ -5,8 +5,8 @@
     <string name="schema">48</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v17.2</string>
-    <string name="app_version_int">17.2</string>
+    <string name="app_version">v17.4</string>
+    <string name="app_version_int">17.4</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -112,24 +112,16 @@
 
     </string>
 
-    <string name="version_16_8_whats_new_text">
+    <string name="version_17_3_whats_new_text">
 
         <font color='#8CA9CF'><b>New</b></font>\n
-        • UI Improvements to Homepage: Enabled new Move Info Button to Bottom setting (disable below or use Settings)\n
-        • Note Editor now supports inlining images* and youtube videos* (Try it out!)\n
-        • FAQ added in settings (currently in progress 🚧)\n\n
-
-        <font color='#8CA9CF'><b>Note Worthy</b></font>\n
-        • Redirect to other notes from checklist items (not sub-list) by using \"@\"\n
-        • You can add location* 📍 to checklist items (not sub-list) when adding or editing\n
-        • Folders are lockable 🔒: you can lock it when adding or editing folders\n\n
+        • Redesigned and improved FAQ website to be more helpful. Go to Settings ->
+        Scroll To Bottom of screen -> Click on FAQ. Check it out and let me know if you still have questions!\n\n
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
-        • fixed redirect feature opening locked note without entering passcode\n
-        • working hard to ensure a pleasant crash-free experience:
-        99%+ of users do not experience any issues or crashes!\n\n
-
-        * - uses internet
+        • Fixed some minor bugs\n
+        • Always working hard to ensure a pleasant crash-free experience:
+        99%+ of users do not experience any issues or crashes!\n
     </string>
 
 </resources>

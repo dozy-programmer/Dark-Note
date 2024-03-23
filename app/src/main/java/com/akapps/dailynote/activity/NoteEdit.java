@@ -346,6 +346,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void swap(int initialFrom, int initialTo) {
         int oldInitialPosition = checkListItemsUnmanaged.get(initialFrom).getPositionInList();
         int oldInitialToPosition = checkListItemsUnmanaged.get(initialTo).getPositionInList();
+        if(initialFrom < 0 || initialTo < 0) return;
         checkListItemsUnmanaged.get(initialFrom).setPositionInList(oldInitialToPosition);
         checkListItemsUnmanaged.get(initialTo).setPositionInList(oldInitialPosition);
         Collections.swap(checkListItemsUnmanaged, initialFrom, initialTo);
@@ -1349,6 +1350,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         RealmResults<Photo> allNotePhotos = getPhotos();
         int before = countPicsNotFound;
 
+        if(getCurrentNote(context, noteId) == null || getCurrentNote(context, noteId).getPhotos() == null)
+            return;
+
         for (int i = 0; i < allNotePhotos.size(); i++) {
             File file = new File(allNotePhotos.get(i).getPhotoLocation());
             if (!file.exists()) {
@@ -2157,10 +2161,10 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isChanged = !isChanged;
         });
 
-//        findViewById(R.id.action_format_clear).setOnClickListener(v -> {
-//            InfoSheet info = new InfoSheet(9);
-//            info.show(getSupportFragmentManager(), info.getTag());
-//        });
+        findViewById(R.id.action_format_clear).setOnClickListener(v -> {
+            InfoSheet info = new InfoSheet(9);
+            info.show(getSupportFragmentManager(), info.getTag());
+        });
 
         findViewById(R.id.action_text_size).setOnClickListener(v -> {
             isChangingTextSize = true;
@@ -2172,14 +2176,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void removeFormatting() {
         updateSaveDateEdited();
-        note.removeFormat();
-//        String removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n"), Html.FROM_HTML_MODE_COMPACT).toString();
-//        removedFormat = removedFormat.replaceAll("\n", "<br>");
-//        getRealm().beginTransaction();
-//        getCurrentNote(context, noteId).setNote(removedFormat);
-//        getRealm().commitTransaction();
-//        note.setHtml(removedFormat);
-//        note.focusEditor();
+        String removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n"), Html.FROM_HTML_MODE_COMPACT).toString();
+        removedFormat = removedFormat.replaceAll("\n", "<br>");
+        getRealm().beginTransaction();
+        getCurrentNote(context, noteId).setNote(removedFormat);
+        getRealm().commitTransaction();
+        note.setHtml(removedFormat);
+        note.focusEditor();
         Helper.showMessage(this, "Removed", "Formatting has been removed",
                 MotionToast.TOAST_SUCCESS);
     }

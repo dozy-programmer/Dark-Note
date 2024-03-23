@@ -289,15 +289,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             // initialize layout
             title.setText("Logout");
             backup.setVisibility(View.VISIBLE);
-            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             backup.setText("LOGOUT");
             info.setText("Are you sure?");
             info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
         } else if (message == 9) {
-            title.setText("Remove Formatting");
+            title.setText("Remove All Formatting");
             backup.setVisibility(View.VISIBLE);
-            //backup.setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
             securityWord.setVisibility(View.GONE);
             backup.setText("REMOVE");
             info.setText("Are you sure?");
@@ -322,7 +320,10 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     Glide.with(getContext()).load(image).into(imageView))
                     .withBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor))
                     .allowZooming(true)
-                    .withDismissListener(() -> budgetChecklist.setImageDrawable(getContext().getDrawable(R.drawable.budget_checklist)))
+                    .withDismissListener(() -> {
+                        budgetChecklist.setImageDrawable(null);
+                        budgetChecklist.setImageDrawable(getContext().getDrawable(R.drawable.budget_checklist));
+                    })
                     .allowSwipeToDismiss(true)
                     .withHiddenStatusBar(false)
                     .withStartPosition(0)
@@ -333,7 +334,10 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     Glide.with(getContext()).load(image).into(imageView))
                     .withBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor))
                     .allowZooming(true)
-                    .withDismissListener(() -> budgetGraph.setImageDrawable(getContext().getDrawable(R.drawable.budget_graph)))
+                    .withDismissListener(() -> {
+                        budgetGraph.setImageDrawable(null);
+                        budgetGraph.setImageDrawable(getContext().getDrawable(R.drawable.budget_graph));
+                    })
                     .allowSwipeToDismiss(true)
                     .withHiddenStatusBar(false)
                     .withStartPosition(1)
