@@ -7,7 +7,7 @@ public class Helper {
 
     private static final Pattern pattern = Pattern.compile("[a-zA-Z]+");
 
-    public static String getCountrySymbol(String currencyCode){
+    public static String getCountrySymbol(String currencyCode) {
         Currency currency = Currency.getInstance(currencyCode);
         return currency.getSymbol();
     }
@@ -16,7 +16,7 @@ public class Helper {
         return pattern.matcher(text).matches();
     }
 
-    public static String removeAllLetters(String text){
+    public static String removeAllLetters(String text) {
         return pattern.matcher(text).replaceAll("");
     }
 

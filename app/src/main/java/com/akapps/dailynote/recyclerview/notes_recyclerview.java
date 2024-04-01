@@ -218,7 +218,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         String preview = Html.fromHtml(removeIframe, Html.FROM_HTML_MODE_COMPACT).toString();
         preview = preview.replaceAll("\n+", " ");
         // Define the pattern to match
-        holder.note_preview.setText(preview);
+        if (showPreview)
+            holder.note_preview.setText(preview);
+        else
+            holder.note_preview.setVisibility(View.GONE);
 
         // if note has a category, then it shows it
         if (currentNote.getCategory().equals("none")) {
@@ -259,22 +262,26 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             StringBuilder checkListString = new StringBuilder();
             RealmResults<CheckListItem> checklist = Helper.sortChecklist(context, noteId, RealmSingleton.getInstance(context));
             for (int i = 0; i < checklist.size(); i++) {
-                checkListString.append("• ").append(checklist.get(i).getText()).append("\n");
+                checkListString.append("• ").append(checklist.get(i).getText());
+                if (i + 1 != checklist.size()) checkListString.append("\n");
             }
 
-            if (showPreview && !isNoteLocked && checklist.size() > 0) {
+            if (!isNoteLocked && checklist.size() > 0) {
                 holder.preview_photo_message.setVisibility(View.VISIBLE);
                 holder.preview_photo_message.setText(checklist.size() + " items");
             } else {
                 holder.preview_photo_message.setVisibility(View.GONE);
             }
 
-            RealmSingleton.getInstance(context).beginTransaction();
-            currentNote.setChecklistConvertedToString(checkListString.toString());
-            RealmSingleton.getInstance(context).commitTransaction();
-            holder.note_preview.setText(checkListString.toString());
-            holder.note_preview.setTextSize(13);
-            holder.note_preview.setGravity(Gravity.LEFT);
+            if (showPreview) {
+                RealmSingleton.getInstance(context).beginTransaction();
+                currentNote.setChecklistConvertedToString(checkListString.toString());
+                RealmSingleton.getInstance(context).commitTransaction();
+                holder.note_preview.setText(checkListString.toString());
+                holder.note_preview.setTextSize(13);
+                holder.note_preview.setGravity(Gravity.LEFT);
+            } else
+                holder.note_preview.setVisibility(View.GONE);
         } else {
             holder.checklist_icon.setVisibility(View.GONE);
         }
@@ -297,6 +304,8 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if (isNoteLocked) {
             holder.note_preview.setVisibility(View.GONE);
             holder.lock_icon.setVisibility(View.VISIBLE);
+        } else if (!showPreview) {
+            holder.note_preview.setVisibility(View.GONE);
         } else {
             holder.note_preview.setVisibility(View.VISIBLE);
             holder.lock_icon.setVisibility(View.GONE);

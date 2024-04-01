@@ -921,13 +921,13 @@ public class notes extends Fragment {
         isAllSelected = !isAllSelected;
         if (isTrashSelected) {
             RealmResults<Note> realmResults = getRealm().where(Note.class).equalTo("trash", true).findAll();
-            if (realmResults.size() != 0) {
+            if (realmResults.isValid() && realmResults.size() != 0) {
                 getRealm().beginTransaction();
                 realmResults.setBoolean("isSelected", isAllSelected);
                 getRealm().commitTransaction();
             }
         } else {
-            if (filteredNotes.size() != 0) {
+            if (filteredNotes.isValid() && filteredNotes.size() != 0) {
                 getRealm().beginTransaction();
                 filteredNotes.setBoolean("isSelected", isAllSelected);
                 getRealm().commitTransaction();

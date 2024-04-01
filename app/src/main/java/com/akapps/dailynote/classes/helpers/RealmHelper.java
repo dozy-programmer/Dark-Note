@@ -295,7 +295,7 @@ public class RealmHelper {
                     .equalTo("text", checkListItem.getText())
                     .findFirst();
             getRealm(context).beginTransaction();
-            updateCheckListPosition(context, item, checkListItem.getPositionInList());
+            updateCheckListPosition(item, checkListItem.getPositionInList());
             getRealm(context).commitTransaction();
         }
 
@@ -339,12 +339,10 @@ public class RealmHelper {
         Log.d("Here", builder.toString());
     }
 
-    public static void updateCheckListPosition(Context context, CheckListItem item, int newPosition) {
+    public static void updateCheckListPosition(CheckListItem item, int newPosition) {
         try {
             item.setPositionInList(newPosition);
-        } catch (Exception e) {
-            getRealm(context).cancelTransaction();
-        }
+        } catch (Exception ignored) {}
     }
 
     public static void updateFolderPosition(Context context, Folder item, int newPosition) {

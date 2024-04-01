@@ -211,6 +211,42 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/folder_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="2dp"
+                android:gravity="right">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/category_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    app:cardBackgroundColor="?primaryBackgroundColor"
+                    app:cardCornerRadius="8dp"
+                    app:strokeColor="?primaryBackgroundColor"
+                    app:strokeWidth="2dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="5dp"
+                        android:text="insert category"
+                        android:textColor="?primaryTextColor"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -259,42 +295,6 @@
                     android:src="@drawable/delete_icon"
                     android:tint="@color/white"
                     android:visibility="gone"></ImageView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/folder_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="5dp"
-                android:gravity="right">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/category_background"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    app:cardBackgroundColor="?primaryBackgroundColor"
-                    app:cardCornerRadius="8dp"
-                    app:strokeColor="?primaryBackgroundColor"
-                    app:strokeWidth="2dp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/category"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="5dp"
-                        android:text="insert category"
-                        android:textColor="?primaryTextColor"
-                        android:textSize="10sp"
-                        android:textStyle="bold" />
-
-                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 

@@ -1,22 +1,23 @@
 package com.mukesh.countrypicker;
 
-import android.util.Log;
-
 import com.github.mukeshsolanki.R;
 
 import java.util.ArrayList;
 
 public class CountryList {
 
-    public static ArrayList<Country> getCountries(){
+    public static ArrayList<Country> getCountries() {
         ArrayList<Country> countriesWithSymbols = new ArrayList<>();
-        for(Country country : COUNTRIES){
+        for (Country country : COUNTRIES) {
             String countrySymbol = Helper.getCountrySymbol(country.getCurrency()).trim();
-            if(countrySymbol.isEmpty() || Helper.onlyContainsLetters(countrySymbol)){
-                Log.d("Here", "Delete " + country.getName());
+            if (countrySymbol.equals("ZAR")) {
+                country.setCurrencySymbol("R");
+                countriesWithSymbols.add(country);
                 continue;
             }
-            else if(!Helper.onlyContainsLetters(countrySymbol))
+            if (countrySymbol.isEmpty() || Helper.onlyContainsLetters(countrySymbol)) {
+                continue;
+            } else if (!Helper.onlyContainsLetters(countrySymbol))
                 country.setCurrencySymbol(Helper.removeAllLetters(countrySymbol));
             countriesWithSymbols.add(country);
         }
@@ -32,7 +33,7 @@ public class CountryList {
             new Country("AI", "Anguilla", "+1-264", R.drawable.flag_ai, "XCD"),
             new Country("AL", "Albania", "+355", R.drawable.flag_al, "ALL"),
             new Country("AM", "Armenia", "+374", R.drawable.flag_am, "AMD"),
-            new Country("AN","Netherlands Antilles", "+599",R.drawable.flag_an,"ANG"),
+            new Country("AN", "Netherlands Antilles", "+599", R.drawable.flag_an, "ANG"),
             new Country("AO", "Angola", "+244", R.drawable.flag_ao, "AOA"),
             new Country("AQ", "Antarctica", "+672", R.drawable.flag_aq, "USD"),
             new Country("AR", "Argentina", "+54", R.drawable.flag_ar, "ARS"),
