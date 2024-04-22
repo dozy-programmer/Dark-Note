@@ -7,7 +7,7 @@
     android:description="@string/preview_description"
     android:initialLayout="@layout/widget"
     android:minHeight="40dp"
-    android:minWidth="110dp"
+    android:minWidth="40dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400"
     android:widgetCategory="home_screen">

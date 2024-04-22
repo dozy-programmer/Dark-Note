@@ -20,6 +20,7 @@ import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,10 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds)
-            updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetId);
+            updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetId, false);
     }
 
-    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId) {
+    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId, boolean shortenText) {
         if (noteId == -1) return;
 
         new Handler(Looper.getMainLooper()).post(() -> {
@@ -44,7 +45,7 @@ public class AppWidget extends AppWidgetProvider {
                 boolean isAllChecklistDone = isAllChecklistChecked(currentNote);
                 // Construct the RemoteViews object
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
-                views.setTextViewText(R.id.appwidget_text, currentNote.getTitle());
+                views.setTextViewText(R.id.appwidget_text, currentNote.getTitle().isEmpty() ? "~ No Title ~" : currentNote.getTitle());
                 views.setInt(R.id.widget_background, "setBackgroundColor", currentNote.getBackgroundColor());
                 if (isAllChecklistDone)
                     views.setInt(R.id.appwidget_text, "setPaintFlags", Paint.STRIKE_THRU_TEXT_FLAG);
@@ -58,7 +59,7 @@ public class AppWidget extends AppWidgetProvider {
 
                 views.setInt(R.id.preview_checklist, "setBackgroundResource", isLightTheme ? R.drawable.round_corner_light : R.drawable.round_corner);
 
-                ArrayList<String> list = AppData.getNoteChecklist(noteId, context);
+                ArrayList<String> list = shortenText ? AppData.ensureNoteIsNotTooLarge(context, noteId) : AppData.getNoteChecklist(noteId, context);
 
                 Intent intent = new Intent(context, WidgetListView.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -89,7 +90,18 @@ public class AppWidget extends AppWidgetProvider {
                 views.setPendingIntentTemplate(R.id.preview_checklist, pendingIntent);
 
                 // Instruct the widget manager to update the widget
-                appWidgetManager.updateAppWidget(appWidgetId, views);
+                try {
+                    appWidgetManager.updateAppWidget(appWidgetId, views);
+                }
+                catch (Exception e){
+                    if(!shortenText){
+                        updateAppWidget(context, appWidgetManager, noteId, appWidgetId, true);
+                        FirebaseCrashlytics.getInstance().log("App crashed from Transaction too large, most likely so I will retry");
+                    }
+                    else{
+                        FirebaseCrashlytics.getInstance().log("Exception in AppWidget.java, maybe text size too large?");
+                    }
+                }
             }
         });
     }

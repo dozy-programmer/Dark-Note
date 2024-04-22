@@ -150,10 +150,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.redirectToNote.setClickable(false);
         }
 
-        if(isRedirectShown && !isPlaceShown){
+        if (isRedirectShown && !isPlaceShown) {
             holder.moveRedirectToNoteToRight.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             holder.moveRedirectToNoteToRight.setVisibility(View.GONE);
         }
 

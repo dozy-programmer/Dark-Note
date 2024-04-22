@@ -52,6 +52,7 @@ import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -188,6 +189,12 @@ public class notes extends Fragment {
             WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
             whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
             Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_17_3);
+        }
+
+        String userId = Helper.getPreference(context, AppConstants.USER_ID);
+        if (userId == null || userId.isEmpty()) {
+            FirebaseCrashlytics.getInstance().setUserId(String.valueOf(getUser().getUserId()));
+            Helper.savePreference(context, String.valueOf(getUser().getUserId()), AppConstants.USER_ID);
         }
 
         getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

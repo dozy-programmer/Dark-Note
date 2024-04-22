@@ -79,12 +79,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        SubCheckListItem checkListItem = checkList.get(position);
-        int checklistItemId = checkListItem.getId();
-
-        if(!checkListItem.isValid()){
-            checkListItem = RealmHelper.getRealm(context).where(SubCheckListItem.class).equalTo("id", checklistItemId).findFirst();
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+        SubCheckListItem checkListItem;
+        try {
+            checkListItem = checkList.get(position);
+        } catch (Exception e) {
+            Helper.restart(activity);
+            return;
         }
 
         // retrieves checkList text and select status of checkListItem
@@ -127,13 +128,13 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
 
         // if checklist item is clicked, then it updates the status of the item
         holder.checkItem.setOnClickListener(v -> {
-            saveSelected(checklistItemId, !isSelected);
+            saveSelected(checkListItem, !isSelected);
             notifyItemChanged(position);
         });
         // if checklist item is clicked, then it updates the status of the item
         // this is added to support clickable links
         holder.checklistText.setOnClickListener(v -> {
-            saveSelected(checklistItemId, !isSelected);
+            saveSelected(checkListItem, !isSelected);
             notifyItemChanged(position);
         });
 
@@ -153,7 +154,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         });
 
         holder.edit.setOnClickListener(v -> {
-            openEditDialog(parentSublistListItem, checklistItemId, position);
+            openEditDialog(parentSublistListItem, checkListItem, position);
         });
 
     }
@@ -169,11 +170,10 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     }
 
     // updates select status of note in database
-    private void saveSelected(int checkListItemId, boolean status) {
-        SubCheckListItem item = RealmHelper.getRealm(context).where(SubCheckListItem.class).equalTo("id", checkListItemId).findFirst();
+    private void saveSelected(SubCheckListItem checkListItem, boolean status) {
         // save status to database
         RealmSingleton.getInstance(context).beginTransaction();
-        item.setChecked(status);
+        checkListItem.setChecked(status);
         RealmSingleton.getInstance(context).commitTransaction();
         ((NoteEdit) context).updateSaveDateEdited();
     }
@@ -185,9 +185,8 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     }
 
     // opens dialog that allows user to edit or delete checklist item
-    private void openEditDialog(CheckListItem parentSubItem, int checkListItemId, int position) {
-        SubCheckListItem item = RealmHelper.getRealm(context).where(SubCheckListItem.class).equalTo("id", checkListItemId).findFirst();
-        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(parentSubItem, item, position, this);
+    private void openEditDialog(CheckListItem parentSubItem, SubCheckListItem checkListItem, int position) {
+        ChecklistItemSheet checklistItemSheet = new ChecklistItemSheet(parentSubItem, checkListItem, position, this);
         checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
     }
 }

@@ -64,7 +64,7 @@
                     android:layout_height="55dp"
                     android:layout_marginHorizontal="20dp"
                     android:gravity="left|center_vertical"
-                    android:text="Background"
+                    android:text="Preview Background"
                     android:textColor="?primaryTextColor"
                     android:textSize="23sp"
                     android:textStyle="bold"

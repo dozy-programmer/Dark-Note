@@ -13,12 +13,13 @@ import io.realm.RealmSchema;
 public class RealmDatabase {
 
     public static Realm setUpDatabase(Context context) {
+        int adjustableVersion = Helper.getIntPreference(context, AppConstants.SCHEMA_VERSION);
         int currentVersion = Integer.parseInt(context.getString(R.string.schema));
-
+        int finalVersion = Math.max(adjustableVersion, currentVersion);
         Realm.init(context);
 
         RealmConfiguration config = new RealmConfiguration.Builder()
-                .schemaVersion(currentVersion)
+                .schemaVersion(finalVersion)
                 .migration(new MyMigration())
                 .compactOnLaunch()
                 .allowWritesOnUiThread(true)
@@ -211,6 +212,9 @@ public class RealmDatabase {
 
             if (!schema.get("User").hasField("showPreviewNoteInfoAtBottom"))
                 schema.get("User").addField("showPreviewNoteInfoAtBottom", boolean.class);
+
+            if (!schema.get("User").hasField("usePreviewColorAsBackground"))
+                schema.get("User").addField("usePreviewColorAsBackground", boolean.class);
         }
     }
 }

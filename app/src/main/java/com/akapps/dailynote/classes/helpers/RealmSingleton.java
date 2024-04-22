@@ -3,9 +3,11 @@ package com.akapps.dailynote.classes.helpers;
 import android.content.Context;
 import android.util.Log;
 
+import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.User;
 
 import io.realm.Realm;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 public class RealmSingleton {
     private static Realm realmInstance;
@@ -30,7 +32,13 @@ public class RealmSingleton {
             try {
                 realmInstance = Realm.getDefaultInstance();
             } catch (Exception e) {
-                realmInstance = RealmDatabase.setUpDatabase(context);
+                try {
+                    realmInstance = RealmDatabase.setUpDatabase(context);
+                } catch (RealmMigrationNeededException exception){
+                    int currentVersion = Integer.parseInt(context.getString(R.string.schema));
+                    Helper.savePreference(context, String.valueOf(++currentVersion), AppConstants.SCHEMA_VERSION);
+                    realmInstance = RealmDatabase.setUpDatabase(context);
+                }
             }
         }
         return realmInstance;

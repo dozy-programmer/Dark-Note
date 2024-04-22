@@ -4,10 +4,8 @@ import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;

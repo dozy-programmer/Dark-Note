@@ -86,8 +86,9 @@ public class AppData {
             if (!currentNote.isCheckList()) {
                 if (currentNote.getNote().isEmpty())
                     allArraylistChecklist.add("Empty");
-                else
+                else {
                     allArraylistChecklist.add(currentNote.getNote() + "-Note-");
+                }
             } else {
                 noteArrayList.addAll(realm.copyFromRealm(currentNote.getChecklist()));
                 for (CheckListItem current : noteArrayList) {
@@ -104,6 +105,28 @@ public class AppData {
                 if (allArraylistChecklist.size() == 0)
                     allArraylistChecklist.add("Empty");
             }
+        }
+
+        return allArraylistChecklist;
+    }
+
+    public static ArrayList<String> ensureNoteIsNotTooLarge(Context context, int noteId){
+        Realm realm = getRealm(context);
+        Note currentNote = realm.where(Note.class)
+                .equalTo("noteId", noteId).findFirst();
+        String note = currentNote.getNote();
+        ArrayList<String> allArraylistChecklist = new ArrayList<>();
+
+        int maxLength = 1500;
+        String truncatedNote = note.substring(0, Math.min(note.length(), maxLength));
+        if (truncatedNote.length() < note.length()) {
+            truncatedNote += "... note too large, open note to see more";
+        }
+        if(note.isEmpty()){
+            allArraylistChecklist.add("Empty");
+        }
+        else{
+            allArraylistChecklist.add(truncatedNote + "-Note-");
         }
 
         return allArraylistChecklist;

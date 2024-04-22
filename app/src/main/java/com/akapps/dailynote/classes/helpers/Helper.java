@@ -413,6 +413,12 @@ public class Helper {
         return data;
     }
 
+    public static int getIntPreference(Context context, String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("app", MODE_PRIVATE);
+        String data = sharedPreferences.getString(key, null);
+        return data == null ? 0 : Integer.parseInt(data);
+    }
+
     // saves a small piece of data
     public static void saveBooleanPreference(Context context, boolean data, String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("app", MODE_PRIVATE);
@@ -569,7 +575,7 @@ public class Helper {
             AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(currentNote.getWidgetId());
             if (info != null) {
                 if (currentNote.getWidgetId() > 0) {
-                    AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId());
+                    AppWidget.updateAppWidget(context, appWidgetManager, currentNote.getNoteId(), currentNote.getWidgetId(), false);
                     appWidgetManager.notifyAppWidgetViewDataChanged(currentNote.getWidgetId(), R.id.preview_checklist);
                 }
             } else {

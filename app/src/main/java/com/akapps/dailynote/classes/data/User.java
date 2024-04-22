@@ -48,6 +48,7 @@ public class User extends RealmObject {
     private boolean disableAnimation;
     private boolean showChecklistCheckbox;
     private boolean disableLastEditInfo;
+    private boolean usePreviewColorAsBackground;
 
     // note security and retrieval of password
     private String securityWord;
@@ -89,7 +90,7 @@ public class User extends RealmObject {
         budgetCharacter = "+$";
         expenseCharacter = "$";
         enableEditableNoteButton = disableAnimation = showChecklistCheckbox =
-                disableLastEditInfo = false;
+                disableLastEditInfo = usePreviewColorAsBackground = false;
         screenMode = 1;
         textSize = 20;
     }
@@ -395,5 +396,13 @@ public class User extends RealmObject {
 
     public void setShowPreviewNoteInfoAtBottom(boolean showPreviewNoteInfoAtBottom) {
         this.showPreviewNoteInfoAtBottom = showPreviewNoteInfoAtBottom;
+    }
+
+    public boolean isUsePreviewColorAsBackground() {
+        return usePreviewColorAsBackground;
+    }
+
+    public void setUsePreviewColorAsBackground(boolean usePreviewColorAsBackground) {
+        this.usePreviewColorAsBackground = usePreviewColorAsBackground;
     }
 }

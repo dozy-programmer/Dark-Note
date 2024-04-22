@@ -10,6 +10,9 @@ public class AppConstants {
     public static String BACKUP_ZIP_FILE_NAME = "backup.zip";
     public static String ZIP_EXTENSION = "zip";
 
+    public static String SCHEMA_VERSION = "schema_version";
+    public static String USER_ID = "user_id";
+
     public static String WHATS_NEW_17_3 = "update_17_3";
 
     public static String getMonthDay() {
