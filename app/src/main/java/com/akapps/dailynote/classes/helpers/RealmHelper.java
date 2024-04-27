@@ -155,9 +155,7 @@ public class RealmHelper {
         getRealm(context).beginTransaction();
         try {
             sublistItem.deleteFromRealm();
-        } catch (Exception e) {
-            getRealm(context).cancelTransaction();
-        }
+        } catch (Exception ignore) {}
         getRealm(context).commitTransaction();
     }
 
@@ -207,13 +205,13 @@ public class RealmHelper {
             if (currentNote.getLightTextColor() == 0 || currentNote.getLightTextColor() == -1)
                 return primaryTextColor;
 
-            if (currentNote.getLightTextColor() == context.getColor(R.color.white))
+            if (currentNote.getLightTextColor() == context.getResources().getColor(R.color.white))
                 return primaryTextColor;
         } else {
             if (currentNote.getTextColor() == 0 || currentNote.getTextColor() == -1)
                 return primaryTextColor;
 
-            if (currentNote.getTextColor() == context.getColor(R.color.black))
+            if (currentNote.getTextColor() == context.getResources().getColor(R.color.black))
                 return primaryTextColor;
         }
 

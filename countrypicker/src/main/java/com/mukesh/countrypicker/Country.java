@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import java.util.Locale;
 
-public class Country {
+public class Country implements Comparable<Country> {
 
   private String code;
   private String name;
@@ -89,4 +89,8 @@ public class Country {
     }
   }
 
+  @Override
+  public int compareTo(Country country) {
+    return this.name.compareTo(country.name);
+  }
 }

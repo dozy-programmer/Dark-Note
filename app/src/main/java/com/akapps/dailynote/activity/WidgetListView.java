@@ -60,6 +60,11 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
+            if(position >= checklist.size()) {
+                RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.recyclerview_widget);
+                remoteView.setViewVisibility(R.id.checkItem, View.GONE);
+                return remoteView;
+            }
             String currentItem = checklist.get(position);
             RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.recyclerview_widget);
             isLightMode = UiHelper.getLightThemePreference(context);

@@ -165,11 +165,11 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private void initializeLayout(boolean isDarkMode) {
-        exportText.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.blue : R.color.transparent)));
-        exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.azure : R.color.transparent)));
-        exportTextString.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.golden_rod : R.color.transparent)));
-        exportTextStringFormatted.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.gumbo : R.color.transparent)));
-        exportNote.setStrokeColor(ColorStateList.valueOf(getContext().getColor(isDarkMode ? R.color.money_green : R.color.transparent)));
+        exportText.setStrokeColor(ColorStateList.valueOf(getContext().getResources().getColor(isDarkMode ? R.color.blue : R.color.transparent)));
+        exportMarkdown.setStrokeColor(ColorStateList.valueOf(getContext().getResources().getColor(isDarkMode ? R.color.azure : R.color.transparent)));
+        exportTextString.setStrokeColor(ColorStateList.valueOf(getContext().getResources().getColor(isDarkMode ? R.color.golden_rod : R.color.transparent)));
+        exportTextStringFormatted.setStrokeColor(ColorStateList.valueOf(getContext().getResources().getColor(isDarkMode ? R.color.gumbo : R.color.transparent)));
+        exportNote.setStrokeColor(ColorStateList.valueOf(getContext().getResources().getColor(isDarkMode ? R.color.money_green : R.color.transparent)));
     }
 
     @Override

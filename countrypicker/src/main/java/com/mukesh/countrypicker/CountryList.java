@@ -3,24 +3,19 @@ package com.mukesh.countrypicker;
 import com.github.mukeshsolanki.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class CountryList {
 
     public static ArrayList<Country> getCountries() {
         ArrayList<Country> countriesWithSymbols = new ArrayList<>();
         for (Country country : COUNTRIES) {
-            String countrySymbol = Helper.getCountrySymbol(country.getCurrency()).trim();
-            if (countrySymbol.equals("ZAR")) {
-                country.setCurrencySymbol("R");
-                countriesWithSymbols.add(country);
-                continue;
-            }
-            if (countrySymbol.isEmpty() || Helper.onlyContainsLetters(countrySymbol)) {
-                continue;
-            } else if (!Helper.onlyContainsLetters(countrySymbol))
-                country.setCurrencySymbol(Helper.removeAllLetters(countrySymbol));
+            String countrySymbol = Helper.getCountrySymbol(country.getCurrency());
+            if(countrySymbol == null) continue;
+            country.setCurrencySymbol(countrySymbol.trim());
             countriesWithSymbols.add(country);
         }
+        Collections.sort(countriesWithSymbols);
         return countriesWithSymbols;
     }
 
@@ -193,7 +188,7 @@ public class CountryList {
             new Country("PM", "Saint Pierre and Miquelon", "+508", R.drawable.flag_pm, "EUR"),
             new Country("PN", "Pitcairn", "+64", R.drawable.flag_pn, "NZD"),
             new Country("PR", "Puerto Rico", "+1-787, +1-939", R.drawable.flag_pr, "USD"),
-            new Country("PS", "Palestinian", "+970", R.drawable.flag_ps, "ILS"),
+            new Country("PS", "Palestine", "+970", R.drawable.flag_ps, "USD"),
             new Country("PT", "Portugal", "+351", R.drawable.flag_pt, "EUR"),
             new Country("PW", "Palau", "+680", R.drawable.flag_pw, "USD"),
             new Country("PY", "Paraguay", "+595", R.drawable.flag_py, "PYG"),

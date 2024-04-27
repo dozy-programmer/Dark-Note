@@ -70,14 +70,14 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
                 recordingAnimation.pauseAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.mic_icon));
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
-                        .getColor(R.color.red)));
+                        .getResources().getColor(R.color.red)));
             } else if (audioManager.isPaused()) {
                 Helper.startTimer(handlerTimer, AppData.timerDuration);
                 audioManager.pauseRecording(false);
                 recordingAnimation.playAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.pause_icon));
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
-                        .getColor(R.color.ocean_green)));
+                        .getResources().getColor(R.color.ocean_green)));
             } else {
                 dialog.setCanceledOnTouchOutside(false);
                 dialog.setCancelable(false);
@@ -87,7 +87,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
                 recordingAnimation.playAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.pause_icon));
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
-                        .getColor(R.color.ocean_green)));
+                        .getResources().getColor(R.color.ocean_green)));
             }
         });
 

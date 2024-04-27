@@ -40,6 +40,16 @@ RE.setHtml = function(contents) {
     RE.editor.innerHTML = decodeURIComponent(contents.replace(/\+/g, '%20'));
 }
 
+RE.setRtlDirection = function() {
+    RE.editor.dir = "rtl";
+    console.log("RTL set");
+}
+
+RE.setDefaultDirection = function() {
+    RE.editor.dir = "ltr";
+    console.log("LTR set");
+}
+
 RE.getHtml = function() {
     return RE.editor.innerHTML;
 }

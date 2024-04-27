@@ -78,16 +78,9 @@ public class CountryPicker implements BottomSheetInteractionListener, LifecycleO
 
     @SuppressLint("SetTextI18n")
     private void sortCountries(@NonNull List<Country> countries, boolean isSearching) {
-        if (sortBy == SORT_BY_NAME) {
-            countries.sort((country1, country2) ->
-                    country1.getName().trim().compareToIgnoreCase(country2.getName().trim()));
-        } else if (sortBy == SORT_BY_ISO) {
-            countries.sort((country1, country2) ->
-                    country1.getCode().trim().compareToIgnoreCase(country2.getCode().trim()));
-        }
-        if(isSearching && countries.size() == 0)
+        if(isSearching && countries.isEmpty())
             message.setText("No countries found...");
-        else if(countries.size() == 0 || !isSearching)
+        else if(countries.isEmpty() || !isSearching)
             message.setText("Select from the following countries...");
         else
             message.setText(countries.size() + " found, click on search icon to view all results");

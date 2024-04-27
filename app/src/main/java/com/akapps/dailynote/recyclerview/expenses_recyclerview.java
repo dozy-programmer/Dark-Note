@@ -19,11 +19,12 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recyclerview.MyViewHolder> {
 
     // project data
-    private ArrayList<Expense> expenses;
+    private List<Expense> expenses;
     private double totalBudget;
     private String expenseKey;
 
@@ -46,7 +47,7 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         }
     }
 
-    public expenses_recyclerview(ArrayList<Expense> expenses, double totalBudget, String expenseKey) {
+    public expenses_recyclerview(List<Expense> expenses, double totalBudget, String expenseKey) {
         this.expenses = expenses;
         this.totalBudget = totalBudget;
         this.expenseKey = expenseKey;
@@ -72,7 +73,7 @@ public class expenses_recyclerview extends RecyclerView.Adapter<expenses_recycle
         if (expenseName.equals("Over Budget"))
             holder.expenseName.setTextColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.tertiaryButtonColor));
         else if (expenseName.equals("Under Budget"))
-            holder.expenseName.setTextColor(holder.view.getContext().getColor(R.color.money_green));
+            holder.expenseName.setTextColor(holder.view.getContext().getResources().getColor(R.color.money_green));
         else
             holder.expenseName.setTextColor(UiHelper.getColorFromTheme(holder.view.getContext(), R.attr.primaryTextColor));
 

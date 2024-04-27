@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Build;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -172,34 +173,32 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
 
         if (Helper.isColorDark(currentNote.getBackgroundColor())) {
-            holder.note_title.setTextColor(activity.getColor(R.color.white));
-            holder.note_edited.setTextColor(activity.getColor(R.color.white));
-            holder.note_preview.setTextColor(activity.getColor(R.color.white));
-            holder.preview_photo_message.setTextColor(activity.getColor(R.color.white));
-            holder.checklist_icon.setColorFilter(activity.getColor(R.color.white));
-            holder.archived_icon.setColorFilter(activity.getColor(R.color.white));
-            holder.trash_icon.setColorFilter(activity.getColor(R.color.white));
-            holder.checklist_icon_2.setColorFilter(activity.getColor(R.color.white));
-            holder.archived_icon_2.setColorFilter(activity.getColor(R.color.white));
-            holder.trash_icon_2.setColorFilter(activity.getColor(R.color.white));
+            holder.note_title.setTextColor(activity.getResources().getColor(R.color.white));
+            holder.note_edited.setTextColor(activity.getResources().getColor(R.color.white));
+            holder.note_preview.setTextColor(activity.getResources().getColor(R.color.white));
+            holder.preview_photo_message.setTextColor(activity.getResources().getColor(R.color.white));
+            holder.checklist_icon.setColorFilter(activity.getResources().getColor(R.color.white));
+            holder.archived_icon.setColorFilter(activity.getResources().getColor(R.color.white));
+            holder.trash_icon.setColorFilter(activity.getResources().getColor(R.color.white));
+            holder.checklist_icon_2.setColorFilter(activity.getResources().getColor(R.color.white));
+            holder.archived_icon_2.setColorFilter(activity.getResources().getColor(R.color.white));
+            holder.trash_icon_2.setColorFilter(activity.getResources().getColor(R.color.white));
         } else {
-            holder.note_title.setTextColor(activity.getColor(R.color.black));
-            holder.note_edited.setTextColor(activity.getColor(R.color.gray));
-            holder.note_preview.setTextColor(activity.getColor(R.color.gray));
-            holder.preview_photo_message.setTextColor(activity.getColor(R.color.gray));
-            holder.checklist_icon.setColorFilter(activity.getColor(R.color.gray));
-            holder.archived_icon.setColorFilter(activity.getColor(R.color.gray));
-            holder.trash_icon.setColorFilter(activity.getColor(R.color.gray));
-            holder.checklist_icon_2.setColorFilter(activity.getColor(R.color.gray));
-            holder.archived_icon_2.setColorFilter(activity.getColor(R.color.gray));
-            holder.trash_icon_2.setColorFilter(activity.getColor(R.color.gray));
+            holder.note_title.setTextColor(activity.getResources().getColor(R.color.black));
+            holder.note_edited.setTextColor(activity.getResources().getColor(R.color.gray));
+            holder.note_preview.setTextColor(activity.getResources().getColor(R.color.gray));
+            holder.preview_photo_message.setTextColor(activity.getResources().getColor(R.color.gray));
+            holder.checklist_icon.setColorFilter(activity.getResources().getColor(R.color.gray));
+            holder.archived_icon.setColorFilter(activity.getResources().getColor(R.color.gray));
+            holder.trash_icon.setColorFilter(activity.getResources().getColor(R.color.gray));
+            holder.checklist_icon_2.setColorFilter(activity.getResources().getColor(R.color.gray));
+            holder.archived_icon_2.setColorFilter(activity.getResources().getColor(R.color.gray));
+            holder.trash_icon_2.setColorFilter(activity.getResources().getColor(R.color.gray));
         }
 
         if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark) {
-            holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 192));
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Gray) {
-            holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 255));
-        } else if (RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Light) {
+            holder.note_background.setCardBackgroundColor(Helper.darkenColor(currentNote.getBackgroundColor(), 200));
+        } else {
             holder.note_background.setCardBackgroundColor(currentNote.getBackgroundColor());
         }
 
@@ -215,7 +214,12 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         String currentNoteImageLinksRemovedAndReplaced = Pattern.compile(pattern).matcher(currentNote.getNote().replace("<br>", " ")).replaceAll(replacement);
         String removeIframe = Pattern.compile(pattern_2).matcher(currentNoteImageLinksRemovedAndReplaced).replaceAll("\uD83C\uDFA5");
         // format note to remove all new line characters and any spaces more than a length of 1
-        String preview = Html.fromHtml(removeIframe, Html.FROM_HTML_MODE_COMPACT).toString();
+        String preview = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            preview = Html.fromHtml(removeIframe, Html.FROM_HTML_MODE_COMPACT).toString();
+        } else {
+            preview = Html.fromHtml(removeIframe).toString();
+        }
         preview = preview.replaceAll("\n+", " ");
         // Define the pattern to match
         if (showPreview)
@@ -236,9 +240,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.folder_layout.setVisibility(View.VISIBLE);
             holder.category.setText(currentNote.getCategory());
             holder.category.setTextColor(folder.getColor() == 0 ?
-                    activity.getColor(R.color.azure) : folder.getColor());
+                    activity.getResources().getColor(R.color.azure) : folder.getColor());
             holder.category_background.setStrokeColor(folder.getColor() == 0 ?
-                    activity.getColor(R.color.azure) : folder.getColor());
+                    activity.getResources().getColor(R.color.azure) : folder.getColor());
         }
 
         // if selecting multiple notes, it changes the color of the note outline
@@ -246,7 +250,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         if (enableSelectMultiple) {
             if (!currentNote.isValid()) currentNote = RealmHelper.getCurrentNote(context, noteId);
             if (currentNote.isSelected())
-                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeColor(activity.getResources().getColor(R.color.red));
             else
                 holder.note_background.setStrokeColor(RealmHelper.getUser(context, "in space").getScreenMode() == User.Mode.Dark ?
                         Helper.darkenColor(currentNote.getBackgroundColor(), 0)
@@ -328,9 +332,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             }
             Date now = new Date();
             if (now.after(reminderDate))
-                holder.reminder_icon.setColorFilter(activity.getColor(R.color.red));
+                holder.reminder_icon.setColorFilter(activity.getResources().getColor(R.color.red));
             else
-                holder.reminder_icon.setColorFilter(activity.getColor(R.color.ocean_green));
+                holder.reminder_icon.setColorFilter(activity.getResources().getColor(R.color.ocean_green));
         } else
             holder.reminder_icon.setVisibility(View.GONE);
 
@@ -476,7 +480,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(noteId, true);
-                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeColor(activity.getResources().getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
@@ -490,7 +494,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(noteId, true);
-                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeColor(activity.getResources().getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
@@ -504,7 +508,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(noteId, true);
-                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeColor(activity.getResources().getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
@@ -529,7 +533,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                     ((notes) noteFragment).numberSelected(0, 1, -1);
                 } else {
                     saveSelected(noteId, true);
-                    holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                    holder.note_background.setStrokeColor(activity.getResources().getColor(R.color.red));
                     holder.note_background.setStrokeWidth(10);
                     ((notes) noteFragment).numberSelected(1, 0, -1);
                 }
@@ -544,7 +548,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
                 ((notes) noteFragment).unSelectAllNotes();
                 enableSelectMultiple = true;
                 saveSelected(noteId, true);
-                holder.note_background.setStrokeColor(activity.getColor(R.color.red));
+                holder.note_background.setStrokeColor(activity.getResources().getColor(R.color.red));
                 holder.note_background.setStrokeWidth(10);
                 ((notes) noteFragment).deleteMultipleNotesLayout();
                 ((notes) noteFragment).numberSelected(1, 0, -1);
@@ -577,7 +581,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
             new StfalconImageViewer.Builder<>(noteFragment.getContext(), images, (imageView, image) ->
                     Glide.with(noteFragment.getContext()).load(image).into(imageView))
-                    .withBackgroundColor(noteFragment.getContext().getColor(R.color.gray))
+                    .withBackgroundColor(noteFragment.getContext().getResources().getColor(R.color.gray))
                     .allowZooming(true)
                     .allowSwipeToDismiss(true)
                     .withDismissListener(() -> notifyItemChanged(notePosition))

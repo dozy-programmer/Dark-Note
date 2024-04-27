@@ -83,7 +83,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
             holder.delete.setVisibility(View.GONE);
             holder.share.setVisibility(View.GONE);
             holder.imageSize.setVisibility(View.GONE);
-            holder.background.setCardBackgroundColor(context.getColor(R.color.transparent));
+            holder.background.setCardBackgroundColor(context.getResources().getColor(R.color.transparent));
         }
 
         // populates photo into the recyclerview
@@ -105,7 +105,7 @@ public class photos_recyclerview extends RecyclerView.Adapter<photos_recyclervie
 
             new StfalconImageViewer.Builder<>(context, images, (imageView, image) ->
                     Glide.with(context).load(image).into(imageView))
-                    .withBackgroundColor(context.getColor(R.color.gray))
+                    .withBackgroundColor(context.getResources().getColor(R.color.gray))
                     .allowZooming(true)
                     .withDismissListener(() -> notifyItemChanged(position))
                     .allowSwipeToDismiss(true)

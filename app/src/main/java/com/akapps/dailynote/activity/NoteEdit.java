@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +25,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -217,6 +217,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public boolean showLockScreen = true;
 
+    private boolean boldSelected = false;
+    private boolean italicsSelected = false;
+    private boolean crossedSelected = false;
+    private boolean underlineSelected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(getThemeStyle(this));
@@ -276,6 +281,26 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             addAudioItem.setVisibility(View.VISIBLE);
         if (!getUser().isHideBudget() && getCurrentNote(context, noteId).isCheckList())
             budget.setVisibility(View.VISIBLE);
+
+        updateOtherColors();
+
+        TextView text = (TextView) findViewById(R.id.text_direction);
+        if (getCurrentNote(context, noteId).getNoteTextDirection() == null || getCurrentNote(context, noteId).getNoteTextDirection().isEmpty()) {
+            getRealm().beginTransaction();
+            getCurrentNote(context, noteId).setNoteTextDirection("ltr");
+            getRealm().commitTransaction();
+            text.setText("RTL");
+            Log.d("Here", "I am null, setting to ltr");
+            note.setDefaultDirection();
+        } else if (getCurrentNote(context, noteId).getNoteTextDirection().equals("rtl")) {
+            text.setText("LTR");
+            note.setRtlDirection();
+            Log.d("Here", "I am set to rtl");
+        } else if (getCurrentNote(context, noteId).getNoteTextDirection().equals("ltr")) {
+            text.setText("RTL");
+            note.setDefaultDirection();
+            Log.d("Here", "I am set to ltr");
+        }
 
         if (RealmHelper.isNoteWidget(context, noteId))
             Helper.updateWidget(getCurrentNote(context, noteId), context, getRealm());
@@ -346,7 +371,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void swap(int initialFrom, int initialTo) {
         int oldInitialPosition = checkListItemsUnmanaged.get(initialFrom).getPositionInList();
         int oldInitialToPosition = checkListItemsUnmanaged.get(initialTo).getPositionInList();
-        if(initialFrom < 0 || initialTo < 0) return;
+        if (initialFrom < 0 || initialTo < 0) return;
         checkListItemsUnmanaged.get(initialFrom).setPositionInList(oldInitialToPosition);
         checkListItemsUnmanaged.get(initialTo).setPositionInList(oldInitialPosition);
         Collections.swap(checkListItemsUnmanaged, initialFrom, initialTo);
@@ -678,7 +703,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         title.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {  }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -717,6 +743,30 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         findText(s.toString().toLowerCase());
                 }
             });
+            note.setOnDecorationChangeListener((text, types) -> {
+                findViewById(R.id.action_bold).setBackgroundColor(context.getResources().getColor(R.color.transparent));
+                findViewById(R.id.action_underline).setBackgroundColor(context.getResources().getColor(R.color.transparent));
+                findViewById(R.id.action_italic).setBackgroundColor(context.getResources().getColor(R.color.transparent));
+                findViewById(R.id.action_strikethrough).setBackgroundColor(context.getResources().getColor(R.color.transparent));
+                int selected = UiHelper.getColorFromTheme(context, R.attr.tertiaryBackgroundColor);
+                for (RichEditor.Type type : types) {
+                    Log.d("Here", "onStateChangeListener() called with: text = [" + text + "], types = [" + types + "]");
+                    switch (type) {
+                        case BOLD:
+                            findViewById(R.id.action_bold).setBackgroundColor(selected);
+                            break;
+                        case UNDERLINE:
+                            findViewById(R.id.action_underline).setBackgroundColor(selected);
+                            break;
+                        case ITALIC:
+                            findViewById(R.id.action_italic).setBackgroundColor(selected);
+                            break;
+                        case STRIKETHROUGH:
+                            findViewById(R.id.action_strikethrough).setBackgroundColor(selected);
+                            break;
+                    }
+                }
+            });
             note.setOnImageClickListener(new RichEditor.ImageClickListener() {
                 @Override
                 public void onImageClick(String imageSrc) {
@@ -728,7 +778,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         Handler mainHandler = new Handler(Looper.getMainLooper());
                         Runnable myRunnable = () ->
                                 new StfalconImageViewer.Builder<>(context, images, (imageView, image) -> Glide.with(context).load(image).into(imageView))
-                                        .withBackgroundColor(context.getColor(R.color.gray))
+                                        .withBackgroundColor(context.getResources().getColor(R.color.gray))
                                         .allowZooming(true)
                                         .allowSwipeToDismiss(true)
                                         .withHiddenStatusBar(false)
@@ -1056,18 +1106,66 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         title.clearFocus();
     }
 
+    public boolean isUsingPreviewBackground() {
+        return getUser().isUsePreviewColorAsBackground() && getCurrentNote(context, noteId).isUsePreviewAsNoteBackground();
+    }
+
+    public void updateOtherColors() {
+        if (isUsingPreviewBackground()) {
+            int previewBackgroundColor = getCurrentNote(context, noteId).getBackgroundColor();
+            note.setBackgroundColor(previewBackgroundColor);
+            scrollView.setBackgroundColor(previewBackgroundColor);
+            if (getCurrentNote(context, noteId).getLastEditFolderTextColor() != 0) {
+                folderText.setTextColor(getCurrentNote(context, noteId).getLastEditFolderTextColor());
+                category.setTextColor(getCurrentNote(context, noteId).getLastEditFolderTextColor());
+                date.setTextColor(getCurrentNote(context, noteId).getLastEditFolderTextColor());
+            }
+            UiHelper.setStatusBarColor(this, previewBackgroundColor);
+            if (getCurrentNote(context, noteId).getEditorIconTransparency() != 0) {
+                double dimValue = getCurrentNote(context, noteId).getEditorIconTransparency();
+                dimNote((float) dimValue);
+            } else {
+                getRealm().beginTransaction();
+                getCurrentNote(context, noteId).setEditorIconTransparency(0.75);
+                getRealm().commitTransaction();
+                dimNote(0.75f);
+            }
+        } else {
+            folderText.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
+            date.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
+            category.setTextColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
+            note.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
+            scrollView.setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.primaryBackgroundColor));
+            UiHelper.setStatusBarColor(this);
+            dimNote(1f);
+        }
+    }
+
     public void updateColors() {
         noteColor.setCardBackgroundColor(getCurrentNote(context, noteId).getBackgroundColor());
-        category.setTextColor(getCurrentNote(context, noteId).getBackgroundColor());
+        if (!getUser().isUsePreviewColorAsBackground())
+            category.setTextColor(getCurrentNote(context, noteId).getBackgroundColor());
+        else
+            category.setTextColor(UiHelper.getColorFromTheme(context, R.attr.primaryTextColor));
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
         note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         if (checklistAdapter != null && getCurrentNote(context, noteId).isCheckList())
             checklistAdapter.notifyDataSetChanged();
 
         if (!Helper.isColorDark(getCurrentNote(context, noteId).getBackgroundColor()))
-            palleteIconColor.setColorFilter(context.getColor(R.color.black));
+            palleteIconColor.setColorFilter(context.getResources().getColor(R.color.black));
         else
-            palleteIconColor.setColorFilter(context.getColor(R.color.white));
+            palleteIconColor.setColorFilter(context.getResources().getColor(R.color.white));
+    }
+
+    private void dimNote(float value) {
+        closeNote.setAlpha(value);
+        expandMenu.setAlpha(value);
+        noteColor.setAlpha(value);
+        photosNote.setAlpha(value);
+        pinNoteButton.setAlpha(value);
+        searchLayout.setAlpha(value);
+        editorScroll.setAlpha(value);
     }
 
     private void findText(String target) {
@@ -1090,7 +1188,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void findAllTextIndexes(String target) {
         wordOccurences = new ArrayList<String>();
         target = target.toLowerCase();
-        String text = Html.fromHtml(getCurrentNote(context, noteId).getNote().toLowerCase(), Html.FROM_HTML_MODE_COMPACT).toString();
+        String text = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            text = Html.fromHtml(getCurrentNote(context, noteId).getNote().toLowerCase(), Html.FROM_HTML_MODE_COMPACT).toString();
+        } else {
+            text = Html.fromHtml(getCurrentNote(context, noteId).getNote().toLowerCase()).toString();
+        }
         int index = 0;
         while (index >= 0) {
             index = text.indexOf(target, index);
@@ -1350,7 +1453,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         RealmResults<Photo> allNotePhotos = getPhotos();
         int before = countPicsNotFound;
 
-        if(getCurrentNote(context, noteId) == null || getCurrentNote(context, noteId).getPhotos() == null)
+        if (getCurrentNote(context, noteId) == null || getCurrentNote(context, noteId).getPhotos() == null)
             return;
 
         for (int i = 0; i < allNotePhotos.size(); i++) {
@@ -1531,7 +1634,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void checkMicrophonePermission() {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
-            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 3);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, 3);
+            }
         } else
             openRecordingSheet();
     }
@@ -2012,11 +2117,21 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         try {
                             if (Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false).length() > 0) {
                                 if (getUser().isTwentyFourHourFormat()) {
-                                    date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(getCurrentNote(context, noteId).getDateEdited()).replace("\n", " ") +
-                                            "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(getCurrentNote(context, noteId).getDateEdited()).replace("\n", " ") +
+                                                "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                                    } else {
+                                        date.setText(Html.fromHtml("Last Edit: " + Helper.convertToTwentyFourHour(getCurrentNote(context, noteId).getDateEdited()).replace("\n", " ") +
+                                                "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago"));
+                                    }
                                 } else {
-                                    date.setText(Html.fromHtml("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") +
-                                            "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        date.setText(Html.fromHtml("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") +
+                                                "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago", Html.FROM_HTML_MODE_COMPACT));
+                                    } else {
+                                        date.setText(Html.fromHtml("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") +
+                                                "<br>" + Helper.getTimeDifference(Helper.dateToCalender(getCurrentNote(context, noteId).getDateEdited().replace("\n", " ")), false) + " ago"));
+                                    }
                                 }
                             } else {
                                 date.setText("Last Edit: " + getCurrentNote(context, noteId).getDateEdited().replace("\n", " ") + "\n");
@@ -2064,6 +2179,17 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         }
     }
 
+    private void isToolbarItemSelected(View view) {
+        int selected = UiHelper.getColorFromTheme(context, R.attr.tertiaryBackgroundColor);
+        ColorDrawable background = (ColorDrawable) view.getBackground();
+        int backgroundColor = background.getColor();
+        if (backgroundColor == selected) {
+            view.setBackgroundColor(UiHelper.getColorFromTheme(context, R.attr.secondaryBackgroundColor));
+        } else {
+            view.setBackgroundColor(selected);
+        }
+    }
+
     private void initializeEditor() {
         findViewById(R.id.action_undo).setOnClickListener(v -> {
             note.undo();
@@ -2076,21 +2202,25 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         findViewById(R.id.action_bold).setOnClickListener(v -> {
             updateSaveDateEdited();
             note.setBold();
+            isToolbarItemSelected(v);
         });
 
         findViewById(R.id.action_italic).setOnClickListener(v -> {
             updateSaveDateEdited();
             note.setItalic();
+            isToolbarItemSelected(v);
         });
 
         findViewById(R.id.action_strikethrough).setOnClickListener(v -> {
             updateSaveDateEdited();
             note.setStrikeThrough();
+            isToolbarItemSelected(v);
         });
 
         findViewById(R.id.action_underline).setOnClickListener(v -> {
             updateSaveDateEdited();
             note.setUnderline();
+            isToolbarItemSelected(v);
         });
 
         findViewById(R.id.action_insert_image).setOnClickListener(v -> {
@@ -2126,6 +2256,30 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         findViewById(R.id.action_align_right).setOnClickListener(v -> {
             updateSaveDateEdited();
             note.setAlignRight();
+        });
+
+        findViewById(R.id.text_direction).setOnClickListener(v -> {
+            TextView text = (TextView) findViewById(R.id.text_direction);
+            if (getCurrentNote(context, noteId).getNoteTextDirection() == null || getCurrentNote(context, noteId).getNoteTextDirection().isEmpty()) {
+                getRealm().beginTransaction();
+                getCurrentNote(context, noteId).setNoteTextDirection("ltr");
+                getRealm().commitTransaction();
+                Log.d("Here", "I am null, setting to ltr");
+            } else if (getCurrentNote(context, noteId).getNoteTextDirection().equals("rtl")) {
+                getRealm().beginTransaction();
+                getCurrentNote(context, noteId).setNoteTextDirection("ltr");
+                getRealm().commitTransaction();
+                text.setText("RTL");
+                note.setDefaultDirection();
+                Log.d("Here", "I am being changed to ltr");
+            } else if (getCurrentNote(context, noteId).getNoteTextDirection().equals("ltr")) {
+                getRealm().beginTransaction();
+                getCurrentNote(context, noteId).setNoteTextDirection("rtl");
+                getRealm().commitTransaction();
+                text.setText("LTR");
+                note.setRtlDirection();
+                Log.d("Here", "I am being changed to trl");
+            }
         });
 
         findViewById(R.id.action_insert_bullets).setOnClickListener(v -> {
@@ -2176,7 +2330,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void removeFormatting() {
         updateSaveDateEdited();
-        String removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n"), Html.FROM_HTML_MODE_COMPACT).toString();
+        String removedFormat = "";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n"), Html.FROM_HTML_MODE_COMPACT).toString();
+        } else {
+            removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n")).toString();
+        }
         removedFormat = removedFormat.replaceAll("\n", "<br>");
         getRealm().beginTransaction();
         getCurrentNote(context, noteId).setNote(removedFormat);

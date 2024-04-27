@@ -255,7 +255,7 @@ public class CategoryScreen extends AppCompatActivity {
                 findViewById(R.id.locked_layout).setVisibility(View.GONE);
             } else {
                 int backgroundColor = getColorFromTheme(this, R.attr.primaryStrokeColor);
-                int noBackgroundColor = getColor(R.color.transparent);
+                int noBackgroundColor = context.getResources().getColor(R.color.transparent);
                 int textColor = getColorFromTheme(this, R.attr.primaryTextColor);
                 Helper.addNotificationNumber(this, noCategory, noCategoryNotesSize, 0,
                         true, backgroundColor, textColor);

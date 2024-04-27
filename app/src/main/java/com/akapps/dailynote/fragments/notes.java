@@ -185,11 +185,11 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_17_3)) {
-            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
-            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_17_3);
-        }
+//        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_17_3)) {
+//            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
+//            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
+//            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_17_3);
+//        }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
         if (userId == null || userId.isEmpty()) {
@@ -276,10 +276,7 @@ public class notes extends Fragment {
     @Override
     public void onDestroy() {
         RealmSingleton.closeRealmInstance("fragment notes onDestroy");
-
-        if (customSheet != null)
-            customSheet.dismiss();
-
+        if (customSheet != null) customSheet.dismiss();
         Helper.deleteCache(context);
         super.onDestroy();
     }

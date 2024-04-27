@@ -3,6 +3,7 @@ package com.akapps.dailynote.recyclerview;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Build;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -216,8 +217,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
             String modifiedString = pattern.matcher(holder.checklistText.getText()).replaceAll("<font color='#8CA9CF'><b>$1</b></font>");
-            holder.checklistText.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
-            holder.background.setStrokeColor(context.getColor(R.color.azure));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                holder.checklistText.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
+            }
+            else{
+                holder.checklistText.setText(Html.fromHtml(modifiedString));
+            }
+            holder.background.setStrokeColor(context.getResources().getColor(R.color.azure));
         }
 
         holder.checklistText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, RealmHelper.getUserTextSize(context));
@@ -326,7 +332,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             images.add(checkListItem.getItemImage());
             new StfalconImageViewer.Builder<>(context, images, (imageView, image) ->
                     Glide.with(context).load(image).into(imageView))
-                    .withBackgroundColor(context.getColor(R.color.gray))
+                    .withBackgroundColor(context.getResources().getColor(R.color.gray))
                     .allowZooming(true)
                     .withDismissListener(() -> {
                         notifyItemChanged(position);

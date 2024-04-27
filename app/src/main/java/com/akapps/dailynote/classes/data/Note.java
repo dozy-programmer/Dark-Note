@@ -59,6 +59,12 @@ public class Note extends RealmObject {
     // note widget
     private int widgetId;
 
+    private String noteTextDirection;
+
+    private boolean usePreviewAsNoteBackground;
+    private int lastEditFolderTextColor;
+    private double editorIconTransparency;
+
     public Note(){}
 
     public Note(String title, String note, boolean enableSublist){
@@ -75,7 +81,10 @@ public class Note extends RealmObject {
         textColor = R.color.white;
         this.enableSublist = enableSublist;
         widgetId = -1;
-        pinNumber = 0;
+        pinNumber = lastEditFolderTextColor  = 0;
+        editorIconTransparency = 0;
+        noteTextDirection = "ltr";
+        usePreviewAsNoteBackground = false;
     }
 
     public int getNoteId(){
@@ -292,5 +301,37 @@ public class Note extends RealmObject {
 
     public void setLightTextColor(int lightTextColor) {
         this.lightTextColor = lightTextColor;
+    }
+
+    public String getNoteTextDirection() {
+        return noteTextDirection;
+    }
+
+    public void setNoteTextDirection(String noteTextDirection) {
+        this.noteTextDirection = noteTextDirection;
+    }
+
+    public boolean isUsePreviewAsNoteBackground() {
+        return usePreviewAsNoteBackground;
+    }
+
+    public void setUsePreviewAsNoteBackground(boolean usePreviewAsNoteBackground) {
+        this.usePreviewAsNoteBackground = usePreviewAsNoteBackground;
+    }
+
+    public int getLastEditFolderTextColor() {
+        return lastEditFolderTextColor;
+    }
+
+    public void setLastEditFolderTextColor(int lastEditFolderTextColor) {
+        this.lastEditFolderTextColor = lastEditFolderTextColor;
+    }
+
+    public double getEditorIconTransparency() {
+        return editorIconTransparency;
+    }
+
+    public void setEditorIconTransparency(double editorIconTransparency) {
+        this.editorIconTransparency = editorIconTransparency;
     }
 }

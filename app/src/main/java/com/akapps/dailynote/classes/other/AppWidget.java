@@ -55,7 +55,7 @@ public class AppWidget extends AppWidgetProvider {
                 if (currentNote.getTitleColor() != currentNote.getBackgroundColor())
                     views.setTextColor(R.id.appwidget_text, currentNote.getTitleColor());
                 else
-                    views.setTextColor(R.id.appwidget_text, context.getColor(R.color.white));
+                    views.setTextColor(R.id.appwidget_text, context.getResources().getColor(R.color.white));
 
                 views.setInt(R.id.preview_checklist, "setBackgroundResource", isLightTheme ? R.drawable.round_corner_light : R.drawable.round_corner);
 
@@ -109,9 +109,9 @@ public class AppWidget extends AppWidgetProvider {
     private static boolean isAllChecklistChecked(Note currentNote) {
         List<CheckListItem> results = new ArrayList<>();
         if (currentNote.isCheckList()) {
-            results = currentNote.getChecklist().stream()
-                    .filter(CheckListItem::isChecked)
-                    .collect(Collectors.toList());
+            for (CheckListItem item : currentNote.getChecklist()) {
+                if (item.isChecked()) results.add(item);
+            }
         }
         return results.size() == currentNote.getChecklist().size() && results.size() != 0;
     }

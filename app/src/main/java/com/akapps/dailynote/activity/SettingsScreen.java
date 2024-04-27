@@ -119,6 +119,7 @@ public class SettingsScreen extends AppCompatActivity {
     private SwitchCompat editableNoteButton;
     private SwitchCompat enableSqaureStyleForChecklists;
     private SwitchCompat hideLastEditInfo;
+    private SwitchCompat usePreviewBackgroundAsNoteBackground;
     private TextView about;
     private TextView about_version;
     private MaterialButton signUp;
@@ -234,6 +235,7 @@ public class SettingsScreen extends AppCompatActivity {
         editableNoteButton = findViewById(R.id.editable_note_switch);
         enableSqaureStyleForChecklists = findViewById(R.id.checkbox_style_switch);
         hideLastEditInfo = findViewById(R.id.last_edit_info_switch);
+        usePreviewBackgroundAsNoteBackground = findViewById(R.id.use_preview_as_note_background_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -269,8 +271,9 @@ public class SettingsScreen extends AppCompatActivity {
         if (AppData.isDisableAnimation) {
             coffeeAnimation.pauseAnimation();
             ((LottieAnimationView) findViewById(R.id.version_icon)).pauseAnimation();
-        } else
-            Helper.moveAnimation(findViewById(R.id.version_icon), 300f);
+        } else {
+            //Helper.moveAnimation(findViewById(R.id.version_icon), 300f);
+        }
 
         User currentUser = getUser();
         if (null == currentUser.getEmail()) {
@@ -601,6 +604,15 @@ public class SettingsScreen extends AppCompatActivity {
             RealmSingleton.get(this).commitTransaction();
         });
 
+        usePreviewBackgroundAsNoteBackground.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setUsePreviewColorAsBackground(isChecked);
+            if(RealmSingleton.getInstance(context).where(Note.class).equalTo("usePreviewAsNoteBackground", true).findAll().isEmpty()){
+                RealmSingleton.getInstance(context).where(Note.class).findAll().setBoolean("usePreviewAsNoteBackground", true);
+            }
+            RealmSingleton.get(this).commitTransaction();
+        });
+
         sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             RealmSingleton.get(this).beginTransaction();
             getUser().setEnableSublists(isChecked);
@@ -661,7 +673,12 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     public void requestBackupPermissions() {
-        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
+        }
+        else {
+            continueWithBackup();
+        }
     }
 
     private void showBackupBottomSheet() {
@@ -754,6 +771,7 @@ public class SettingsScreen extends AppCompatActivity {
         editableNoteButton.setChecked(currentUser.isEnableEditableNoteButton());
         enableSqaureStyleForChecklists.setChecked(currentUser.isShowChecklistCheckbox());
         hideLastEditInfo.setChecked(currentUser.isDisableLastEditInfo());
+        usePreviewBackgroundAsNoteBackground.setChecked(currentUser.isUsePreviewColorAsBackground());
         if (currentUser.getPinNumber() > 0)
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
         else

@@ -72,8 +72,7 @@ public class AppData {
 
     public static ArrayList<String> getNoteChecklist(int noteId, Context context) {
         Realm realm = getRealm(context);
-        Note currentNote = realm.where(Note.class)
-                .equalTo("noteId", noteId).findFirst();
+        Note currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
 
         ArrayList<CheckListItem> noteArrayList = new ArrayList<>();
         ArrayList<String> allArraylistChecklist = new ArrayList<>();
@@ -90,7 +89,7 @@ public class AppData {
                     allArraylistChecklist.add(currentNote.getNote() + "-Note-");
                 }
             } else {
-                noteArrayList.addAll(realm.copyFromRealm(currentNote.getChecklist()));
+                noteArrayList.addAll(realm.copyFromRealm(Helper.sortChecklist(context, noteId, realm)));
                 for (CheckListItem current : noteArrayList) {
                     boolean containsAudio = current.getAudioPath() != null &&
                             !current.getAudioPath().isEmpty();

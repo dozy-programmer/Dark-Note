@@ -34,10 +34,12 @@ public class RealmSingleton {
             } catch (Exception e) {
                 try {
                     realmInstance = RealmDatabase.setUpDatabase(context);
-                } catch (RealmMigrationNeededException exception){
+                } catch (Exception exception){
+                    int adjustableVersion = Helper.getIntPreference(context, AppConstants.SCHEMA_VERSION);
                     int currentVersion = Integer.parseInt(context.getString(R.string.schema));
-                    Helper.savePreference(context, String.valueOf(++currentVersion), AppConstants.SCHEMA_VERSION);
-                    realmInstance = RealmDatabase.setUpDatabase(context);
+                    int finalVersion = Math.max(adjustableVersion, currentVersion);
+                    Helper.savePreference(context, String.valueOf(finalVersion + 1), AppConstants.SCHEMA_VERSION);
+                    realmInstance = getInstance(context);
                 }
             }
         }

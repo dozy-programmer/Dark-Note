@@ -32,7 +32,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:paddingVertical="10dp"
-            android:text="Color"
+            android:text="Color Menu"
             android:textColor="?secondaryTextColor"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,46 +43,65 @@
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginBottom="20dp"
             app:cardBackgroundColor="?primaryButtonColor"
-            app:strokeWidth="2dp"
             app:cardCornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title">
-
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:strokeWidth="2dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingBottom="20dp">
 
                 <TextView
                     android:id="@+id/background_text"
                     android:layout_width="0dp"
-                    android:layout_height="55dp"
+                    android:layout_height="30dp"
                     android:layout_marginHorizontal="20dp"
                     android:gravity="left|center_vertical"
                     android:text="Preview Background"
                     android:textColor="?primaryTextColor"
-                    android:textSize="23sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/background_color_icon"
                     app:layout_constraintEnd_toStartOf="@+id/background_color_icon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/background_color_icon" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/use_as_background_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="15dp"
+                    android:checked="false"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:text="Use as Note Background"
+                    android:textColor="?primaryTextColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:theme="@style/ThemeOverlay.SwitchTheme"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:switchPadding="30dp"
+                    app:thumbTextPadding="10dp" />
 
                 <ImageView
                     android:id="@+id/background_color_icon"
                     android:layout_width="55dp"
                     android:layout_height="55dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:padding="15dp"
                     android:src="@drawable/color_icon"
+                    android:tint="?primaryIconTintColor"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:tint="?primaryIconTintColor" />
+                    app:layout_constraintTop_toBottomOf="@+id/use_as_background_switch" />
 
 
                 <com.google.android.material.card.MaterialCardView
@@ -91,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp"
-                    app:cardBackgroundColor="?primaryBackgroundColor"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -105,10 +124,44 @@
                         android:paddingHorizontal="20dp"
                         android:text="Title"
                         android:textColor="?primaryTextColor"
-                        android:textSize="25sp" />
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:id="@+id/title_color_icon"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_gravity="end"
+                        android:padding="15dp"
+                        android:src="@drawable/color_icon"
+                        android:tint="?primaryIconTintColor" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/last_edit_folder_color_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_color_layout">
+
+                    <TextView
+                        android:id="@+id/last_edit_folder_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:gravity="left|center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:text="Last Edit + Folder Text"
+                        android:textColor="?primaryTextColor"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:id="@+id/last_edit_folder_color_icon"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
                         android:layout_gravity="end"
@@ -123,15 +176,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
-                    android:layout_marginVertical="20dp"
+                    android:layout_marginVertical="10dp"
                     app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="20dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title_color_layout"
-                    app:layout_constraintVertical_bias="0.0">
+                    app:layout_constraintTop_toBottomOf="@+id/last_edit_folder_color_layout">
 
                     <TextView
                         android:id="@+id/text_color"
@@ -139,9 +190,9 @@
                         android:layout_height="55dp"
                         android:gravity="left|center_vertical"
                         android:paddingHorizontal="20dp"
-                        android:text="Text Color"
+                        android:text="Note Text"
                         android:textColor="?primaryTextColor"
-                        android:textSize="25sp" />
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:id="@+id/text_color_icon"
@@ -151,6 +202,81 @@
                         android:padding="15dp"
                         android:src="@drawable/color_icon"
                         android:tint="?primaryIconTintColor" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/slider_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="?secondaryBackgroundColor"
+                    app:cardCornerRadius="20dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_color_layout">
+
+                    <TextView
+                        android:id="@+id/slider_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:gravity="left|center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:text="Icons + Editor Background Transparency"
+                        android:textColor="?primaryTextColor"
+                        android:textSize="15sp" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/transparent_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="35dp"
+                        android:layout_marginBottom="5dp"
+                        android:elevation="1dp"
+                        android:stepSize="0.1"
+                        android:valueFrom="0.0"
+                        android:valueTo="1.0"
+                        app:labelBehavior="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_color_layout"
+                        app:tickVisible="false" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:gravity="left|center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:layout_marginTop="55dp"
+                        android:text="Default"
+                        android:textColor="?primaryTextColor"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="55dp"
+                        android:gravity="center|center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:text="50%"
+                        android:textColor="?primaryTextColor"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="55dp"
+                        android:gravity="right|center_vertical"
+                        android:paddingHorizontal="20dp"
+                        android:text="100%"
+                        android:textColor="?primaryTextColor"
+                        android:textSize="14sp" />
 
                 </com.google.android.material.card.MaterialCardView>
 

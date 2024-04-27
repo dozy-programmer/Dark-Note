@@ -227,7 +227,7 @@
     <style name="ThemeOverlay.SwitchTheme" parent="">
         <item name="colorControlActivated">?primaryButtonColor</item>
         <item name="colorSwitchThumbNormal">?primarySwitchColor</item>
-        <item name="android:colorForeground">#42221f1f</item>
+        <item name="android:colorForeground">?primaryBackgroundColor</item>
     </style>
 
     <style name="AppSearchView" parent="Base.Widget.AppCompat.SearchView.ActionBar">

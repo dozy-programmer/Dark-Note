@@ -2,6 +2,7 @@ package com.akapps.dailynote.classes.other;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -41,7 +43,7 @@ import io.realm.RealmList;
 public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
     private int noteId;
-    private final ArrayList<Expense> expensesList = new ArrayList<>();
+    private List<Expense> expensesList = new ArrayList<>();
     private List<DonutSection> expensesListGraph = new ArrayList<>();
 
     // layout
@@ -100,8 +102,14 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
             expensesListGraph = getListOfExpenses(checkListItems, errorMessage, budget);
             if (expensesListGraph != null) {
                 // sort by highest to lowest expense
-                expensesListGraph.sort(Comparator.comparing(DonutSection::getAmount, Comparator.reverseOrder()));
-                expensesList.sort(Comparator.comparing(Expense::getExpenseAmountPercentage, Comparator.reverseOrder()));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    expensesListGraph.sort(Comparator.comparing(DonutSection::getAmount, Comparator.reverseOrder()));
+                    expensesList.sort(Comparator.comparing(Expense::getExpenseAmountPercentage, Comparator.reverseOrder()));
+                }
+                else {
+                    sortByAmountDescending(expensesListGraph);
+                    sortByExpensePercentageDescending(expensesList);
+                }
                 ArrayList<SubExpense> currentExpenseSubList = new ArrayList<>();
                 currentExpenseSubList.add(new SubExpense("Total Spent", totalExpenses));
                 expensesList.add(new Expense(UiHelper.getColorFromTheme(getContext(), R.attr.primaryStrokeColor), "Total Spent",
@@ -122,6 +130,34 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         });
 
         return view;
+    }
+
+    private static List<Expense> sortByExpensePercentageDescending(List<Expense> list) {
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = i + 1; j < list.size(); j++) {
+                if (list.get(j).getExpenseAmountPercentage() > list.get(i).getExpenseAmountPercentage()) {
+                    // Swap elements if the current element has higher percentage
+                    Expense temp = list.get(i);
+                    list.set(i, list.get(j));
+                    list.set(j, temp);
+                }
+            }
+        }
+        return list;
+    }
+
+    private static List<DonutSection> sortByAmountDescending(List<DonutSection> list) {
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = i + 1; j < list.size(); j++) {
+                if (list.get(j).getAmount() > list.get(i).getAmount()) {
+                    // Swap elements if the current element is greater than the next
+                    DonutSection temp = list.get(i);
+                    list.set(i, list.get(j));
+                    list.set(j, temp);
+                }
+            }
+        }
+        return list;
     }
 
     private void updateErrorMessage(String errorMessageString) {

@@ -103,6 +103,12 @@ public class UiHelper {
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
     }
 
+    public static void setStatusBarColor(Activity activity, int color) {
+        activity.getWindow().setStatusBarColor(color);
+        if (getLightThemePreference(activity))
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+    }
+
     public static void setBottomSheetBehavior(View view, final Dialog dialog) {
         view.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             if (dialog != null) {

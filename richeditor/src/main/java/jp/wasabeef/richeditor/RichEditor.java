@@ -216,6 +216,14 @@ public class RichEditor extends WebView {
         ta.recycle();
     }
 
+    public void setRtlDirection() {
+        exec("javascript:RE.setRtlDirection()");
+    }
+
+    public void setDefaultDirection() {
+        exec("javascript:RE.setDefaultDirection()");
+    }
+
     public void setHtml(String contents) {
         if (contents == null) {
             contents = "";

@@ -117,7 +117,7 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment {
         audioMenu = new CustomPowerMenu.Builder<>(getContext(), new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.delete_icon), "Delete"))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.send_icon), "Send"))
-                .setBackgroundColor(getContext().getColor(R.color.gray_100))
+                .setBackgroundColor(getContext().getResources().getColor(R.color.gray_100))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.SHOW_UP_CENTER)
                 .setMenuRadius(15f)

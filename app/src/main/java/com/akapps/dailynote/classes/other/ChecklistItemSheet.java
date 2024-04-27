@@ -217,9 +217,12 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                         allNotesRecyclerview.setVisibility(View.GONE);
                         return;
                     }
-                    ArrayList<Note> filteredNotes = new ArrayList<>(allNotes.stream()
-                            .filter(note -> note.getTitle().toLowerCase().contains(wordAfterAt.toLowerCase()))
-                            .collect(Collectors.toList()));
+                    ArrayList<Note> filteredNotes = new ArrayList<>();
+                    for (Note note : allNotes) {
+                        if (note.getTitle().toLowerCase().contains(wordAfterAt.toLowerCase())) {
+                            filteredNotes.add(note);
+                        }
+                    }
                     populateSearchAdapter(filteredNotes);
                     if (allNotesRecyclerview.getVisibility() == View.GONE)
                         allNotesRecyclerview.setVisibility(View.VISIBLE);

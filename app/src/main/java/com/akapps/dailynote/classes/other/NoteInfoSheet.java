@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -39,10 +40,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -123,29 +120,48 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
             else
                 noteTitle = currentNote.getTitle();
 
-            noteName.setText(Html.fromHtml(noteName.getText() + "<br>" +
-                            "<font color='#7A9CC7'>" + noteTitle + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                noteName.setText(Html.fromHtml(noteName.getText() + "<br>" +
+                                "<font color='#7A9CC7'>" + noteTitle + "</font>",
+                        Html.FROM_HTML_MODE_COMPACT));
+                dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
+                                "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
+                                Helper.convertToTwentyFourHour(currentNote.getDateCreated()).replace("\n", " ")
+                                : currentNote.getDateCreated().replace("\n", " ")) + "</font>",
+                        Html.FROM_HTML_MODE_COMPACT));
 
-            dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
-                            "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
-                            Helper.convertToTwentyFourHour(currentNote.getDateCreated()).replace("\n", " ")
-                            : currentNote.getDateCreated().replace("\n", " ")) + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
+                dateEdited.setText(Html.fromHtml(dateEdited.getText() + "<br>" +
+                                "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
+                                Helper.convertToTwentyFourHour(currentNote.getDateEdited()).replace("\n", " ")
+                                : currentNote.getDateEdited().replace("\n", " ")) + "</font>",
+                        Html.FROM_HTML_MODE_COMPACT));
 
-            dateEdited.setText(Html.fromHtml(dateEdited.getText() + "<br>" +
-                            "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
-                            Helper.convertToTwentyFourHour(currentNote.getDateEdited()).replace("\n", " ")
-                            : currentNote.getDateEdited().replace("\n", " ")) + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
+                folderName.setText(Html.fromHtml(folderName.getText() + "<br>" +
+                                "<font color='#7A9CC7'>" + currentNote.getCategory() + "</font>",
+                        Html.FROM_HTML_MODE_COMPACT));
 
-            folderName.setText(Html.fromHtml(folderName.getText() + "<br>" +
-                            "<font color='#7A9CC7'>" + currentNote.getCategory() + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
+                numPhotos.setText(Html.fromHtml(numPhotos.getText() + "<br>" +
+                                "<font color='#7A9CC7'>" + allPhotos.size() + "</font>",
+                        Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                noteName.setText(Html.fromHtml(noteName.getText() + "<br>" +
+                        "<font color='#7A9CC7'>" + noteTitle + "</font>"));
+                dateCreated.setText(Html.fromHtml(dateCreated.getText() + "<br>" +
+                        "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
+                        Helper.convertToTwentyFourHour(currentNote.getDateCreated()).replace("\n", " ")
+                        : currentNote.getDateCreated().replace("\n", " ")) + "</font>"));
 
-            numPhotos.setText(Html.fromHtml(numPhotos.getText() + "<br>" +
-                            "<font color='#7A9CC7'>" + allPhotos.size() + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
+                dateEdited.setText(Html.fromHtml(dateEdited.getText() + "<br>" +
+                        "<font color='#7A9CC7'>" + (getUser().isTwentyFourHourFormat() ?
+                        Helper.convertToTwentyFourHour(currentNote.getDateEdited()).replace("\n", " ")
+                        : currentNote.getDateEdited().replace("\n", " ")) + "</font>"));
+
+                folderName.setText(Html.fromHtml(folderName.getText() + "<br>" +
+                        "<font color='#7A9CC7'>" + currentNote.getCategory() + "</font>"));
+
+                numPhotos.setText(Html.fromHtml(numPhotos.getText() + "<br>" +
+                        "<font color='#7A9CC7'>" + allPhotos.size() + "</font>"));
+            }
 
             String getNoteString = sanitizeWord(currentNote.getNote());
 
@@ -169,19 +185,33 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
             else
                 noteSize = getNoteString.split(" ").length;
 
-            numWords.setText(Html.fromHtml(numWords.getText() + "<br>" +
-                            "<font color='#7A9CC7'>" +
-                            (currentNote.isCheckList() ? checklistSize + " list items<br>" +
-                                    subChecklistSize + " sub-list items<br>" +
-                                    getChecklistString.split(" ").length :
-                                    noteSize) + " words" + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                numWords.setText(Html.fromHtml(numWords.getText() + "<br>" +
+                                "<font color='#7A9CC7'>" +
+                                (currentNote.isCheckList() ? checklistSize + " list items<br>" +
+                                        subChecklistSize + " sub-list items<br>" +
+                                        getChecklistString.split(" ").length :
+                                        noteSize) + " words" + "</font>",
+                        Html.FROM_HTML_MODE_COMPACT));
 
-            numChars.setText(Html.fromHtml(numChars.getText() + "<br>" +
-                            "<font color='#7A9CC7'>" + (currentNote.isCheckList() ?
-                            getChecklistString.length() :
-                            getNoteString.length()) + " characters" + "</font>",
-                    Html.FROM_HTML_MODE_COMPACT));
+                numChars.setText(Html.fromHtml(numChars.getText() + "<br>" +
+                                "<font color='#7A9CC7'>" + (currentNote.isCheckList() ?
+                                getChecklistString.length() :
+                                getNoteString.length()) + " characters" + "</font>",
+                        Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                numWords.setText(Html.fromHtml(numWords.getText() + "<br>" +
+                        "<font color='#7A9CC7'>" +
+                        (currentNote.isCheckList() ? checklistSize + " list items<br>" +
+                                subChecklistSize + " sub-list items<br>" +
+                                getChecklistString.split(" ").length :
+                                noteSize) + " words" + "</font>"));
+
+                numChars.setText(Html.fromHtml(numChars.getText() + "<br>" +
+                        "<font color='#7A9CC7'>" + (currentNote.isCheckList() ?
+                        getChecklistString.length() :
+                        getNoteString.length()) + " characters" + "</font>"));
+            }
         } catch (Exception e) {
             this.dismiss();
         }

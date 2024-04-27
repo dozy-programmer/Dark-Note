@@ -215,6 +215,16 @@ public class RealmDatabase {
 
             if (!schema.get("User").hasField("usePreviewColorAsBackground"))
                 schema.get("User").addField("usePreviewColorAsBackground", boolean.class);
+
+            if (!schema.get("Note").hasField("noteTextDirection"))
+                schema.get("Note").addField("noteTextDirection", String.class);
+
+            if (!schema.get("Note").hasField("usePreviewAsNoteBackground"))
+                schema.get("Note").addField("usePreviewAsNoteBackground", boolean.class);
+            if (!schema.get("Note").hasField("lastEditFolderTextColor"))
+                schema.get("Note").addField("lastEditFolderTextColor", int.class);
+            if (!schema.get("Note").hasField("editorIconTransparency"))
+                schema.get("Note").addField("editorIconTransparency", double.class);
         }
     }
 }

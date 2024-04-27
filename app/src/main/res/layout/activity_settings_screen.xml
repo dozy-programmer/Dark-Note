@@ -1318,7 +1318,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/note_setting_layout"
             android:layout_width="match_parent"
-            android:layout_height="258dp"
+            android:layout_height="312dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
@@ -1498,6 +1498,41 @@
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/last_edit_info_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="10"
+                        android:checked="true"
+                        android:theme="@style/ThemeOverlay.SwitchTheme"></androidx.appcompat.widget.SwitchCompat>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="?primaryDividerColor"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/use_previewBackground_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="7"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Preview Background as Note Background"
+                        android:textColor="?tertiaryTextColor"
+                        android:textSize="14sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/use_preview_as_note_background_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginRight="5dp"

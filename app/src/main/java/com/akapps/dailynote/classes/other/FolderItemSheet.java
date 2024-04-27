@@ -149,7 +149,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             title.setText("Editing");
             try {
                 itemName.setText(currentFolder.get().getName());
-                folderColor.setCardBackgroundColor(currentFolder.get().getColor() == 0 ? getContext().getColor(R.color.azure) : currentFolder.get().getColor());
+                folderColor.setCardBackgroundColor(currentFolder.get().getColor() == 0 ? getContext().getResources().getColor(R.color.azure) : currentFolder.get().getColor());
                 itemName.setSelection(itemName.getText().toString().length());
                 if (currentFolder.get().getPin() > 0) {
                     next.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
@@ -261,7 +261,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     private void editColorDialog(Folder current) {
         int initialColor;
         if (current == null || current.getColor() == 0)
-            initialColor = getContext().getColor(R.color.orange);
+            initialColor = getContext().getResources().getColor(R.color.orange);
         else
             initialColor = current.getColor();
 
