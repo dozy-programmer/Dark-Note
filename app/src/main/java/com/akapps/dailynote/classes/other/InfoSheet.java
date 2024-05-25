@@ -431,9 +431,6 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     case Manifest.permission.RECORD_AUDIO:
                         ((NoteEdit) getActivity()).checkMicrophonePermission();
                         break;
-                    case Manifest.permission.READ_MEDIA_IMAGES:
-                        ((NoteEdit) getActivity()).showImageSelectionDialog();
-                        break;
                 }
             }
 

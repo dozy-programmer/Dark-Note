@@ -2,6 +2,7 @@ package com.akapps.dailynote.classes.other;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -20,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -37,6 +41,7 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.MediaHelper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -51,11 +56,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.nguyenhoanglam.imagepicker.helper.Constants;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.model.ImagePickerConfig;
-import com.nguyenhoanglam.imagepicker.model.StatusBarContent;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerLauncher;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -68,7 +68,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.realm.Realm;
 import www.sanju.motiontoast.MotionToast;
@@ -112,6 +111,80 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private MaterialButton redirectToNote;
     private String noteSelectedTitle;
     private String wordAfterAt;
+
+    private String tempCameraPhotoPath;
+
+    private final ActivityResultLauncher<Uri> takePictureLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.TakePicture(),
+                    result -> {
+                        if (tempCameraPhotoPath != null) {
+                            if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
+                                File fdelete = new File(currentItem.getItemImage());
+                                if (fdelete.exists()) fdelete.delete();
+                            }
+
+                            getRealm().beginTransaction();
+                            currentItem.setItemImage(tempCameraPhotoPath);
+                            getRealm().commitTransaction();
+
+                            Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
+                            photo_info.setVisibility(View.VISIBLE);
+                            dateCreated.setGravity(Gravity.LEFT);
+                            adapter.notifyItemChanged(position);
+                            tempCameraPhotoPath = null;
+                        }
+                    });
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    File createImageFile = Helper.createFile(getActivity(), "image", ".png");
+                    String filePath = Helper.createFile(getContext(), uri, createImageFile).getAbsolutePath();
+
+                    if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
+                        File fdelete = new File(currentItem.getItemImage());
+                        if (fdelete.exists()) fdelete.delete();
+                    }
+
+                    getRealm().beginTransaction();
+                    currentItem.setItemImage(filePath);
+                    getRealm().commitTransaction();
+
+                    Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
+                    photo_info.setVisibility(View.VISIBLE);
+                    dateCreated.setGravity(Gravity.LEFT);
+                    adapter.notifyItemChanged(position);
+                } else {
+                    Log.d("Here", "No media selected");
+                }
+            });
+
+    private final ActivityResultLauncher<String[]> mediaPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            isGranted -> {
+                if (isGranted.containsValue(false)) {
+                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
+                            "permission is required so that you can select images from your phone.\n\n" +
+                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
+                } else {
+                    MediaHelper.openMedia(pickMultipleMedia);
+                }
+            });
+
+    private final ActivityResultLauncher<String[]> cameraPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            isGranted -> {
+                if (isGranted.containsValue(false)) {
+                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
+                            "permission is required so that you can use the camera.\n\n" +
+                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
+                } else {
+                    tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
+                }
+            });
 
     // adding
     public ChecklistItemSheet() {
@@ -377,10 +450,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         deleteLocation.setOnClickListener(view15 -> deleteLocation());
 
         itemImageLayout.setOnClickListener(view12 -> {
-            showCameraDialog();
+            showMediaSelection();
         });
 
         itemImageLayout.setOnLongClickListener(view14 -> {
+            File fdelete = new File(currentItem.getItemImage());
+            if (fdelete.exists()) fdelete.delete();
+
             getRealm().beginTransaction();
             currentItem.setItemImage("");
             getRealm().commitTransaction();
@@ -534,43 +610,34 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         return false;
     }
 
-    private void showCameraDialog() {
-        ImagePickerConfig config = new ImagePickerConfig();
-        config.setShowCamera(true);
-        config.setSingleSelectMode(true);
-        config.setCustomColor(UiHelper.getImagePickerTheme(getActivity()));
-        config.setStatusBarContentMode(UiHelper.getLightThemePreference(getContext()) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
-        Intent intent = ImagePickerLauncher.Companion.createIntent(getContext(), config);
-        startActivityForResult(intent, 1);
+    public void openMediaSelect(int selection) {
+        // open gallery
+        if (selection == 0) {
+            if (MediaHelper.hasMediaPermissions(getContext())) {
+                MediaHelper.openMedia(pickMultipleMedia);
+            } else {
+                mediaPermissionLauncher.launch(MediaHelper.getMediaPermissions());
+            }
+        }
+        // open camera
+        else if (selection == 1) {
+            if (MediaHelper.hasPermission(getContext(), Manifest.permission.CAMERA)) {
+                tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
+            } else {
+                cameraPermissionLauncher.launch(MediaHelper.getCameraPermission());
+            }
+        }
+    }
+
+    private void showMediaSelection() {
+        MediaSelectionSheet mediaSelectionSheet = new MediaSelectionSheet(this);
+        mediaSelectionSheet.show(getActivity().getSupportFragmentManager(), mediaSelectionSheet.getTag());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == 1) {
-            Uri uri = data.getData();
-            File createImageFile = null;
-            String filePath = "";
-            ArrayList<Image> images = data.getParcelableArrayListExtra(Constants.EXTRA_IMAGES);
-            if (!images.isEmpty()) {
-                createImageFile = Helper.createFile(getActivity(), "image", ".png");
-                filePath = Helper.createFile(getContext(), images.get(0).getUri(), createImageFile).getAbsolutePath();
-            } else return;
-
-            if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
-                File fdelete = new File(currentItem.getItemImage());
-                if (fdelete.exists()) fdelete.delete();
-            }
-
-            getRealm().beginTransaction();
-            currentItem.setItemImage(filePath);
-            getRealm().commitTransaction();
-
-            Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
-            photo_info.setVisibility(View.VISIBLE);
-            dateCreated.setGravity(Gravity.LEFT);
-            adapter.notifyItemChanged(position);
-        } else if (requestCode == 5) {
+        if (requestCode == 5) {
             if (resultCode == RESULT_OK) {
                 com.google.android.libraries.places.api.model.Place place = Autocomplete.getPlaceFromIntent(data);
                 selectedPlace = new Place(place.getName(), place.getAddress(), place.getId(),

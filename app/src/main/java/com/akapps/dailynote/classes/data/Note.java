@@ -65,6 +65,8 @@ public class Note extends RealmObject {
     private int lastEditFolderTextColor;
     private double editorIconTransparency;
 
+    private int visibilityStatus;
+
     public Note(){}
 
     public Note(String title, String note, boolean enableSublist){
@@ -85,6 +87,7 @@ public class Note extends RealmObject {
         editorIconTransparency = 0;
         noteTextDirection = "ltr";
         usePreviewAsNoteBackground = false;
+        visibilityStatus = 0;
     }
 
     public int getNoteId(){
@@ -333,5 +336,13 @@ public class Note extends RealmObject {
 
     public void setEditorIconTransparency(double editorIconTransparency) {
         this.editorIconTransparency = editorIconTransparency;
+    }
+
+    public int getVisibilityStatus() {
+        return visibilityStatus;
+    }
+
+    public void setVisibilityStatus(int visibilityStatus) {
+        this.visibilityStatus = visibilityStatus;
     }
 }

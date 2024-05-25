@@ -11,6 +11,8 @@ public class CountryList {
         ArrayList<Country> countriesWithSymbols = new ArrayList<>();
         for (Country country : COUNTRIES) {
             String countrySymbol = Helper.getCountrySymbol(country.getCurrency());
+            if(country.getName().equals("Indonesia"))
+                countrySymbol = "Rp";
             if(countrySymbol == null) continue;
             country.setCurrencySymbol(countrySymbol.trim());
             countriesWithSymbols.add(country);

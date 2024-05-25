@@ -185,11 +185,11 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-//        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_17_3)) {
-//            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
-//            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-//            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_17_3);
-//        }
+        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_17_9)) {
+            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
+            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_17_9);
+        }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
         if (userId == null || userId.isEmpty()) {
@@ -371,10 +371,12 @@ public class notes extends Fragment {
             } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
                 clearMultipleSelect();
             else {
-                if (addMenuLarge.isOpened())
+                if (addMenuLarge.isOpened()) {
                     addMenuLarge.close(true);
-                else
-                    addMenuLarge.open(true);
+                }
+                else {
+                    newNoteButtonAction();
+                }
             }
         });
 
@@ -386,10 +388,12 @@ public class notes extends Fragment {
             } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
                 clearMultipleSelect();
             else {
-                if (addMenu.isOpened())
+                if (addMenu.isOpened()) {
                     addMenu.close(true);
-                else
-                    addMenu.open(true);
+                }
+                else {
+                    newNoteButtonAction();
+                }
             }
         });
 
@@ -428,29 +432,17 @@ public class notes extends Fragment {
         restoreNotes.setOnClickListener(v -> restoreMultipleNotes());
 
         addNote.setOnClickListener(v -> {
-            Intent note = new Intent(getActivity(), NoteEdit.class);
-            startActivity(note);
-            addMenu.close(true);
+            openNewNote();
+        });
+        addNoteTwo.setOnClickListener(v -> {
+            openNewNote();
         });
 
         addCheckList.setOnClickListener(v -> {
-            Intent checklist = new Intent(getActivity(), NoteEdit.class);
-            checklist.putExtra("isChecklist", true);
-            startActivity(checklist);
-            addMenu.close(true);
+            openNewChecklist();
         });
-
-        addNoteTwo.setOnClickListener(v -> {
-            Intent note = new Intent(getActivity(), NoteEdit.class);
-            startActivity(note);
-            addMenuLarge.close(true);
-        });
-
         addCheckListTwo.setOnClickListener(v -> {
-            Intent checklist = new Intent(getActivity(), NoteEdit.class);
-            checklist.putExtra("isChecklist", true);
-            startActivity(checklist);
-            addMenuLarge.close(true);
+            openNewChecklist();
         });
 
         searchEditText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -462,7 +454,7 @@ public class notes extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 if (isSearchingNotes) {
-                    if (s.length() == 0) {
+                    if (s.isEmpty()) {
                         RealmResults<Note> showEmptyLayout = getRealm().where(Note.class).equalTo("pinNumber", -1).findAll();
                         isListEmpty(0, true);
                         populateAdapter(showEmptyLayout);
@@ -472,6 +464,41 @@ public class notes extends Fragment {
                 return false;
             }
         });
+    }
+
+    private void newNoteButtonAction(){
+        int newNoteAction = getUser().getAddButtonAction();
+        switch (newNoteAction){
+            case 0:
+                addMenuLarge.open(true);
+                break;
+            case 1:
+                openNewNote();
+                break;
+            case 2:
+                openNewChecklist();
+                break;
+        }
+    }
+
+    private void openNewNote(){
+        Intent note = new Intent(getActivity(), NoteEdit.class);
+        startActivity(note);
+        closeMenuButton();
+    }
+
+    private void openNewChecklist(){
+        Intent checklist = new Intent(getActivity(), NoteEdit.class);
+        checklist.putExtra("isChecklist", true);
+        startActivity(checklist);
+        closeMenuButton();
+    }
+
+    private void closeMenuButton(){
+        if(addMenu.isOpened())
+            addMenu.close(true);
+        else if(addMenuLarge.isOpened())
+            addMenuLarge.close(true);
     }
 
     private void updateDateEditedMilli(int counter) {

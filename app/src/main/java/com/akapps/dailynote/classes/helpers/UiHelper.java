@@ -6,13 +6,10 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
-
 import androidx.core.content.ContextCompat;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.data.User;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.nguyenhoanglam.imagepicker.model.CustomColor;
 
 public class UiHelper {
 
@@ -54,17 +51,6 @@ public class UiHelper {
 
     public static String getColorFromThemeHex(Activity activity, int colorAttr) {
         return String.format("#%06X", (0xFFFFFF & getColorFromTheme(activity, colorAttr)));
-    }
-
-    public static CustomColor getImagePickerTheme(Activity activity) {
-        CustomColor dialogColors = new CustomColor();
-        dialogColors.setBackground(getColorFromThemeHex(activity, R.attr.primaryBackgroundColor));
-        dialogColors.setStatusBar(getColorFromThemeHex(activity, R.attr.primaryBackgroundColor));
-        dialogColors.setToolbar(getColorFromThemeHex(activity, R.attr.secondaryBackgroundColor));
-        dialogColors.setToolbarTitle(getColorFromThemeHex(activity, R.attr.primaryTextColor));
-        dialogColors.setToolbarIcon(getColorFromThemeHex(activity, R.attr.primaryIconTintColor));
-        dialogColors.setDoneButtonTitle(getColorFromThemeHex(activity, R.attr.primaryTextColor));
-        return dialogColors;
     }
 
     public static int getColorFromTheme(Context context, int colorAttr) {

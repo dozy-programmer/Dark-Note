@@ -38,9 +38,9 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -63,16 +63,20 @@ import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.MediaHelper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.BudgetSheet;
 import com.akapps.dailynote.classes.other.CheckListDeleteSheet;
+import com.akapps.dailynote.classes.other.CheckListHideSheet;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
 import com.akapps.dailynote.classes.other.ColorSheet;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterChecklistSheet;
+import com.akapps.dailynote.classes.other.GenericInfoSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
+import com.akapps.dailynote.classes.other.MediaSelectionSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
@@ -88,12 +92,6 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.button.MaterialButton;
-import com.nguyenhoanglam.imagepicker.helper.Constants;
-import com.nguyenhoanglam.imagepicker.model.CustomMessage;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.model.ImagePickerConfig;
-import com.nguyenhoanglam.imagepicker.model.StatusBarContent;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerLauncher;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -221,6 +219,69 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private boolean italicsSelected = false;
     private boolean crossedSelected = false;
     private boolean underlineSelected = false;
+
+    private String tempCameraPhotoPath;
+
+    private final ActivityResultLauncher<Uri> takePictureLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.TakePicture(),
+                    result -> {
+                        if (tempCameraPhotoPath != null) {
+                            Photo currentPhoto = new Photo(noteId, tempCameraPhotoPath);
+                            getRealm().beginTransaction();
+                            getRealm().insert(currentPhoto);
+                            getRealm().commitTransaction();
+                            updateSaveDateEdited();
+                            scrollAdapter.notifyDataSetChanged();
+                            showPhotos(View.VISIBLE);
+                            tempCameraPhotoPath = null;
+                        }
+                    });
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
+            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(10), uris -> {
+                if (!uris.isEmpty()) {
+                    for (Uri image : uris) {
+                        File newFile = Helper.createFile(this, "image", ".png");
+                        String filePath = Helper.createFile(context, image, newFile).getAbsolutePath();
+                        Photo currentPhoto = new Photo(noteId, filePath);
+                        getRealm().beginTransaction();
+                        getRealm().insert(currentPhoto);
+                        getRealm().commitTransaction();
+                    }
+                    updateSaveDateEdited();
+                    scrollAdapter.notifyDataSetChanged();
+                    showPhotos(View.VISIBLE);
+                } else {
+                    Log.d("Here", "No media selected");
+                }
+            });
+
+    private final ActivityResultLauncher<String[]> mediaPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            isGranted -> {
+                if (isGranted.containsValue(false)) {
+                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
+                            "permission is required so that you can select images from your phone.\n\n" +
+                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
+                } else {
+                    MediaHelper.openMedia(pickMultipleMedia);
+                }
+            });
+
+    private final ActivityResultLauncher<String[]> cameraPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            isGranted -> {
+                if (isGranted.containsValue(false)) {
+                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
+                            "permission is required so that you can use the camera.\n\n" +
+                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
+                } else {
+                    tempCameraPhotoPath = MediaHelper.openCamera(this, context, takePictureLauncher);
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -604,7 +665,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 showPhotos(View.VISIBLE);
                 addCheckListItem.setVisibility(View.VISIBLE);
                 if (!getCurrentNote(context, noteId).isCheckList())
-                    addCheckListItem.setImageDrawable(getDrawable(R.drawable.camera_icon));
+                    addCheckListItem.setImageDrawable(getDrawable(R.drawable.media_selector_icon));
             }
 
             if (isSearchingNotes) {
@@ -655,7 +716,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     boolean updateRecyclerview = false;
                     for (int i = 0; i < results.size(); i++) {
                         CheckListItem item = results.get(i);
-                        if (item.getText().contains(s.toString())) {
+                        if (item.getText().toLowerCase().contains(s.toString().toLowerCase())) {
                             AppData.addWordFoundPositions(i);
                             updateRecyclerview = true;
                         }
@@ -894,11 +955,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (getCurrentNote(context, noteId).isCheckList() && !isShowingPhotos)
                 openNewItemDialog();
             else if (isShowingPhotos) {
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED) {
-                    InfoSheet permissionInfo = new InfoSheet("Images Permission Required", Manifest.permission.READ_MEDIA_IMAGES);
-                    permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
-                } else
-                    showImageSelectionDialog();
+                MediaSelectionSheet mediaSelectionSheet = new MediaSelectionSheet(0);
+                mediaSelectionSheet.show(getSupportFragmentManager(), mediaSelectionSheet.getTag());
             } else {
                 note.setInputEnabled(isEditLockedMode);
                 isEditLockedMode = !isEditLockedMode;
@@ -950,7 +1008,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 photosAllExist();
                 showPhotos(View.VISIBLE);
                 addCheckListItem.setVisibility(View.VISIBLE);
-                addCheckListItem.setImageDrawable(getDrawable(R.drawable.camera_icon));
+                addCheckListItem.setImageDrawable(getDrawable(R.drawable.media_selector_icon));
                 if (isChangingTextSize)
                     textSizeLayout.setVisibility(View.GONE);
             }
@@ -1102,6 +1160,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void sortChecklist(String word) {
         RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, getRealm());
+        // TODO - filter list here to set checklist items to be invisible
         populateChecklist(results, word);
         title.clearFocus();
     }
@@ -1146,7 +1205,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         if (!getUser().isUsePreviewColorAsBackground())
             category.setTextColor(getCurrentNote(context, noteId).getBackgroundColor());
         else
-            category.setTextColor(UiHelper.getColorFromTheme(context, R.attr.primaryTextColor));
+            category.setTextColor(getCurrentNote(context, noteId).getLastEditFolderTextColor());
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
         note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         if (checklistAdapter != null && getCurrentNote(context, noteId).isCheckList())
@@ -1302,12 +1361,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         } else {
             newNote.setPin(currentPin);
             newNote.setIsCheckList(isCheckList);
+            newNote.setUsePreviewAsNoteBackground(getUser().isUsePreviewColorAsBackground());
             // add a random color to the note
             int[] randomColor = context.getResources().getIntArray(R.array.randomColor);
             int randomInt = (int) (Math.random() * (randomColor.length));
             newNote.setBackgroundColor(randomColor[randomInt]);
-            newNote.setTitleColor(randomColor[randomInt]);
-            newNote.setTextColor(0);
+            newNote.setTitleColor(UiHelper.getColorFromTheme(context, R.attr.primaryTextColor));
+            newNote.setTextColor(UiHelper.getColorFromTheme(context, R.attr.primaryTextColor));
+            newNote.setLastEditFolderTextColor(UiHelper.getColorFromTheme(context, R.attr.primaryTextColor));
             // insert data to database
             getRealm().beginTransaction();
             getRealm().insert(newNote);
@@ -1507,15 +1568,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             noteMenu.addItem(2, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
             noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
             noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete Items"));
+            noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.hide_icon), "Hide Items"));
             noteMenu.addItem(7, new IconPowerMenuItem(getDrawable(R.drawable.filter_icon), "Sort"));
             if (getUser().isEnableSublists()) {
                 String sublistStatus = "";
                 if (getCurrentNote(context, noteId).isEnableSublist()) {
                     sublistStatus = sublistStatus + "Sub-List";
-                    noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.visible_false_icon), sublistStatus));
+                    noteMenu.addItem(6, new IconPowerMenuItem(getDrawable(R.drawable.visible_false_icon), sublistStatus));
                 } else {
                     sublistStatus = sublistStatus + "Sub-List";
-                    noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.visible_icon), sublistStatus));
+                    noteMenu.addItem(6, new IconPowerMenuItem(getDrawable(R.drawable.visible_icon), sublistStatus));
                 }
             }
         } else {
@@ -1590,8 +1652,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 }
             } else if (item.getTitle().equals("Delete Items")) {
                 showChecklistItemsDeleteBottomSheet();
-//                InfoSheet info = new InfoSheet(3, true);
-//                info.show(getSupportFragmentManager(), info.getTag());
+            } else if (item.getTitle().equals("Hide Items")) {
+                showChecklistItemsHideBottomSheet();
             } else if (item.getTitle().contains("Text")) {
                 isChangingTextSize = true;
                 textSizeLayout.setVisibility(View.VISIBLE);
@@ -1681,6 +1743,31 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Log.d("Here", "Selected Button -> " + selectedToDelete);
                 RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context, false, false);
                 Helper.showMessage(NoteEdit.this, "Success", "Un-Checked items deleted", MotionToast.TOAST_SUCCESS);
+                break;
+            default:
+                return;
+        }
+        checklistAdapter.notifyDataSetChanged();
+        isListEmpty(getCurrentNote(context, noteId).getChecklist().size(), true);
+    }
+
+    public void hideChecklist(String selectedToHide) {
+        switch (selectedToHide) {
+            case "all":
+                Log.d("Here", "Selected Button -> " + selectedToHide);
+                RealmHelper.hideChecklistItems(getCurrentNote(context, noteId), context);
+                checkNote(false);
+                Helper.showMessage(NoteEdit.this, "Success", "All items hidden", MotionToast.TOAST_SUCCESS);
+                break;
+            case "checked":
+                Log.d("Here", "Selected Button -> " + selectedToHide);
+                RealmHelper.hideChecklistItems(getCurrentNote(context, noteId), context);
+                Helper.showMessage(NoteEdit.this, "Success", "Checked items hidden", MotionToast.TOAST_SUCCESS);
+                break;
+            case "un-checked":
+                Log.d("Here", "Selected Button -> " + selectedToHide);
+                RealmHelper.hideChecklistItems(getCurrentNote(context, noteId), context);
+                Helper.showMessage(NoteEdit.this, "Success", "Un-Checked items hidden", MotionToast.TOAST_SUCCESS);
                 break;
             default:
                 return;
@@ -2006,41 +2093,22 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         return isTitleChanged || isNoteChanged;
     }
 
-    public void showImageSelectionDialog() {
-        ImagePickerConfig config = new ImagePickerConfig();
-        config.setShowCamera(true);
-        config.setLimitSize(20);
-        config.setCustomColor(UiHelper.getImagePickerTheme(this));
-        CustomMessage customMessage = new CustomMessage();
-        customMessage.setReachLimitSize("You can only select up to 20 images.");
-        customMessage.setNoImage("No image found.");
-        customMessage.setNoPhotoAccessPermission("Please allow permission to access photos and media.");
-        customMessage.setNoCamera("Please allow permission to access camera.");
-        config.setCustomMessage(customMessage);
-        config.setStatusBarContentMode(UiHelper.getLightThemePreference(context) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
-        Intent intent = ImagePickerLauncher.Companion.createIntent(context, config);
-        startActivityForResult(intent, 0);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == 0) {
-            ArrayList<Image> images = data.getParcelableArrayListExtra(Constants.EXTRA_IMAGES);
-            if (!images.isEmpty()) {
-                for (Image image : images) {
-                    File newFile = Helper.createFile(this, "image", ".png");
-                    String filePath = Helper.createFile(context, image.getUri(), newFile).getAbsolutePath();
-                    Photo currentPhoto = new Photo(noteId, filePath);
-                    getRealm().beginTransaction();
-                    getRealm().insert(currentPhoto);
-                    getRealm().commitTransaction();
-                }
-            } else
-                return;
-            updateSaveDateEdited();
-            scrollAdapter.notifyDataSetChanged();
-            showPhotos(View.VISIBLE);
+    public void openMediaSelected(int selection) {
+        // open gallery
+        if (selection == 0) {
+            if (MediaHelper.hasMediaPermissions(context)) {
+                MediaHelper.openMedia(pickMultipleMedia);
+            } else {
+                mediaPermissionLauncher.launch(MediaHelper.getMediaPermissions());
+            }
+        }
+        // open camera
+        else if (selection == 1) {
+            if (MediaHelper.hasPermission(context, Manifest.permission.CAMERA)) {
+                tempCameraPhotoPath = MediaHelper.openCamera(this, context, takePictureLauncher);
+            } else {
+                cameraPermissionLauncher.launch(MediaHelper.getCameraPermission());
+            }
         }
     }
 
@@ -2357,6 +2425,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     private void showChecklistItemsDeleteBottomSheet() {
         CheckListDeleteSheet checkListDeleteSheet = new CheckListDeleteSheet();
         checkListDeleteSheet.show(getSupportFragmentManager(), checkListDeleteSheet.getTag());
+    }
+
+    private void showChecklistItemsHideBottomSheet() {
+        CheckListHideSheet checkListHideSheet = new CheckListHideSheet(getCurrentNote(context, noteId).getVisibilityStatus(), noteId);
+        checkListHideSheet.show(getSupportFragmentManager(), checkListHideSheet.getTag());
     }
 
 }

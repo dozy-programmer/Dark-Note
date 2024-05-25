@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarThumbVertical="?primaryButtonColor"
+    android:scrollbarSize="2dp"
+    android:scrollbars="vertical"
+    android:background="@android:color/transparent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView8"
+            android:layout_width="50dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="13dp"
+            app:cardBackgroundColor="?primaryStrokeColor"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:text="Select Media"
+            android:textColor="?secondaryTextColor"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
+
+        <TextView
+            android:id="@+id/num_images"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/baloo_bhai"
+            android:gravity="center"
+            android:text=""
+            android:textColor="?primaryTextColor"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/title"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/theme_mode_toggle_group_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="3dp"
+            android:layout_margin="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:strokeColor="?primaryStrokeColor"
+            app:strokeWidth="2dp">
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/theme_mode_toggle_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/camera_media"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnlyMedia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Camera"
+                    android:textSize="12sp"
+                    android:textColor="?primaryTextColor"
+                    app:icon="@drawable/camera_icon"
+                    app:iconPadding="15dp"
+                    app:iconTint="?primaryIconTintColor"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/gallery_media"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnlyMedia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gallery"
+                    android:textSize="12sp"
+                    app:iconPadding="15dp"
+                    android:textColor="?primaryTextColor"
+                    app:icon="@drawable/icon_image"
+                    app:iconTint="?primaryIconTintColor"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

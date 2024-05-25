@@ -225,6 +225,15 @@ public class RealmDatabase {
                 schema.get("Note").addField("lastEditFolderTextColor", int.class);
             if (!schema.get("Note").hasField("editorIconTransparency"))
                 schema.get("Note").addField("editorIconTransparency", double.class);
+
+            if (!schema.get("User").hasField("addButtonAction"))
+                schema.get("User").addField("addButtonAction", int.class);
+
+            if (!schema.get("CheckListItem").hasField("visibility"))
+                schema.get("CheckListItem").addField("visibility", int.class);
+
+            if (!schema.get("Note").hasField("visibilityStatus"))
+                schema.get("Note").addField("visibilityStatus", int.class);
         }
     }
 }

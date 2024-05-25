@@ -1562,7 +1562,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view_layout"></TextView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/fab_setting"
+            android:id="@+id/add_button_shortcut_layout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
@@ -1575,6 +1575,65 @@
             app:layout_constraintEnd_toEndOf="@+id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/other_settings">
+
+            <LinearLayout
+                android:id="@+id/add_button_shortcut"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:paddingRight="10dp"
+                    android:gravity="center_vertical"
+                    android:text="New Note Button Toggles"
+                    android:textColor="?tertiaryTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/selected_shortcut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="88"
+                    android:gravity="center|right"
+                    android:text="Default"
+                    android:textColor="?tertiaryTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/arrow_down"
+                    android:tint="?primaryIconTintColor"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/fab_setting"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_button_shortcut_layout">
 
             <LinearLayout
                 android:id="@+id/fab_button_size"

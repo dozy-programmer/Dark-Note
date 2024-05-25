@@ -49,6 +49,7 @@ public class User extends RealmObject {
     private boolean showChecklistCheckbox;
     private boolean disableLastEditInfo;
     private boolean usePreviewColorAsBackground;
+    private int addButtonAction;
 
     // note security and retrieval of password
     private String securityWord;
@@ -93,6 +94,7 @@ public class User extends RealmObject {
                 disableLastEditInfo = usePreviewColorAsBackground = false;
         screenMode = 1;
         textSize = 20;
+        addButtonAction = 0;
     }
 
     public int getUserId() {
@@ -404,5 +406,13 @@ public class User extends RealmObject {
 
     public void setUsePreviewColorAsBackground(boolean usePreviewColorAsBackground) {
         this.usePreviewColorAsBackground = usePreviewColorAsBackground;
+    }
+
+    public int getAddButtonAction() {
+        return addButtonAction;
+    }
+
+    public void setAddButtonAction(int addButtonAction) {
+        this.addButtonAction = addButtonAction;
     }
 }

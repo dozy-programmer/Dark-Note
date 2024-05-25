@@ -36,7 +36,7 @@ import io.realm.Realm;
 
 public class ColorSheet extends RoundedBottomSheetDialogFragment {
 
-    private int noteId;
+    private final int noteId;
     private AlertDialog colorPickerView;
     private TextView titleColor;
     private TextView textColor;
@@ -73,10 +73,12 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         lastEditText = view.findViewById(R.id.last_edit_folder_color);
         lastEditIcon = view.findViewById(R.id.last_edit_folder_color_icon);
 
-        backgroundIcon.setOnClickListener(v -> openDialog("background"));
-        titleColorIcon.setOnClickListener(v -> openDialog("title"));
-        textColorIcon.setOnClickListener(v -> openDialog("text"));
-        lastEditIcon.setOnClickListener(v -> openDialog("lastEdit"));
+        backgroundIcon.setOnClickListener(v -> openDialog("Background"));
+        titleColorIcon.setOnClickListener(v -> openDialog("Title"));
+        textColorIcon.setOnClickListener(v -> openDialog("Text"));
+        lastEditIcon.setOnClickListener(v -> openDialog("Last Edit"));
+
+        updateColors();
 
         if(RealmHelper.getUser(getContext(), "color sheet").isUsePreviewColorAsBackground()){
             useAsBackgroundSwitch.setVisibility(View.VISIBLE);
@@ -86,6 +88,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                 lastEditText.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getLastEditFolderTextColor());
             }
             useAsBackgroundSwitch.setChecked(RealmHelper.getCurrentNote(getContext(), noteId).isUsePreviewAsNoteBackground());
+            transparencySlider.setValue((float) Math.round(RealmHelper.getCurrentNote(getContext(), noteId).getEditorIconTransparency() * 10) / 10);
             transparencySlider.addOnChangeListener((slider, value, fromUser) -> {
                 RealmSingleton.get(getContext()).beginTransaction();
                 RealmHelper.getCurrentNote(getContext(), noteId).setEditorIconTransparency(value);
@@ -100,18 +103,6 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
             });
         }
 
-        if (RealmHelper.getUser(getContext(), "color sheet").getScreenMode() == User.Mode.Dark) {
-            backgroundText.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            backgroundColor.setCardBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.quaternaryBackgroundColor));
-        } else {
-            backgroundColor.setCardBackgroundColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            checkColor();
-        }
-        titleColor.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getTitleColor());
-        textColor.setTextColor(RealmHelper.getTextColorBasedOnTheme(getContext(), noteId));
-
         return view;
     }
 
@@ -119,13 +110,13 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         // if it's a new note, initial color is gray. Otherwise it is set to color of note
         int initialColor;
         switch (colorChanging) {
-            case "background":
+            case "Background":
                 initialColor = RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor();
                 break;
-            case "title":
+            case "Title":
                 initialColor = RealmHelper.getCurrentNote(getContext(), noteId).getTitleColor();
                 break;
-            case "lastEdit":
+            case "Last Edit":
                 initialColor = RealmHelper.getCurrentNote(getContext(), noteId).getLastEditFolderTextColor();
                 if(initialColor == 0){
                     initialColor = getContext().getResources().getColor(R.color.white);
@@ -139,32 +130,35 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         // opens dialog to choose a color
         colorPickerView = ColorPickerDialogBuilder
                 .with(getContext(), R.style.ColorPickerDialogTheme)
-                .setTitle("Select Color")
+                .setTitle("Select Color for " + colorChanging)
                 .initialColor(initialColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(10)
                 .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
                     Realm realm = RealmSingleton.getInstance(getContext());
                     realm.beginTransaction();
-                    if (colorChanging.equals("background")) {
-                        RealmHelper.getCurrentNote(getContext(), noteId).setBackgroundColor(selectedColor);
-                        if(RealmHelper.getUser(getContext(), "color sheet").isUsePreviewColorAsBackground()){
+                    switch (colorChanging) {
+                        case "Background":
+                            RealmHelper.getCurrentNote(getContext(), noteId).setBackgroundColor(selectedColor);
+                            if (RealmHelper.getUser(getContext(), "color sheet").isUsePreviewColorAsBackground()) {
+                                ((NoteEdit) getActivity()).updateOtherColors();
+                                realm.commitTransaction();
+                                updateColors();
+                                return;
+                            }
+                            break;
+                        case "Title":
+                            RealmHelper.getCurrentNote(getContext(), noteId).setTitleColor(selectedColor);
+                            break;
+                        case "Last Edit":
+                            RealmHelper.getCurrentNote(getContext(), noteId).setLastEditFolderTextColor(selectedColor);
                             ((NoteEdit) getActivity()).updateOtherColors();
                             realm.commitTransaction();
                             updateColors();
                             return;
-                        }
-                    } else if (colorChanging.equals("title"))
-                        RealmHelper.getCurrentNote(getContext(), noteId).setTitleColor(selectedColor);
-                    else if(colorChanging.equals("lastEdit")){
-                        RealmHelper.getCurrentNote(getContext(), noteId).setLastEditFolderTextColor(selectedColor);
-                        ((NoteEdit) getActivity()).updateOtherColors();
-                        realm.commitTransaction();
-                        updateColors();
-                        return;
-                    }
-                    else {
-                        RealmHelper.setTextColorBasedOnTheme(getContext(), noteId, selectedColor);
+                        default:
+                            RealmHelper.getCurrentNote(getContext(), noteId).setTextColor(selectedColor);
+                            break;
                     }
                     realm.commitTransaction();
                     ((NoteEdit) getActivity()).updateColors();
@@ -176,28 +170,12 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
         colorPickerView.show();
     }
 
-    private void checkColor() {
-        if (!Helper.isColorDark(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor())) {
-            backgroundText.setTextColor(getContext().getResources().getColor(R.color.black));
-            backgroundIcon.setColorFilter(getContext().getResources().getColor(R.color.black));
-        } else {
-            backgroundText.setTextColor(getContext().getResources().getColor(R.color.white));
-            backgroundIcon.setColorFilter(getContext().getResources().getColor(R.color.white));
-        }
-    }
-
     private void updateColors() {
-        if (RealmHelper.getUser(getContext(), "color sheet").getScreenMode() == User.Mode.Dark) {
-            backgroundText.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            backgroundColor.setCardBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.quaternaryBackgroundColor));
-        } else {
-            backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            backgroundColor.setCardBackgroundColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
-            checkColor();
-        }
+        backgroundColor.setStrokeColor(RealmHelper.getCurrentNote(getContext(), noteId).getBackgroundColor());
+        backgroundColor.setCardBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.quaternaryBackgroundColor));
         titleColor.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getTitleColor());
-        textColor.setTextColor(RealmHelper.getTextColorBasedOnTheme(getContext(), noteId));
+        textColor.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getTextColor());
+        backgroundText.setTextColor(UiHelper.getColorFromTheme(getActivity(), R.attr.primaryTextColor));
         if(RealmHelper.getUser(getContext(), "color sheet").isUsePreviewColorAsBackground()){
             lastEditText.setTextColor(RealmHelper.getCurrentNote(getContext(), noteId).getLastEditFolderTextColor());
         }

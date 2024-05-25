@@ -12,10 +12,10 @@
 
         <TextView
             android:id="@+id/item_title"
-            android:layout_width="350dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
-            android:paddingVertical="15dp"
+            android:paddingVertical="10dp"
             android:text="Item"
             android:gravity="center"
             android:textSize="17sp"

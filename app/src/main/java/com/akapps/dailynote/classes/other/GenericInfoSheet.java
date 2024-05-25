@@ -1,6 +1,9 @@
 package com.akapps.dailynote.classes.other;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +25,8 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
 
     private String titleText;
     private String message;
+    private String proceedText = "";
+    private int action;
 
     public GenericInfoSheet() {
     }
@@ -29,6 +34,13 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
     public GenericInfoSheet(String title, String message) {
         this.titleText = title;
         this.message = message;
+    }
+
+    public GenericInfoSheet(String title, String message, String proceedText, int action) {
+        this.titleText = title;
+        this.message = message;
+        this.proceedText = proceedText;
+        this.action = action;
     }
 
     @Override
@@ -41,14 +53,26 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
         MaterialButton proceed = view.findViewById(R.id.proceed);
 
         title.setText(titleText);
+        proceed.setText(proceedText.isEmpty() ? proceed.getText() : proceedText);
         info.setText(message);
         info.setGravity(Gravity.CENTER);
 
         cancel.setOnClickListener(v -> this.dismiss());
 
-        proceed.setOnClickListener(view1 -> this.dismiss());
+        proceed.setOnClickListener(view1 -> {
+            if(action == 1) openAppSettings();
+            this.dismiss();
+        });
 
         return view;
+    }
+
+    private void openAppSettings(){
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+        startActivity(intent);
     }
 
     @Override

@@ -1,8 +1,7 @@
 package com.akapps.dailynote.classes.other.insertsheet;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.Intent;
+import android.Manifest;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,18 +20,15 @@ import androidx.annotation.Nullable;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.MediaHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
+import com.akapps.dailynote.classes.other.GenericInfoSheet;
+import com.akapps.dailynote.classes.other.MediaSelectionSheet;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.nguyenhoanglam.imagepicker.helper.Constants;
-import com.nguyenhoanglam.imagepicker.model.CustomMessage;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.model.ImagePickerConfig;
-import com.nguyenhoanglam.imagepicker.model.StatusBarContent;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerLauncher;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,34 +59,77 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
     private String srcImage;
     private String html;
 
-    private ActivityResultLauncher<Intent> pickImageLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent data = result.getData();
-                            ArrayList<Image> images = data.getParcelableArrayListExtra(Constants.EXTRA_IMAGES);
-                            if (!images.isEmpty()) {
-                                Log.d("Here", "returning images " + images.size());
-                                for (int i = 0; i < images.size(); i++) {
-                                    File newFile = Helper.createFile(getActivity(), "image", ".png");
-                                    filePaths.add(Helper.createFile(getContext(), images.get(i).getUri(), newFile).getPath());
+    private String tempCameraPhotoPath;
 
-                                    if (i == 0) setImage(false, false);
-                                }
-                                message.setVisibility(View.VISIBLE);
-                                imageEditor.setVisibility(View.VISIBLE);
-                                widthLayout.setVisibility(View.VISIBLE);
-                                heightLayout.setVisibility(View.VISIBLE);
-                                confirm.setVisibility(View.VISIBLE);
-                                if (images.size() > 1) {
-                                    numImages.setText("+" + (images.size() - 1));
-                                    numImages.setVisibility(View.VISIBLE);
-                                    title.setText("Photo(s) Selected");
-                                } else
-                                    title.setText("Photo Selected");
-                            }
+    private final ActivityResultLauncher<Uri> takePictureLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.TakePicture(),
+                    result -> {
+                        if (tempCameraPhotoPath != null) {
+                            Log.d("Here", "returning camera image");
+                            filePaths.add(tempCameraPhotoPath);
+                            setImage(false, false);
+                            message.setVisibility(View.VISIBLE);
+                            imageEditor.setVisibility(View.VISIBLE);
+                            widthLayout.setVisibility(View.VISIBLE);
+                            heightLayout.setVisibility(View.VISIBLE);
+                            confirm.setVisibility(View.VISIBLE);
+                            title.setText("Photo Selected");
+                            tempCameraPhotoPath = null;
                         }
                     });
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickMultipleMedia =
+            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(10), uris -> {
+                if (!uris.isEmpty()) {
+                    Log.d("Here", "returning images " + uris.size());
+                    for (int i = 0; i < uris.size(); i++) {
+                        File newFile = Helper.createFile(getActivity(), "image", ".png");
+                        filePaths.add(Helper.createFile(getContext(), uris.get(i), newFile).getPath());
+
+                        if (i == 0) setImage(false, false);
+                    }
+                    message.setVisibility(View.VISIBLE);
+                    imageEditor.setVisibility(View.VISIBLE);
+                    widthLayout.setVisibility(View.VISIBLE);
+                    heightLayout.setVisibility(View.VISIBLE);
+                    confirm.setVisibility(View.VISIBLE);
+                    if (uris.size() > 1) {
+                        numImages.setText("+" + (uris.size() - 1));
+                        numImages.setVisibility(View.VISIBLE);
+                        title.setText("Photo(s) Selected");
+                    } else
+                        title.setText("Photo Selected");
+                } else {
+                    Log.d("Here", "No media selected");
+                }
+            });
+
+    private final ActivityResultLauncher<String[]> mediaPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            isGranted -> {
+                if (isGranted.containsValue(false)) {
+                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
+                            "permission is required so that you can select images from your phone.\n\n" +
+                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
+                } else {
+                    MediaHelper.openMedia(pickMultipleMedia);
+                }
+            });
+
+    private final ActivityResultLauncher<String[]> cameraPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            isGranted -> {
+                if (isGranted.containsValue(false)) {
+                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
+                            "permission is required so that you can use the camera.\n\n" +
+                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
+                } else {
+                    tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
+                }
+            });
 
     public InsertImageSheet() {
     }
@@ -146,8 +186,9 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             widthLayout.setVisibility(View.VISIBLE);
             heightLayout.setVisibility(View.VISIBLE);
             confirm.setVisibility(View.VISIBLE);
-        } else
-            showImageSelectionDialog();
+        } else {
+            showMediaSelection();
+        }
 
         confirm.setOnClickListener(view1 -> {
             if (!note.hasFocus()) note.focusEditor();
@@ -268,20 +309,28 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         return true;
     }
 
-    public void showImageSelectionDialog() {
-        ImagePickerConfig config = new ImagePickerConfig();
-        config.setShowCamera(true);
-        config.setLimitSize(20);
-        config.setCustomColor(UiHelper.getImagePickerTheme(getActivity()));
-        CustomMessage customMessage = new CustomMessage();
-        customMessage.setReachLimitSize("You can only select up to 20 images.");
-        customMessage.setNoImage("No image found.");
-        customMessage.setNoPhotoAccessPermission("Please allow permission to access photos and media.");
-        customMessage.setNoCamera("Please allow permission to access camera.");
-        config.setCustomMessage(customMessage);
-        config.setStatusBarContentMode(UiHelper.getLightThemePreference(getContext()) ? StatusBarContent.DARK : StatusBarContent.LIGHT);
-        Intent intent = ImagePickerLauncher.Companion.createIntent(getContext(), config);
-        pickImageLauncher.launch(intent);
+    public void openMediaSelect(int selection) {
+        // open gallery
+        if (selection == 0) {
+            if (MediaHelper.hasMediaPermissions(getContext())) {
+                MediaHelper.openMedia(pickMultipleMedia);
+            } else {
+                mediaPermissionLauncher.launch(MediaHelper.getMediaPermissions());
+            }
+        }
+        // open camera
+        else if (selection == 1) {
+            if (MediaHelper.hasPermission(getContext(), Manifest.permission.CAMERA)) {
+                tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
+            } else {
+                cameraPermissionLauncher.launch(MediaHelper.getCameraPermission());
+            }
+        }
+    }
+
+    private void showMediaSelection() {
+        MediaSelectionSheet mediaSelectionSheet = new MediaSelectionSheet(this);
+        mediaSelectionSheet.show(getActivity().getSupportFragmentManager(), mediaSelectionSheet.getTag());
     }
 
     @Override

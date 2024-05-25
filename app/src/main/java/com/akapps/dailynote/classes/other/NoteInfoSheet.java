@@ -98,8 +98,12 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
         });
 
         try {
-            if (currentNote.getPinNumber() == 0)
+            if (currentNote.getPinNumber() == 0) {
                 lockIcon.setVisibility(View.GONE);
+            }
+            else{
+                copyIcon.setVisibility(View.GONE);
+            }
 
             if (!currentNote.isPin())
                 pinIcon.setVisibility(View.GONE);

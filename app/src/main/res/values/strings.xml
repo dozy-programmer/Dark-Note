@@ -2,11 +2,11 @@
 
     <!-- App Data !-->
     <string name="app_name">Dark Note</string>
-    <string name="schema">50</string>
+    <string name="schema">52</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v17.8</string>
-    <string name="app_version_int">17.8</string>
+    <string name="app_version">v17.9</string>
+    <string name="app_version_int">17.9</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -112,14 +112,17 @@
 
     </string>
 
-    <string name="version_17_3_whats_new_text">
-
+    <string name="version_17_9_whats_new_text">
+        Big Update!\n\n
         <font color='#8CA9CF'><b>New</b></font>\n
-        • Redesigned and improved FAQ website to be more helpful. Go to Settings ->
-        Scroll To Bottom of screen -> Click on FAQ. Check it out and let me know if you still have questions!\n\n
+        • redesigned image selection from the ground up to work on more devices.\n
+        • 50+ country currencies added to budget.\n
+        • RTL support added in note text editor for languages like Arabic.\n
+        • You can now change the New Note button to just open a note, a checklist, or keep the same behavior (Change by going to Settings -> App Settings Section -> New Note Button Toggles)\n\n
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
-        • Fixed some minor bugs\n
+        • fixed issue where you can copy locked notes contents by clicking on info icon\n
+        • fixed issue where checklist searching was case-sensitive\n
         • Always working hard to ensure a pleasant crash-free experience:
         99%+ of users do not experience any issues or crashes!\n
     </string>
