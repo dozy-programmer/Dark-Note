@@ -2,11 +2,11 @@
 
     <!-- App Data !-->
     <string name="app_name">Dark Note</string>
-    <string name="schema">52</string>
+    <string name="schema">53</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v17.9</string>
-    <string name="app_version_int">17.9</string>
+    <string name="app_version">v18.0</string>
+    <string name="app_version_int">18.0</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -112,9 +112,9 @@
 
     </string>
 
-    <string name="version_17_9_whats_new_text">
-        Big Update!\n\n
+    <string name="version_17_9_whats_new_text"><font color='#8CA9CF'><b>Big Update!</b></font>\n\nPlease join the Dark Note Community for updates information, feedback, and help.\nGo to Settings -> Scroll to bottom ->  Dark Note Sub-Reddit Feedback\n\n
         <font color='#8CA9CF'><b>New</b></font>\n
+        • You can now set a background color for your notes, enable in settings ("Background Color Customization")\n
         • redesigned image selection from the ground up to work on more devices.\n
         • 50+ country currencies added to budget.\n
         • RTL support added in note text editor for languages like Arabic.\n

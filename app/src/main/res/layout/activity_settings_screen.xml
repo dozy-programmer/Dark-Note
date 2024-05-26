@@ -1526,7 +1526,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Preview Background as Note Background"
+                        android:text="Background Color Customization"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>

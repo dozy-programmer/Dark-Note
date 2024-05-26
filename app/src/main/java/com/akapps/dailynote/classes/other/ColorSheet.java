@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,6 +60,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_color, container, false);
 
+        ImageButton info = view.findViewById(R.id.info);
         titleColor = view.findViewById(R.id.title_color);
         textColor = view.findViewById(R.id.text_color);
         backgroundIcon = view.findViewById(R.id.background_color_icon);
@@ -102,6 +104,12 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                 ((NoteEdit) getActivity()).updateOtherColors();
             });
         }
+
+        info.setOnClickListener(view1 -> {
+            GenericInfoSheet infoSheet = new GenericInfoSheet("Info", "" +
+                    "• if you don't text in all rows, it means the text color is the same as the background color. Fix by updating the text color.");
+            infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
+        });
 
         return view;
     }

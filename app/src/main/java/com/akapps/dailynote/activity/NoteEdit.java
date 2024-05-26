@@ -1160,9 +1160,27 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void sortChecklist(String word) {
         RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, getRealm());
+        results = filterChecklistVisibility(results);
         // TODO - filter list here to set checklist items to be invisible
         populateChecklist(results, word);
         title.clearFocus();
+    }
+
+    /**
+     * unchecked [ ] and checked [ ] 3 (this is not an option)
+     * unchecked [ ] and checked [x] 2
+     * unchecked [x] and checked [ ] 1
+     * unchecked [x] and checked [x] 0 (default)
+     */
+    public RealmResults<CheckListItem> filterChecklistVisibility(RealmResults<CheckListItem> results){
+        int visibility = getCurrentNote(context, noteId).getVisibilityStatus();
+        if(visibility == 1){
+            return results.where().equalTo("checked", false).findAll();
+        }
+        else if(visibility == 2){
+            return results.where().equalTo("checked", true).findAll();
+        }
+        return results;
     }
 
     public boolean isUsingPreviewBackground() {
@@ -1743,31 +1761,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 Log.d("Here", "Selected Button -> " + selectedToDelete);
                 RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context, false, false);
                 Helper.showMessage(NoteEdit.this, "Success", "Un-Checked items deleted", MotionToast.TOAST_SUCCESS);
-                break;
-            default:
-                return;
-        }
-        checklistAdapter.notifyDataSetChanged();
-        isListEmpty(getCurrentNote(context, noteId).getChecklist().size(), true);
-    }
-
-    public void hideChecklist(String selectedToHide) {
-        switch (selectedToHide) {
-            case "all":
-                Log.d("Here", "Selected Button -> " + selectedToHide);
-                RealmHelper.hideChecklistItems(getCurrentNote(context, noteId), context);
-                checkNote(false);
-                Helper.showMessage(NoteEdit.this, "Success", "All items hidden", MotionToast.TOAST_SUCCESS);
-                break;
-            case "checked":
-                Log.d("Here", "Selected Button -> " + selectedToHide);
-                RealmHelper.hideChecklistItems(getCurrentNote(context, noteId), context);
-                Helper.showMessage(NoteEdit.this, "Success", "Checked items hidden", MotionToast.TOAST_SUCCESS);
-                break;
-            case "un-checked":
-                Log.d("Here", "Selected Button -> " + selectedToHide);
-                RealmHelper.hideChecklistItems(getCurrentNote(context, noteId), context);
-                Helper.showMessage(NoteEdit.this, "Success", "Un-Checked items hidden", MotionToast.TOAST_SUCCESS);
                 break;
             default:
                 return;

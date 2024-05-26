@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import www.sanju.motiontoast.MotionToast;
 
 public class CheckListHideSheet extends RoundedBottomSheetDialogFragment {
 
@@ -54,9 +57,14 @@ public class CheckListHideSheet extends RoundedBottomSheetDialogFragment {
 
         confirmButton.setOnClickListener(view1 -> {
             Log.d("Here", "Selected -> " + getCurrentSelected(unchecked.isChecked(), checked.isChecked()));
+            if(!unchecked.isChecked() && !checked.isChecked()){
+                Helper.showMessage(getActivity(), "None Selected", "You cannot hide both", MotionToast.TOAST_ERROR);
+                return;
+            }
             RealmHelper.getRealm(getContext()).beginTransaction();
             RealmHelper.getCurrentNote(getContext(), noteId).setVisibilityStatus(getCurrentSelected(unchecked.isChecked(), checked.isChecked()));
             RealmHelper.getRealm(getContext()).commitTransaction();
+            ((NoteEdit) getActivity()).sortChecklist("");
             dismiss();
         });
 

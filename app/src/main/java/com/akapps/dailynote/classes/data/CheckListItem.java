@@ -25,8 +25,6 @@ public class CheckListItem extends RealmObject {
 
     private int redirectToOtherNote;
 
-    private int visibility;
-
     public CheckListItem(){}
 
     public CheckListItem(String text, boolean checked, int id, int positionInList, int subListId,
@@ -43,7 +41,6 @@ public class CheckListItem extends RealmObject {
         audioDuration = 0;
         this.place = place;
         this.redirectToOtherNote = redirectToOtherNote;
-        visibility = 0;
     }
 
     public String getText() {
@@ -156,13 +153,5 @@ public class CheckListItem extends RealmObject {
 
     public void setRedirectToOtherNote(int redirectToOtherNote) {
         this.redirectToOtherNote = redirectToOtherNote;
-    }
-
-    public int getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(int visibility) {
-        this.visibility = visibility;
     }
 }

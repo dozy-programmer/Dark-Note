@@ -108,10 +108,6 @@ public class RealmHelper {
         }
     }
 
-    public static void hideChecklistItems(Note currentNote, Context context) {
-
-    }
-
     public static void deleteRecording(CheckListItem item, Context context) {
         getRealm(context).beginTransaction();
         Helper.deleteFile(item.getAudioPath());
