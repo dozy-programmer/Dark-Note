@@ -185,10 +185,10 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_17_9)) {
+        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_0)) {
             WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
             whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_17_9);
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_0);
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
@@ -467,10 +467,14 @@ public class notes extends Fragment {
     }
 
     private void newNoteButtonAction(){
+        boolean isUsingBiggerButton = getUser().isIncreaseFabSize();
         int newNoteAction = getUser().getAddButtonAction();
         switch (newNoteAction){
             case 0:
-                addMenuLarge.open(true);
+                if(isUsingBiggerButton)
+                    addMenuLarge.open(true);
+                else
+                    addMenu.open(true);
                 break;
             case 1:
                 openNewNote();

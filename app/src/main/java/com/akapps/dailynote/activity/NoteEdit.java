@@ -76,9 +76,9 @@ import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterChecklistSheet;
 import com.akapps.dailynote.classes.other.GenericInfoSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
-import com.akapps.dailynote.classes.other.MediaSelectionSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
+import com.akapps.dailynote.classes.other.MediaSelectionSheet;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.classes.other.RecordAudioSheet;
 import com.akapps.dailynote.classes.other.insertsheet.InsertImageSheet;
@@ -1041,8 +1041,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     private void closeAndDeleteNote() {
         if (getCurrentNote(context, noteId) != null && getCurrentNote(context, noteId).getTitle().isEmpty() && getCurrentNote(context, noteId).getNote().isEmpty()
-                && getCurrentNote(context, noteId).getChecklist().size() == 0) {
-            if (!getUser().isEnableEmptyNote()) {
+                && getCurrentNote(context, noteId).getChecklist().isEmpty()) {
+            if (!getUser().isEnableEmptyNote() && getPhotos() != null && getPhotos().isEmpty()) {
                 RealmHelper.deleteNote(context, getCurrentNote(context, noteId).getNoteId());
                 Helper.showMessage(this, "Deleted", "Note has been deleted, change in settings", MotionToast.TOAST_WARNING);
             }
@@ -1161,7 +1161,6 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     public void sortChecklist(String word) {
         RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, getRealm());
         results = filterChecklistVisibility(results);
-        // TODO - filter list here to set checklist items to be invisible
         populateChecklist(results, word);
         title.clearFocus();
     }
@@ -1172,12 +1171,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
      * unchecked [x] and checked [ ] 1
      * unchecked [x] and checked [x] 0 (default)
      */
-    public RealmResults<CheckListItem> filterChecklistVisibility(RealmResults<CheckListItem> results){
+    public RealmResults<CheckListItem> filterChecklistVisibility(RealmResults<CheckListItem> results) {
         int visibility = getCurrentNote(context, noteId).getVisibilityStatus();
-        if(visibility == 1){
+        if (visibility == 1) {
             return results.where().equalTo("checked", false).findAll();
-        }
-        else if(visibility == 2){
+        } else if (visibility == 2) {
             return results.where().equalTo("checked", true).findAll();
         }
         return results;
@@ -2241,13 +2239,17 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void isToolbarItemSelected(View view) {
-        int selected = UiHelper.getColorFromTheme(context, R.attr.tertiaryBackgroundColor);
-        ColorDrawable background = (ColorDrawable) view.getBackground();
-        int backgroundColor = background.getColor();
-        if (backgroundColor == selected) {
-            view.setBackgroundColor(UiHelper.getColorFromTheme(context, R.attr.secondaryBackgroundColor));
-        } else {
-            view.setBackgroundColor(selected);
+        // TODO - get this to function and users knows which item is being applied
+        try {
+            int selected = UiHelper.getColorFromTheme(context, R.attr.tertiaryBackgroundColor);
+            ColorDrawable background = (ColorDrawable) view.getBackground();
+            int backgroundColor = background.getColor();
+            if (backgroundColor == selected) {
+                view.setBackgroundColor(UiHelper.getColorFromTheme(context, R.attr.secondaryBackgroundColor));
+            } else {
+                view.setBackgroundColor(selected);
+            }
+        } catch (Exception ignored) {
         }
     }
 

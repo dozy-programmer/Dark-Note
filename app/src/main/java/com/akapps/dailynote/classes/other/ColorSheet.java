@@ -107,7 +107,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
 
         info.setOnClickListener(view1 -> {
             GenericInfoSheet infoSheet = new GenericInfoSheet("Info", "" +
-                    "• if you don't text in all rows, it means the text color is the same as the background color. Fix by updating the text color.");
+                    "• if you don't see text in all rows, it means the text color is the same as the background color. Fix by updating the text color.");
             infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
         });
 

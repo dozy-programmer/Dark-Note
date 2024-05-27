@@ -110,7 +110,6 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                         .findAll();
 
                 if (lockedNotesInsideFolder.size() > 0 && currentFolder.getPin() > 0) {
-                    // TODO - handle this
                     allSelectedNotes = allSelectedNotes.where()
                             .equalTo("pinNumber", 0)
                             .findAll();

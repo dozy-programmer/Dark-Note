@@ -240,7 +240,6 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                         .findAll();
 
                 if (lockedNotesInsideFolder.size() > 0) {
-                    // TODO - finish this
                     StringBuilder lockedNotes = new StringBuilder();
                     lockedNotes.append("\n\nThe following notes need to be unlocked:");
                     for (Note lockedNote : lockedNotesInsideFolder) {
