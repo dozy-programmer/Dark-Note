@@ -2,6 +2,9 @@
 
 Dark Note offers a wide range of features for taking notes, creating checklists, and keeping track of your budget. Its simple and elegant user interface makes it easy to use and navigate, allowing you to quickly and easily create and manage your notes + checklists. 
 
+-> IMPORTANT <-
+These are old images and gifs. There has been a lot of UI changes and much more features added. Try it out!
+
 ## Table of contents
 * [Preview](#preview)
 * [App Layout](#app-layout)
