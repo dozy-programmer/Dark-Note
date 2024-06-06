@@ -135,13 +135,23 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         // if checklist item is clicked, then it updates the status of the item
         holder.checkItem.setOnClickListener(v -> {
             saveSelected(checkListItem, !isSelected);
-            notifyItemChanged(position);
+            if(currentNote.getSort() == 4){
+                notifyDataSetChanged();
+            }
+            else {
+                notifyItemChanged(position);
+            }
         });
         // if checklist item is clicked, then it updates the status of the item
         // this is added to support clickable links
         holder.checklistText.setOnClickListener(v -> {
             saveSelected(checkListItem, !isSelected);
-            notifyItemChanged(position);
+            if(currentNote.getSort() == 4){
+                notifyDataSetChanged();
+            }
+            else {
+                notifyItemChanged(position);
+            }
         });
 
         holder.checkItem.setOnLongClickListener(view -> {

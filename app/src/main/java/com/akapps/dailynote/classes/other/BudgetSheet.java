@@ -197,7 +197,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                                 .trim().replaceAll(",", "");
 
                         boolean isNegative = !currentToken.isEmpty() && currentToken.charAt(0) == '-';
-                        currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + 1);
+                        currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + expenseKey.length());
 
                         try {
                             if (currentTokenTrimmed.isEmpty()) {
@@ -230,7 +230,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                                     .trim().replaceAll(",", "");
 
                             boolean isNegative = !currentToken.isEmpty() && currentToken.charAt(0) == '-';
-                            currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + 1);
+                            currentTokenTrimmed = currentTokenTrimmed.substring(currentTokenTrimmed.indexOf(expenseKey) + expenseKey.length());
 
                             try {
                                 if (currentTokenTrimmed.isEmpty()) {

@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyclerview.MyViewHolder> {
 
@@ -54,6 +55,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     private final FragmentActivity activity;
     private String searchingForWord;
     private final int checklistSize;
+    private int noteSorting;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView checklistText;
@@ -101,6 +103,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         this.activity = activity;
         this.searchingForWord = searchingForWord;
         checklistSize = checkList.size();
+        noteSorting = getNote().getSort();
     }
 
     @Override
@@ -193,9 +196,14 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             } else {
                 if (checkListItem.getSubChecklist().size() != 0) {
                     holder.subChecklist.setVisibility(View.VISIBLE);
-                    subChecklistAdapter = new sub_checklist_recyclerview(this, checkListItem, RealmSingleton.getInstance(context).where(SubCheckListItem.class)
+                    RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.getInstance(context).where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
-                            .sort("positionInList").findAll(), getNote(), activity, position, searchingForWord);
+                            .sort("positionInList")
+                            .findAll();
+                    if (noteSorting == 4) {
+                        subCheckListItems = subCheckListItems.where().sort("checked", Sort.ASCENDING).findAll();
+                    }
+                    subChecklistAdapter = new sub_checklist_recyclerview(this, checkListItem, subCheckListItems, getNote(), activity, position, searchingForWord);
                     holder.subChecklist.setAdapter(subChecklistAdapter);
                     holder.subChecklist.setHasFixedSize(true);
                     subChecklistAdapter.notifyItemChanged(position);

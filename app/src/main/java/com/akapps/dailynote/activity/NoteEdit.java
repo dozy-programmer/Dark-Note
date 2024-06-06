@@ -1420,15 +1420,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     // adds note
     public CheckListItem addCheckList(String itemText, Place place, String redirectToOtherNote) {
-        int initialPosition = -1;
+        int initialPosition = getCurrentNote(context, noteId).getChecklist().size();
 
         if (getCurrentNote(context, noteId).getChecklist().size() != 0) {
             if (RealmHelper.getNoteSorting(context, noteId) == 6)
                 initialPosition = getCurrentNote(context, noteId).getChecklist().min("positionInList").intValue() - 1;
             else if (RealmHelper.getNoteSorting(context, noteId) == 5)
                 initialPosition = getCurrentNote(context, noteId).getChecklist().max("positionInList").intValue() + 1;
-        } else
-            initialPosition = getCurrentNote(context, noteId).getChecklist().size();
+        }
 
         Random rand = new Random();
 
