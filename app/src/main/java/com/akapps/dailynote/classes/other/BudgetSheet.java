@@ -192,7 +192,6 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                 for (String currentToken : checklistStringTokens) {
                     if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
                         String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey))
-                                .replaceAll("\\" + expenseKey + "+", "\\" + expenseKey)
                                 .replaceAll("\\" + "-+", "\\" + "-")
                                 .trim().replaceAll(",", "");
 

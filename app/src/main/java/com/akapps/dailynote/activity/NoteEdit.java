@@ -22,6 +22,7 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1953,7 +1954,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                 this,
                 now.get(Calendar.HOUR_OF_DAY),
                 now.get(Calendar.MINUTE),
-                false
+                DateFormat.is24HourFormat(context)
         );
         timer.setThemeDark(RealmHelper.getUser(context, "in edit").getScreenMode() != User.Mode.Light);
         timer.setAccentColor(UiHelper.getColorFromTheme(this, R.attr.quaternaryBackgroundColor));
