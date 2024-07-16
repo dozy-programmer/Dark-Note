@@ -56,6 +56,10 @@ public class User extends RealmObject {
     private int pinNumber;
     private boolean fingerprint;
 
+    private int widgetTextSize;
+
+    private boolean onlyCrossedExpensesAreCounted;
+
     public enum Mode {
         Dark(1),
         Gray(2),
@@ -95,6 +99,8 @@ public class User extends RealmObject {
         screenMode = 1;
         textSize = 20;
         addButtonAction = 0;
+        widgetTextSize = 10;
+        onlyCrossedExpensesAreCounted = false;
     }
 
     public int getUserId() {
@@ -414,5 +420,21 @@ public class User extends RealmObject {
 
     public void setAddButtonAction(int addButtonAction) {
         this.addButtonAction = addButtonAction;
+    }
+
+    public int getWidgetTextSize() {
+        return widgetTextSize;
+    }
+
+    public void setWidgetTextSize(int widgetTextSize) {
+        this.widgetTextSize = widgetTextSize;
+    }
+
+    public boolean isOnlyCrossedExpensesAreCounted() {
+        return onlyCrossedExpensesAreCounted;
+    }
+
+    public void setOnlyCrossedExpensesAreCounted(boolean onlyCrossedExpensesAreCounted) {
+        this.onlyCrossedExpensesAreCounted = onlyCrossedExpensesAreCounted;
     }
 }

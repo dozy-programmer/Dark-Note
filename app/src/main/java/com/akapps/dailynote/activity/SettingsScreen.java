@@ -73,6 +73,7 @@ public class SettingsScreen extends AppCompatActivity {
     private boolean isEditingBudgetSymbol;
     private boolean isEditingExpenseSymbol;
     private boolean isEditingButtonShortcut;
+    private boolean isEditingWidgetTextSize;
 
     // account authentication
     private FirebaseAuth mAuth;
@@ -94,12 +95,14 @@ public class SettingsScreen extends AppCompatActivity {
     private TextView budgetSymbol;
     private TextView expenseSymbol;
     private TextView addButtonShortcutText;
+    private TextView widgetTextSize;
     private LinearLayout titleLayout;
     private LinearLayout previewLayout;
     private LinearLayout checklistSeparatorLayout;
     private LinearLayout sublistSeparatorLayout;
     private LinearLayout budgetSymbolLayout;
     private LinearLayout expenseSymbolLayout;
+    private LinearLayout widgetTextSizeLayout;
     private TextView accountText;
     private CustomPowerMenu linesMenu;
     private boolean isTitleSelected;
@@ -122,6 +125,7 @@ public class SettingsScreen extends AppCompatActivity {
     private SwitchCompat enableSqaureStyleForChecklists;
     private SwitchCompat hideLastEditInfo;
     private SwitchCompat usePreviewBackgroundAsNoteBackground;
+    private SwitchCompat budgetExpensesOnlyCrossedAreCounted;
     private TextView about;
     private TextView about_version;
     private MaterialButton signUp;
@@ -218,6 +222,8 @@ public class SettingsScreen extends AppCompatActivity {
         sublistSeparatorLayout = findViewById(R.id.sublist_item_sep_layout);
         budgetSymbolLayout = findViewById(R.id.budget_char_layout);
         expenseSymbolLayout = findViewById(R.id.expense_char_layout);
+        widgetTextSizeLayout = findViewById(R.id.widget_text);
+        widgetTextSize = findViewById(R.id.selected_widget_text_size);
         addButtonShortcut = findViewById(R.id.add_button_shortcut_layout);
         showPreview = findViewById(R.id.show_preview_switch);
         showPreviewNoteInfo = findViewById(R.id.show_info_switch);
@@ -241,6 +247,7 @@ public class SettingsScreen extends AppCompatActivity {
         enableSqaureStyleForChecklists = findViewById(R.id.checkbox_style_switch);
         hideLastEditInfo = findViewById(R.id.last_edit_info_switch);
         usePreviewBackgroundAsNoteBackground = findViewById(R.id.use_preview_as_note_background_switch);
+        budgetExpensesOnlyCrossedAreCounted = findViewById(R.id.crossed_expenses_switch);
         grid = findViewById(R.id.grid);
         row = findViewById(R.id.row);
         staggered = findViewById(R.id.staggered);
@@ -323,6 +330,7 @@ public class SettingsScreen extends AppCompatActivity {
         String budgetSymbolText = currentUser.getBudgetCharacter();
         String expenseSymbolText = currentUser.getExpenseCharacter();
         String addButtonText = getAddButtonActionText(currentUser.getAddButtonAction());
+        String widgetTextSizeText = String.valueOf(currentUser.getWidgetTextSize());
 
         // sets the current select title lines and preview lines
         // by default it is 3
@@ -333,6 +341,7 @@ public class SettingsScreen extends AppCompatActivity {
         budgetSymbol.setText(budgetSymbolText);
         expenseSymbol.setText(expenseSymbolText);
         addButtonShortcutText.setText(addButtonText);
+        widgetTextSize.setText(widgetTextSizeText);
 
         // toolbar
         toolbar.setTitle("");
@@ -394,6 +403,21 @@ public class SettingsScreen extends AppCompatActivity {
         previewLayout.setOnClickListener(v -> {
             isTitleSelected = false;
             showLineNumberMenu(previewLines, null);
+        });
+
+        widgetTextSizeLayout.setOnClickListener(v -> {
+            isEditingWidgetTextSize = true;
+            List<IconPowerMenuItem> options = new ArrayList<>();
+            options.add(new IconPowerMenuItem(null, "10"));
+            options.add(new IconPowerMenuItem(null, "11"));
+            options.add(new IconPowerMenuItem(null, "12"));
+            options.add(new IconPowerMenuItem(null, "13"));
+            options.add(new IconPowerMenuItem(null, "14"));
+            options.add(new IconPowerMenuItem(null, "15"));
+            options.add(new IconPowerMenuItem(null, "16"));
+            options.add(new IconPowerMenuItem(null, "17"));
+            options.add(new IconPowerMenuItem(null, "18"));
+            expandListMenu(options, widgetTextSize);
         });
 
         checklistSeparatorLayout.setOnClickListener(v -> {
@@ -629,6 +653,12 @@ public class SettingsScreen extends AppCompatActivity {
             RealmSingleton.get(this).commitTransaction();
         });
 
+        budgetExpensesOnlyCrossedAreCounted.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            RealmSingleton.get(this).beginTransaction();
+            getUser().setOnlyCrossedExpensesAreCounted(isChecked);
+            RealmSingleton.get(this).commitTransaction();
+        });
+
         sublistMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             RealmSingleton.get(this).beginTransaction();
             getUser().setEnableSublists(isChecked);
@@ -787,6 +817,12 @@ public class SettingsScreen extends AppCompatActivity {
         enableSqaureStyleForChecklists.setChecked(currentUser.isShowChecklistCheckbox());
         hideLastEditInfo.setChecked(currentUser.isDisableLastEditInfo());
         usePreviewBackgroundAsNoteBackground.setChecked(currentUser.isUsePreviewColorAsBackground());
+        if(currentUser.getWidgetTextSize() < 10){
+            RealmSingleton.get(SettingsScreen.this).beginTransaction();
+            currentUser.setWidgetTextSize(12);
+            RealmSingleton.get(SettingsScreen.this).commitTransaction();
+        }
+        budgetExpensesOnlyCrossedAreCounted.setChecked(currentUser.isOnlyCrossedExpensesAreCounted());
         if (currentUser.getPinNumber() > 0)
             lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
         else
@@ -941,7 +977,13 @@ public class SettingsScreen extends AppCompatActivity {
             if (checkEditingStatus()) {
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 String text = item.getTitle();
-                if (isEditingButtonShortcut) {
+
+                if(isEditingWidgetTextSize){
+                    currentUser.setWidgetTextSize(Integer.parseInt(text));
+                    widgetTextSize.setText(text);
+                    Helper.updateAllNoteWidgets(context);
+                }
+                else if (isEditingButtonShortcut) {
                     currentUser.setAddButtonAction(position);
                     addButtonShortcutText.setText(getAddButtonActionText(position));
                 } else if (isEditingChecklistSep) {
@@ -974,11 +1016,13 @@ public class SettingsScreen extends AppCompatActivity {
         isEditingBudgetSymbol = false;
         isEditingExpenseSymbol = false;
         isEditingButtonShortcut = false;
+        isEditingWidgetTextSize = false;
     }
 
     private boolean checkEditingStatus() {
         return isEditingChecklistSep || isEditingSublistSep ||
-                isEditingBudgetSymbol || isEditingExpenseSymbol || isEditingButtonShortcut;
+                isEditingBudgetSymbol || isEditingExpenseSymbol || isEditingButtonShortcut ||
+                isEditingWidgetTextSize;
     }
 
     private String getAddButtonActionText(int id) {

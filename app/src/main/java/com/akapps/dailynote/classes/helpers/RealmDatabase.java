@@ -231,6 +231,12 @@ public class RealmDatabase {
 
             if (!schema.get("Note").hasField("visibilityStatus"))
                 schema.get("Note").addField("visibilityStatus", int.class);
+
+            if (!schema.get("User").hasField("widgetTextSize"))
+                schema.get("User").addField("widgetTextSize", int.class);
+
+            if (!schema.get("User").hasField("onlyCrossedExpensesAreCounted"))
+                schema.get("User").addField("onlyCrossedExpensesAreCounted", boolean.class);
         }
     }
 }

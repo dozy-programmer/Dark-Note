@@ -20,6 +20,7 @@ import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Expense;
 import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.SubExpense;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -57,6 +58,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
     private String expenseKey;
     private double totalExpenses;
 
+    private User currentUser;
+
     public BudgetSheet() {
     }
 
@@ -73,6 +76,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
 
         double budget = 0;
         String errorMessageString = "";
+
+        currentUser = RealmHelper.getUser(getContext(), "budget sheet");
 
         RealmList<CheckListItem> checkListItems = RealmHelper.getCurrentNote(getContext(), noteId).getChecklist();
 
@@ -175,17 +180,20 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
         String wrongFormatMessage = "";
         double totalExpenses = 0, leftOver = 0;
         String leftOverText = "";
+        boolean skipComputation;
 
         int randomColorGenerated = 0;
         Map<String, Integer> duplicateExpenses = new HashMap<>();
 
         for (CheckListItem currentItem : noteChecklist) {
+            skipComputation = currentUser.isOnlyCrossedExpensesAreCounted() && !currentItem.isChecked();
+
             double currentExpenseAmount = 0.3141592;
             ArrayList<SubExpense> currentExpenseSubList = new ArrayList<>();
 
             String checklistString = currentItem.getText();
 
-            if (checklistString.contains(expenseKey)) {
+            if (checklistString.contains(expenseKey) && !skipComputation) {
                 String[] checklistStringTokens = getTokenArray(checklistString);
                 double currentSubExpenseTotal = 0;
 
@@ -215,6 +223,9 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
             }
 
             for (SubCheckListItem sublistItem : currentItem.getSubChecklist()) {
+                skipComputation = currentUser.isOnlyCrossedExpensesAreCounted() && !sublistItem.isChecked();
+                if(skipComputation) continue;
+
                 String sublistString = sublistItem.getText();
                 double currentSubExpenseTotal = 0;
 

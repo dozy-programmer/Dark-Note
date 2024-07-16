@@ -727,7 +727,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     currentWordIndex = -1;
                     if (isSearchingNotes) {
                         textSizeLayout.setVisibility(View.VISIBLE);
-                        if (!s.toString().isEmpty() && s.toString().length() > 1)
+                        if (!s.toString().isEmpty())
                             findText(s.toString().toLowerCase());
                         else {
                             wordOccurences = new ArrayList();

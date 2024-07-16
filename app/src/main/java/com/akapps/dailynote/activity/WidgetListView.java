@@ -1,5 +1,7 @@
 package com.akapps.dailynote.activity;
 
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -23,8 +25,9 @@ public class WidgetListView extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         int noteId = intent.getIntExtra("id", 0);
+        int widgetTextSize = intent.getIntExtra("text_size", 10);
         ArrayList<String> receivedList = intent.getStringArrayListExtra("list");
-        return new WidgetListViewFactory(getApplicationContext(), noteId, receivedList);
+        return new WidgetListViewFactory(getApplicationContext(), noteId, receivedList, widgetTextSize);
     }
 
     class WidgetListViewFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -32,11 +35,13 @@ public class WidgetListView extends RemoteViewsService {
         private List<String> checklist;
         private int noteId;
         private boolean isLightMode;
+        private int textSize = 10;
 
-        public WidgetListViewFactory(Context context, int noteId, ArrayList<String> checklist) {
+        public WidgetListViewFactory(Context context, int noteId, ArrayList<String> checklist, int textSize) {
             this.context = context;
             this.noteId = noteId;
             this.checklist = checklist;
+            this.textSize = textSize;
         }
 
         @Override
@@ -107,6 +112,7 @@ public class WidgetListView extends RemoteViewsService {
             checklistItemText += checklistItemText.isEmpty() ? "[Audio]" : "";
 
             remoteView.setTextViewText(R.id.checklist_text, Html.fromHtml(checklistItemText, Html.FROM_HTML_MODE_COMPACT));
+            remoteView.setTextViewTextSize(R.id.checklist_text, COMPLEX_UNIT_SP, textSize);
 
             Intent fillInIntent = new Intent();
             remoteView.setOnClickFillInIntent(R.id.checklist_text, fillInIntent);

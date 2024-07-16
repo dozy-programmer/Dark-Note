@@ -17,6 +17,7 @@ import com.akapps.dailynote.activity.NoteLockScreen;
 import com.akapps.dailynote.activity.WidgetListView;
 import com.akapps.dailynote.classes.data.CheckListItem;
 import com.akapps.dailynote.classes.data.Note;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -40,6 +41,7 @@ public class AppWidget extends AppWidgetProvider {
 
         new Handler(Looper.getMainLooper()).post(() -> {
             Note currentNote = RealmHelper.getCurrentNote(context, noteId);
+            User currentUser = RealmHelper.getUser(context, "in widget");
             if (currentNote != null) {
                 boolean isLightTheme = UiHelper.getLightThemePreference(context);
                 boolean isAllChecklistDone = isAllChecklistChecked(currentNote);
@@ -67,6 +69,10 @@ public class AppWidget extends AppWidgetProvider {
                 intent.setData((Uri.fromParts("content",
                         String.valueOf(appWidgetId) + new Random().nextInt(10000), null)));
                 intent.putExtra("id", currentNote.getNoteId());
+                if(currentUser == null || currentUser.getWidgetTextSize() < 10)
+                    intent.putExtra("text_size", 10);
+                else
+                    intent.putExtra("text_size", currentUser.getWidgetTextSize());
                 views.setRemoteAdapter(R.id.preview_checklist, intent);
 
                 if (currentNote.getPinNumber() == 0) {

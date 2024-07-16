@@ -102,13 +102,8 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 
             String modifiedString = pattern.matcher(holder.checklistText.getText()).replaceAll("<font color='#8CA9CF'><b>$1</b></font>");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                holder.checklistText.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
-            }
-            else {
-                holder.checklistText.setText(Html.fromHtml(modifiedString));
-            }
-            holder.background.setStrokeColor(context.getResources().getColor(R.color.azure));
+            holder.checklistText.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
+            holder.background.setStrokeColor(context.getColor(R.color.azure));
             AppData.addWordFoundPositions(parentPosition);
         }
 

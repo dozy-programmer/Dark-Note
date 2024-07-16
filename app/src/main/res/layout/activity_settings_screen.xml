@@ -795,7 +795,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/checklist_setting_layout"
             android:layout_width="match_parent"
-            android:layout_height="474dp"
+            android:layout_height="526dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
@@ -994,6 +994,41 @@
                         android:layout_weight="1"
                         android:src="@drawable/arrow_down"
                         android:tint="?primaryIconTintColor"></ImageView>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="?primaryDividerColor"></ImageView>
+
+                <LinearLayout
+                    android:id="@+id/expenses_checked"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="7"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="90"
+                        android:gravity="center_vertical"
+                        android:text="Only Crossed Budget Expenses are counted"
+                        android:textColor="?tertiaryTextColor"
+                        android:textSize="14sp"
+                        android:textStyle="bold"></TextView>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/crossed_expenses_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="10"
+                        android:checked="true"
+                        android:theme="@style/ThemeOverlay.SwitchTheme"></androidx.appcompat.widget.SwitchCompat>
 
                 </LinearLayout>
 
@@ -1562,7 +1597,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view_layout"></TextView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/add_button_shortcut_layout"
+            android:id="@+id/widget_text_layout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
@@ -1577,6 +1612,65 @@
             app:layout_constraintTop_toBottomOf="@+id/other_settings">
 
             <LinearLayout
+                android:id="@+id/widget_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="90"
+                    android:paddingRight="10dp"
+                    android:gravity="center_vertical"
+                    android:text="Widget Text Size"
+                    android:textColor="?tertiaryTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/selected_widget_text_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9"
+                    android:gravity="center|right"
+                    android:text="10"
+                    android:textColor="?tertiaryTextColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/arrow_down"
+                    android:tint="?primaryIconTintColor"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/add_button_shortcut_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="2dp"
+            app:strokeColor="?primaryStrokeColor"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/widget_text_layout">
+
+            <LinearLayout
                 android:id="@+id/add_button_shortcut"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -1587,7 +1681,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
+                    android:layout_weight="90"
                     android:paddingRight="10dp"
                     android:gravity="center_vertical"
                     android:text="New Note Button Toggles"
@@ -1599,7 +1693,7 @@
                     android:id="@+id/selected_shortcut"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="88"
+                    android:layout_weight="9"
                     android:gravity="center|right"
                     android:text="Default"
                     android:textColor="?tertiaryTextColor"
