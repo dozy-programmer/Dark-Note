@@ -552,6 +552,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="center"
                 android:visibility="gone">
 
                 <ImageButton
@@ -596,7 +597,7 @@
                     android:layout_height="44dp"
                     android:background="@null"
                     android:layout_gravity="center"
-                    android:src="@drawable/strikethrough_icon"
+                    android:src="@drawable/strikethrough_text_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
@@ -604,6 +605,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
+                    android:paddingTop="5dp"
                     android:layout_gravity="center"
                     android:src="@drawable/underline_icon"
                     android:tint="?primaryIconTintColor" />
@@ -613,16 +615,16 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:src="@drawable/icon_image"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/editor_image_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
                     android:id="@+id/action_youtube"
-                    android:layout_width="42dp"
+                    android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:layout_marginTop="1dp"
-                    android:src="@drawable/youtube_media_icon"
+                    android:src="@drawable/youtube_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <TextView
@@ -630,10 +632,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:paddingHorizontal="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="5dp"
                     android:text="RTL"
                     android:textStyle="bold"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="?primaryIconTintColor"
                     android:paddingBottom="2dp"/>
 
@@ -644,6 +647,32 @@
                     android:background="@null"
                     android:layout_gravity="center"
                     android:src="@drawable/highlight_icon"
+                    android:tint="?primaryIconTintColor" />
+
+                <ImageButton
+                    android:id="@+id/action_text_size"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:paddingTop="2dp"
+                    android:background="@null"
+                    android:src="@drawable/text_size_icon"
+                    android:tint="?primaryIconTintColor" />
+
+                <ImageButton
+                    android:id="@+id/action_txt_color"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:paddingTop="3dp"
+                    android:background="@null"
+                    android:src="@drawable/text_color_icon"
+                    android:tint="?primaryIconTintColor" />
+
+                <ImageButton
+                    android:id="@+id/action_format_clear"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@null"
+                    android:src="@drawable/format_clear_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
@@ -663,35 +692,12 @@
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
-                    android:id="@+id/action_text_size"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@null"
-                    android:src="@drawable/format_size_icon"
-                    android:tint="?primaryIconTintColor" />
-
-                <ImageButton
-                    android:id="@+id/action_txt_color"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@null"
-                    android:src="@drawable/color_text_icon"
-                    android:tint="?primaryIconTintColor" />
-
-                <ImageButton
-                    android:id="@+id/action_format_clear"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@null"
-                    android:src="@drawable/format_clear_icon"
-                    android:tint="?primaryIconTintColor" />
-
-                <ImageButton
                     android:id="@+id/action_indent"
                     android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_height="24dp"
                     android:background="@null"
-                    android:src="@drawable/indent_icon"
+                    android:paddingTop="8dp"
+                    android:src="@drawable/right_indent_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
@@ -699,7 +705,8 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:src="@drawable/outdent_icon"
+                    android:paddingTop="8dp"
+                    android:src="@drawable/left_indent_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
@@ -707,7 +714,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:src="@drawable/justify_left"
+                    android:src="@drawable/align_left_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
@@ -715,7 +722,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:src="@drawable/justify_center"
+                    android:src="@drawable/align_center_icon"
                     android:tint="?primaryIconTintColor" />
 
                 <ImageButton
@@ -723,7 +730,7 @@
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:background="@null"
-                    android:src="@drawable/justify_right"
+                    android:src="@drawable/align_right_icon"
                     android:tint="?primaryIconTintColor" />
 
             </LinearLayout>

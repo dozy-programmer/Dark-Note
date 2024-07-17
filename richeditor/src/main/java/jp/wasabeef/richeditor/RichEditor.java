@@ -419,7 +419,7 @@ public class RichEditor extends WebView {
     }
 
     public void insertYoutubeVideo(String url, int width, int height) {
-        String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed/)[^#&?]*";
+        String pattern = "(?<=youtu.be/|watch\\?v=|/shorts|/videos/|embed/)[^#&?]*";
         String youtubeVideoId = "";
         Pattern compiledPattern = Pattern.compile(pattern);
         Matcher matcher = compiledPattern.matcher(url);

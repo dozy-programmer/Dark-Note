@@ -2288,6 +2288,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         findViewById(R.id.action_highlight).setOnClickListener(v -> {
             updateSaveDateEdited();
+            note.setTextBackgroundColor(getColor(R.color.black));
             note.setTextBackgroundColor(getColor(R.color.highlight_yellow));
         });
 
