@@ -117,11 +117,13 @@
         • Widget text size can be changed in settings\n
         • Added new setting for budget to only count expenses that are checked/crossed\n
         • Highlight option added in note editor (only yellow is supported)\n
+        • New icons for Note editor that are easier to understand\n
         • Note editor "remove formatting" option updated to only apply to selected text (previously removed all note formatting)\n
         • Fixed budget issue where non-symbol currencies like `NGN` would cause crashing.\n
         • Minor searching update\n\n
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
+        • fixed youtube shorts not importing\n
         • Always working hard to ensure a pleasant crash-free experience:
         99%+ of users do not experience any issues or crashes!\n
     </string>

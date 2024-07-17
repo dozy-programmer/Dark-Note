@@ -33,7 +33,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:paddingVertical="5dp"
-            android:text="What's New? v18.5CON"
+            android:text="What's New? v18.5"
             android:textColor="?secondaryTextColor"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
