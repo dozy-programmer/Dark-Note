@@ -376,6 +376,8 @@ public class RichEditor extends WebView {
     }
 
     public void removeFormat() {
+        exec("javascript:RE.prepareInsert();");
+
         exec("javascript:RE.removeFormat();");
     }
 

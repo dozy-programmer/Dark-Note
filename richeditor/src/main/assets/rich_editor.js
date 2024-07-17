@@ -345,7 +345,9 @@ RE.blurFocus = function() {
 }
 
 RE.removeFormat = function() {
+    RE.restorerange();
     document.execCommand('removeFormat', false, null);
+    selection.removeAllRanges();
 }
 
 // Event Listeners

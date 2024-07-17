@@ -2,11 +2,11 @@
 
     <!-- App Data !-->
     <string name="app_name">Dark Note</string>
-    <string name="schema">53</string>
+    <string name="schema">54</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v18.3</string>
-    <string name="app_version_int">18.3</string>
+    <string name="app_version">v18.4</string>
+    <string name="app_version_int">18.4</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -112,21 +112,16 @@
 
     </string>
 
-    <string name="version_18_1_whats_new_text"><font color='#8CA9CF'><b>New Update!</b></font>\n\nPlease join the Dark Note Community for updates information, feedback, and help.\nGo to Settings -> Scroll to bottom ->  Dark Note Sub-Reddit Feedback\n\n
-        <font color='#8CA9CF'><b>New</b></font>\n
-        • Fixed budget issue dealing with expense symbols greater than 1 character\n
-        • Selecting "Checked Items -> Bottom" sorting in checklist will also reflect in sublist\n\n
-
-        <font color='#8CA9CF'><b>Last Update</b></font>\n
-        • You can now set a background color for your notes, enable in settings ("Background Color Customization")\n
-        • redesigned image selection from the ground up to work on more devices.\n
-        • 50+ country currencies added to budget.\n
-        • RTL support added in note text editor for languages like Arabic.\n
-        • You can now change the New Note button to just open a note, a checklist, or keep the same behavior (Change by going to Settings -> App Settings Section -> New Note Button Toggles)\n\n
+    <string name="version_18_4_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡️ Scroll to bottom ➡️ Dark Note Sub-Reddit Feedback\n\n
+        <font color='#8CA9CF'><b>New 🎉</b></font>\n
+        • Widget text size can be changed in settings\n
+        • Added new setting for budget to only count expenses that are checked/crossed\n
+        • Highlight option added in note editor (only yellow is supported)\n
+        • Note editor "remove formatting" option updated to only apply to selected text (previously removed all note formatting)\n
+        • Fixed budget issue where non-symbol currencies like `NGN` would cause crashing.\n
+        • Minor searching update\n\n
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
-        • fixed issue where you can copy locked notes contents by clicking on info icon\n
-        • fixed issue where checklist searching was case-sensitive\n
         • Always working hard to ensure a pleasant crash-free experience:
         99%+ of users do not experience any issues or crashes!\n
     </string>

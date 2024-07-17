@@ -2286,6 +2286,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             isToolbarItemSelected(v);
         });
 
+        findViewById(R.id.action_highlight).setOnClickListener(v -> {
+            updateSaveDateEdited();
+            note.setTextBackgroundColor(getColor(R.color.highlight_yellow));
+        });
+
         findViewById(R.id.action_insert_image).setOnClickListener(v -> {
             MediaTypeSheet mediaTypeSheet = new MediaTypeSheet();
             mediaTypeSheet.show(getSupportFragmentManager(), mediaTypeSheet.getTag());
@@ -2379,8 +2384,9 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
 
         findViewById(R.id.action_format_clear).setOnClickListener(v -> {
-            InfoSheet info = new InfoSheet(9);
-            info.show(getSupportFragmentManager(), info.getTag());
+            note.removeFormat();
+//            InfoSheet info = new InfoSheet(9);
+//            info.show(getSupportFragmentManager(), info.getTag());
         });
 
         findViewById(R.id.action_text_size).setOnClickListener(v -> {
@@ -2392,21 +2398,21 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     public void removeFormatting() {
-        updateSaveDateEdited();
-        String removedFormat = "";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n"), Html.FROM_HTML_MODE_COMPACT).toString();
-        } else {
-            removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n")).toString();
-        }
-        removedFormat = removedFormat.replaceAll("\n", "<br>");
-        getRealm().beginTransaction();
-        getCurrentNote(context, noteId).setNote(removedFormat);
-        getRealm().commitTransaction();
-        note.setHtml(removedFormat);
-        note.focusEditor();
-        Helper.showMessage(this, "Removed", "Formatting has been removed",
-                MotionToast.TOAST_SUCCESS);
+//        updateSaveDateEdited();
+//        String removedFormat = "";
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n"), Html.FROM_HTML_MODE_COMPACT).toString();
+//        } else {
+//            removedFormat = Html.fromHtml(getCurrentNote(context, noteId).getNote().replaceAll("<br>", "\n")).toString();
+//        }
+//        removedFormat = removedFormat.replaceAll("\n", "<br>");
+//        getRealm().beginTransaction();
+//        getCurrentNote(context, noteId).setNote(removedFormat);
+//        getRealm().commitTransaction();
+//        note.setHtml(removedFormat);
+//        note.focusEditor();
+//        Helper.showMessage(this, "Removed", "Formatting has been removed",
+//                MotionToast.TOAST_SUCCESS);
     }
 
     private User getUser() {

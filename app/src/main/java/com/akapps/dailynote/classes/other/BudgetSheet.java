@@ -200,7 +200,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                 for (String currentToken : checklistStringTokens) {
                     if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
                         String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey))
-                                .replaceAll("\\" + "-+", "\\" + "-")
+                                .replaceAll("\\" + "-+", "-")
                                 .trim().replaceAll(",", "");
 
                         boolean isNegative = !currentToken.isEmpty() && currentToken.charAt(0) == '-';
@@ -235,8 +235,7 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                     for (String currentToken : sublistStringTokens) {
                         if (currentToken.contains(expenseKey) && !currentToken.contains(budgetKey)) {
                             String currentTokenTrimmed = currentToken.substring(currentToken.indexOf(expenseKey))
-                                    .replaceAll("\\" + expenseKey + "+", "\\" + expenseKey)
-                                    .replaceAll("\\" + "-+", "\\" + "-")
+                                    .replaceAll("\\" + "-+", "-")
                                     .trim().replaceAll(",", "");
 
                             boolean isNegative = !currentToken.isEmpty() && currentToken.charAt(0) == '-';
@@ -256,6 +255,8 @@ public class BudgetSheet extends RoundedBottomSheetDialogFragment {
                         }
                     }
                 }
+                else
+                    continue;
                 currentExpenseSubList.add(new SubExpense(sublistString, currentSubExpenseTotal));
             }
 

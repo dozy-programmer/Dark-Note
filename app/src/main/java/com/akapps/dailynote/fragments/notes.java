@@ -185,10 +185,10 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_1)) {
+        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_4)) {
             WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
             whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_1);
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_4);
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
