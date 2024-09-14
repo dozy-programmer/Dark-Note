@@ -38,6 +38,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove" />
 
+    <!-- Used to load widget right away !-->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:enableOnBackInvokedCallback="true"
@@ -70,6 +73,17 @@
         <receiver
             android:name=".classes.helpers.AlertReceiver"
             android:exported="false" />
+
+        <receiver
+            android:name=".classes.helpers.BootReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.REBOOT"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name=".classes.helpers.AlertDismissReceiver"

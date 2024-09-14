@@ -83,7 +83,7 @@
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
             android:paddingRight="15dp"
-            android:text="Uncategorized Notes"
+            android:text="Notes Without Folders"
             android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
@@ -221,7 +221,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
-            android:text="Unselect Category"
+            android:text="Remove from Folder"
             android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 

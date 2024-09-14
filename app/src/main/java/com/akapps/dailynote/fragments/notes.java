@@ -46,6 +46,7 @@ import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
+import com.akapps.dailynote.classes.other.GenericInfoSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.WhatsNewSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
@@ -185,10 +186,22 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_5)) {
+        if(!Helper.getBooleanPreference(context, AppConstants.LANGUAGE_SUPPORT_MESSAGE) && getAllNotes().isEmpty()){
+            String message = "" +
+                    "Thank you for trying out Dark Note!\n\n" +
+                    "Dark Note is totally free and has no ads. Sadly, Dark Note is English " +
+                    "only. I apologize for those that want it to be translated to other languages, " +
+                    "but I do not have the resources as I am only one developer \uD83D\uDE14.\n\n" +
+                    "Other than that, I hope Dark Note can help you organize your thoughts and " +
+                    "maybe your budget too \uD83D\uDE09 - try out the budget feature!!";
+            GenericInfoSheet infoSheet = new GenericInfoSheet("Welcome", message, "Happy", "Sad");
+            infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
+            Helper.saveBooleanPreference(context, true, AppConstants.LANGUAGE_SUPPORT_MESSAGE);
+        }
+        else if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_6)) {
             WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
             whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_5);
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_6);
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);

@@ -13,7 +13,9 @@ public class AppConstants {
     public static String SCHEMA_VERSION = "schema_version";
     public static String USER_ID = "user_id";
 
-    public static String WHATS_NEW_18_5 = "update_18_5";
+    public static String WHATS_NEW_18_6 = "update_18_6";
+
+    public static String LANGUAGE_SUPPORT_MESSAGE = "language_support_message";
 
     public static String getMonthDay() {
         DateFormat dateFormat = new SimpleDateFormat("MMM_dd"); // Use "MMM dd" format

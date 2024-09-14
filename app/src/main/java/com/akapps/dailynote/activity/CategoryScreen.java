@@ -224,7 +224,7 @@ public class CategoryScreen extends AppCompatActivity {
 
             showAllNotes.setText("All Notes");
 
-            noCategory.setText("Uncategorized notes");
+            noCategory.setText("Folderless Notes");
 
             if (allSelected == 0)
                 unselectCategories.setVisibility(View.GONE);

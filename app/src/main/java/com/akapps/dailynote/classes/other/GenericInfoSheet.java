@@ -26,6 +26,7 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
     private String titleText;
     private String message;
     private String proceedText = "";
+    private String cancelText = "";
     private int action;
 
     public GenericInfoSheet() {
@@ -34,6 +35,13 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
     public GenericInfoSheet(String title, String message) {
         this.titleText = title;
         this.message = message;
+    }
+
+    public GenericInfoSheet(String title, String message, String proceedText, String cancelText) {
+        this.titleText = title;
+        this.message = message;
+        this.proceedText = proceedText;
+        this.cancelText = cancelText;
     }
 
     public GenericInfoSheet(String title, String message, String proceedText, int action) {
@@ -54,6 +62,7 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
 
         title.setText(titleText);
         proceed.setText(proceedText.isEmpty() ? proceed.getText() : proceedText);
+        cancel.setText(cancelText.isEmpty() ? cancel.getText() : cancelText);
         info.setText(message);
         info.setGravity(Gravity.CENTER);
 

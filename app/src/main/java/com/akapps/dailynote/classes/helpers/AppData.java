@@ -109,28 +109,6 @@ public class AppData {
         return allArraylistChecklist;
     }
 
-    public static ArrayList<String> ensureNoteIsNotTooLarge(Context context, int noteId){
-        Realm realm = getRealm(context);
-        Note currentNote = realm.where(Note.class)
-                .equalTo("noteId", noteId).findFirst();
-        String note = currentNote.getNote();
-        ArrayList<String> allArraylistChecklist = new ArrayList<>();
-
-        int maxLength = 1500;
-        String truncatedNote = note.substring(0, Math.min(note.length(), maxLength));
-        if (truncatedNote.length() < note.length()) {
-            truncatedNote += "... note too large, open note to see more";
-        }
-        if(note.isEmpty()){
-            allArraylistChecklist.add("Empty");
-        }
-        else{
-            allArraylistChecklist.add(truncatedNote + "-Note-");
-        }
-
-        return allArraylistChecklist;
-    }
-
     public static void updateNoteWidget(Context context, int noteId, int widgetId) {
         Note currentNote = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
         if (currentNote == null) return;

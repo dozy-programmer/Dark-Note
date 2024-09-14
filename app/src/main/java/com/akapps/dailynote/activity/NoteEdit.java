@@ -2239,18 +2239,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     }
 
     private void isToolbarItemSelected(View view) {
-        // TODO - get this to function and users knows which item is being applied
-        try {
-            int selected = UiHelper.getColorFromTheme(context, R.attr.tertiaryBackgroundColor);
-            ColorDrawable background = (ColorDrawable) view.getBackground();
-            int backgroundColor = background.getColor();
-            if (backgroundColor == selected) {
-                view.setBackgroundColor(UiHelper.getColorFromTheme(context, R.attr.secondaryBackgroundColor));
-            } else {
-                view.setBackgroundColor(selected);
-            }
-        } catch (Exception ignored) {
-        }
+//        // TODO - get this to function and users knows which item is being applied
+//        try {
+//            int selected = UiHelper.getColorFromTheme(context, R.attr.tertiaryBackgroundColor);
+//            ColorDrawable background = (ColorDrawable) view.getBackground();
+//            int backgroundColor = background.getColor();
+//            if (backgroundColor == selected) {
+//                view.setBackgroundColor(UiHelper.getColorFromTheme(context, R.attr.secondaryBackgroundColor));
+//            } else {
+//                view.setBackgroundColor(selected);
+//            }
+//        } catch (Exception ignored) {
+//        }
     }
 
     private void initializeEditor() {
@@ -2288,7 +2288,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         findViewById(R.id.action_highlight).setOnClickListener(v -> {
             updateSaveDateEdited();
-            note.setTextBackgroundColor(getColor(R.color.black));
+            note.setTextColor(getColor(R.color.black));
             note.setTextBackgroundColor(getColor(R.color.highlight_yellow));
         });
 

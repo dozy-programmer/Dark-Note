@@ -33,10 +33,10 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds)
-            updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetId, false);
+            updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetId);
     }
 
-    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId, boolean shortenText) {
+    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int noteId, int appWidgetId) {
         if (noteId == -1) return;
 
         new Handler(Looper.getMainLooper()).post(() -> {
@@ -61,7 +61,7 @@ public class AppWidget extends AppWidgetProvider {
 
                 views.setInt(R.id.preview_checklist, "setBackgroundResource", isLightTheme ? R.drawable.round_corner_light : R.drawable.round_corner);
 
-                ArrayList<String> list = shortenText ? AppData.ensureNoteIsNotTooLarge(context, noteId) : AppData.getNoteChecklist(noteId, context);
+                ArrayList<String> list = AppData.getNoteChecklist(noteId, context);
 
                 Intent intent = new Intent(context, WidgetListView.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -100,13 +100,7 @@ public class AppWidget extends AppWidgetProvider {
                     appWidgetManager.updateAppWidget(appWidgetId, views);
                 }
                 catch (Exception e){
-                    if(!shortenText){
-                        updateAppWidget(context, appWidgetManager, noteId, appWidgetId, true);
-                        FirebaseCrashlytics.getInstance().log("App crashed from Transaction too large, most likely so I will retry");
-                    }
-                    else{
-                        FirebaseCrashlytics.getInstance().log("Exception in AppWidget.java, maybe text size too large?");
-                    }
+                    updateAppWidget(context, appWidgetManager, noteId, appWidgetId);
                 }
             }
         });
