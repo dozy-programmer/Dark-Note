@@ -5,8 +5,8 @@
     <string name="schema">54</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v18.6</string>
-    <string name="app_version_int">18.6</string>
+    <string name="app_version">v18.8</string>
+    <string name="app_version_int">18.8</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -112,13 +112,13 @@
 
     </string>
 
-    <string name="version_18_6_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡️ Scroll to bottom ➡️ Dark Note Sub-Reddit Feedback\n\n
+    <string name="version_18_8_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡ Scroll to bottom ➡ Dark Note Sub-Reddit Feedback\n\n
         <font color='#8CA9CF'><b>New 🎉</b></font>\n
-        • Highlight option will now set text color inside it to black\n
-        • Changed some text in Folder screen to be easier to understand\n
-        • Fixed Widget not showing right away on reboot\n\n
+        • Slight UI change to Color Menu to fix text color matching background color\n
+        • Updated help page to be more helpful\n\n
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
+        • Fixed text color not changing when updating via toolbar palette icon\n
         • Always working hard to ensure a pleasant crash-free experience:
         99%+ of users do not experience any issues or crashes!\n
     </string>
