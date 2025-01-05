@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -110,6 +109,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import io.realm.Realm;
@@ -288,9 +288,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_edit);
-
-        AppData.getAppData();
+        try{
+            setContentView(R.layout.activity_note_edit);
+        } catch (Exception _){
+            if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WEBVIEW)) {
+                Toast.makeText(this, "Device not supported -> WebView is required!", Toast.LENGTH_LONG).show();
+                GenericInfoSheet infoSheet = new GenericInfoSheet("Error -> WebView Missing", "" +
+                        "Your device is missing WebView, which is needed for the app to function. " +
+                        "Try using another device or add WebView", "Close", "Ok");
+                infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
+            }
+            return;
+        }
 
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         context = this;
@@ -319,7 +328,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         else if (noteId == -1) {
             isNewNote = true;
             isNewNoteCopy = true;
-        } else if (!AppData.isDisableAnimation)
+        } else if (!AppData.getInstance().isDisableAnimation())
             overridePendingTransition(R.anim.left_in, R.anim.stay);
 
         // if orientation changes, then position is updated
@@ -352,16 +361,13 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             getCurrentNote(context, noteId).setNoteTextDirection("ltr");
             getRealm().commitTransaction();
             text.setText("RTL");
-            Log.d("Here", "I am null, setting to ltr");
             note.setDefaultDirection();
         } else if (getCurrentNote(context, noteId).getNoteTextDirection().equals("rtl")) {
             text.setText("LTR");
             note.setRtlDirection();
-            Log.d("Here", "I am set to rtl");
         } else if (getCurrentNote(context, noteId).getNoteTextDirection().equals("ltr")) {
             text.setText("RTL");
             note.setDefaultDirection();
-            Log.d("Here", "I am set to ltr");
         }
 
         if (RealmHelper.isNoteWidget(context, noteId))
@@ -369,6 +375,18 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         if (dismissNotification)
             Helper.cancelNotification(context, noteId);
+
+        if (!AppData.getInstance().getNoteSearch().isEmpty()) {
+            Log.d("Here", "note search -> " + AppData.getInstance().getNoteSearch());
+            isSearchingNotes = true;
+            if (checkIfStringIsFound(AppData.getInstance().getNoteSearch(), false)) {
+                showSearchBar();
+                searchEditText.setText(AppData.getInstance().getNoteSearch());
+                searchEditText.setSelection(searchEditText.getText().length());
+            } else {
+                isSearchingNotes = false;
+            }
+        }
 
         startAlarmPermission = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), (ActivityResult result) -> {
@@ -397,7 +415,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             public void handleOnBackPressed() {
                 if (getCurrentNote(context, noteId) == null) {
                     finish("note is null");
-                    if (!AppData.isDisableAnimation)
+                    if (!AppData.getInstance().isDisableAnimation())
                         overridePendingTransition(R.anim.stay, R.anim.right_out);
                 } else if (getCurrentNote(context, noteId).getTitle().isEmpty() && getCurrentNote(context, noteId).getNote().isEmpty() &&
                         getCurrentNote(context, noteId).getChecklist().size() == 0)
@@ -423,7 +441,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                         Helper.showMessage(NoteEdit.this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
 
                     finish("on-back press");
-                    if (!AppData.isDisableAnimation)
+                    if (!AppData.getInstance().isDisableAnimation())
                         overridePendingTransition(R.anim.stay, R.anim.right_out);
                 }
             }
@@ -499,7 +517,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             lockScreen.putExtra("securityWord", getCurrentNote(context, noteId).getSecurityWord());
             lockScreen.putExtra("fingerprint", getCurrentNote(context, noteId).isFingerprint());
             startActivity(lockScreen);
-            if (!AppData.isDisableAnimation)
+            if (!AppData.getInstance().isDisableAnimation())
                 overridePendingTransition(R.anim.stay, R.anim.right_out);
             finish();
         } else if (!getRealm().isClosed() && getCurrentNote(context, noteId) != null) {
@@ -683,10 +701,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
         search.setOnClickListener(v -> {
             if (getCurrentNote(context, noteId).isCheckList()) {
-                textSizeLayout.setVisibility(View.VISIBLE);
                 showSearchBar();
-            } else if (note.getHtml().length() > 0) {
-                textSizeLayout.setVisibility(View.VISIBLE);
+            } else if (!note.getHtml().isEmpty()) {
                 showSearchBar();
             } else
                 Helper.showMessage(this, "Empty", "Searching for something " +
@@ -710,30 +726,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (getCurrentNote(context, noteId).isCheckList()) {
-                    if (s == null) return;
-                    AppData.resetWordFoundPositions();
-                    RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, getRealm());
-                    boolean updateRecyclerview = false;
-                    for (int i = 0; i < results.size(); i++) {
-                        CheckListItem item = results.get(i);
-                        if (item.getText().toLowerCase().contains(s.toString().toLowerCase())) {
-                            AppData.addWordFoundPositions(i);
-                            updateRecyclerview = true;
-                        }
-                    }
-                    if (updateRecyclerview) sortChecklist(s.toString());
-                } else {
-                    currentWordIndex = -1;
-                    if (isSearchingNotes) {
-                        textSizeLayout.setVisibility(View.VISIBLE);
-                        if (!s.toString().isEmpty())
-                            findText(s.toString().toLowerCase());
-                        else {
-                            wordOccurences = new ArrayList();
-                        }
-                    }
-                }
+                checkIfStringIsFound(s.toString(), true);
             }
 
             @Override
@@ -759,7 +752,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             Intent category = new Intent(NoteEdit.this, CategoryScreen.class);
             category.putExtra("editing_reg_note", true);
             categoryLauncher.launch(category);
-            if (!AppData.isDisableAnimation)
+            if (!AppData.getInstance().isDisableAnimation())
                 overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
         });
 
@@ -783,15 +776,16 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         });
 
-        if (getCurrentNote(context, noteId) != null) {
+        Optional<Note> currentNote = Optional.ofNullable(getCurrentNote(context, noteId));
+        currentNote.ifPresent(existingNote -> {
             note.setOnTextChangeListener(text -> {
-                oldTitle = getCurrentNote(context, noteId).getTitle();
-                oldNote = getCurrentNote(context, noteId).getNote();
-                if (text.length() == 0 || getCurrentNote(context, noteId).getNote().equals(text)) {
-                    if (text.length() == 0)
+                oldTitle = existingNote.getTitle();
+                oldNote = existingNote.getNote();
+                if (text.isEmpty() || existingNote.getNote().equals(text)) {
+                    if (text.isEmpty())
                         saveChanges(text, 0);
                 } else {
-                    if (getCurrentNote(context, noteId) != null && !getCurrentNote(context, noteId).getNote().equals(text)) {
+                    if (!getCurrentNote(context, noteId).getNote().equals(text)) {
                         saveChanges(text, 1);
                     }
                 }
@@ -802,7 +796,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     wordOccurences = new ArrayList();
                     String s = searchEditText.getText().toString();
                     if (!s.isEmpty() && s.length() > 1)
-                        findText(s.toString().toLowerCase());
+                        findText(s.toString().toLowerCase(), true);
                 }
             });
             note.setOnDecorationChangeListener((text, types) -> {
@@ -870,7 +864,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
                     }
                 }
             });
-        }
+        });
 
         closeTextLayout.setOnClickListener(v -> {
             isChangingTextSize = false;
@@ -896,11 +890,11 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (isChangingTextSize)
                 changeTextSize(true, getCurrentNote(context, noteId).isCheckList());
             else if (getCurrentNote(context, noteId).isCheckList()) {
-                if (AppData.getWordFoundPositions().size() == 0) return;
-                int currentIndex = AppData.getIndexPosition(true);
+                if (AppData.getInstance().getWordFoundPositions().isEmpty()) return;
+                int currentIndex = AppData.getInstance().getIndexPosition(true);
                 checkListRecyclerview.smoothScrollToPosition(currentIndex);
             } else if (isSearchingNotes) {
-                if (wordOccurences.size() != 0) {
+                if (!wordOccurences.isEmpty()) {
                     int nextIndex;
                     currentWordIndex = (currentWordIndex <= 0) ? wordOccurences.size() - 1
                             : currentWordIndex - 1;
@@ -923,12 +917,12 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             if (isChangingTextSize)
                 changeTextSize(false, getCurrentNote(context, noteId).isCheckList());
             else if (getCurrentNote(context, noteId).isCheckList()) {
-                if (AppData.getWordFoundPositions().size() == 0) return;
-                int currentIndex = AppData.getIndexPosition(false);
+                if (AppData.getInstance().getWordFoundPositions().isEmpty()) return;
+                int currentIndex = AppData.getInstance().getIndexPosition(false);
                 checkListRecyclerview.smoothScrollToPosition(currentIndex);
             } else if (isSearchingNotes) {
                 int nextIndex;
-                if (wordOccurences.size() != 0) {
+                if (!wordOccurences.isEmpty()) {
                     currentWordIndex = (currentWordIndex == -1 || currentWordIndex == wordOccurences.size() - 1) ? 0 :
                             currentWordIndex + 1;
                     nextIndex = Integer.parseInt(wordOccurences.get(currentWordIndex).toString());
@@ -1040,6 +1034,38 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         });
     }
 
+    private Boolean checkIfStringIsFound(String s, boolean updateUI) {
+        int counter = 0;
+        boolean isFound = false;
+        if (getCurrentNote(context, noteId).isCheckList()) {
+            if (s == null) return false;
+            AppData.getInstance().resetWordFoundPositions();
+            RealmResults<CheckListItem> results = Helper.sortChecklist(context, noteId, getRealm());
+            for (int i = 0; i < results.size(); i++) {
+                CheckListItem item = results.get(i);
+                if (item.getText().toString().toLowerCase().contains(s.toString().toLowerCase())) {
+                    AppData.getInstance().addWordFoundPositions(i);
+                    Log.d("Here", "checklist word found -> true");
+                    counter++;
+                }
+            }
+            sortChecklist(s.toString());
+        } else {
+            currentWordIndex = -1;
+            if (isSearchingNotes) {
+                if (updateUI) textSizeLayout.setVisibility(View.VISIBLE);
+                if (!s.toString().isEmpty()) {
+                    isFound = findText(s.toString().toLowerCase(), updateUI);
+                    if (isFound) counter++;
+                } else {
+                    wordOccurences = new ArrayList();
+                }
+            }
+        }
+        Log.d("Here", "isStringFound -> " + (counter > 0));
+        return counter > 0;
+    }
+
     private void closeAndDeleteNote() {
         if (getCurrentNote(context, noteId) != null && getCurrentNote(context, noteId).getTitle().isEmpty() && getCurrentNote(context, noteId).getNote().isEmpty()
                 && getCurrentNote(context, noteId).getChecklist().isEmpty()) {
@@ -1049,7 +1075,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
         }
         finish("Closing and maybe deleting note");
-        if (!AppData.isDisableAnimation)
+        if (!AppData.getInstance().isDisableAnimation())
             overridePendingTransition(R.anim.stay, R.anim.right_out);
     }
 
@@ -1219,12 +1245,14 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
 
     public void updateColors() {
         noteColor.setCardBackgroundColor(getCurrentNote(context, noteId).getBackgroundColor());
-        if (!getUser().isUsePreviewColorAsBackground())
+        if (!getUser().isUsePreviewColorAsBackground()) {
             category.setTextColor(getCurrentNote(context, noteId).getBackgroundColor());
-        else
+            note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
+        } else {
             category.setTextColor(getCurrentNote(context, noteId).getLastEditFolderTextColor());
+            note.setEditorFontColor(getCurrentNote(context, noteId).getTextColor());
+        }
         title.setTextColor(getCurrentNote(context, noteId).getTitleColor());
-        note.setEditorFontColor(RealmHelper.getTextColorBasedOnTheme(context, noteId));
         if (checklistAdapter != null && getCurrentNote(context, noteId).isCheckList())
             checklistAdapter.notifyDataSetChanged();
 
@@ -1244,21 +1272,28 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         editorScroll.setAlpha(value);
     }
 
-    private void findText(String target) {
+    private Boolean findText(String target, boolean updateUI) {
         if (!getCurrentNote(context, noteId).isCheckList()) {
-
             String originalString = note.getHtml();
             if (originalString.toLowerCase().contains(target.toLowerCase())) {
                 this.target = target;
                 findAllTextIndexes(target);
-                decreaseTextSize.setAlpha(new Float(1.0));
-                increaseTextSize.setAlpha(new Float(1.0));
+                if (updateUI) {
+                    decreaseTextSize.setAlpha(new Float(1.0));
+                    increaseTextSize.setAlpha(new Float(1.0));
+                }
+                Log.d("Here", "findText() -> true");
+                return true;
             } else {
                 currentWordIndex = -1;
-                decreaseTextSize.setAlpha(new Float(0.5));
-                increaseTextSize.setAlpha(new Float(0.5));
+                if (updateUI) {
+                    decreaseTextSize.setAlpha(new Float(0.5));
+                    increaseTextSize.setAlpha(new Float(0.5));
+                }
             }
         }
+        Log.d("Here", "findText() -> false");
+        return false;
     }
 
     private void findAllTextIndexes(String target) {

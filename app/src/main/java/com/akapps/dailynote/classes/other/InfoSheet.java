@@ -69,6 +69,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
     public RecyclerView.Adapter backupAdapter;
 
     private String userSecurityWord;
+    private String tempCode;
     boolean isAppLocked;
     private int attempts;
     private String messageText;
@@ -111,9 +112,10 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         this.redirectNote = redirectNote;
     }
 
-    public InfoSheet(int message, String userSecurityWord, boolean isAppLocked) {
+    public InfoSheet(int message, String userSecurityWord, String tempCode, boolean isAppLocked) {
         this.message = message;
         this.userSecurityWord = userSecurityWord;
+        this.tempCode = tempCode;
         this.isAppLocked = isAppLocked;
     }
 
@@ -377,8 +379,12 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             attempts++;
             if (securityWord.getText().toString().equals(userSecurityWord)) {
                 this.dismiss();
-                ((NoteLockScreen) getActivity()).openNote();
-            } else
+                ((NoteLockScreen) getActivity()).openNote(false);
+            } else if(securityWord.getText().toString().equals(tempCode)){
+                this.dismiss();
+                ((NoteLockScreen) getActivity()).openNote(true);
+            }
+            else
                 info.setText("Enter Security word used to lock note \n(" + attempts + " attempts)");
         });
 

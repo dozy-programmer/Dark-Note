@@ -13,9 +13,12 @@ import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.fragments.notes;
 
+import www.sanju.motiontoast.MotionToast;
+
 public class Homepage extends FragmentActivity {
 
     private boolean isOpenApp;
+    private boolean isTempCodeUsed;
     private Fragment notes;
 
     @Override
@@ -25,6 +28,8 @@ public class Homepage extends FragmentActivity {
         setContentView(R.layout.activity_homepage_screen);
 
         isOpenApp = getIntent().getBooleanExtra("openApp", false);
+        isTempCodeUsed = getIntent().getBooleanExtra("isTempCodeUsed", false);
+        if(isTempCodeUsed) unLockApp();
 
         if (AppData.getInstance().isAppFirstStarted()) {
             // initialize database and get data
@@ -62,6 +67,16 @@ public class Homepage extends FragmentActivity {
     private void openApp() {
         notes = new notes();
         getSupportFragmentManager().beginTransaction().add(android.R.id.content, notes).commit();
+    }
+
+    private void unLockApp() {
+        RealmSingleton.get(this).beginTransaction();
+        RealmHelper.getUser(this, "home").setPinNumber(0);
+        RealmHelper.getUser(this, "home").setSecurityWord("");
+        RealmHelper.getUser(this, "home").setFingerprint(false);
+        RealmSingleton.get(this).commitTransaction();
+        Helper.showMessage(this, "App un-Locked", "App lock has " +
+                "been removed", MotionToast.TOAST_SUCCESS);
     }
 
     @Override

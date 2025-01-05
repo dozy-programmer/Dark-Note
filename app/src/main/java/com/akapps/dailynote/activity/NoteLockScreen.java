@@ -4,7 +4,9 @@ import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +27,9 @@ import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 
 import www.sanju.motiontoast.MotionToast;
@@ -111,7 +116,7 @@ public class NoteLockScreen extends AppCompatActivity {
 
         // if there is no pin number/it is 0, then just open note
         if (notePinNumber == 0)
-            openNote();
+            openNote(false);
 
         // shows the note title so that user knows which note they are trying to open
         noteTitleText.setText(noteTitle);
@@ -123,7 +128,7 @@ public class NoteLockScreen extends AppCompatActivity {
             @Override
             public void onComplete(String pin) {
                 if (Integer.parseInt(pin) == notePinNumber)
-                    openNote();
+                    openNote(false);
                 else
                     changeLottieAnimationColor(lockIcon, UiHelper.getColorFromTheme(NoteLockScreen.this, R.attr.tertiaryButtonColor));
             }
@@ -156,7 +161,7 @@ public class NoteLockScreen extends AppCompatActivity {
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                openNote();
+                openNote(false);
             }
 
             @Override
@@ -176,11 +181,12 @@ public class NoteLockScreen extends AppCompatActivity {
     }
 
     // if pin is correct, note is opened
-    public void openNote() {
+    public void openNote(boolean isTempCodeUsed) {
         if (isAppLocked) {
             Intent homepage;
             homepage = new Intent(this, Homepage.class);
             homepage.putExtra("openApp", true);
+            homepage.putExtra("isTempCodeUsed", isTempCodeUsed);
             startActivity(homepage);
         } else if (isFolderLocked) {
             setResult(RESULT_OK);
@@ -196,8 +202,37 @@ public class NoteLockScreen extends AppCompatActivity {
 
     // shows a dialog for user to get their note pin
     private void forgotPasswordDialog() {
-        InfoSheet info = new InfoSheet(5, securityWord, isAppLocked);
+        String tempCode = generateTemporaryCode();
+        InfoSheet info = new InfoSheet(5, securityWord, tempCode, isAppLocked);
         info.show(getSupportFragmentManager(), info.getTag());
+    }
+
+    private String generateTemporaryCode(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Get the current date and time
+            LocalDateTime now = LocalDateTime.now();
+
+            // Extract the year, month, day, and hour
+            int year = now.getYear();
+            int month = now.getMonthValue();
+            int day = now.getDayOfMonth();
+            int hour = now.getHour();
+
+            // Format the date-time to "yyyyMMddHH" format (YearMonthDayHour)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+            String formattedDate = now.format(formatter);
+
+            // Add the values together (year + month + day * (hour + 2))
+            int tempCode = (year + month + day) * (hour + 2);
+
+            // Display the formatted date and the sum in the log or UI
+            Log.d("Here", "Formatted date: " + formattedDate);
+            Log.d("Here", "Temp Code: " + tempCode);
+            return String.valueOf(tempCode);
+        } else {
+            // random string so that it cannot be guessed
+            return UUID.randomUUID().toString() + "_dark_note_null_~!@#$%^&*()_+";
+        }
     }
 
     // shows fingerprint dialog for user to use fingerprint

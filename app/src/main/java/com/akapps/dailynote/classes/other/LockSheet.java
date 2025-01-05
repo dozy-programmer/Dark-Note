@@ -89,7 +89,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
                 pinText = pinText.replaceAll("[^0-9]", "");
             }
 
-            if (pinText.length() >= 4 && pinText.length() <= 10) {
+            if (pinText.length() >= 4 && pinText.length() <= 9) {
                 if (securityWordText.length() > 2) {
                     if (lockType == LockType.LOCK_APP)
                         ((SettingsScreen) getActivity()).lockApp(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
@@ -107,7 +107,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
                 } else
                     securityWordLayout.setError("Min = 3 Letters");
             } else
-                pinLayout.setError("Min = 4 , Max = 10");
+                pinLayout.setError("Min = 4 , Max = 9");
         });
 
         fingerprint.setOnCheckedChangeListener((buttonView, isChecked) -> {

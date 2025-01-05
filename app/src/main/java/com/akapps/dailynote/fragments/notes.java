@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.RealmQueryBuilder;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
@@ -57,9 +59,12 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
@@ -117,8 +122,7 @@ public class notes extends Fragment {
 
     private ActivityResultLauncher<Intent> settingsLauncher;
 
-    public notes() {
-    }
+    public notes() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,7 +190,7 @@ public class notes extends Fragment {
             allNotes = allNotes.where().equalTo("category", "none").findAll();
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
-        if(!Helper.getBooleanPreference(context, AppConstants.LANGUAGE_SUPPORT_MESSAGE) && getAllNotes().isEmpty()){
+        if (!Helper.getBooleanPreference(context, AppConstants.LANGUAGE_SUPPORT_MESSAGE) && getAllNotes().isEmpty()) {
             String message = "" +
                     "Thank you for trying out Dark Note!\n\n" +
                     "Dark Note is totally free and has no ads. Sadly, Dark Note is English " +
@@ -197,11 +201,10 @@ public class notes extends Fragment {
             GenericInfoSheet infoSheet = new GenericInfoSheet("Welcome", message, "Happy", "Sad");
             infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             Helper.saveBooleanPreference(context, true, AppConstants.LANGUAGE_SUPPORT_MESSAGE);
-        }
-        else if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_6)) {
+        } else if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_8)) {
             WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
             whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_6);
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_8);
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
@@ -229,7 +232,7 @@ public class notes extends Fragment {
                 result -> {
                     if (currentTheme != UiHelper.getTheme(context)) {
                         refreshFragment(true);
-                    } else if (!AppData.isDisableAnimation) {
+                    } else if (!AppData.getInstance().isDisableAnimation()) {
                         getActivity().overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
                         setRecyclerviewLayout();
                         getSortDataAndSort();
@@ -254,13 +257,13 @@ public class notes extends Fragment {
         initializeLayout();
         showData();
 
-        if (getUser().isOpenFoldersOnStart() && AppData.isAppFirstStarted) {
-            AppData.isAppFirstStarted = false;
+        if (getUser().isOpenFoldersOnStart() && AppData.getInstance().isAppFirstStarted()) {
+            AppData.getInstance().setAppFirstStarted(false);
             Helper.saveBooleanPreference(context, true, "app_started");
             Intent category = new Intent(getActivity(), CategoryScreen.class);
             Helper.setOrientation(getActivity(), context);
             startActivityForResult(category, 5);
-            if (!AppData.isDisableAnimation)
+            if (!AppData.getInstance().isDisableAnimation())
                 getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
         }
 
@@ -386,8 +389,7 @@ public class notes extends Fragment {
             else {
                 if (addMenuLarge.isOpened()) {
                     addMenuLarge.close(true);
-                }
-                else {
+                } else {
                     newNoteButtonAction();
                 }
             }
@@ -403,8 +405,7 @@ public class notes extends Fragment {
             else {
                 if (addMenu.isOpened()) {
                     addMenu.close(true);
-                }
-                else {
+                } else {
                     newNoteButtonAction();
                 }
             }
@@ -423,7 +424,7 @@ public class notes extends Fragment {
             if (enableSelectMultiple)
                 category.putExtra("multi_select", true);
             startActivityForResult(category, 5);
-            if (!AppData.isDisableAnimation)
+            if (!AppData.getInstance().isDisableAnimation())
                 getActivity().overridePendingTransition(R.anim.show_from_bottom, R.anim.stay);
         });
 
@@ -471,20 +472,22 @@ public class notes extends Fragment {
                         RealmResults<Note> showEmptyLayout = getRealm().where(Note.class).equalTo("pinNumber", -1).findAll();
                         isListEmpty(0, true);
                         populateAdapter(showEmptyLayout);
-                    } else
+                    } else {
                         searchNotesAndUpdate(s);
+                        AppData.getInstance().setNoteSearch(s);
+                    }
                 }
                 return false;
             }
         });
     }
 
-    private void newNoteButtonAction(){
+    private void newNoteButtonAction() {
         boolean isUsingBiggerButton = getUser().isIncreaseFabSize();
         int newNoteAction = getUser().getAddButtonAction();
-        switch (newNoteAction){
+        switch (newNoteAction) {
             case 0:
-                if(isUsingBiggerButton)
+                if (isUsingBiggerButton)
                     addMenuLarge.open(true);
                 else
                     addMenu.open(true);
@@ -498,23 +501,23 @@ public class notes extends Fragment {
         }
     }
 
-    private void openNewNote(){
+    private void openNewNote() {
         Intent note = new Intent(getActivity(), NoteEdit.class);
         startActivity(note);
         closeMenuButton();
     }
 
-    private void openNewChecklist(){
+    private void openNewChecklist() {
         Intent checklist = new Intent(getActivity(), NoteEdit.class);
         checklist.putExtra("isChecklist", true);
         startActivity(checklist);
         closeMenuButton();
     }
 
-    private void closeMenuButton(){
-        if(addMenu.isOpened())
+    private void closeMenuButton() {
+        if (addMenu.isOpened())
             addMenu.close(true);
-        else if(addMenuLarge.isOpened())
+        else if (addMenuLarge.isOpened())
             addMenuLarge.close(true);
     }
 
@@ -765,8 +768,7 @@ public class notes extends Fragment {
             allNotes = sortedNotes;
             populateAdapter(allNotes);
             isListEmpty(allNotes.size(), false);
-        }
-        else
+        } else
             showDefaultSort();
     }
 
@@ -789,13 +791,26 @@ public class notes extends Fragment {
     }
 
     private void searchNotesAndUpdate(String target) {
-        RealmResults<Note> queryNotes = getRealm().where(Note.class)
-                .contains("note", target, Case.INSENSITIVE).or()
-                .contains("title", target, Case.INSENSITIVE).or()
-                .contains("checklistConvertedToString", target, Case.INSENSITIVE)
-                .findAll();
+        RealmQuery<Note> query = getRealm().where(Note.class);
 
-        isListEmpty(queryNotes.size(), queryNotes.size() == 0);
+        String[] targetWords = target.split(" ");
+
+        RealmQueryBuilder<Note> queryBuilder = new RealmQueryBuilder<>(query);
+        RealmQuery<Note> resultQuery = queryBuilder
+                .containsAll("note", targetWords, Case.INSENSITIVE)
+                .or()
+                .containsAll("title", targetWords, Case.INSENSITIVE)
+                .or()
+                .containsAll("checklistConvertedToString", targetWords, Case.INSENSITIVE)
+                .getQuery();
+
+        RealmResults<Note> queryNotes = resultQuery.findAll();
+
+        Log.d("Here", "target -> " + target);
+        Log.d("Here", "split -> " + Arrays.toString(targetWords));
+        Log.d("Here", "-------------------------------");
+
+        isListEmpty(queryNotes.size(), queryNotes.isEmpty());
         populateAdapter(queryNotes);
     }
 
@@ -818,6 +833,7 @@ public class notes extends Fragment {
         searchEditText.setIconified(true);
         searchEditText.setIconified(false);
         searchEditText.setBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryBackgroundColor));
+        AppData.getInstance().setNoteSearch("");
 
         addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.back_icon));
@@ -882,6 +898,7 @@ public class notes extends Fragment {
         unSelectAllNotes();
         clearVariables();
         hideSearchBar();
+        AppData.getInstance().setNoteSearch("");
     }
 
     public void deleteMultipleNotes(boolean deleteNotes) {
@@ -1025,3 +1042,4 @@ public class notes extends Fragment {
                 view.findViewById(R.id.empty_view_no_animation));
     }
 }
+
