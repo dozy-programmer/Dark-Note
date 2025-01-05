@@ -194,7 +194,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
                 RealmSingleton.getInstance(context).commitTransaction();
                 holder.subChecklist.setVisibility(View.GONE);
             } else {
-                if (checkListItem.getSubChecklist().size() != 0) {
+                if (!checkListItem.getSubChecklist().isEmpty()) {
                     holder.subChecklist.setVisibility(View.VISIBLE);
                     RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.getInstance(context).where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())

@@ -257,7 +257,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         // initialize recyclerview
         allNotesRecyclerview = view.findViewById(R.id.all_notes);
 
-        allNotes = AppData.getAllNotes(getActivity(), true);
+        allNotes = AppData.getInstance().getAllNotes(getActivity(), true);
         allNotesRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         populateSearchAdapter(allNotes);
         allNotesRecyclerview.setVisibility(View.GONE);
@@ -781,9 +781,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         super.onResume();
 
         itemName.requestFocus();
-        if (AppData.isKeyboardOpen) {
+        if (AppData.getInstance().isKeyboardOpen()) {
             Helper.toggleKeyboard(getContext(), itemName, true);
-            AppData.isKeyboardOpen = false;
+            AppData.getInstance().setKeyboardOpen(false);
         }
     }
 

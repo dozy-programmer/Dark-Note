@@ -47,13 +47,31 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/support_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="-20dp"
+            android:elevation="10dp"
+            android:stateListAnimator="@null"
+            android:text="Support"
+            android:textColor="?primaryTextColor"
+            android:textSize="10sp"
+            app:cardBackgroundColor="?secondaryBackgroundColor"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="@+id/buy_me_coffee_layout"
+            app:layout_constraintStart_toStartOf="@+id/buy_me_coffee_layout"
+            app:layout_constraintTop_toTopOf="@+id/buy_me_coffee_layout"
+            app:strokeColor="?primaryStrokeColor"
+            app:strokeWidth="2dp" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/buy_me_coffee_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:paddingHorizontal="10sp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             app:cardElevation="5dp"
             app:strokeWidth="2dp"
             app:strokeColor="?primaryStrokeColor"
@@ -66,14 +84,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/coffee_button"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
                     app:cardBackgroundColor="?secondaryBackgroundColor"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="5dp"
@@ -83,7 +102,7 @@
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/coffee_moving"
                         android:layout_width="60dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="60dp"
                         app:lottie_autoPlay="true"
                         app:lottie_loop="true"
                         app:lottie_rawRes="@raw/coffee_cup"
@@ -95,7 +114,9 @@
                     android:id="@+id/support_me_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginHorizontal="10dp"
                     android:autoLink="all"
                     android:autoSizeMaxTextSize="30sp"
                     android:autoSizeMinTextSize="9sp"

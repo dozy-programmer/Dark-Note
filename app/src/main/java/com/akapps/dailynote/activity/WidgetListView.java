@@ -50,7 +50,7 @@ public class WidgetListView extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            new Handler(Looper.getMainLooper()).post(() -> checklist = AppData.getNoteChecklist(noteId, context));
+            new Handler(Looper.getMainLooper()).post(() -> checklist = AppData.getInstance().getNoteChecklist(noteId, context));
         }
 
         @Override

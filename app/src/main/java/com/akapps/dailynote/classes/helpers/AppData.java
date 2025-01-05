@@ -14,52 +14,138 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class AppData {
-    private static AppData appData;
-    public static boolean isAppFirstStarted;
-    public static int timerDuration;
-    public static boolean isKeyboardOpen;
-    public static boolean isDisableAnimation;
-    public static ArrayList<Integer> wordFoundPositions = new ArrayList<>();
-    public static int wordIndex;
 
-    public static int pin;
-    public static String securityWord;
-    public static boolean isFingerprintAdded;
+    private boolean isAppFirstStarted;
+    private boolean isKeyboardOpen;
+    private boolean isDisableAnimation;
+    private ArrayList<Integer> wordFoundPositions;
+    private int wordIndex;
+    private int pin;
+    private String securityWord;
+    private boolean isFingerprintAdded;
+    private int timerDuration;
+    private String noteSearch;
 
+    // Private constructor prevents instantiation
     private AppData() {
+        this.isAppFirstStarted = true;
+        this.isKeyboardOpen = false;
+        this.isDisableAnimation = false;
+        this.wordFoundPositions = new ArrayList<>();
+        this.wordIndex = -1;
+        this.pin = 0;
+        this.securityWord = "";
+        this.noteSearch = "";
+        this.isFingerprintAdded = false;
+        this.timerDuration = 0;
     }
 
-    public static AppData getAppData() {
-        if (appData == null) {
-            isAppFirstStarted = true;
-            isKeyboardOpen = false;
-            isDisableAnimation = false;
-            wordFoundPositions = new ArrayList<>();
-            wordIndex = -1;
-            pin = 0;
-            securityWord = "";
-            isFingerprintAdded = false;
-            appData = new AppData();
+    private static final class AppDataHolder {
+        static final AppData appData = new AppData();
+    }
+
+    // Public method to provide access to the singleton instance
+    public static AppData getInstance() {
+        return AppDataHolder.appData;
+    }
+
+    // Getter and Setter methods
+    public boolean isAppFirstStarted() {
+        return isAppFirstStarted;
+    }
+
+    public void setAppFirstStarted(boolean isAppFirstStarted) {
+        this.isAppFirstStarted = isAppFirstStarted;
+    }
+
+    public boolean isKeyboardOpen() {
+        return isKeyboardOpen;
+    }
+
+    public void setKeyboardOpen(boolean isKeyboardOpen) {
+        this.isKeyboardOpen = isKeyboardOpen;
+    }
+
+    public boolean isDisableAnimation() {
+        return isDisableAnimation;
+    }
+
+    public void setDisableAnimation(boolean isDisableAnimation) {
+        this.isDisableAnimation = isDisableAnimation;
+    }
+
+    public int getPin() {
+        return pin;
+    }
+
+    public void setPin(int pin) {
+        this.pin = pin;
+    }
+
+    public String getSecurityWord() {
+        return securityWord;
+    }
+
+    public void setSecurityWord(String securityWord) {
+        this.securityWord = securityWord;
+    }
+
+    public boolean isFingerprintAdded() {
+        return isFingerprintAdded;
+    }
+
+    public void setFingerprintAdded(boolean fingerprintAdded) {
+        isFingerprintAdded = fingerprintAdded;
+    }
+
+    public int getTimerDuration() {
+        return timerDuration;
+    }
+
+    public void setTimerDuration(int timerDuration) {
+        this.timerDuration = timerDuration;
+    }
+
+    public ArrayList<Integer> getWordFoundPositions() {
+        return wordFoundPositions;
+    }
+
+    public String getNoteSearch() {
+        return noteSearch;
+    }
+
+    public void setNoteSearch(String noteSearch) {
+        this.noteSearch = noteSearch;
+    }
+
+    public void resetWordFoundPositions() {
+        wordFoundPositions.clear();
+        wordIndex = -1;
+    }
+
+    public int getIndexPosition(boolean isGoingUp) {
+        if (isGoingUp) {
+            wordIndex = (wordIndex == 0 || wordIndex == -1) ? wordFoundPositions.size() - 1 : wordIndex - 1;
+        } else {
+            wordIndex = (wordIndex == wordFoundPositions.size() - 1 || wordIndex == -1) ? 0 : wordIndex + 1;
         }
-        return appData;
+        return wordFoundPositions.get(wordIndex);
     }
 
-    private static Realm getRealm(Context context) {
+    private Realm getRealm(Context context) {
         return RealmSingleton.getInstance(context);
     }
 
-    public static void updateLockData(int pin, String securityWord, boolean isFingerprintAdded) {
-        AppData.pin = pin;
-        AppData.securityWord = securityWord;
-        AppData.isFingerprintAdded = isFingerprintAdded;
+    public void updateLockData(int pin, String securityWord, boolean isFingerprintAdded) {
+        this.pin = pin;
+        this.securityWord = securityWord;
+        this.isFingerprintAdded = isFingerprintAdded;
     }
 
-    public static ArrayList<Note> getAllNotes(Context context, Boolean includeArchive) {
+    public ArrayList<Note> getAllNotes(Context context, boolean includeArchive) {
         Realm realm = getRealm(context);
         RealmResults<Note> allNotes = getCurrentNoteSort(realm, includeArchive);
-        ArrayList<Note> noteArrayList = new ArrayList<>();
-
-        noteArrayList.addAll(realm.copyFromRealm(allNotes));
+        ArrayList<Note> noteArrayList = new ArrayList<>(realm.copyFromRealm(allNotes));
 
         for (int i = 0; i < noteArrayList.size(); i++) {
             Note currentNote = noteArrayList.get(i);
@@ -70,7 +156,7 @@ public class AppData {
         return noteArrayList;
     }
 
-    public static ArrayList<String> getNoteChecklist(int noteId, Context context) {
+    public ArrayList<String> getNoteChecklist(int noteId, Context context) {
         Realm realm = getRealm(context);
         Note currentNote = realm.where(Note.class).equalTo("noteId", noteId).findFirst();
 
@@ -91,17 +177,15 @@ public class AppData {
             } else {
                 noteArrayList.addAll(realm.copyFromRealm(Helper.sortChecklist(context, noteId, realm)));
                 for (CheckListItem current : noteArrayList) {
-                    boolean containsAudio = current.getAudioPath() != null &&
-                            !current.getAudioPath().isEmpty();
+                    boolean containsAudio = current.getAudioPath() != null && !current.getAudioPath().isEmpty();
                     String text = current.getText() + (containsAudio ? "♬" : "");
                     allArraylistChecklist.add(current.isChecked() ? text + "~~" : text);
-                    if (current.getSubChecklist().size() != 0) {
+                    if (!current.getSubChecklist().isEmpty()) {
                         for (SubCheckListItem subCheckListItem : current.getSubChecklist())
-                            allArraylistChecklist.add(subCheckListItem.isChecked() ? "⤷️  " + subCheckListItem.getText() + "~~" :
-                                    "⤷️  " + subCheckListItem.getText());
+                            allArraylistChecklist.add(subCheckListItem.isChecked() ? "⤷️  " + subCheckListItem.getText() + "~~" : "⤷️  " + subCheckListItem.getText());
                     }
                 }
-                if (allArraylistChecklist.size() == 0)
+                if (allArraylistChecklist.isEmpty())
                     allArraylistChecklist.add("Empty");
             }
         }
@@ -109,7 +193,7 @@ public class AppData {
         return allArraylistChecklist;
     }
 
-    public static void updateNoteWidget(Context context, int noteId, int widgetId) {
+    public void updateNoteWidget(Context context, int noteId, int widgetId) {
         Note currentNote = getRealm(context).where(Note.class).equalTo("noteId", noteId).findFirst();
         if (currentNote == null) return;
 
@@ -118,49 +202,23 @@ public class AppData {
         getRealm(context).commitTransaction();
     }
 
-    public static RealmResults<Note> getCurrentNoteSort(Realm realm, Boolean includeArchive) {
+    public RealmResults<Note> getCurrentNoteSort(Realm realm, boolean includeArchive) {
         RealmResults<Note> notes = realm.where(Note.class)
                 .equalTo("trash", false)
                 .sort("dateEditedMilli", Sort.DESCENDING).findAll();
 
-        if(!includeArchive){
+        if (!includeArchive) {
             notes = notes.where()
                     .equalTo("archived", false)
                     .findAll();
         }
         return notes;
     }
-
-    public static void resetWordFoundPositions() {
-        if (wordFoundPositions != null) {
-            wordFoundPositions.clear();
-            wordIndex = -1;
-        }
-    }
-
-    public static void addWordFoundPositions(int position) {
+    public void addWordFoundPositions(int position) {
         if (wordFoundPositions != null && !wordFoundPositions.contains(position)) {
             wordFoundPositions.add(position);
-            Log.d("Here", "positions -> " + AppData.getWordFoundPositions());
+            Log.d("Here", "positions -> " + wordFoundPositions);
         }
     }
 
-    public static ArrayList<Integer> getWordFoundPositions() {
-        return wordFoundPositions;
-    }
-
-    public static int getIndexPosition(boolean isGoingUp) {
-        if (isGoingUp) {
-            if (wordIndex == 0 || wordIndex == -1)
-                wordIndex = getWordFoundPositions().size() - 1;
-            else
-                wordIndex--;
-        } else {
-            if (wordIndex == getWordFoundPositions().size() - 1 || wordIndex == -1)
-                wordIndex = 0;
-            else
-                wordIndex++;
-        }
-        return getWordFoundPositions().get(wordIndex);
-    }
 }

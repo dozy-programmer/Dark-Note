@@ -42,12 +42,10 @@ RE.setHtml = function(contents) {
 
 RE.setRtlDirection = function() {
     RE.editor.dir = "rtl";
-    console.log("RTL set");
 }
 
 RE.setDefaultDirection = function() {
     RE.editor.dir = "ltr";
-    console.log("LTR set");
 }
 
 RE.getHtml = function() {

@@ -578,7 +578,7 @@ public class CategoryScreen extends AppCompatActivity {
         Intent home = new Intent();
         setResult(resultCode, home);
         finish();
-        if (!AppData.isDisableAnimation)
+        if (!AppData.getInstance().isDisableAnimation())
             overridePendingTransition(R.anim.stay, R.anim.hide_to_bottom);
     }
 

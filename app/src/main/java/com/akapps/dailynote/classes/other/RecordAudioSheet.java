@@ -40,7 +40,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
     private BottomSheetDialog dialog;
 
     public RecordAudioSheet() {
-        AppData.timerDuration = 0;
+        AppData.getInstance().setTimerDuration(0);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
                 pauseOrPlayButton.setBackgroundTintList(ColorStateList.valueOf(getActivity()
                         .getResources().getColor(R.color.red)));
             } else if (audioManager.isPaused()) {
-                Helper.startTimer(handlerTimer, AppData.timerDuration);
+                Helper.startTimer(handlerTimer, AppData.getInstance().getTimerDuration());
                 audioManager.pauseRecording(false);
                 recordingAnimation.playAnimation();
                 pauseOrPlayButton.setImageDrawable(getActivity().getDrawable(R.drawable.pause_icon));
@@ -103,7 +103,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
                 audioManager.stopRecording();
             if (!Helper.isFileEmpty(recordToFilePath)) {
                 CheckListItem item = ((NoteEdit) getActivity()).addCheckList("", new Place(), "");
-                ((NoteEdit) getActivity()).addCheckList(item.getSubListId(), recordToFilePath, AppData.timerDuration);
+                ((NoteEdit) getActivity()).addCheckList(item.getSubListId(), recordToFilePath, AppData.getInstance().getTimerDuration());
             }
             dismiss();
         });
@@ -123,7 +123,7 @@ public class RecordAudioSheet extends RoundedBottomSheetDialogFragment {
     private void updateRecordingDuration(TextView recordingDuration) {
         handlerTimerText.postDelayed(new Runnable() {
             public void run() {
-                int currentTime = AppData.timerDuration;
+                int currentTime = AppData.getInstance().getTimerDuration();
                 recordingDuration.setText(Helper.secondsToDurationText(currentTime));
                 handlerTimerText.postDelayed(this, 1000);
             }

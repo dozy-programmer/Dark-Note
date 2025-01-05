@@ -50,7 +50,7 @@ public class PlayAudioSheet extends RoundedBottomSheetDialogFragment {
 
     public PlayAudioSheet(CheckListItem item) {
         this.item = item;
-        AppData.timerDuration = 0;
+        AppData.getInstance().setTimerDuration(0);
     }
 
     @Override

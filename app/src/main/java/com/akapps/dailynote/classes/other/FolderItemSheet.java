@@ -203,8 +203,8 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     private void onLockClick() {
         currentFolder.set(getCurrentFolder(getContext(), folderId));
         if (isAdding) {
-            if (AppData.pin > 0) {
-                AppData.updateLockData(0, "", false);
+            if (AppData.getInstance().getPin() > 0) {
+                AppData.getInstance().updateLockData(0, "", false);
                 lockFolder.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
                 Helper.showMessage(getActivity(), "Folder Unlocked", "Folder has been unlocked", MotionToast.TOAST_SUCCESS);
             } else {
@@ -321,10 +321,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         RealmResults<Folder> results = getRealm().where(Folder.class)
                 .equalTo("name", itemText, Case.INSENSITIVE).findAll();
         Folder newItem = new Folder(itemText, allCategories.size());
-        if (AppData.pin > 0) {
-            newItem.setPin(AppData.pin);
-            newItem.setSecurityWord(AppData.securityWord);
-            newItem.setFingerprintAdded(AppData.isFingerprintAdded);
+        if (AppData.getInstance().getPin() > 0) {
+            newItem.setPin(AppData.getInstance().getPin());
+            newItem.setSecurityWord(AppData.getInstance().getSecurityWord());
+            newItem.setFingerprintAdded(AppData.getInstance().isFingerprintAdded());
         }
         newItem.setColor(color);
         if (results.size() == 0) {
@@ -355,7 +355,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        AppData.updateLockData(0, "", false);
+        AppData.getInstance().updateLockData(0, "", false);
     }
 
     private Realm getRealm() {
@@ -381,9 +381,9 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         super.onResume();
 
         itemName.requestFocus();
-        if (AppData.isKeyboardOpen) {
+        if (AppData.getInstance().isKeyboardOpen()) {
             Helper.toggleKeyboard(getContext(), itemName, true);
-            AppData.isKeyboardOpen = false;
+            AppData.getInstance().setKeyboardOpen(false);
         }
     }
 

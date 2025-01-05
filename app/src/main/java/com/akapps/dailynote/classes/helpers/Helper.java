@@ -646,10 +646,10 @@ public class Helper {
     }
 
     public static void startTimer(Handler handler, int startTime) {
-        AppData.timerDuration = startTime;
+        AppData.getInstance().setTimerDuration(startTime);
         handler.postDelayed(new Runnable() {
             public void run() {
-                AppData.timerDuration++;
+                AppData.getInstance().setTimerDuration(AppData.getInstance().getTimerDuration() + 1);
                 handler.postDelayed(this, 1000);
             }
         }, 0);
@@ -1085,9 +1085,9 @@ public class Helper {
         int heightDiff = rootView.getRootView().getHeight() - (r.bottom - r.top);
 
         if (heightDiff > 300) {
-            AppData.getAppData().isKeyboardOpen = true;
+            AppData.getInstance().setKeyboardOpen(true);
         } else {
-            AppData.getAppData().isKeyboardOpen = false;
+            AppData.getInstance().setKeyboardOpen(false);
         }
     }
 

@@ -61,7 +61,7 @@ public class AppWidget extends AppWidgetProvider {
 
                 views.setInt(R.id.preview_checklist, "setBackgroundResource", isLightTheme ? R.drawable.round_corner_light : R.drawable.round_corner);
 
-                ArrayList<String> list = AppData.getNoteChecklist(noteId, context);
+                ArrayList<String> list = AppData.getInstance().getNoteChecklist(noteId, context);
 
                 Intent intent = new Intent(context, WidgetListView.class);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);

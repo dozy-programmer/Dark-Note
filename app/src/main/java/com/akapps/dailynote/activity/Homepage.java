@@ -25,9 +25,8 @@ public class Homepage extends FragmentActivity {
         setContentView(R.layout.activity_homepage_screen);
 
         isOpenApp = getIntent().getBooleanExtra("openApp", false);
-        AppData.getAppData();
 
-        if (AppData.isAppFirstStarted) {
+        if (AppData.getInstance().isAppFirstStarted()) {
             // initialize database and get data
             Helper.updateAllWidgetTypes(this);
 
@@ -39,9 +38,9 @@ public class Homepage extends FragmentActivity {
                 }
 
                 if (RealmHelper.getUser(this, "home").isDisableAnimation())
-                    AppData.isDisableAnimation = true;
+                    AppData.getInstance().setDisableAnimation(true);
 
-                if (RealmHelper.getUser(this, "home").getPinNumber() > 0 && !isOpenApp && AppData.isAppFirstStarted) {
+                if (RealmHelper.getUser(this, "home").getPinNumber() > 0 && !isOpenApp && AppData.getInstance().isAppFirstStarted()) {
                     Intent lockScreen = new Intent(this, NoteLockScreen.class);
                     lockScreen.putExtra("id", -11);
                     lockScreen.putExtra("title", "Unlock App");

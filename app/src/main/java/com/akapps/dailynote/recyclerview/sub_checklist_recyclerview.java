@@ -104,7 +104,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             String modifiedString = pattern.matcher(holder.checklistText.getText()).replaceAll("<font color='#8CA9CF'><b>$1</b></font>");
             holder.checklistText.setText(Html.fromHtml(modifiedString, Html.FROM_HTML_MODE_COMPACT));
             holder.background.setStrokeColor(context.getColor(R.color.azure));
-            AppData.addWordFoundPositions(parentPosition);
+            AppData.getInstance().addWordFoundPositions(parentPosition);
         }
 
         // if note is selected, then it shows a strike through the text, changes the icon

@@ -269,8 +269,13 @@ public class SettingsScreen extends AppCompatActivity {
 
         if (!Helper.isTablet(context)) {
             MaterialCardView coffee = findViewById(R.id.coffee_button);
+            MaterialButton support = findViewById(R.id.support_button);
             TextView coffeeText = findViewById(R.id.support_me_message);
             coffeeText.setOnClickListener(view -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.buymeacoffee.com/akapps"));
+                startActivity(browserIntent);
+            });
+            support.setOnClickListener(view -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.buymeacoffee.com/akapps"));
                 startActivity(browserIntent);
             });
@@ -280,7 +285,7 @@ public class SettingsScreen extends AppCompatActivity {
             });
         }
 
-        if (AppData.isDisableAnimation) {
+        if (AppData.getInstance().isDisableAnimation()) {
             coffeeAnimation.pauseAnimation();
             ((LottieAnimationView) findViewById(R.id.version_icon)).pauseAnimation();
         } else {
@@ -397,12 +402,12 @@ public class SettingsScreen extends AppCompatActivity {
 
         titleLayout.setOnClickListener(v -> {
             isTitleSelected = true;
-            showLineNumberMenu(titleLines, null);
+            showLineNumberMenu(titleLines);
         });
 
         previewLayout.setOnClickListener(v -> {
             isTitleSelected = false;
-            showLineNumberMenu(previewLines, null);
+            showLineNumberMenu(previewLines);
         });
 
         widgetTextSizeLayout.setOnClickListener(v -> {
@@ -590,7 +595,7 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         openFoldersOnStart.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            AppData.isAppFirstStarted = false;
+            AppData.getInstance().setAppFirstStarted(false);
             RealmSingleton.get(this).beginTransaction();
             getUser().setOpenFoldersOnStart(isChecked);
             RealmSingleton.get(this).commitTransaction();
@@ -682,7 +687,7 @@ public class SettingsScreen extends AppCompatActivity {
             RealmSingleton.get(this).beginTransaction();
             getUser().setDisableAnimation(isChecked);
             RealmSingleton.get(this).commitTransaction();
-            AppData.isDisableAnimation = isChecked;
+            AppData.getInstance().setDisableAnimation(isChecked);
             Helper.restart(this);
         });
 
@@ -817,7 +822,7 @@ public class SettingsScreen extends AppCompatActivity {
         enableSqaureStyleForChecklists.setChecked(currentUser.isShowChecklistCheckbox());
         hideLastEditInfo.setChecked(currentUser.isDisableLastEditInfo());
         usePreviewBackgroundAsNoteBackground.setChecked(currentUser.isUsePreviewColorAsBackground());
-        if(currentUser.getWidgetTextSize() < 10){
+        if (currentUser.getWidgetTextSize() < 10) {
             RealmSingleton.get(SettingsScreen.this).beginTransaction();
             currentUser.setWidgetTextSize(12);
             RealmSingleton.get(SettingsScreen.this).commitTransaction();
@@ -938,8 +943,9 @@ public class SettingsScreen extends AppCompatActivity {
         backupHelper.restoreFromFirebaseStorage(fileName, fileSize);
     }
 
-    private void showLineNumberMenu(TextView lines, SwitchCompat reminderDropDown) {
+    private void showLineNumberMenu(TextView lines) {
         linesMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(true))
+                .addItem(new IconPowerMenuItem(null, "0"))
                 .addItem(new IconPowerMenuItem(null, "1"))
                 .addItem(new IconPowerMenuItem(null, "2"))
                 .addItem(new IconPowerMenuItem(null, "3"))
@@ -954,6 +960,7 @@ public class SettingsScreen extends AppCompatActivity {
                 .setMenuShadow(10f)
                 .build();
 
+        if(!isTitleSelected) linesMenu.removeItem(0);
         linesMenu.showAsDropDown(lines);
     }
 
@@ -978,12 +985,11 @@ public class SettingsScreen extends AppCompatActivity {
                 RealmSingleton.get(SettingsScreen.this).beginTransaction();
                 String text = item.getTitle();
 
-                if(isEditingWidgetTextSize){
+                if (isEditingWidgetTextSize) {
                     currentUser.setWidgetTextSize(Integer.parseInt(text));
                     widgetTextSize.setText(text);
                     Helper.updateAllNoteWidgets(context);
-                }
-                else if (isEditingButtonShortcut) {
+                } else if (isEditingButtonShortcut) {
                     currentUser.setAddButtonAction(position);
                     addButtonShortcutText.setText(getAddButtonActionText(position));
                 } else if (isEditingChecklistSep) {
@@ -1005,7 +1011,7 @@ public class SettingsScreen extends AppCompatActivity {
                 }
                 RealmSingleton.get(SettingsScreen.this).commitTransaction();
             } else
-                updateSelectedLines(position + 1);
+                updateSelectedLines(position);
             linesMenu.dismiss();
         }
     };
@@ -1043,9 +1049,9 @@ public class SettingsScreen extends AppCompatActivity {
             titleLines.setText(String.valueOf(position));
         } else {
             RealmSingleton.get(this).beginTransaction();
-            currentUser.setContentLines(position);
+            currentUser.setContentLines(position + 1);
             RealmSingleton.get(this).commitTransaction();
-            previewLines.setText(String.valueOf(position));
+            previewLines.setText(String.valueOf(position + 1));
         }
     }
 

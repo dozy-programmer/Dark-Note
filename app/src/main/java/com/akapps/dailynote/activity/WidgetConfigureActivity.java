@@ -66,12 +66,12 @@ public class WidgetConfigureActivity extends Activity {
         new Handler(Looper.getMainLooper()).post(() -> {
             allHashMapNotes = new HashMap<>();
             allArrayListNotes = new ArrayList<>();
-            allNotes = AppData.getAllNotes(WidgetConfigureActivity.this, false);
+            allNotes = AppData.getInstance().getAllNotes(WidgetConfigureActivity.this, false);
 
             for (Note currentNote : allNotes)
                 allHashMapNotes.put(currentNote.getTitle(), currentNote.getNoteId());
 
-            if (allHashMapNotes.size() == 0)
+            if (allHashMapNotes.isEmpty())
                 allHashMapNotes.put("No notes or checklists found, search something else...", -1);
 
             initializeLayout();
@@ -150,7 +150,7 @@ public class WidgetConfigureActivity extends Activity {
     private void createWidget(Context context, String widgetText, int noteId) {
         // It is the responsibility of the configuration activity to update the app widget
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        AppData.updateNoteWidget(context, noteId, mAppWidgetId);
+        AppData.getInstance().updateNoteWidget(context, noteId, mAppWidgetId);
         AppWidget.updateAppWidget(context, appWidgetManager, noteId, mAppWidgetId);
 
         // Make sure we pass back the original appWidgetId

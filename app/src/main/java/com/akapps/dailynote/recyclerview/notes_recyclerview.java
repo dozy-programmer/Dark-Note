@@ -205,7 +205,10 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         // changes the number of lines title and preview occupy depending on user setting
         int titleLines = currentUser.getTitleLines();
         int contentLines = currentUser.getContentLines();
-        holder.note_title.setMaxLines(titleLines);
+        if(titleLines == 0)
+            holder.note_title.setVisibility(View.GONE);
+        else
+            holder.note_title.setMaxLines(titleLines);
         holder.note_preview.setMaxLines(contentLines);
 
         String pattern = "<img[^>]+src=\"([^\">]+).*?>";
@@ -222,7 +225,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         }
         preview = preview.replaceAll("\n+", " ");
         // Define the pattern to match
-        if (showPreview)
+        if (showPreview && contentLines != 0)
             holder.note_preview.setText(preview);
         else
             holder.note_preview.setVisibility(View.GONE);

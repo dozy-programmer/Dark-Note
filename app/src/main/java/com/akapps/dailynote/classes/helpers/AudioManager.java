@@ -118,32 +118,32 @@ public class AudioManager {
 
     // pause playback
     public void resumePlaying() {
-        if (AppData.timerDuration >= audioDuration) {
-            AppData.timerDuration = 0;
-            player.seekTo(AppData.timerDuration * 1000);
+        if (AppData.getInstance().getTimerDuration() >= audioDuration) {
+            AppData.getInstance().setTimerDuration(0);
+            player.seekTo(AppData.getInstance().getTimerDuration() * 1000);
         }
         player.start();
         isPlaying = true;
         isStopped = isPaused = false;
-        Helper.startTimer(handlerTimer, AppData.timerDuration);
+        Helper.startTimer(handlerTimer, AppData.getInstance().getTimerDuration());
         updateTextDuration(currentDuration, audioSeekbar);
         pausePlayButton.setImageDrawable(activity.getDrawable(R.drawable.pause_icon));
     }
 
     public void changePositionByIncrement(int increment) {
-        int newValue = AppData.timerDuration + increment;
+        int newValue = AppData.getInstance().getTimerDuration() + increment;
 
         if (newValue > audioDuration)
-            AppData.timerDuration = audioDuration;
-        else if (AppData.timerDuration == audioDuration && increment < 0)
-            AppData.timerDuration = audioDuration + increment;
+            AppData.getInstance().setTimerDuration(audioDuration);
+        else if (AppData.getInstance().getTimerDuration() == audioDuration && increment < 0)
+            AppData.getInstance().setTimerDuration(audioDuration + increment);
         else if (newValue >= 0 && newValue <= audioDuration)
-            AppData.timerDuration += increment;
+            AppData.getInstance().setTimerDuration(AppData.getInstance().getTimerDuration() + increment);
         else
-            AppData.timerDuration = 0;
+            AppData.getInstance().setTimerDuration(0);
 
-        currentDuration.setText(Helper.secondsToDurationText(AppData.timerDuration));
-        audioSeekbar.setProgress(AppData.timerDuration);
+        currentDuration.setText(Helper.secondsToDurationText(AppData.getInstance().getTimerDuration()));
+        audioSeekbar.setProgress(AppData.getInstance().getTimerDuration());
         if (player != null)
             player.seekTo(audioSeekbar.getProgress() * 1000);
     }
@@ -151,14 +151,14 @@ public class AudioManager {
     private void updateTextDuration(TextView playingDuration, SeekBar audioSeekbar) {
         handlerTimerText.postDelayed(new Runnable() {
             public void run() {
-                int currentTime = AppData.timerDuration;
+                int currentTime = AppData.getInstance().getTimerDuration();
                 if (currentTime <= audioDuration) {
                     playingDuration.setText(Helper.secondsToDurationText(currentTime));
                     if (audioSeekbar != null)
-                        audioSeekbar.setProgress(AppData.timerDuration);
+                        audioSeekbar.setProgress(AppData.getInstance().getTimerDuration());
                     handlerTimerText.postDelayed(this, 1000);
                 } else {
-                    AppData.timerDuration--;
+                    AppData.getInstance().setTimerDuration(AppData.getInstance().getTimerDuration() - 1);
                     pausePlaying();
                     pausePlayButton.setImageDrawable(activity.getDrawable(R.drawable.play_icon));
                 }
@@ -178,8 +178,8 @@ public class AudioManager {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                AppData.timerDuration = seekBar.getProgress();
-                currentDuration.setText(Helper.secondsToDurationText(AppData.timerDuration));
+                AppData.getInstance().setTimerDuration(seekBar.getProgress());
+                currentDuration.setText(Helper.secondsToDurationText(AppData.getInstance().getTimerDuration()));
                 if (player != null)
                     player.seekTo(seekBar.getProgress() * 1000);
             }

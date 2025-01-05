@@ -4,20 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
-
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
-import com.akapps.dailynote.classes.data.Note;
-import com.akapps.dailynote.classes.data.User;
-import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
@@ -27,12 +21,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
-
 import org.jetbrains.annotations.NotNull;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import io.realm.Realm;
 
 public class ColorSheet extends RoundedBottomSheetDialogFragment {
@@ -60,7 +49,6 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_color, container, false);
 
-        ImageButton info = view.findViewById(R.id.info);
         titleColor = view.findViewById(R.id.title_color);
         textColor = view.findViewById(R.id.text_color);
         backgroundIcon = view.findViewById(R.id.background_color_icon);
@@ -104,12 +92,6 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                 ((NoteEdit) getActivity()).updateOtherColors();
             });
         }
-
-        info.setOnClickListener(view1 -> {
-            GenericInfoSheet infoSheet = new GenericInfoSheet("Info", "" +
-                    "• if you don't see text in all rows, it means the text color is the same as the background color. Fix by updating the text color.");
-            infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
-        });
 
         return view;
     }

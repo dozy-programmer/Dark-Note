@@ -97,7 +97,7 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
                         ((NoteEdit) getActivity()).lockNote(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
                     else if (lockType == LockType.LOCK_FOLDER) {
                         if (folderId == -1)
-                            AppData.updateLockData(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
+                            AppData.getInstance().updateLockData(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
                         else
                             ((CategoryScreen) getActivity()).lockFolder(folderId, Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0], isEditing);
                         if (lockIcon != null)
