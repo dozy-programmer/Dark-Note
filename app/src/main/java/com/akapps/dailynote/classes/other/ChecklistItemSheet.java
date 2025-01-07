@@ -654,6 +654,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private void openMenuDialog() {
         noteMenu = new CustomPowerMenu.Builder<>(getContext(), new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.copy_icon), "Copy Text"))
+                .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.comment_icon), "Comment"))
                 .addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.send_icon), "Send"))
                 .setBackgroundColor(UiHelper.getColorFromTheme(getActivity(), R.attr.secondaryBackgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
@@ -673,8 +674,17 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
         @Override
         public void onItemClick(int position, IconPowerMenuItem item) {
-            if (item.getTitle().equals("Location"))
+            if (item.getTitle().equals("Location")) {
                 startLocationSearch();
+            } else if(item.getTitle().equals("Comment")) {
+                CommentItemSheet commentSheet;
+                if(isSubChecklist){
+                    commentSheet = new CommentItemSheet(currentSubItem, adapter, position);
+                } else {
+                    commentSheet = new CommentItemSheet(currentItem, adapter, position);
+                }
+                commentSheet.show(getActivity().getSupportFragmentManager(), commentSheet.getTag());
+            }
             else if (item.getTitle().equals("Copy Text")) {
                 // copy text
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);

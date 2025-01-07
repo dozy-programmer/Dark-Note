@@ -237,6 +237,12 @@ public class RealmDatabase {
 
             if (!schema.get("User").hasField("onlyCrossedExpensesAreCounted"))
                 schema.get("User").addField("onlyCrossedExpensesAreCounted", boolean.class);
+
+            if (!schema.get("CheckListItem").hasField("comment"))
+                schema.get("CheckListItem").addField("comment", String.class);
+
+            if (!schema.get("SubCheckListItem").hasField("comment"))
+                schema.get("SubCheckListItem").addField("comment", String.class);
         }
     }
 }

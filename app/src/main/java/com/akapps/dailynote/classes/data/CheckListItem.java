@@ -25,6 +25,8 @@ public class CheckListItem extends RealmObject {
 
     private int redirectToOtherNote;
 
+    private String comment;
+
     public CheckListItem(){}
 
     public CheckListItem(String text, boolean checked, int id, int positionInList, int subListId,
@@ -35,7 +37,7 @@ public class CheckListItem extends RealmObject {
         this.positionInList = positionInList;
         this.lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
         this.subListId = subListId;
-        this.itemImage = audioPath = "";
+        this.itemImage = audioPath = comment = "";
         this.dateCreated = dateCreated;
         this.subChecklist = new RealmList<>();
         audioDuration = 0;
@@ -153,5 +155,13 @@ public class CheckListItem extends RealmObject {
 
     public void setRedirectToOtherNote(int redirectToOtherNote) {
         this.redirectToOtherNote = redirectToOtherNote;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

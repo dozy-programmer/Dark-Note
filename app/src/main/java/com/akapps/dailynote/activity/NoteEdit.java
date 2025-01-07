@@ -290,7 +290,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         super.onCreate(savedInstanceState);
         try{
             setContentView(R.layout.activity_note_edit);
-        } catch (Exception _){
+        } catch (Exception e){
             if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WEBVIEW)) {
                 Toast.makeText(this, "Device not supported -> WebView is required!", Toast.LENGTH_LONG).show();
                 GenericInfoSheet infoSheet = new GenericInfoSheet("Error -> WebView Missing", "" +

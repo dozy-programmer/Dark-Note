@@ -27,6 +27,7 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
+import com.akapps.dailynote.classes.other.CommentItemSheet;
 import com.akapps.dailynote.classes.other.PlayAudioSheet;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
@@ -69,6 +70,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         private final FloatingActionButton addSubChecklist;
         private final FloatingActionButton audio;
         private final MaterialCardView itemImageLayout;
+        private final MaterialCardView commentLayout;
         private final MaterialButton expandSublist;
         private final ImageView itemImage;
         private final MaterialCardView background;
@@ -88,6 +90,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             audio = v.findViewById(R.id.audio);
             subChecklist.setLayoutManager(new GridLayoutManager(v.getContext(), 1));
             itemImageLayout = v.findViewById(R.id.item_image_layout);
+            commentLayout = v.findViewById(R.id.comment_layout);
             itemImage = v.findViewById(R.id.item_image);
             deleteIcon = v.findViewById(R.id.delete_checklist_item);
             background = v.findViewById(R.id.background);
@@ -158,6 +161,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.moveRedirectToNoteToRight.setVisibility(View.VISIBLE);
         } else {
             holder.moveRedirectToNoteToRight.setVisibility(View.GONE);
+        }
+
+        if(checkListItem.getComment() != null && !checkListItem.getComment().isBlank()){
+            holder.commentLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.commentLayout.setVisibility(View.GONE);
         }
 
         boolean recordingExists = false;
@@ -306,6 +315,10 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             notifyItemChanged(position);
         });
 
+        holder.commentLayout.setOnClickListener(view -> {
+            CommentItemSheet commentSheet = new CommentItemSheet(checkListItem, holder.getBindingAdapter(), position);
+            commentSheet.show(activity.getSupportFragmentManager(), commentSheet.getTag());
+        });
 
         holder.checklistText.setOnLongClickListener(view -> handleLongClick(checkListItem, position));
         holder.checkItem.setOnLongClickListener(view -> handleLongClick(checkListItem, position));

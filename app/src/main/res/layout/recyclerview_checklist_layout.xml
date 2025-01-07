@@ -123,6 +123,16 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/comment_layout"
+                    android:layout_width="15dp"
+                    android:layout_height="35dp"
+                    android:layout_marginRight="10dp"
+                    app:cardCornerRadius="8dp"
+                    android:backgroundTint="?primaryButtonColor">
+
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
 
         </LinearLayout>

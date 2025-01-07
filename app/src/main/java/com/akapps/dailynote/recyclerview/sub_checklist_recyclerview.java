@@ -24,6 +24,7 @@ import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.other.ChecklistItemSheet;
+import com.akapps.dailynote.classes.other.CommentItemSheet;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
@@ -49,6 +50,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
         private final LinearLayout checkItem;
         private final LinearLayout edit;
         private final MaterialCardView background;
+        private final LinearLayout commentLayout;
 
         public MyViewHolder(View v) {
             super(v);
@@ -57,6 +59,7 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             checkItem = v.findViewById(R.id.checkItem);
             edit = v.findViewById(R.id.edit);
             background = v.findViewById(R.id.background);
+            commentLayout = v.findViewById(R.id.comment_layout);
         }
     }
 
@@ -107,6 +110,12 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
             AppData.getInstance().addWordFoundPositions(parentPosition);
         }
 
+        if(checkListItem.getComment() != null && !checkListItem.getComment().isBlank()){
+            holder.commentLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.commentLayout.setVisibility(View.GONE);
+        }
+
         // if note is selected, then it shows a strike through the text, changes the icon
         // to be filled and changes text color to gray
         if (isSelected) {
@@ -126,6 +135,11 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
                 holder.selectedIcon.setBackground(context.getDrawable(R.drawable.unchecked_icon));
             }
         }
+
+        holder.commentLayout.setOnClickListener(view -> {
+            CommentItemSheet commentSheet = new CommentItemSheet(checkListItem, holder.getBindingAdapter(), position);
+            commentSheet.show(activity.getSupportFragmentManager(), commentSheet.getTag());
+        });
 
         // if checklist item is clicked, then it updates the status of the item
         holder.checkItem.setOnClickListener(v -> {

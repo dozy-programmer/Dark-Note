@@ -10,6 +10,8 @@ public class SubCheckListItem extends RealmObject {
     private int positionInList;
     private String dateCreated;
 
+    private String comment;
+
     public SubCheckListItem(){}
 
     public SubCheckListItem(String text, boolean checked, int id, int positionInList, String dateCreated) {
@@ -18,6 +20,7 @@ public class SubCheckListItem extends RealmObject {
         this.id = id;
         this.positionInList = positionInList;
         this.dateCreated = dateCreated;
+        this.comment = "";
     }
 
     public String getText() {
@@ -58,5 +61,13 @@ public class SubCheckListItem extends RealmObject {
 
     public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

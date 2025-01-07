@@ -208,7 +208,7 @@ public class NoteLockScreen extends AppCompatActivity {
     }
 
     private String generateTemporaryCode(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAppLocked) {
             // Get the current date and time
             LocalDateTime now = LocalDateTime.now();
 
