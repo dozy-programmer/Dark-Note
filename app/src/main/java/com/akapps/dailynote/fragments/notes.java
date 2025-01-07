@@ -201,10 +201,10 @@ public class notes extends Fragment {
             GenericInfoSheet infoSheet = new GenericInfoSheet("Welcome", message, "Happy", "Sad");
             infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             Helper.saveBooleanPreference(context, true, AppConstants.LANGUAGE_SUPPORT_MESSAGE);
-        } else if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_8)) {
+        } else if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_9)) {
             WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
             whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_8);
+            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_9);
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
@@ -371,7 +371,11 @@ public class notes extends Fragment {
         }
 
         settings.setOnClickListener(v -> {
-            if (enableSelectMultiple) {
+            if(enableSelectMultiple && isTrashSelected){
+                isAllSelected = false;
+                InfoSheet info = new InfoSheet(3, true, notes.this, isTrashSelected, true);
+                info.show(getActivity().getSupportFragmentManager(), info.getTag());
+            } else if (enableSelectMultiple) {
                 int numSelectedNotes = Integer.parseInt(fragmentTitle.getText().toString().replace(" Selected", ""));
                 ExportNotesSheet exportNotesSheet = new ExportNotesSheet(numSelectedNotes, this, false);
                 exportNotesSheet.show(getActivity().getSupportFragmentManager(), exportNotesSheet.getTag());
@@ -885,7 +889,7 @@ public class notes extends Fragment {
 
         search.setImageDrawable(context.getDrawable(R.drawable.delete_icon));
         filterIcon.setImageDrawable(context.getDrawable(R.drawable.select_all_icon));
-        settingsIcon.setImageDrawable(context.getDrawable(R.drawable.export_icon));
+        settingsIcon.setImageDrawable(context.getDrawable(isTrashSelected ? R.drawable.delete_icon : R.drawable.export_icon));
         settingsIcon.setColorFilter(getColorFromTheme(getActivity(), R.attr.primaryIconTintColor));
         settings.setVisibility(View.VISIBLE);
         filterNotes.setVisibility(View.VISIBLE);
