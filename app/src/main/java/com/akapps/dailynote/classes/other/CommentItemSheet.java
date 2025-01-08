@@ -119,17 +119,17 @@ public class CommentItemSheet extends RoundedBottomSheetDialogFragment {
     private void updateItem(CheckListItem checkListItem, String comment) {
         getRealm().beginTransaction();
         checkListItem.setComment(comment);
-        Log.d("Here", "item comment -> " + comment);
         getRealm().commitTransaction();
         adapter.notifyItemChanged(position);
+        Log.d("Here", "item comment -> " + comment);
     }
 
     private void updateSubItem(SubCheckListItem subListItem, String comment) {
         getRealm().beginTransaction();
         subListItem.setComment(comment);
-        Log.d("Here", "sublist comment -> " + comment);
         getRealm().commitTransaction();
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemChanged(position);
+        Log.d("Here", "sublist comment -> " + comment);
     }
 
     private Realm getRealm() {

@@ -81,7 +81,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private RecyclerView allNotesRecyclerview;
     private RecyclerView.Adapter notesSearchAdapter;
     private ArrayList<Note> allNotes;
-    private int position;
+    private int itemPosition;
 
     private User user;
     private Place selectedPlace;
@@ -131,7 +131,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                             Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
                             photo_info.setVisibility(View.VISIBLE);
                             dateCreated.setGravity(Gravity.LEFT);
-                            adapter.notifyItemChanged(position);
+                            adapter.notifyItemChanged(itemPosition);
                             tempCameraPhotoPath = null;
                         }
                     });
@@ -154,7 +154,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
                     photo_info.setVisibility(View.VISIBLE);
                     dateCreated.setGravity(Gravity.LEFT);
-                    adapter.notifyItemChanged(position);
+                    adapter.notifyItemChanged(itemPosition);
                 } else {
                     Log.d("Here", "No media selected");
                 }
@@ -201,21 +201,21 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     // editing note
-    public ChecklistItemSheet(CheckListItem checkListItem, int position, RecyclerView.Adapter adapter) {
+    public ChecklistItemSheet(CheckListItem checkListItem, int itemPosition, RecyclerView.Adapter adapter) {
         isAdding = false;
         isSubChecklist = false;
         this.currentItem = checkListItem;
-        this.position = position;
+        this.itemPosition = itemPosition;
         this.adapter = adapter;
     }
 
     // editing sub-note
-    public ChecklistItemSheet(CheckListItem parentCurrentSubItem, SubCheckListItem checkListItem, int position, RecyclerView.Adapter adapter) {
+    public ChecklistItemSheet(CheckListItem parentCurrentSubItem, SubCheckListItem checkListItem, int itemPosition, RecyclerView.Adapter adapter) {
         isAdding = false;
         isSubChecklist = true;
         this.parentCurrentSubItem = parentCurrentSubItem;
         this.currentSubItem = checkListItem;
-        this.position = position;
+        this.itemPosition = itemPosition;
         this.adapter = adapter;
     }
 
@@ -463,7 +463,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
 
             Glide.with(getContext()).load(getContext().getDrawable(R.drawable.icon_image)).into(itemImage);
             photo_info.setVisibility(View.GONE);
-            adapter.notifyItemChanged(position);
+            adapter.notifyItemChanged(itemPosition);
             return true;
         });
 
@@ -497,7 +497,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         Log.d("Here", "note title -> " + noteSelectedTitle);
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
-        adapter.notifyItemChanged(position);
+        adapter.notifyItemChanged(itemPosition);
     }
 
     // updates place of checklist item in database
@@ -509,7 +509,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
-        adapter.notifyItemChanged(position);
+        adapter.notifyItemChanged(itemPosition);
     }
 
     // updates select status of note in database
@@ -520,7 +520,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
-        adapter.notifyItemChanged(position);
+        adapter.notifyItemChanged(itemPosition);
         ((NoteEdit) getActivity()).checklistAdapter.notifyDataSetChanged();
     }
 
@@ -679,9 +679,9 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             } else if(item.getTitle().equals("Comment")) {
                 CommentItemSheet commentSheet;
                 if(isSubChecklist){
-                    commentSheet = new CommentItemSheet(currentSubItem, adapter, position);
+                    commentSheet = new CommentItemSheet(currentSubItem, adapter, itemPosition);
                 } else {
-                    commentSheet = new CommentItemSheet(currentItem, adapter, position);
+                    commentSheet = new CommentItemSheet(currentItem, adapter, itemPosition);
                 }
                 commentSheet.show(getActivity().getSupportFragmentManager(), commentSheet.getTag());
             }
@@ -757,7 +757,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             getRealm().beginTransaction();
             currentItem.setPlace(getRealm().copyToRealm(new Place()));
             getRealm().commitTransaction();
-            adapter.notifyItemChanged(position);
+            adapter.notifyItemChanged(itemPosition);
         }
         locationLayout.setVisibility(View.GONE);
     }
@@ -770,7 +770,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("add", isAdding);
-        outState.putInt("position", position);
+        outState.putInt("position", itemPosition);
         itemName.clearFocus();
     }
 

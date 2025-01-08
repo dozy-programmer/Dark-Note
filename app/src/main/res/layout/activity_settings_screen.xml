@@ -1884,8 +1884,8 @@
             app:layout_constraintTop_toTopOf="@+id/about_info"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/walking_coffee_mug"
-            app:lottie_speed="0.7" />
+            app:lottie_rawRes="@raw/flying_cat_app_version"
+            app:lottie_speed="0.5" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/about_info"

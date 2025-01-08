@@ -13,8 +13,6 @@ public class AppConstants {
     public static String SCHEMA_VERSION = "schema_version";
     public static String USER_ID = "user_id";
 
-    public static String WHATS_NEW_18_9 = "update_18_9";
-
     public static String LANGUAGE_SUPPORT_MESSAGE = "language_support_message";
 
     public static String getMonthDay() {

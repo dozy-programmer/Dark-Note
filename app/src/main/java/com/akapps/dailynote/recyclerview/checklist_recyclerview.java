@@ -316,7 +316,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         });
 
         holder.commentLayout.setOnClickListener(view -> {
-            CommentItemSheet commentSheet = new CommentItemSheet(checkListItem, holder.getBindingAdapter(), position);
+            CommentItemSheet commentSheet = new CommentItemSheet(checkListItem, this, position);
             commentSheet.show(activity.getSupportFragmentManager(), commentSheet.getTag());
         });
 

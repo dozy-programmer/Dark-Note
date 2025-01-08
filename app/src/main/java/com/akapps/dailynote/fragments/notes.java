@@ -201,10 +201,10 @@ public class notes extends Fragment {
             GenericInfoSheet infoSheet = new GenericInfoSheet("Welcome", message, "Happy", "Sad");
             infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             Helper.saveBooleanPreference(context, true, AppConstants.LANGUAGE_SUPPORT_MESSAGE);
-        } else if (!Helper.getBooleanPreference(context, AppConstants.WHATS_NEW_18_9)) {
+        } else if (!Helper.getBooleanPreference(context, getString(R.string.app_version))) {
             WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
             whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, AppConstants.WHATS_NEW_18_9);
+            Helper.saveBooleanPreference(context, true, getString(R.string.app_version));
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
