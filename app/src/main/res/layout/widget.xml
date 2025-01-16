@@ -2,7 +2,7 @@
     android:id="@+id/widget_background"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:focusable="true">
 
@@ -23,7 +23,7 @@
     <ListView
         android:id="@+id/preview_checklist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="5dp"
         android:divider="@color/light_gray_300"
         android:layout_gravity="center"

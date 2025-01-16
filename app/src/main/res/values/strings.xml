@@ -5,8 +5,8 @@
     <string name="schema">55</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v19.0</string>
-    <string name="app_version_int">19.0</string>
+    <string name="app_version">v19.1</string>
+    <string name="app_version_int">19.1</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -115,13 +115,11 @@
 
     </string>
 
-    <string name="version_19_0_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡ Scroll to bottom ➡ Dark Note Sub-Reddit Feedback\n\n
+    <string name="version_19_1_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡ Scroll to bottom ➡ Dark Note Sub-Reddit Feedback\n\n
         <font color='#8CA9CF'><b>New 🎉</b></font>\n
-        • New Feature: You can now add a comment for checklist + sublist items by clicking on edit
-        icon -> three dots on the left -> Comment\n\n
+        • minor update: widget fills up all the given space\n\n
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
-        • Fixed issue preventing users from emptying the trash\n
         • Always working hard to ensure a pleasant crash-free experience:
         99%+ of users do not experience any issues or crashes!\n
     </string>
