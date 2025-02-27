@@ -12,6 +12,7 @@ public class User extends RealmObject {
 
     // backup data
     private int textSize;
+    private int maxBackups;
 
     private int titleLines;
     private int contentLines;
@@ -101,6 +102,7 @@ public class User extends RealmObject {
         addButtonAction = 0;
         widgetTextSize = 10;
         onlyCrossedExpensesAreCounted = false;
+        maxBackups = 5;
     }
 
     public int getUserId() {
@@ -436,5 +438,13 @@ public class User extends RealmObject {
 
     public void setOnlyCrossedExpensesAreCounted(boolean onlyCrossedExpensesAreCounted) {
         this.onlyCrossedExpensesAreCounted = onlyCrossedExpensesAreCounted;
+    }
+
+    public int getMaxBackups() {
+        return maxBackups;
+    }
+
+    public void setMaxBackups(int maxBackups) {
+        this.maxBackups = maxBackups;
     }
 }

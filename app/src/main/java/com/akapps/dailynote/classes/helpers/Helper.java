@@ -73,6 +73,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1088,6 +1089,34 @@ public class Helper {
             AppData.getInstance().setKeyboardOpen(true);
         } else {
             AppData.getInstance().setKeyboardOpen(false);
+        }
+    }
+
+    public static String generateTemporaryCode(Boolean isAppLocked){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAppLocked) {
+            // Get the current date and time
+            LocalDateTime now = LocalDateTime.now();
+
+            // Extract the year, month, day, and hour
+            int year = now.getYear();
+            int month = now.getMonthValue();
+            int day = now.getDayOfMonth();
+            int hour = now.getHour(); // 24 hour format
+
+            // Format the date-time to "yyyyMMddHH" format (YearMonthDayHour)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
+            String formattedDate = now.format(formatter);
+
+            // Add the values together (year + month + day * (hour + 2))
+            int tempCode = (year + month + day) * (hour + 2);
+
+            // Display the formatted date and the sum in the log or UI
+            Log.d("Here", "Formatted date: " + formattedDate);
+            Log.d("Here", "Temp Code: " + tempCode);
+            return String.valueOf(tempCode);
+        } else {
+            // random string so that it cannot be guessed
+            return UUID.randomUUID().toString() + "_dark_note_null_~!@#$%^&*()_+";
         }
     }
 

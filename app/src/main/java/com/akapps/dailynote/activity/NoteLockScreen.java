@@ -202,37 +202,9 @@ public class NoteLockScreen extends AppCompatActivity {
 
     // shows a dialog for user to get their note pin
     private void forgotPasswordDialog() {
-        String tempCode = generateTemporaryCode();
+        String tempCode = Helper.generateTemporaryCode(isAppLocked);
         InfoSheet info = new InfoSheet(5, securityWord, tempCode, isAppLocked);
         info.show(getSupportFragmentManager(), info.getTag());
-    }
-
-    private String generateTemporaryCode(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAppLocked) {
-            // Get the current date and time
-            LocalDateTime now = LocalDateTime.now();
-
-            // Extract the year, month, day, and hour
-            int year = now.getYear();
-            int month = now.getMonthValue();
-            int day = now.getDayOfMonth();
-            int hour = now.getHour();
-
-            // Format the date-time to "yyyyMMddHH" format (YearMonthDayHour)
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHH");
-            String formattedDate = now.format(formatter);
-
-            // Add the values together (year + month + day * (hour + 2))
-            int tempCode = (year + month + day) * (hour + 2);
-
-            // Display the formatted date and the sum in the log or UI
-            Log.d("Here", "Formatted date: " + formattedDate);
-            Log.d("Here", "Temp Code: " + tempCode);
-            return String.valueOf(tempCode);
-        } else {
-            // random string so that it cannot be guessed
-            return UUID.randomUUID().toString() + "_dark_note_null_~!@#$%^&*()_+";
-        }
     }
 
     // shows fingerprint dialog for user to use fingerprint

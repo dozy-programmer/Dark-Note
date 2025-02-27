@@ -202,9 +202,9 @@ public class notes extends Fragment {
             infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             Helper.saveBooleanPreference(context, true, AppConstants.LANGUAGE_SUPPORT_MESSAGE);
         } else if (!Helper.getBooleanPreference(context, getString(R.string.app_version))) {
-            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
-            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-            Helper.saveBooleanPreference(context, true, getString(R.string.app_version));
+//            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
+//            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
+//            Helper.saveBooleanPreference(context, true, getString(R.string.app_version));
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);

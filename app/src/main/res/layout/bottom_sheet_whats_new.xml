@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="10dp"
-            android:text="@string/version_19_1_whats_new_text"
+            android:text="@string/version_19_2_whats_new_text"
             android:gravity="left"
             android:textColor="?primaryTextColor"
             android:textSize="16sp"

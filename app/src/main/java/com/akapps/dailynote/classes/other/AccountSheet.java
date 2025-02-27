@@ -147,7 +147,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
                             if (mAuth.getCurrentUser().isEmailVerified()) {
                                 realm.beginTransaction();
                                 currentUser.setEmail(email);
-                                currentUser.setProUser(true);
+                                currentUser.setUltimateUser(true);
                                 realm.commitTransaction();
                                 dialog.dismiss();
                                 Helper.restart(getActivity());
@@ -185,13 +185,13 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
 
         if (!inputEmail.isEmpty() && inputEmail.contains("@") && inputEmail.contains(".com")) {
             emailLayout.setErrorEnabled(false);
-            if (!inputPassword.isEmpty()) {
+            if (!inputPassword.isEmpty() && inputPassword.length() > 4) {
                 if (signUp)
                     signUp(inputEmail, inputPassword);
                 else
                     login(inputEmail, inputPassword);
             } else
-                passwordLayout.setError(getContext().getString(R.string.input_error));
+                passwordLayout.setError("Min length = 4");
         } else
             emailLayout.setError(getContext().getString(R.string.input_error));
     }

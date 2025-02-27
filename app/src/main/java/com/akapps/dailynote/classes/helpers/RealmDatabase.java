@@ -243,6 +243,9 @@ public class RealmDatabase {
 
             if (!schema.get("SubCheckListItem").hasField("comment"))
                 schema.get("SubCheckListItem").addField("comment", String.class);
+
+            if (!schema.get("User").hasField("maxBackups"))
+                schema.get("User").addField("maxBackups", int.class);
         }
     }
 }

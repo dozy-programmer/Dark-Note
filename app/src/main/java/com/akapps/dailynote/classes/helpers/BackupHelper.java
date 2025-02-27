@@ -174,7 +174,7 @@ public class BackupHelper {
         if (fileSize.toLowerCase().contains("mb")) {
             try {
                 double fileSizeNumber = Double.parseDouble(fileSize.toLowerCase().replace("mb", "").trim());
-                if (fileSizeNumber > 50) {
+                if (fileSizeNumber > 30) {
                     Helper.showMessage(activity, "Upload Failed", "File size is too big, backup locally",
                             MotionToast.TOAST_ERROR);
                     return;

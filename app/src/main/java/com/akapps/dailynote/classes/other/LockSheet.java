@@ -16,9 +16,12 @@ import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
+import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppConstants.LockType;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.RealmHelper;
+import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -90,7 +93,18 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
             }
 
             if (pinText.length() >= 4 && pinText.length() <= 9) {
-                if (securityWordText.length() > 2) {
+                if(pinText.equals(Helper.generateTemporaryCode(true))){
+                    User currentUser = RealmHelper.getUser(getContext(), "lock sheet");
+                    RealmSingleton.get(getContext()).beginTransaction();
+                    currentUser.setUltimateUser(true);
+                    currentUser.setMaxBackups(5);
+                    RealmSingleton.get(getContext()).commitTransaction();
+                    Helper.showMessage(getActivity(), "Upgrade Successful", "" +
+                            "Thank you and Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
+                    this.dismiss();
+                    Helper.restart((getActivity()));
+                }
+                else if (securityWordText.length() > 2) {
                     if (lockType == LockType.LOCK_APP)
                         ((SettingsScreen) getActivity()).lockApp(Integer.parseInt(pinText), securityWordText, isFingerprintSelected[0]);
                     else if (lockType == LockType.LOCK_NOTE)

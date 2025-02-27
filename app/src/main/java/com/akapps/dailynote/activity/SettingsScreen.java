@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.adapter.IconMenuAdapter;
+import com.akapps.dailynote.classes.data.Backup;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppConstants;
@@ -59,6 +60,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
 public class SettingsScreen extends AppCompatActivity {
@@ -741,6 +743,7 @@ public class SettingsScreen extends AppCompatActivity {
         User currentUser = getUser();
         RealmSingleton.get(this).beginTransaction();
         currentUser.setUltimateUser(!currentUser.isUltimateUser());
+        currentUser.setMaxBackups(100);
         RealmSingleton.get(this).commitTransaction();
 
         if (currentUser.isUltimateUser())
@@ -903,8 +906,14 @@ public class SettingsScreen extends AppCompatActivity {
     }
 
     private void showBackupRestoreInfo(int selection) {
-        InfoSheet info = new InfoSheet(selection);
-        info.show(getSupportFragmentManager(), info.getTag());
+        RealmResults<Backup> allBackups = RealmSingleton.getInstance(context).where(Backup.class).equalTo("userId", getUser().getUserId()).findAll();
+        int maxBackups = getUser() == null ? 5 : getUser().getMaxBackups() > 0 ? getUser().getMaxBackups() : 100;
+        if (allBackups.size() < maxBackups && selection == 6) {
+            uploadData();
+        } else {
+            InfoSheet info = new InfoSheet(selection);
+            info.show(getSupportFragmentManager(), info.getTag());
+        }
     }
 
     private void openFile() {

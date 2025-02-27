@@ -230,18 +230,13 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setGravity(Gravity.CENTER);
         } else if (message == 6) {
             User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
-            allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+            int maxBackups = currentUser.getMaxBackups() > 0 ? currentUser.getMaxBackups() : 500;
 
-            if (allBackups.size() <= 100) {
-                ((SettingsScreen) getActivity()).uploadData();
-                this.dismiss();
-            } else {
-                // initialize layout
-                title.setText("Upload");
-                info.setText("Max Uploads of 100 has been reached. Please delete a backup by pressing sync button.");
-                info.setGravity(Gravity.CENTER);
-                securityWord.setVisibility(View.GONE);
-            }
+            // initialize layout
+            title.setText("Upload");
+            info.setText("Max Uploads of " + maxBackups + " has been reached. Please delete a backup by pressing sync button.");
+            info.setGravity(Gravity.CENTER);
+            securityWord.setVisibility(View.GONE);
         } else if (message == 7) {
             // initialize layout
             title.setText("Backups");
@@ -421,7 +416,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 User currentUser = RealmHelper.getUser(getContext(), "");
                 RealmSingleton.getInstance(getContext()).beginTransaction();
                 currentUser.setEmail("");
-                currentUser.setProUser(false);
+                currentUser.setUltimateUser(false);
                 RealmSingleton.getInstance(getContext()).commitTransaction();
                 Helper.restart(getActivity());
             } else if (message == 9)
