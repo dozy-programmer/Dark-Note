@@ -128,13 +128,13 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         }
 
         // search for duplicate sublist id
-        int duplicateSize = RealmSingleton.getInstance(context).where(CheckListItem.class)
+        int duplicateSize = RealmSingleton.get(context).where(CheckListItem.class)
                 .equalTo("subListId", checkListItem.getSubListId()).findAll().size();
         if (duplicateSize > 1) {
             Random rand = new Random();
-            RealmSingleton.getInstance(context).beginTransaction();
+            RealmSingleton.get(context).beginTransaction();
             checkListItem.setSubListId(rand.nextInt(100000) + 1);
-            RealmSingleton.getInstance(context).commitTransaction();
+            RealmSingleton.get(context).commitTransaction();
         }
 
         boolean isPlaceShown = false, isRedirectShown = false;
@@ -181,10 +181,10 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             holder.selectedIcon.setVisibility(View.VISIBLE);
 
             if (null != checkListItem.getAudioPath() && !checkListItem.getAudioPath().isEmpty()) {
-                RealmSingleton.getInstance(context).beginTransaction();
+                RealmSingleton.get(context).beginTransaction();
                 checkListItem.setAudioPath("");
                 checkListItem.setAudioDuration(0);
-                RealmSingleton.getInstance(context).commitTransaction();
+                RealmSingleton.get(context).commitTransaction();
             }
         }
 
@@ -198,14 +198,14 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         if (RealmHelper.getUser(context, "checklist_recyclerview").isEnableSublists() && getNote().isEnableSublist()) {
             holder.addSubChecklist.setVisibility(View.VISIBLE);
             if (null == checkListItem.getSubChecklist()) {
-                RealmSingleton.getInstance(context).beginTransaction();
+                RealmSingleton.get(context).beginTransaction();
                 checkListItem.setSubChecklist(new RealmList<>());
-                RealmSingleton.getInstance(context).commitTransaction();
+                RealmSingleton.get(context).commitTransaction();
                 holder.subChecklist.setVisibility(View.GONE);
             } else {
                 if (!checkListItem.getSubChecklist().isEmpty()) {
                     holder.subChecklist.setVisibility(View.VISIBLE);
-                    RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.getInstance(context).where(SubCheckListItem.class)
+                    RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.get(context).where(SubCheckListItem.class)
                             .equalTo("id", checkListItem.getSubListId())
                             .sort("positionInList")
                             .findAll();
@@ -368,9 +368,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
         holder.deleteIcon.setOnClickListener(view -> {
             Note currentNote = getNote();
             RealmHelper.deleteChecklistItem(checkListItem, context, false);
-            RealmSingleton.getInstance(context).beginTransaction();
+            RealmSingleton.get(context).beginTransaction();
             currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
-            RealmSingleton.getInstance(context).commitTransaction();
+            RealmSingleton.get(context).commitTransaction();
             ((NoteEdit) activity).updateDateEdited();
             notifyDataSetChanged();
         });
@@ -400,9 +400,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     }
 
     private void updateSublistView(CheckListItem checkListItem, boolean newState, int position) {
-        RealmSingleton.getInstance(context).beginTransaction();
+        RealmSingleton.get(context).beginTransaction();
         checkListItem.setSublistExpanded(newState);
-        RealmSingleton.getInstance(context).commitTransaction();
+        RealmSingleton.get(context).commitTransaction();
         notifyItemChanged(position);
     }
 
@@ -416,12 +416,12 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
     // updates select status of note in database
     private void saveSelected(CheckListItem checkListItem, boolean status) {
         // save status to database
-        RealmSingleton.getInstance(context).beginTransaction();
+        RealmSingleton.get(context).beginTransaction();
         checkListItem.setChecked(status);
 
         if (null != checkListItem.getSubChecklist()) {
             if (checkListItem.getSubChecklist().size() > 0) {
-                RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.getInstance(context).where(SubCheckListItem.class).equalTo("id", checkListItem.getSubListId()).findAll();
+                RealmResults<SubCheckListItem> subCheckListItems = RealmSingleton.get(context).where(SubCheckListItem.class).equalTo("id", checkListItem.getSubListId()).findAll();
                 subCheckListItems.setBoolean("checked", status);
             }
         }
@@ -430,7 +430,7 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
             checkListItem.setLastCheckedDate(Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis());
         else
             checkListItem.setLastCheckedDate(0);
-        RealmSingleton.getInstance(context).commitTransaction();
+        RealmSingleton.get(context).commitTransaction();
 
         ((NoteEdit) context).updateSaveDateEdited();
     }
@@ -457,9 +457,9 @@ public class checklist_recyclerview extends RecyclerView.Adapter<checklist_recyc
 
         if (getNote().isChecked() != isAllChecked) {
             Note currentNote = getNote();
-            RealmSingleton.getInstance(context).beginTransaction();
+            RealmSingleton.get(context).beginTransaction();
             currentNote.setChecked(isAllChecked);
-            RealmSingleton.getInstance(context).commitTransaction();
+            RealmSingleton.get(context).commitTransaction();
 
             if (currentNote.isChecked())
                 ((NoteEdit) context).title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.LINEAR_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);

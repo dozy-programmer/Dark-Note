@@ -121,9 +121,9 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         // Delete the file
         storageRef.delete().addOnSuccessListener(aVoid -> {
             // File deleted successfully
-            RealmSingleton.getInstance(context).beginTransaction();
+            RealmSingleton.get(context).beginTransaction();
             currentBackup.deleteFromRealm();
-            RealmSingleton.getInstance(context).commitTransaction();
+            RealmSingleton.get(context).commitTransaction();
             notifyDataSetChanged();
         }).addOnFailureListener(exception -> {
             Helper.showMessage(activity, "Backup Error", "Not Deleted. Try again", MotionToast.TOAST_ERROR);

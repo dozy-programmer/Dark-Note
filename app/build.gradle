@@ -8,13 +8,13 @@ plugins {
 apply plugin: 'realm-android' // Realm DB
 
 android {
-    compileSdk 34
+    compileSdk 36
     ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId "com.akapps.dailynote"
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode 1087
         versionName "@string/app_version_int"
         renderscriptTargetApi 18
@@ -76,10 +76,10 @@ dependencies {
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'                   // color picker
     implementation 'com.github.skydoves:powermenu:2.1.9'                       // pop up menu
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'                 // time/date picker
-    implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'              // lock screen
+    implementation 'com.github.aritraroy:PinLockView:2.1.0'                    // lock screen
     implementation 'com.github.Deishelon:RoundedBottomSheet:1.0.1'             // bottom sheet
     implementation 'com.github.clans:fab:1.6.4'                                // floating action button
-    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'     // image full screen
+    implementation 'com.github.stfalcon-studio:StfalconImageViewer:1.0.1'      // image full screen
     implementation 'com.github.yash786agg:AnimatedLoadingIndicator:v1.3'       // loading screen
     implementation "com.airbnb.android:lottie:5.0.3"                           // lottie animation
     implementation("app.futured.donut:donut:2.2.2")                            // graph

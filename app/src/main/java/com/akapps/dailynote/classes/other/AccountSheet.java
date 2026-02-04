@@ -74,7 +74,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
         passwordInput = view.findViewById(R.id.insert_password);
         loginButton = view.findViewById(R.id.login);
 
-        realm = RealmSingleton.getInstance(getContext());
+        realm = RealmSingleton.get(getContext());
 
         if (!signUp)
             title.setText("Log in");

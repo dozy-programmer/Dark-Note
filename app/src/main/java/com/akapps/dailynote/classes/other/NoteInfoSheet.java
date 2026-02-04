@@ -283,7 +283,7 @@ public class NoteInfoSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private Realm getRealm() {
-        return RealmSingleton.getInstance(getContext());
+        return RealmSingleton.get(getContext());
     }
 
     private User getUser() {

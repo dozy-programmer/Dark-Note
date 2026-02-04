@@ -45,7 +45,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -95,7 +94,6 @@ import com.google.android.material.button.MaterialButton;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
-import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -117,7 +115,7 @@ import io.realm.RealmResults;
 import jp.wasabeef.richeditor.RichEditor;
 import www.sanju.motiontoast.MotionToast;
 
-public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDateSetListener,
+public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
 
     // layout
@@ -300,6 +298,8 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
             }
             return;
         }
+
+        applyWindowInsets(R.id.note_edit_screen_root);
 
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         context = this;
@@ -559,7 +559,7 @@ public class NoteEdit extends FragmentActivity implements DatePickerDialog.OnDat
         category = findViewById(R.id.category);
         folderText = findViewById(R.id.folderWord);
         formatMenu = findViewById(R.id.styleFormat);
-        scrollView = findViewById(R.id.scroll);
+        scrollView = findViewById(R.id.note_edit_screen_root);
         editorScroll = findViewById(R.id.horizontalScrollView);
 
         // search

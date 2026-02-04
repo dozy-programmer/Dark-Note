@@ -18,7 +18,7 @@ public class BackupRealm {
     }
 
     private Realm getRealm() {
-        return RealmSingleton.getInstance(context);
+        return RealmSingleton.get(context);
     }
 
     public File createCopyOfRealmDatabase() {
@@ -31,10 +31,10 @@ public class BackupRealm {
         return exportRealmFile;
     }
 
-    public boolean restore(Uri uri, String exportFileName) {
+    public void restore(Uri uri, String exportFileName) throws IOException {
         boolean unZip = exportFileName.equals(AppConstants.BACKUP_ZIP_FILE_NAME) ||
                 exportFileName.endsWith(AppConstants.ZIP_EXTENSION);
-        File storageDir = FileHelper.getBackupDirectory(context, unZip);
+        File storageDir = FileHelper.getTemporaryBackupDirectory(context);
         FileHelper.existsOrCreate(storageDir);
         File exportRealmFile = new File(storageDir, exportFileName);
         FileHelper.newOrDelete(exportRealmFile);
@@ -44,32 +44,23 @@ public class BackupRealm {
 
         // unzip file if it is a directory
         if (unZip) {
-            try {
-                FileHelper.unzip(restoredRealmFilePath, storageDir.getPath());
-            } catch (Exception e) {
-                return false;
-            }
+            FileHelper.unzip(restoredRealmFilePath, storageDir.getPath());
         }
         // restore realm database from received file
-        return restoreRealmFileIntoDatabase(restoredRealmFilePath, exportFileName);
+        restoreRealmFileIntoDatabase(restoredRealmFilePath, exportFileName);
     }
 
-    public boolean restoreRealmFileIntoDatabase(String oldFilePath, String outFileName) {
-        try {
-            File file = new File(context.getFilesDir(), outFileName);
-            FileOutputStream outputStream = new FileOutputStream(file);
-            FileInputStream inputStream = new FileInputStream(oldFilePath);
+    public void restoreRealmFileIntoDatabase(String oldFilePath, String outFileName) throws IOException {
+        File file = new File(context.getFilesDir(), outFileName);
+        try (FileOutputStream outputStream = new FileOutputStream(file);
+             FileInputStream inputStream = new FileInputStream(oldFilePath)) {
             byte[] buf = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buf)) > 0) {
                 outputStream.write(buf, 0, bytesRead);
             }
-            outputStream.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return false;
     }
 
 }
+

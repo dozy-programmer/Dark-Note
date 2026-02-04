@@ -108,7 +108,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     public FolderItemSheet(int folderId, RecyclerView.Adapter adapter, int position, boolean isEditing) {
         isAdding = false;
         this.folderId = folderId;
-        this.allSelectedNotes = RealmSingleton.getInstance(getContext()).where(Note.class).equalTo("isSelected", true).findAll();
+        this.allSelectedNotes = RealmSingleton.get(getContext()).where(Note.class).equalTo("isSelected", true).findAll();
         this.adapter = adapter;
         this.position = position;
         this.isEditing = isEditing;
@@ -234,7 +234,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                     launcher.launch(lockScreen);
                 }
             } else {
-                RealmResults<Note> lockedNotesInsideFolder = RealmSingleton.getInstance(getContext()).where(Note.class)
+                RealmResults<Note> lockedNotesInsideFolder = RealmSingleton.get(getContext()).where(Note.class)
                         .equalTo("category", getCurrentFolder(getContext(), folderId).getName())
                         .greaterThan("pinNumber", 0)
                         .findAll();
@@ -359,7 +359,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private Realm getRealm() {
-        return RealmSingleton.getInstance(getContext());
+        return RealmSingleton.get(getContext());
     }
 
     @Override

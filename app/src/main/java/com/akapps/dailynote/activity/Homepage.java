@@ -4,8 +4,10 @@ import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
@@ -84,7 +86,8 @@ public class Homepage extends FragmentActivity {
         if (notes != null && notes.isVisible() && !notes.isStateSaved()) {
             try {
                 getSupportFragmentManager().beginTransaction().detach(notes).commit();
-            } catch (Exception ignored) {  }
+            } catch (Exception ignored) {
+            }
         }
         super.onDestroy();
     }

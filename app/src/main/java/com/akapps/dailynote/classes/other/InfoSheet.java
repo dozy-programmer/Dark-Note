@@ -39,7 +39,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.stfalcon.imageviewer.StfalconImageViewer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -230,13 +229,18 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             info.setGravity(Gravity.CENTER);
         } else if (message == 6) {
             User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
-            int maxBackups = currentUser.getMaxBackups() > 0 ? currentUser.getMaxBackups() : 500;
+            allBackups = RealmSingleton.get(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
 
-            // initialize layout
-            title.setText("Upload");
-            info.setText("Max Uploads of " + maxBackups + " has been reached. Please delete a backup by pressing sync button.");
-            info.setGravity(Gravity.CENTER);
-            securityWord.setVisibility(View.GONE);
+            if (allBackups.size() <= 250) {
+                ((SettingsScreen) getActivity()).uploadData();
+                this.dismiss();
+            } else {
+                // initialize layout
+                title.setText("Upload");
+                info.setText("Max Uploads of 100 has been reached. Please delete a backup by pressing sync button.");
+                info.setGravity(Gravity.CENTER);
+                securityWord.setVisibility(View.GONE);
+            }
         } else if (message == 7) {
             // initialize layout
             title.setText("Backups");
@@ -245,7 +249,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
             User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
             // recyclerview
-            allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
+            allBackups = RealmSingleton.get(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
             info.setText("Select file\n\nLoading...");
             backupRecyclerview = view.findViewById(R.id.backup_recyclerview);
             backupRecyclerview.setVisibility(View.VISIBLE);
@@ -256,15 +260,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
 
             backupFiles.listAll()
                     .addOnSuccessListener(listResult -> {
-                        RealmSingleton.getInstance(getContext()).beginTransaction();
-                        RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
-                        RealmSingleton.getInstance(getContext()).commitTransaction();
+                        RealmSingleton.get(getContext()).beginTransaction();
+                        RealmSingleton.get(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll().deleteAllFromRealm();
+                        RealmSingleton.get(getContext()).commitTransaction();
                         for (StorageReference item : listResult.getItems()) {
-                            RealmSingleton.getInstance(getContext()).beginTransaction();
-                            RealmSingleton.getInstance(getContext()).insert(new Backup(currentUser.getUserId(), item.getName(), addDate(item.getName()), 0));
-                            RealmSingleton.getInstance(getContext()).commitTransaction();
+                            RealmSingleton.get(getContext()).beginTransaction();
+                            RealmSingleton.get(getContext()).insert(new Backup(currentUser.getUserId(), item.getName(), addDate(item.getName()), 0));
+                            RealmSingleton.get(getContext()).commitTransaction();
                         }
-                        allBackups = RealmSingleton.getInstance(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId())
+                        allBackups = RealmSingleton.get(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId())
                                 .sort("upLoadTime", Sort.DESCENDING).findAll();
 
                         if (allBackups.size() == 0)
@@ -405,19 +409,19 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 if (fileDelete.exists())
                     fileDelete.delete();
                 // delete from database
-                RealmSingleton.getInstance(getContext()).beginTransaction();
+                RealmSingleton.get(getContext()).beginTransaction();
                 ((NoteEdit) getActivity()).getPhotos().get(position).deleteFromRealm();
-                RealmSingleton.getInstance(getContext()).commitTransaction();
+                RealmSingleton.get(getContext()).commitTransaction();
                 adapter.notifyDataSetChanged();
                 Helper.showMessage(getActivity(), "Delete Status", "Photo has been deleted",
                         MotionToast.TOAST_SUCCESS);
             } else if (message == 8) {
                 FirebaseAuth.getInstance().signOut();
                 User currentUser = RealmHelper.getUser(getContext(), "");
-                RealmSingleton.getInstance(getContext()).beginTransaction();
+                RealmSingleton.get(getContext()).beginTransaction();
                 currentUser.setEmail("");
-                currentUser.setUltimateUser(false);
-                RealmSingleton.getInstance(getContext()).commitTransaction();
+                currentUser.setProUser(false);
+                RealmSingleton.get(getContext()).commitTransaction();
                 Helper.restart(getActivity());
             } else if (message == 9)
                 ((NoteEdit) getActivity()).removeFormatting();

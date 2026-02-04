@@ -30,7 +30,7 @@ import www.sanju.motiontoast.MotionToast;
 public class RealmHelper {
 
     public static Realm getRealm(Context context) {
-        return RealmSingleton.getInstance(context);
+        return RealmSingleton.get(context);
     }
 
     public static void deleteNote(Context context, int noteID) {
@@ -98,7 +98,7 @@ public class RealmHelper {
     public static void deleteChecklistItems(Note currentNote, Context context, boolean checkedStatus, boolean deleteOnlyContents) {
         // delete each checklist item and all its associated data
         // like image, recording, and sublist (if they exist)
-        RealmResults<CheckListItem> checkListItems = RealmSingleton.getInstance(context).where(CheckListItem.class)
+        RealmResults<CheckListItem> checkListItems = RealmSingleton.get(context).where(CheckListItem.class)
                 .equalTo("id", currentNote.getNoteId())
                 .equalTo("checked", checkedStatus)
                 .findAll();
@@ -244,7 +244,7 @@ public class RealmHelper {
     }
 
     public static RealmResults<Folder> getAllFolders(Context context) {
-        return RealmSingleton.getInstance(context).where(Folder.class).sort("positionInList").findAll();
+        return RealmSingleton.get(context).where(Folder.class).sort("positionInList").findAll();
     }
 
     public static int getNoteSorting(Context context, int noteId) {
@@ -360,7 +360,7 @@ public class RealmHelper {
     }
 
     public static int getFolderSize(Context context, int folderId) {
-        return RealmSingleton.getInstance(context).where(Note.class)
+        return RealmSingleton.get(context).where(Note.class)
                 .equalTo("category", getCurrentFolder(context, folderId).getName())
                 .findAll().size();
     }
@@ -378,7 +378,7 @@ public class RealmHelper {
     public static void unlockNotesInsideFolder(Context context, int folderId) {
         Folder currentFolder = getCurrentFolder(context, folderId);
         if (!currentFolder.isValid()) return;
-        RealmResults<Note> notesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
+        RealmResults<Note> notesInsideFolder = RealmSingleton.get(context).where(Note.class)
                 .equalTo("category", currentFolder.getName())
                 .findAll();
 
@@ -392,12 +392,12 @@ public class RealmHelper {
     }
 
     public static void lockNotesInsideFolder(FragmentActivity activity, Context context, int folderId) {
-        RealmResults<Note> notesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
+        RealmResults<Note> notesInsideFolder = RealmSingleton.get(context).where(Note.class)
                 .equalTo("category", getCurrentFolder(context, folderId).getName())
                 .equalTo("pinNumber", 0)
                 .findAll();
 
-        RealmResults<Note> lockedNotesInsideFolder = RealmSingleton.getInstance(context).where(Note.class)
+        RealmResults<Note> lockedNotesInsideFolder = RealmSingleton.get(context).where(Note.class)
                 .equalTo("category", getCurrentFolder(context, folderId).getName())
                 .greaterThan("pinNumber", 0)
                 .findAll();

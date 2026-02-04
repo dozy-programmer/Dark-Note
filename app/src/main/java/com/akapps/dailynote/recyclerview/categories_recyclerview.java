@@ -1,6 +1,5 @@
 package com.akapps.dailynote.recyclerview;
 
-import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentFolder;
 import static com.akapps.dailynote.classes.helpers.RealmHelper.getRealm;
 
 import android.content.Context;
@@ -75,7 +74,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
         Folder currentFolder = allCategories.get(position);
         int folderId = currentFolder.getId();
         int numberOfNotesInCategory =
-                RealmSingleton.getInstance(context).where(Note.class)
+                RealmSingleton.get(context).where(Note.class)
                         .equalTo("archived", false)
                         .equalTo("trash", false)
                         .equalTo("category", currentFolder.getName())
@@ -95,7 +94,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
             holder.folder_icon.setColorFilter(UiHelper.getColorFromTheme(activity, R.attr.primaryButtonColor));
 
         holder.view.setOnClickListener(v -> {
-            RealmResults<Note> allSelectedNotes = RealmSingleton.getInstance(context).where(Note.class).equalTo("isSelected", true).findAll();
+            RealmResults<Note> allSelectedNotes = RealmSingleton.get(context).where(Note.class).equalTo("isSelected", true).findAll();
             if (((CategoryScreen) activity).isEditing) {
                 FolderItemSheet checklistItemSheet = new FolderItemSheet(folderId, this, position, true);
                 checklistItemSheet.show(activity.getSupportFragmentManager(), checklistItemSheet.getTag());
@@ -133,10 +132,10 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                     Helper.showMessage(activity, "Folder Empty", "Folder is empty, cannot open",
                             MotionToast.TOAST_ERROR);
                 } else {
-                    RealmSingleton.getInstance(context).beginTransaction();
+                    RealmSingleton.get(context).beginTransaction();
                     allSelectedNotes.setString("category", currentFolder.getName());
                     allSelectedNotes.setBoolean("isSelected", false);
-                    RealmSingleton.getInstance(context).commitTransaction();
+                    RealmSingleton.get(context).commitTransaction();
                     RealmSingleton.setCloseRealm(false);
                     Log.d("Here", "keep realm open in categories_recyclerview");
                     activity.setResult(5, home);

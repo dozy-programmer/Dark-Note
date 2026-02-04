@@ -14,7 +14,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -38,6 +40,49 @@ public class FileHelper {
 
     public static File getBackupDirectory(Context context, boolean insideDirectory) {
         return context.getExternalFilesDir(insideDirectory ? Environment.DIRECTORY_DOCUMENTS : empty());
+    }
+
+    public static File getTemporaryBackupDirectory(Context context) {
+        File tempDir = new File(context.getCacheDir(), "temp_backup");
+        existsOrCreate(tempDir);
+        return tempDir;
+    }
+
+    public static void moveDirectory(File from, File to) throws IOException {
+        if (!to.exists()) {
+            to.mkdirs();
+        }
+
+        File[] files = from.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                File newFile = new File(to, file.getName());
+                if (file.isDirectory()) {
+                    moveDirectory(file, newFile);
+                } else {
+                    copyFile(file, newFile);
+                    file.delete();
+                }
+            }
+        }
+        from.delete();
+    }
+
+    private static void copyFile(File source, File dest) throws IOException {
+        FileChannel sourceChannel = null;
+        FileChannel destChannel = null;
+        try {
+            sourceChannel = new FileInputStream(source).getChannel();
+            destChannel = new FileOutputStream(dest).getChannel();
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        } finally {
+            if (sourceChannel != null) {
+                sourceChannel.close();
+            }
+            if (destChannel != null) {
+                destChannel.close();
+            }
+        }
     }
 
     /**
@@ -99,18 +144,21 @@ public class FileHelper {
         }
     }
 
-    public static void unzip(String zipFile, String location) {
+    public static void unzip(String zipFile, String location) throws IOException {
         try {
+            File destDir = new File(location);
+            String canonicalLocation = destDir.getCanonicalPath();
+
             FileInputStream inputStream = new FileInputStream(zipFile);
             ZipInputStream zipStream = new ZipInputStream(inputStream);
             ZipEntry zEntry;
             while ((zEntry = zipStream.getNextEntry()) != null) {
-                File f = new File(location, zEntry.getName());
+                File f = new File(destDir, zEntry.getName());
                 String canonicalPath = f.getCanonicalPath();
-                if (!canonicalPath.startsWith(location)) {
-                    throw new Exception(String.format("Found Zip Path Traversal Vulnerability with %s", canonicalPath));
+                if (!canonicalPath.startsWith(canonicalLocation)) {
+                    throw new IOException(String.format("Found Zip Path Traversal Vulnerability with %s", canonicalPath));
                 }
-                FileOutputStream out = new FileOutputStream(location + "/" + zEntry.getName());
+                FileOutputStream out = new FileOutputStream(f);
                 BufferedOutputStream bufferOut = new BufferedOutputStream(out);
                 byte[] buffer = new byte[1024];
                 int read;
@@ -121,37 +169,75 @@ public class FileHelper {
             }
             zipStream.close();
         } catch (Exception e) {
-            Log.d("Here", "Error unzipping backup");
-            e.printStackTrace();
+            Log.d("Here", "Error unzipping backup", e);
+            throw new IOException("Unzip failed: " + e.getMessage(), e);
         }
     }
 
-    public static boolean zip(Context context, ArrayList<String> files, Uri uri) {
-        int BUFFER = 1024;
-        try {
-            ParcelFileDescriptor document = context.getContentResolver().openFileDescriptor(uri, "w");
-            assert document != null;
-            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(document.getFileDescriptor())));
-            byte[] data = new byte[BUFFER];
-            for (String filePath : files) {
-                File newFile = new File(filePath);
-                if (newFile.exists()) {
-                    FileInputStream fi = new FileInputStream(filePath);
-                    ZipEntry entry = new ZipEntry(filePath.substring(filePath.lastIndexOf("/") + 1));
-                    out.putNextEntry(entry);
-                    int count;
-                    while ((count = fi.read(data, 0, BUFFER)) != -1) {
-                        out.write(data, 0, count);
+    public static File extractFileFromZip(String zipFilePath, String fileNameToExtract, File outputFile) throws IOException {
+        try (ZipInputStream zipStream = new ZipInputStream(new FileInputStream(zipFilePath))) {
+            ZipEntry zEntry;
+            boolean fileFound = false;
+            while ((zEntry = zipStream.getNextEntry()) != null) {
+                if (zEntry.getName().equals(fileNameToExtract)) {
+                    fileFound = true;
+                    try (FileOutputStream out = new FileOutputStream(outputFile)) {
+                        byte[] buffer = new byte[1024];
+                        int read;
+                        while ((read = zipStream.read(buffer)) != -1) {
+                            out.write(buffer, 0, read);
+                        }
                     }
-                    fi.close();
-                    out.closeEntry();
+                    break;
                 }
             }
-            out.close();
-        } catch (IOException e) {
-            return false;
+            if (!fileFound) {
+                throw new FileNotFoundException("File not found in zip: " + fileNameToExtract);
+            }
         }
-        return true;
+        return outputFile;
+    }
+
+    public static List<String> zip(Context context, ArrayList<String> files, Uri uri) throws IOException {
+        int BUFFER = 1024;
+        List<String> missingFiles = new ArrayList<>();
+        try (ParcelFileDescriptor document = context.getContentResolver().openFileDescriptor(uri, "w")) {
+            if (document == null) {
+                throw new IOException("Could not open file descriptor for URI: " + uri);
+            }
+            try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(document.getFileDescriptor())))) {
+                byte[] data = new byte[BUFFER];
+                for (String filePath : files) {
+                    File newFile = new File(filePath);
+                    if (!newFile.exists()) {
+                        if (filePath.endsWith(".realm")) {
+                            throw new FileNotFoundException("Realm file not found, aborting backup: " + filePath);
+                        } else {
+                            Log.w("FileHelper", "File not found, skipping: " + filePath);
+                            missingFiles.add(filePath);
+                            continue;
+                        }
+                    }
+                    try (FileInputStream fi = new FileInputStream(filePath)) {
+                        ZipEntry entry = new ZipEntry(filePath.substring(filePath.lastIndexOf("/") + 1));
+                        out.putNextEntry(entry);
+                        int count;
+                        while ((count = fi.read(data, 0, BUFFER)) != -1) {
+                            out.write(data, 0, count);
+                        }
+                        out.closeEntry();
+                    }
+                }
+            }
+        }
+
+        try (ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r")) {
+            if (pfd != null && !files.isEmpty() && pfd.getStatSize() == 0) {
+                throw new IOException("Zip file is empty, but files were provided.");
+            }
+        }
+        return missingFiles;
     }
 
 }
+

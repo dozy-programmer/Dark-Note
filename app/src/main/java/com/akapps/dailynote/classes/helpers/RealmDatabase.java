@@ -9,6 +9,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmSchema;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 public class RealmDatabase {
 
@@ -82,6 +83,9 @@ public class RealmDatabase {
                 schema.get("User").addField("backupReminderDate", String.class);
             if (!schema.get("User").hasField("ultimateUser"))
                 schema.get("User").addField("ultimateUser", boolean.class);
+
+            if (schema.get("User").hasField("maxBackups"))
+                schema.get("User").removeField("maxBackups");
 
             // added note fields
             if (!schema.get("Note").hasField("dateCreatedMilli"))
@@ -244,8 +248,9 @@ public class RealmDatabase {
             if (!schema.get("SubCheckListItem").hasField("comment"))
                 schema.get("SubCheckListItem").addField("comment", String.class);
 
-            if (!schema.get("User").hasField("maxBackups"))
-                schema.get("User").addField("maxBackups", int.class);
+            if (!schema.get("CheckListItem").hasField("dateLastEdited"))
+                schema.get("CheckListItem").addField("dateLastEdited", long.class);
         }
     }
 }
+

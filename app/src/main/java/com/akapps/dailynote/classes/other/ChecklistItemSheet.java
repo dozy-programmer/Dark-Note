@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -664,8 +666,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 .build();
 
         if (currentItem != null) {
-            if (currentItem.getPlace() == null || currentItem.getPlace().getPlaceName().isEmpty())
+            if (currentItem.getPlace() == null || currentItem.getPlace().getPlaceName().isEmpty()) {
                 noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location_icon), "Location"));
+            }
+            noteMenu.addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.info_icon), "Info"));
         }
 
         noteMenu.showAsAnchorLeftTop(dropDownMenu);
@@ -731,6 +735,13 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 } catch (Exception e) {
                     Helper.showMessage(getActivity(), "Sharing Error", "Size too large v20, email developer", MotionToast.TOAST_ERROR);
                 }
+            } else if (item.getTitle().equals("Info")) {
+                Spanned dateCreated = Html.fromHtml("Date Created: <br>" +
+                        "<font color='#7A9CC7'>" + currentItem.getDateCreated() + "</font>");
+                Spanned dateEdited = Html.fromHtml("Date Last Edited: <br>" +
+                        "<font color='#7A9CC7'>" + currentItem.getDateLastEdited() + "</font>");
+                GenericInfoSheet infoSheet = new GenericInfoSheet("Checklist Info", dateCreated + "\n" + dateEdited);
+                infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             }
             noteMenu.dismiss();
         }
@@ -763,7 +774,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private Realm getRealm() {
-        return RealmSingleton.getInstance(getContext());
+        return RealmSingleton.get(getContext());
     }
 
     @Override

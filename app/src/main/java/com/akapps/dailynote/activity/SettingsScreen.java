@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -43,6 +42,7 @@ import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.AccountSheet;
 import com.akapps.dailynote.classes.other.BackupSheet;
 import com.akapps.dailynote.classes.other.CreditsSheet;
+import com.akapps.dailynote.classes.other.GenericInfoSheet;
 import com.akapps.dailynote.classes.other.IconPowerMenuItem;
 import com.akapps.dailynote.classes.other.InfoSheet;
 import com.akapps.dailynote.classes.other.LockSheet;
@@ -57,13 +57,14 @@ import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmResults;
 import www.sanju.motiontoast.MotionToast;
 
-public class SettingsScreen extends AppCompatActivity {
+public class SettingsScreen extends BaseActivity {
 
     // activity
     private Context context;
@@ -168,6 +169,8 @@ public class SettingsScreen extends AppCompatActivity {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_screen);
+
+        applyWindowInsets(R.id.settings_screen_root);
 
         context = this;
         mAuth = FirebaseAuth.getInstance();
@@ -558,7 +561,7 @@ public class SettingsScreen extends AppCompatActivity {
                 InfoSheet info = new InfoSheet(1, unUsedFiles);
                 info.show(getSupportFragmentManager(), info.getTag());
             } else {
-                Helper.showMessage(this, "No Files Found", "No further action needed", MotionToast.TOAST_WARNING);
+                Helper.showMessage(this, "No Broken Links Found", "No further action needed", MotionToast.TOAST_SUCCESS);
             }
         });
 
@@ -654,8 +657,8 @@ public class SettingsScreen extends AppCompatActivity {
         usePreviewBackgroundAsNoteBackground.setOnCheckedChangeListener((buttonView, isChecked) -> {
             RealmSingleton.get(this).beginTransaction();
             getUser().setUsePreviewColorAsBackground(isChecked);
-            if (RealmSingleton.getInstance(context).where(Note.class).equalTo("usePreviewAsNoteBackground", true).findAll().isEmpty()) {
-                RealmSingleton.getInstance(context).where(Note.class).findAll().setBoolean("usePreviewAsNoteBackground", true);
+            if (RealmSingleton.get(context).where(Note.class).equalTo("usePreviewAsNoteBackground", true).findAll().isEmpty()) {
+                RealmSingleton.get(context).where(Note.class).findAll().setBoolean("usePreviewAsNoteBackground", true);
             }
             RealmSingleton.get(this).commitTransaction();
         });
@@ -714,7 +717,7 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         about.setOnLongClickListener(v -> {
-            if (upgradeToProCounter == 12)
+            if (upgradeToProCounter == 1)
                 upgradeToPro();
             return true;
         });
@@ -743,7 +746,7 @@ public class SettingsScreen extends AppCompatActivity {
         User currentUser = getUser();
         RealmSingleton.get(this).beginTransaction();
         currentUser.setUltimateUser(!currentUser.isUltimateUser());
-        currentUser.setMaxBackups(100);
+        currentUser.setMaxBackups(250);
         RealmSingleton.get(this).commitTransaction();
 
         if (currentUser.isUltimateUser())
@@ -896,18 +899,24 @@ public class SettingsScreen extends AppCompatActivity {
 
     private void backUpDataAndImages() {
         if (allNotesSize != 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 backupHelper.shareFile(null);
-            else
-                backupHelper.shareFile(new File(backupHelper.backUpZip(isIncludingImages, isIncludingAudio)));
+            } else {
+                String backupPath = backupHelper.backUpZip(isIncludingImages, isIncludingAudio);
+                if (backupPath != null) {
+                    backupHelper.shareFile(new File(backupPath));
+                } else {
+                    Helper.showMessage(this, "Backup Failed", "Could not create backup file.", MotionToast.TOAST_ERROR);
+                }
+            }
         } else
             Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
                     "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
     }
 
     private void showBackupRestoreInfo(int selection) {
-        RealmResults<Backup> allBackups = RealmSingleton.getInstance(context).where(Backup.class).equalTo("userId", getUser().getUserId()).findAll();
-        int maxBackups = getUser() == null ? 5 : getUser().getMaxBackups() > 0 ? getUser().getMaxBackups() : 100;
+        RealmResults<Backup> allBackups = RealmSingleton.get(context).where(Backup.class).equalTo("userId", getUser().getUserId()).findAll();
+        int maxBackups = getUser() == null ? 5 : getUser().getMaxBackups() > 0 ? getUser().getMaxBackups() : 250;
         if (allBackups.size() < maxBackups && selection == 6) {
             uploadData();
         } else {
@@ -929,16 +938,26 @@ public class SettingsScreen extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK) {
             backupHelper.restoreBackupFromFile(data);
         } else if (requestCode == 2) {
-            if (data != null) {
+            if (data != null && data.getData() != null) {
                 ArrayList<String> getAllAppFiles = backupHelper.getAllAppFiles(isIncludingImages, isIncludingAudio);
                 isIncludingImages = isIncludingAudio = false;
-                boolean isSuccessful = FileHelper.zip(context, getAllAppFiles, data.getData());
-                if (isSuccessful) {
-                    Helper.showMessage(this, "Backup", "" +
-                            "All your notes and associated files successfully backed up!", MotionToast.TOAST_SUCCESS);
-                } else {
-                    Helper.showMessage(this, "Backup", "" +
-                            "Error backing up notes, try again...", MotionToast.TOAST_ERROR);
+                try {
+                    List<String> missingFiles = FileHelper.zip(context, getAllAppFiles, data.getData());
+                    if (missingFiles.isEmpty()) {
+                        Helper.showMessage(this, "Backup", "" +
+                                "All your notes and associated files successfully backed up!", MotionToast.TOAST_SUCCESS);
+                    } else {
+                        StringBuilder missingFilesString = new StringBuilder();
+                        for (int i = 0; i < missingFiles.size(); i++) {
+                            missingFilesString.append(i + 1).append(". ").append(missingFiles.get(i)).append("\n");
+                        }
+                        String message = "Backup completed with warnings. The following " + missingFiles.size() + " files were not found and were skipped:\n\n" + missingFilesString.toString();
+                        GenericInfoSheet infoSheet = new GenericInfoSheet("Backup Warning", message, "OK", 2);
+                        infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
+                    }
+                } catch (IOException e) {
+                    Log.e("SettingsScreen", "Error backing up notes", e);
+                    Helper.showMessage(this, "Backup Failed", "Error: " + e.getMessage(), MotionToast.TOAST_ERROR);
                 }
             }
         }
@@ -969,7 +988,7 @@ public class SettingsScreen extends AppCompatActivity {
                 .setMenuShadow(10f)
                 .build();
 
-        if(!isTitleSelected) linesMenu.removeItem(0);
+        if (!isTitleSelected) linesMenu.removeItem(0);
         linesMenu.showAsDropDown(lines);
     }
 
@@ -1115,3 +1134,4 @@ public class SettingsScreen extends AppCompatActivity {
         return RealmHelper.getUser(this, "settings");
     }
 }
+

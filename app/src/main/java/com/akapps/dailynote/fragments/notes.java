@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.akapps.dailynote.R;
+import com.akapps.dailynote.activity.BaseFragment;
 import com.akapps.dailynote.activity.CategoryScreen;
 import com.akapps.dailynote.activity.NoteEdit;
 import com.akapps.dailynote.activity.SettingsScreen;
@@ -69,7 +70,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 import www.sanju.motiontoast.MotionToast;
 
-public class notes extends Fragment {
+public class notes extends BaseFragment {
 
     // layout
     private View view;
@@ -122,7 +123,9 @@ public class notes extends Fragment {
 
     private ActivityResultLauncher<Intent> settingsLauncher;
 
-    public notes() { }
+    public notes() {
+        super(R.layout.fragment_notes);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

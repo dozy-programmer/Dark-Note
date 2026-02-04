@@ -3,18 +3,16 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/note_lock_screen_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout"
+        android:id="@+id/note_lock_screen_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?primaryBackgroundColor"
-        android:orientation="vertical"
-        android:weightSum="100">
+        android:background="?primaryBackgroundColor">
 
         <ImageView
             android:id="@+id/lock_icon"
@@ -22,24 +20,11 @@
             android:layout_height="45dp"
             android:src="@drawable/lock_icon"
             app:tint="?primaryButtonColor"
-            android:layout_marginTop="20dp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/note_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/instruction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:fontFamily="@font/overpass"
-            android:gravity="center"
-            android:text="Enter your PIN to unlock"
-            android:textColor="?primaryTextColor"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/note_title"></TextView>
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/note_title"
@@ -53,9 +38,25 @@
             android:text="[ Note Title ]"
             android:textColor="?secondaryTextColor"
             android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/lock_icon"
+            app:layout_constraintBottom_toTopOf="@+id/instruction"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lock_icon"></TextView>
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:fontFamily="@font/overpass"
+            android:gravity="center"
+            android:text="Enter your PIN to unlock"
+            android:textColor="?primaryTextColor"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/note_title"
+            app:layout_constraintBottom_toTopOf="@+id/indicator_dots_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/indicator_dots_layout"
@@ -64,11 +65,10 @@
             app:cardBackgroundColor="?secondaryBackgroundColor"
             app:cardElevation="-2dp"
             app:cardCornerRadius="20dp"
-            android:layout_gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/instruction"
             app:layout_constraintBottom_toTopOf="@+id/pin_lock_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/instruction">
+            app:layout_constraintStart_toStartOf="parent">
 
             <com.andrognito.pinlockview.IndicatorDots
                 android:id="@+id/indicator_dots"
@@ -80,7 +80,6 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/pin_empty"
             android:layout_width="50dp"
@@ -90,10 +89,10 @@
             app:lottie_colorFilter="?primaryButtonColor"
             app:lottie_rawRes="@raw/pin_empty"
             app:lottie_speed="0.7"
-            app:layout_constraintBottom_toTopOf="@+id/pin_lock_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/instruction"/>
+            app:layout_constraintTop_toTopOf="@+id/indicator_dots_layout"
+            app:layout_constraintBottom_toBottomOf="@+id/indicator_dots_layout"
+            app:layout_constraintEnd_toEndOf="@+id/indicator_dots_layout"
+            app:layout_constraintStart_toStartOf="@+id/indicator_dots_layout"/>
 
         <com.andrognito.pinlockview.PinLockView
             android:id="@+id/pin_lock_view"
@@ -106,11 +105,11 @@
             app:keypadTextColor="?primaryTextColor"
             app:keypadTextSize="20dp"
             app:keypadVerticalSpacing="24dp"
+            app:pinLength="10"
+            app:layout_constraintTop_toBottomOf="@+id/indicator_dots_layout"
             app:layout_constraintBottom_toTopOf="@+id/forgot_password"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/note_title"
-            app:pinLength="10" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <ImageView
             android:id="@+id/fingerprint_icon"
@@ -122,7 +121,7 @@
             android:src="@drawable/fingerprint_icon"
             android:tint="?primaryIconTintColor"
             app:layout_constraintBottom_toBottomOf="@+id/pin_lock_view"
-            app:layout_constraintStart_toStartOf="@+id/pin_lock_view"></ImageView>
+            app:layout_constraintStart_toStartOf="@+id/pin_lock_view"/>
 
         <TextView
             android:id="@+id/forgot_password"
@@ -130,14 +129,15 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingVertical="10dp"
-            android:text="Forgot Passcode\n😔"
+            android:text="Forgot Passcode
+😔"
             android:textColor="?secondaryTextColor"
             android:fontFamily="@font/overpass"
             android:textStyle="bold"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"></TextView>
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

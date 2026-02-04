@@ -13,6 +13,7 @@ public class CheckListItem extends RealmObject {
     private long lastCheckedDate;
     private int subListId;
     private String dateCreated;
+    private long dateLastEdited;
     private RealmList<SubCheckListItem> subChecklist;
     private boolean isSublistExpanded;
     private String itemImage;
@@ -36,6 +37,7 @@ public class CheckListItem extends RealmObject {
         this.id = id;
         this.positionInList = positionInList;
         this.lastCheckedDate = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
+        this.dateLastEdited = Helper.dateToCalender(Helper.getCurrentDate()).getTimeInMillis();
         this.subListId = subListId;
         this.itemImage = audioPath = comment = "";
         this.dateCreated = dateCreated;
@@ -163,5 +165,13 @@ public class CheckListItem extends RealmObject {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public long getDateLastEdited() {
+        return dateLastEdited;
+    }
+
+    public void setDateLastEdited(long dateLastEdited) {
+        this.dateLastEdited = dateLastEdited;
     }
 }

@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.slider.Slider;
 import org.jetbrains.annotations.NotNull;
+
 import io.realm.Realm;
 
 public class ColorSheet extends RoundedBottomSheetDialogFragment {
@@ -125,7 +126,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(10)
                 .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
-                    Realm realm = RealmSingleton.getInstance(getContext());
+                    Realm realm = RealmSingleton.get(getContext());
                     realm.beginTransaction();
                     switch (colorChanging) {
                         case "Background":

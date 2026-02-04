@@ -2,7 +2,6 @@ package com.akapps.dailynote.recyclerview;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.os.Build;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -197,16 +196,16 @@ public class sub_checklist_recyclerview extends RecyclerView.Adapter<sub_checkli
     // updates select status of note in database
     private void saveSelected(SubCheckListItem checkListItem, boolean status) {
         // save status to database
-        RealmSingleton.getInstance(context).beginTransaction();
+        RealmSingleton.get(context).beginTransaction();
         checkListItem.setChecked(status);
-        RealmSingleton.getInstance(context).commitTransaction();
+        RealmSingleton.get(context).commitTransaction();
         ((NoteEdit) context).updateSaveDateEdited();
     }
 
     private void updateSublistView(CheckListItem checkListItem) {
-        RealmSingleton.getInstance(context).beginTransaction();
+        RealmSingleton.get(context).beginTransaction();
         checkListItem.setSublistExpanded(true);
-        RealmSingleton.getInstance(context).commitTransaction();
+        RealmSingleton.get(context).commitTransaction();
     }
 
     // opens dialog that allows user to edit or delete checklist item

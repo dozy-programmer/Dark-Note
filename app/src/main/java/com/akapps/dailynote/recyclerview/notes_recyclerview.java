@@ -235,7 +235,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.category_background.setVisibility(View.GONE);
             holder.folder_layout.setVisibility(View.GONE);
         } else {
-            Folder folder = RealmSingleton.getInstance(context).where(Folder.class)
+            Folder folder = RealmSingleton.get(context).where(Folder.class)
                     .equalTo("name", currentNote.getCategory())
                     .findFirst();
 
@@ -267,7 +267,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setVisibility(View.VISIBLE);
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
-            RealmResults<CheckListItem> checklist = Helper.sortChecklist(context, noteId, RealmSingleton.getInstance(context));
+            RealmResults<CheckListItem> checklist = Helper.sortChecklist(context, noteId, RealmSingleton.get(context));
             for (int i = 0; i < checklist.size(); i++) {
                 checkListString.append("• ").append(checklist.get(i).getText());
                 if (i + 1 != checklist.size()) checkListString.append("\n");
@@ -281,9 +281,9 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             }
 
             if (showPreview) {
-                RealmSingleton.getInstance(context).beginTransaction();
+                RealmSingleton.get(context).beginTransaction();
                 currentNote.setChecklistConvertedToString(checkListString.toString());
-                RealmSingleton.getInstance(context).commitTransaction();
+                RealmSingleton.get(context).commitTransaction();
                 holder.note_preview.setText(checkListString.toString());
                 holder.note_preview.setTextSize(13);
                 holder.note_preview.setGravity(Gravity.LEFT);
@@ -635,7 +635,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
     private RealmResults<Photo> getNotePhotos(int noteId) {
         // retrieves all photos that belong to note
-        return RealmSingleton.getInstance(context).where(Photo.class)
+        return RealmSingleton.get(context).where(Photo.class)
                 .equalTo("noteId", noteId).findAll();
     }
 

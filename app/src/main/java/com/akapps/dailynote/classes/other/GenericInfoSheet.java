@@ -73,6 +73,10 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
             this.dismiss();
         });
 
+        if(action == 2) {
+            cancel.setVisibility(View.GONE);
+        }
+
         return view;
     }
 

@@ -4,16 +4,13 @@ import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
@@ -23,18 +20,12 @@ import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.InfoSheet;
-import com.andrognito.pinlockview.IndicatorDots;
-import com.andrognito.pinlockview.PinLockListener;
-import com.andrognito.pinlockview.PinLockView;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 
 import www.sanju.motiontoast.MotionToast;
 
-public class NoteLockScreen extends AppCompatActivity {
+public class NoteLockScreen extends BaseActivity {
 
     // layout
     private PinLockView lockView;
@@ -66,6 +57,8 @@ public class NoteLockScreen extends AppCompatActivity {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_lock_screen);
+
+        applyWindowInsets(R.id.layout);
 
         if (!AppData.getInstance().isDisableAnimation())
             overridePendingTransition(R.anim.left_in, R.anim.stay);

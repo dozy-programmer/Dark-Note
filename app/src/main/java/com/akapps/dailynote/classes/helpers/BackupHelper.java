@@ -23,16 +23,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -60,7 +55,12 @@ public class BackupHelper {
     }
 
     public String backUpZip(boolean includeImages, boolean includeAudio) {
-        return zipAppFiles(getAllAppFiles(includeImages, includeAudio));
+        try {
+            return zipAppFiles(getAllAppFiles(includeImages, includeAudio));
+        } catch (IOException e) {
+            Log.e("BackupHelper", "Error creating zip file", e);
+            return null;
+        }
     }
 
     public boolean showBackupFailStatus(boolean isSuccessful) {
@@ -127,39 +127,35 @@ public class BackupHelper {
         return allRecordings;
     }
 
-    // places all the photos in a zip file and returns a string of the file path
-    private String zipAppFiles(ArrayList<String> files) {
-        File backupZipFolder = FileHelper.createBackupZipFolder(context);
-        int BUFFER = 1024;
+    private String zipAppFiles(ArrayList<String> files) throws IOException {
+        File backupZipFile = FileHelper.createBackupZipFolder(context);
+        Uri backupUri = Uri.fromFile(backupZipFile);
+
+        FileHelper.zip(context, files, backupUri);
+
+        File realmFile = new File(context.getFilesDir(), AppConstants.REALM_EXPORT_FILE_NAME);
+        File extractedRealmFile = new File(context.getCacheDir(), "extracted.realm");
+
         try {
-            BufferedInputStream origin;
-            FileOutputStream dest = new FileOutputStream(backupZipFolder);
-            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
-            byte[] data = new byte[BUFFER];
-            for (int i = 0; i < files.size(); i++) {
-                File newFile = new File(files.get(i));
-                if (newFile.exists()) {
-                    FileInputStream fi = new FileInputStream(files.get(i));
-                    origin = new BufferedInputStream(fi, BUFFER);
-                    ZipEntry entry = new ZipEntry(files.get(i).substring(files.get(i).lastIndexOf("/") + 1));
-                    out.putNextEntry(entry);
-                    int count;
-                    while ((count = origin.read(data, 0, BUFFER)) != -1) {
-                        out.write(data, 0, count);
-                    }
-                    origin.close();
-                }
+            FileHelper.extractFileFromZip(backupZipFile.getAbsolutePath(), AppConstants.REALM_EXPORT_FILE_NAME, extractedRealmFile);
+            if (realmFile.length() != extractedRealmFile.length()) {
+                throw new IOException("Realm file size mismatch after backup.");
             }
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            extractedRealmFile.delete();
         }
-        return backupZipFolder.getAbsolutePath();
+
+        return backupZipFile.getAbsolutePath();
     }
 
     public void upLoadToFirebaseStorage() {
         AtomicReference<User> currentUser = new AtomicReference<>(RealmHelper.getUser(context, "backupHelper"));
-        File backupFile = new File(backUpZip(true, true));
+        String backupPath = backUpZip(true, true);
+        if (backupPath == null) {
+            Helper.showMessage(activity, "Upload Failed", "Could not create backup file.", MotionToast.TOAST_ERROR);
+            return;
+        }
+        File backupFile = new File(backupPath);
         Uri file = Uri.fromFile(backupFile);
         // file info
         String fileSize = Helper.getFormattedFileSize(context, backupFile.length());
@@ -253,32 +249,45 @@ public class BackupHelper {
                     progressDialog = Helper.showLoading("Syncing...\n" + bytesTransferredFormatted + " / " + fileSize, progressDialog, context, true);
                 }).addOnSuccessListener(taskSnapshot -> {
                     importDatabase(Uri.fromFile(localFile));
+                    if (progressDialog != null) progressDialog.dismiss();
                 }).addOnFailureListener(exception -> {
-                    Helper.showLoading("", progressDialog, context, false);
+                    if (progressDialog != null) progressDialog.dismiss();
                     Helper.showMessage(activity, "Error", "Restoring Error from database, please clear app storage & try again", MotionToast.TOAST_ERROR);
                 });
     }
 
     private void importDatabase(Uri uri) {
+        if (performZipRestore(uri)) {
+            if (activity instanceof SettingsScreen) {
+                ((SettingsScreen) activity).close();
+            }
+        }
+    }
+
+    private boolean performZipRestore(Uri uri) {
         try {
-            // delete realm before restoring
-            if (!RealmHelper.deleteRealmDatabase(activity)) return;
+            File tempDir = FileHelper.getTemporaryBackupDirectory(context);
+            FileHelper.newOrDelete(tempDir);
+            FileHelper.existsOrCreate(tempDir);
 
-            // make a copy of the backup zip file selected by user and unzip it
-            boolean isSuccessful = backupRealm.restore(uri, AppConstants.BACKUP_ZIP_FILE_NAME);
-            if (!showBackupFailStatus(isSuccessful)) return;
+            backupRealm.restore(uri, AppConstants.BACKUP_ZIP_FILE_NAME);
 
-            Helper.showLoading("", progressDialog, context, false);
+            if (!RealmHelper.deleteRealmDatabase(activity)) {
+                showBackupFailStatus(false);
+                return false;
+            }
+            File externalFilesDir = context.getExternalFilesDir(null);
+            if (externalFilesDir != null) {
+                FilesKt.deleteRecursively(externalFilesDir);
+            }
+
+            FileHelper.moveDirectory(tempDir, context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS));
 
             ArrayList<String> images = getImagesPath();
             ArrayList<String> recordings = getRecordingsPath();
-            isSuccessful = backupRealm.restoreRealmFileIntoDatabase(getBackupPath(), AppConstants.REALM_EXPORT_FILE_NAME);
-            if (!showBackupFailStatus(isSuccessful)) return;
+            backupRealm.restoreRealmFileIntoDatabase(getBackupPath(), AppConstants.REALM_EXPORT_FILE_NAME);
 
-            Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
-
-            // update image paths from restored database so it knows where the images are
-            Realm realm = RealmSingleton.getInstance(context);
+            Realm realm = RealmSingleton.get(context);
             updateAlarms(activity, realm.where(Note.class)
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
@@ -286,12 +295,14 @@ public class BackupHelper {
             updateRecordings(context, recordings);
             resetWidgets(context);
 
-            // delete all zip files
+            Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
+
             Helper.deleteZipFile(context);
-            ((SettingsScreen) activity).close();
-        } catch (Exception e) {
-            Helper.showLoading("", progressDialog, context, false);
-            Helper.showMessage(activity, "Error", "Restoring Error to device, try again", MotionToast.TOAST_ERROR);
+            return true;
+        } catch (IOException e) {
+            Log.e("BackupHelper", "Error during zip restore", e);
+            Helper.showMessage(activity, "Error Restoring", e.getMessage(), MotionToast.TOAST_ERROR);
+            return false;
         }
     }
 
@@ -300,7 +311,7 @@ public class BackupHelper {
             Uri uri = data.getData();
             String fileName = getFileName(uri);
 
-            if(fileName == null){
+            if (fileName == null) {
                 Helper.showMessage(activity, "Restoring Error", "File not received due to error", MotionToast.TOAST_ERROR);
                 return;
             }
@@ -310,37 +321,10 @@ public class BackupHelper {
                 restoreBackupFromRealmFile(uri);
             } else if (fileName.contains(".zip")) {
                 Log.d("Here", "restoring zip backup");
-                try {
-                    // delete realm before restoring
-                    if (!RealmHelper.deleteRealmDatabase(activity)) return;
-
-                    // delete all files first
-                    FilesKt.deleteRecursively(new File(context.getExternalFilesDir(null) + ""));
-
-                    // make a copy of the backup zip file selected by user and unzip it
-                    backupRealm.restore(uri, AppConstants.BACKUP_ZIP_FILE_NAME);
-
-                    ArrayList<String> images = getImagesPath();
-                    ArrayList<String> recordings = getRecordingsPath();
-                    backupRealm.restoreRealmFileIntoDatabase(getBackupPath(), AppConstants.REALM_EXPORT_FILE_NAME);
-
-                    // update image paths from restored database so it knows where the images are
-                    Realm realm = RealmSingleton.getInstance(context);
-                    updateAlarms(activity, realm.where(Note.class)
-                            .equalTo("archived", false)
-                            .equalTo("trash", false).findAll());
-                    updateImages(context, images);
-                    updateRecordings(context, recordings);
-                    resetWidgets(context);
-
-                    Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
-
-                    // delete all zip files
-                    Helper.deleteZipFile(context);
-
-                    ((SettingsScreen) activity).close();
-                } catch (Exception e) {
-                    Helper.showMessage(activity, "Error Restoring", "An issue occurred, Try again!", MotionToast.TOAST_ERROR);
+                if (performZipRestore(uri)) {
+                    if (activity instanceof SettingsScreen) {
+                        ((SettingsScreen) activity).close();
+                    }
                 }
             } else {
                 Helper.showMessage(activity, "Error\uD83D\uDE14", "Dark Note Backup Files end in '.zip' or '.realm'. Try again!", MotionToast.TOAST_ERROR);
@@ -357,7 +341,7 @@ public class BackupHelper {
             backupRealm.restore(uri, AppConstants.REALM_EXPORT_FILE_NAME);
             Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
 
-            Realm realm = RealmSingleton.getInstance(context);
+            Realm realm = RealmSingleton.get(context);
             updateAlarms(activity, realm.where(Note.class)
                     .equalTo("archived", false)
                     .equalTo("trash", false).findAll());
@@ -365,7 +349,7 @@ public class BackupHelper {
             ((SettingsScreen) activity).close();
         } catch (Exception e) {
             Helper.showMessage(activity, "Restore Error", "" +
-                    "Issue Restoring, try again...", MotionToast.TOAST_ERROR);
+                    "Issue Restoring, close app and try again...", MotionToast.TOAST_ERROR);
         }
     }
 
@@ -378,9 +362,11 @@ public class BackupHelper {
         String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "";
         File directory = new File(path);
         File[] files = directory.listFiles();
-        for (File file : files) {
-            if (file.getName().contains(".mp4") || file.getName().contains(".mp3"))
-                recordings.add(file.getPath());
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().contains(".mp4") || file.getName().contains(".mp3"))
+                    recordings.add(file.getPath());
+            }
         }
         return recordings;
     }
@@ -394,11 +380,13 @@ public class BackupHelper {
         String path = activity.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "";
         File directory = new File(path);
         File[] files = directory.listFiles();
-        for (File file : files) {
-            if (file.getName().contains(".png"))
-                images.add(file.getPath());
-            else if (file.getName().contains(".realm"))
-                backupPath = file.getPath();
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().contains(".png"))
+                    images.add(file.getPath());
+                else if (file.getName().contains(".realm"))
+                    backupPath = file.getPath();
+            }
         }
         return images;
     }
@@ -509,3 +497,4 @@ public class BackupHelper {
     }
 
 }
+

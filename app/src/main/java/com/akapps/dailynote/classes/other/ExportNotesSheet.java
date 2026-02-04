@@ -117,7 +117,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
         });
 
         exportNote.setOnClickListener(view15 -> {
-            Helper.shareNote(getActivity(), numNotesSelected, RealmSingleton.getInstance(getContext()));
+            Helper.shareNote(getActivity(), numNotesSelected, RealmSingleton.get(getContext()));
             dismiss();
         });
 
@@ -144,17 +144,17 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private void exportNotes(String extension) {
-        RealmResults<Note> results = Helper.getSelectedNotes(RealmSingleton.getInstance(getContext()),
+        RealmResults<Note> results = Helper.getSelectedNotes(RealmSingleton.get(getContext()),
                 getActivity());
         if (results != null && results.size() != 0)
-            Helper.exportFiles(extension, getActivity(), results, RealmSingleton.getInstance(getContext()));
+            Helper.exportFiles(extension, getActivity(), results, RealmSingleton.get(getContext()));
         ((notes) fragment).clearMultipleSelect();
         dismiss();
     }
 
     private void exportNote(String extension) {
-        Helper.exportFiles(extension, getActivity(), RealmSingleton.getInstance(getContext()).where(Note.class)
-                .equalTo("noteId", numNotesSelected).findAll(), RealmSingleton.getInstance(getContext()));
+        Helper.exportFiles(extension, getActivity(), RealmSingleton.get(getContext()).where(Note.class)
+                .equalTo("noteId", numNotesSelected).findAll(), RealmSingleton.get(getContext()));
         dismiss();
     }
 
