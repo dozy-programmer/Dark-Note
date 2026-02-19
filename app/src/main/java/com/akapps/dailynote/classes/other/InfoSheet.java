@@ -39,6 +39,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.stfalcon.imageviewer.StfalconImageViewer;
 
 import org.jetbrains.annotations.NotNull;
 

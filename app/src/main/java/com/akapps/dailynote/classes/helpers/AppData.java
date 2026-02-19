@@ -133,7 +133,7 @@ public class AppData {
     }
 
     private Realm getRealm(Context context) {
-        return RealmSingleton.getInstance(context);
+        return RealmSingleton.get(context);
     }
 
     public void updateLockData(int pin, String securityWord, boolean isFingerprintAdded) {

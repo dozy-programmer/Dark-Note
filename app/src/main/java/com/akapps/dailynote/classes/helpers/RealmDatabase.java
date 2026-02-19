@@ -250,6 +250,9 @@ public class RealmDatabase {
 
             if (!schema.get("CheckListItem").hasField("dateLastEdited"))
                 schema.get("CheckListItem").addField("dateLastEdited", long.class);
+
+            if (!schema.get("SubCheckListItem").hasField("dateLastEdited"))
+                schema.get("SubCheckListItem").addField("dateLastEdited", long.class);
         }
     }
 }

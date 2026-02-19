@@ -94,6 +94,7 @@ import com.google.android.material.button.MaterialButton;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.OnMenuItemClickListener;
+import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -1472,7 +1473,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         // insert data to database
         getRealm().beginTransaction();
         CheckListItem currentItem = new CheckListItem(itemText.trim(), false, getCurrentNote(context, noteId).getNoteId(),
-                initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("E, MMM dd")
+                initialPosition, rand.nextInt(100000) + 1, new SimpleDateFormat("EEE, MMM dd hh:mm a")
                 .format(Calendar.getInstance().getTime()), place, redirectId);
         getCurrentNote(context, noteId).getChecklist().add(currentItem);
         if (RealmHelper.getNoteSorting(context, noteId) == 8)
@@ -1536,7 +1537,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         int initialPosition = checkListItem.getSubChecklist().size();
         // insert data to database
         getRealm().beginTransaction();
-        checkListItem.getSubChecklist().add(new SubCheckListItem(itemText.trim(), false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("E, MMM dd").format(Calendar.getInstance().getTime())));
+        checkListItem.getSubChecklist().add(new SubCheckListItem(itemText.trim(), false, checkListItem.getSubListId(), initialPosition, new SimpleDateFormat("EEE, MMM dd hh:mm a").format(Calendar.getInstance().getTime())));
         getCurrentNote(context, noteId).setEnableSublist(true);
         checkListItem.setChecked(false);
         getRealm().commitTransaction();

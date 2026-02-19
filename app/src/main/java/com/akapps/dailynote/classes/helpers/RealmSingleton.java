@@ -46,13 +46,13 @@ public class RealmSingleton {
         } catch (IllegalArgumentException e) {
             if (e.getMessage() != null && e.getMessage().contains("less than last set version")) {
                 Log.w(TAG, "Schema mismatch detected — attempting recovery", e);
-                return recoverDatabase(context, e, 0);
+                return recoverDatabase(context, e);
             }
             throw e;
 
         } catch (RealmMigrationNeededException e) {
             Log.w(TAG, "Migration required — attempting recovery", e);
-            return recoverDatabase(context, e, 0);
+            return recoverDatabase(context, e);
 
         } catch (Exception e) {
             Log.e(TAG, "Fatal Realm init error", e);
@@ -60,7 +60,7 @@ public class RealmSingleton {
         }
     }
 
-    private static Realm recoverDatabase(Context context, Exception error, Integer attempts) {
+    private static Realm recoverDatabase(Context context, Exception error) {
         try {
             long storedVersion = getSavedSchemaVersion(context);
 
@@ -72,22 +72,11 @@ public class RealmSingleton {
 
             Helper.savePreference(context, String.valueOf(newVersion), AppConstants.SCHEMA_VERSION);
 
-            Realm.setDefaultConfiguration(
-                    new RealmConfiguration.Builder()
-                            .schemaVersion(newVersion)
-                            .build()
-            );
-
             Log.i(TAG, "Realm recovered — schema updated to version: " + newVersion);
             return RealmDatabase.setUpDatabase(context);
-
         } catch (Exception e) {
-            if (attempts == 0) {
-                recoverDatabase(context, error, 1);
-            } else {
-                Log.e(TAG, "Recovery failed", e);
-                throw new RuntimeException("Could not recover Realm DB.", e);
-            }
+            Log.e(TAG, "Recovery failed", e);
+          throw new RuntimeException("Could not recover Realm DB.", e);
         }
     }
 

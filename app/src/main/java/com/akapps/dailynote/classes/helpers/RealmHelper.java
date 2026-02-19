@@ -454,7 +454,7 @@ public class RealmHelper {
     }
 
     public static boolean isRealmInstancesClosed() {
-        if (RealmSingleton.getOnlyRealm() == null)
+        if (RealmSingleton.getOnlyRealm() == null || RealmSingleton.getOnlyRealm().isClosed())
             return true;
         else
             RealmSingleton.getOnlyRealm().close();

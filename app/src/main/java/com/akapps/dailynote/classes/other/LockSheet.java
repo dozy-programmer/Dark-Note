@@ -97,7 +97,6 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
                     User currentUser = RealmHelper.getUser(getContext(), "lock sheet");
                     RealmSingleton.get(getContext()).beginTransaction();
                     currentUser.setUltimateUser(true);
-                    currentUser.setMaxBackups(5);
                     RealmSingleton.get(getContext()).commitTransaction();
                     Helper.showMessage(getActivity(), "Upgrade Successful", "" +
                             "Thank you and Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);

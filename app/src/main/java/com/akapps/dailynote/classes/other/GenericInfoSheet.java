@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,9 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
     private String proceedText = "";
     private String cancelText = "";
     private int action;
+    private int messageAlignment = -1;
+
+    private boolean showButtons = true;
 
     public GenericInfoSheet() {
     }
@@ -35,6 +39,13 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
     public GenericInfoSheet(String title, String message) {
         this.titleText = title;
         this.message = message;
+    }
+
+    public GenericInfoSheet(String title, String message, int messageAlignment) {
+        this.titleText = title;
+        this.message = message;
+        this.messageAlignment = messageAlignment;
+        showButtons = false;
     }
 
     public GenericInfoSheet(String title, String message, String proceedText, String cancelText) {
@@ -61,26 +72,33 @@ public class GenericInfoSheet extends RoundedBottomSheetDialogFragment {
         MaterialButton proceed = view.findViewById(R.id.proceed);
 
         title.setText(titleText);
-        proceed.setText(proceedText.isEmpty() ? proceed.getText() : proceedText);
-        cancel.setText(cancelText.isEmpty() ? cancel.getText() : cancelText);
-        info.setText(message);
-        info.setGravity(Gravity.CENTER);
+        info.setText(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT));
+        info.setGravity(messageAlignment == -1 ? Gravity.CENTER : Gravity.START);
 
-        cancel.setOnClickListener(v -> this.dismiss());
+        if(showButtons) {
 
-        proceed.setOnClickListener(view1 -> {
-            if(action == 1) openAppSettings();
-            this.dismiss();
-        });
+            proceed.setText(proceedText.isEmpty() ? proceed.getText() : proceedText);
+            cancel.setText(cancelText.isEmpty() ? cancel.getText() : cancelText);
 
-        if(action == 2) {
+            cancel.setOnClickListener(v -> this.dismiss());
+
+            proceed.setOnClickListener(view1 -> {
+                if (action == 1) openAppSettings();
+                this.dismiss();
+            });
+
+            if (action == 2) {
+                cancel.setVisibility(View.GONE);
+            }
+        } else {
             cancel.setVisibility(View.GONE);
+            proceed.setVisibility(View.GONE);
         }
 
         return view;
     }
 
-    private void openAppSettings(){
+    private void openAppSettings() {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);

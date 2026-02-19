@@ -19,7 +19,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Insets;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -33,8 +32,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowMetrics;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -79,6 +76,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -711,7 +709,7 @@ public class Helper {
         return activity.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
     }
 
-    public static String getRandomUUID(){
+    public static String getRandomUUID() {
         return UUID.randomUUID().toString();
     }
 
@@ -1092,7 +1090,7 @@ public class Helper {
         }
     }
 
-    public static String generateTemporaryCode(Boolean isAppLocked){
+    public static String generateTemporaryCode(Boolean isAppLocked) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAppLocked) {
             // Get the current date and time
             LocalDateTime now = LocalDateTime.now();
@@ -1131,6 +1129,12 @@ public class Helper {
                 }
             }
         }
+    }
+
+    public static String getTimeStamp(long timestamp) {
+        if (timestamp == 0) return "N/A";
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM dd hh:mm a", Locale.ENGLISH);
+        return sdf.format(new Date(timestamp));
     }
 
     public static String formatToTwoDecimalPlaces(double number) {

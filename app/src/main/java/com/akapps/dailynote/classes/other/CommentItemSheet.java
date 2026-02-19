@@ -133,7 +133,7 @@ public class CommentItemSheet extends RoundedBottomSheetDialogFragment {
     }
 
     private Realm getRealm() {
-        return RealmSingleton.getInstance(getContext());
+        return RealmSingleton.get(getContext());
     }
 
     @Override

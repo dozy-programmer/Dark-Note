@@ -494,6 +494,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         // save status to database
         getRealm().beginTransaction();
         checkListItem.setText(text);
+        checkListItem.setDateLastEdited(Calendar.getInstance().getTime().getTime());
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         checkListItem.setRedirectToOtherNote(RealmHelper.getNoteIdUsingTitle(getContext(), noteSelectedTitle));
         Log.d("Here", "note title -> " + noteSelectedTitle);
@@ -508,6 +509,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         getRealm().beginTransaction();
         Place newPlace = getRealm().copyToRealm(place);
         checkListItem.setPlace(newPlace);
+        checkListItem.setDateLastEdited(Calendar.getInstance().getTime().getTime());
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
@@ -519,6 +521,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         // save status to database
         getRealm().beginTransaction();
         checkListItem.setText(text);
+        checkListItem.setDateLastEdited(Calendar.getInstance().getTime().getTime());
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
@@ -530,6 +533,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private void deleteItem(CheckListItem checkListItem) {
         RealmHelper.deleteChecklistItem(checkListItem, getContext(), false);
         getRealm().beginTransaction();
+        checkListItem.setDateLastEdited(Calendar.getInstance().getTime().getTime());
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
@@ -669,6 +673,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             if (currentItem.getPlace() == null || currentItem.getPlace().getPlaceName().isEmpty()) {
                 noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location_icon), "Location"));
             }
+        }
+        if(!isAdding) {
             noteMenu.addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.info_icon), "Info"));
         }
 
@@ -736,11 +742,15 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     Helper.showMessage(getActivity(), "Sharing Error", "Size too large v20, email developer", MotionToast.TOAST_ERROR);
                 }
             } else if (item.getTitle().equals("Info")) {
-                Spanned dateCreated = Html.fromHtml("Date Created: <br>" +
-                        "<font color='#7A9CC7'>" + currentItem.getDateCreated() + "</font>");
-                Spanned dateEdited = Html.fromHtml("Date Last Edited: <br>" +
-                        "<font color='#7A9CC7'>" + currentItem.getDateLastEdited() + "</font>");
-                GenericInfoSheet infoSheet = new GenericInfoSheet("Checklist Info", dateCreated + "\n" + dateEdited);
+                String dateCreated = isSubChecklist ? currentSubItem.getDateCreated() : currentItem.getDateCreated();
+                String dateEdited = Helper.getTimeStamp(isSubChecklist ? currentSubItem.getDateLastEdited() : currentItem.getDateLastEdited());
+                String dateCreatedLine = "Date Created: " + "<font color='#7A9CC7'>" + dateCreated + "</font>";
+                String dateEditedLine = "Date Last Edited: " + "<font color='#7A9CC7'>" + dateEdited + "</font>";
+                GenericInfoSheet infoSheet = new GenericInfoSheet(
+                        isSubChecklist ? "Sub-Item Info" : "Checklist Info",
+                        dateCreatedLine + "<br><br>" + dateEditedLine,
+                        Gravity.LEFT
+                );
                 infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             }
             noteMenu.dismiss();

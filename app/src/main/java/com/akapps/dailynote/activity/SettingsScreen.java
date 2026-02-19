@@ -746,7 +746,6 @@ public class SettingsScreen extends BaseActivity {
         User currentUser = getUser();
         RealmSingleton.get(this).beginTransaction();
         currentUser.setUltimateUser(!currentUser.isUltimateUser());
-        currentUser.setMaxBackups(250);
         RealmSingleton.get(this).commitTransaction();
 
         if (currentUser.isUltimateUser())
@@ -916,8 +915,7 @@ public class SettingsScreen extends BaseActivity {
 
     private void showBackupRestoreInfo(int selection) {
         RealmResults<Backup> allBackups = RealmSingleton.get(context).where(Backup.class).equalTo("userId", getUser().getUserId()).findAll();
-        int maxBackups = getUser() == null ? 5 : getUser().getMaxBackups() > 0 ? getUser().getMaxBackups() : 250;
-        if (allBackups.size() < maxBackups && selection == 6) {
+        if (allBackups.size() < 250 && RealmSingleton.getUser(context).isUltimateUser() && selection == 6) {
             uploadData();
         } else {
             InfoSheet info = new InfoSheet(selection);
