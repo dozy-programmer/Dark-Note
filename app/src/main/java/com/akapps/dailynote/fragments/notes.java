@@ -798,28 +798,40 @@ public class notes extends BaseFragment {
     }
 
     private void searchNotesAndUpdate(String target) {
-        RealmQuery<Note> query = getRealm().where(Note.class);
+        Realm realm = getRealm();
 
-        String[] targetWords = target.split(" ");
+        if (target == null || target.trim().isEmpty()) {
+            RealmResults<Note> allNotes = realm.where(Note.class).findAll();
+            isListEmpty(allNotes.size(), allNotes.isEmpty());
+            populateAdapter(allNotes);
+            return;
+        }
 
-        RealmQueryBuilder<Note> queryBuilder = new RealmQueryBuilder<>(query);
-        RealmQuery<Note> resultQuery = queryBuilder
-                .containsAll("note", targetWords, Case.INSENSITIVE)
-                .or()
-                .containsAll("title", targetWords, Case.INSENSITIVE)
-                .or()
-                .containsAll("checklistConvertedToString", targetWords, Case.INSENSITIVE)
-                .getQuery();
+        String[] words = target
+                .trim()
+                .replaceAll("\\s+", " ")
+                .split(" ");
 
-        RealmResults<Note> queryNotes = resultQuery.findAll();
+        RealmQuery<Note> query = realm.where(Note.class);
 
-        Log.d("Here", "target -> " + target);
-        Log.d("Here", "split -> " + Arrays.toString(targetWords));
-        Log.d("Here", "-------------------------------");
+        for (String word : words) {
+            query.beginGroup()
+                    .contains("title", word, Case.INSENSITIVE)
+                    .or()
+                    .contains("note", word, Case.INSENSITIVE)
+                    .or()
+                    .contains("checklist.text", word, Case.INSENSITIVE)
+                    .or()
+                    .contains("checklist.subChecklist.text", word, Case.INSENSITIVE)
+                    .endGroup();
+        }
 
-        isListEmpty(queryNotes.size(), queryNotes.isEmpty());
-        populateAdapter(queryNotes);
+        RealmResults<Note> results = query.findAll();
+
+        isListEmpty(results.size(), results.isEmpty());
+        populateAdapter(results);
     }
+
 
     private void showSearchBar() {
         isSearchingNotes = true;
