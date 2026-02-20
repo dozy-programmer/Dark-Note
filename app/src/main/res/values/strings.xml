@@ -2,11 +2,11 @@
 
     <!-- App Data !-->
     <string name="app_name">Dark Note</string>
-    <string name="schema">56</string>
+    <string name="schema">57</string>
     <!-- Changed for every update !-->
     <!-- Also update versionCode !-->
-    <string name="app_version">v19.2</string>
-    <string name="app_version_int">19.2</string>
+    <string name="app_version">v19.3</string>
+    <string name="app_version_int">19.3</string>
 
     <!-- App Shortcuts !-->
     <string name="new_note_shortcut">New Note</string>
@@ -115,9 +115,12 @@
 
     </string>
 
-    <string name="version_19_2_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡ Scroll to bottom ➡ Dark Note Sub-Reddit Feedback\n\n
+    <string name="version_19_3_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡ Scroll to bottom ➡ Dark Note Sub-Reddit Feedback\n\n
         <font color='#8CA9CF'><b>New 🎉</b></font>\n
-        • minor update: widget fills up all the given space\n\n
+        • Support for Android 16\n
+        • Improvement to searching capability (can now see preview for searched word for checklists)\n
+        • Improvements to backup to ensure there are no issues importing and exporting\n
+        • Added ability to add notes when inside a folder\n\n
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
         • Always working hard to ensure a pleasant crash-free experience:

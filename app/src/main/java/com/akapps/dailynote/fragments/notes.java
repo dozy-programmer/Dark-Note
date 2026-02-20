@@ -48,6 +48,7 @@ import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.GenericInfoSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
+import com.akapps.dailynote.classes.other.WhatsNewSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -203,9 +204,9 @@ public class notes extends BaseFragment {
             infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             Helper.saveBooleanPreference(context, true, AppConstants.LANGUAGE_SUPPORT_MESSAGE);
         } else if (!Helper.getBooleanPreference(context, getString(R.string.app_version))) {
-//            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
-//            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
-//            Helper.saveBooleanPreference(context, true, getString(R.string.app_version));
+            WhatsNewSheet whatsNewSheet = new WhatsNewSheet();
+            whatsNewSheet.show(getActivity().getSupportFragmentManager(), whatsNewSheet.getTag());
+            Helper.saveBooleanPreference(context, true, getString(R.string.app_version));
         }
 
         String userId = Helper.getPreference(context, AppConstants.USER_ID);
