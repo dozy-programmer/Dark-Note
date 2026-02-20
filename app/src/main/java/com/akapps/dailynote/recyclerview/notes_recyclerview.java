@@ -3,9 +3,12 @@ package com.akapps.dailynote.recyclerview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +28,11 @@ import com.akapps.dailynote.classes.data.Folder;
 import com.akapps.dailynote.classes.data.Note;
 import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.data.User;
+import com.akapps.dailynote.classes.helpers.BoxedSpan;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
+import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.NoteInfoSheet;
 import com.akapps.dailynote.fragments.notes;
 import com.bumptech.glide.Glide;
@@ -39,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import io.realm.RealmResults;
@@ -54,6 +60,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     private final boolean showPreview;
     private final boolean showPreviewNotesInfo;
     private final boolean showPreviewNoteInfoAtBottom;
+    private final String searchQuery;
 
     // database
     private final User currentUser;
@@ -122,7 +129,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
     }
 
     public notes_recyclerview(RealmResults<Note> allNotes, Context context, Activity activity, Fragment fragment,
-                              boolean showPreview, boolean showPreviewNotesInfo, boolean showPreviewNoteInfoAtBottom) {
+                              boolean showPreview, boolean showPreviewNotesInfo, boolean showPreviewNoteInfoAtBottom, String searchQuery) {
         this.allNotes = allNotes;
         this.context = context;
         this.activity = activity;
@@ -130,6 +137,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         this.showPreview = showPreview;
         this.showPreviewNotesInfo = showPreviewNotesInfo;
         this.showPreviewNoteInfoAtBottom = showPreviewNoteInfoAtBottom;
+        this.searchQuery = searchQuery;
         currentUser = RealmHelper.getUser(context, "notes_recyclerview");
         notesSize = allNotes.size();
     }
@@ -267,10 +275,21 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             holder.checklist_icon.setVisibility(View.VISIBLE);
             holder.checklist_icon.setImageDrawable(activity.getDrawable(R.drawable.checklist_icon));
             StringBuilder checkListString = new StringBuilder();
+            StringBuilder checkListStringWithSublist = new StringBuilder();
             RealmResults<CheckListItem> checklist = Helper.sortChecklist(context, noteId, RealmSingleton.get(context));
             for (int i = 0; i < checklist.size(); i++) {
                 checkListString.append("• ").append(checklist.get(i).getText());
-                if (i + 1 != checklist.size()) checkListString.append("\n");
+                checkListStringWithSublist.append("• ").append(checklist.get(i).getText());
+
+                for(int j = 0; j < checklist.get(i).getSubChecklist().size(); j++) {
+                    String text = checklist.get(i).getSubChecklist().get(j).getText();
+                    checkListStringWithSublist.append("\t\n• ").append(text);
+                }
+
+                if (i + 1 != checklist.size()) {
+                    checkListString.append("\n");
+                    checkListStringWithSublist.append("\n");
+                }
             }
 
             if (!isNoteLocked && checklist.size() > 0) {
@@ -281,10 +300,15 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             }
 
             if (showPreview) {
-                RealmSingleton.get(context).beginTransaction();
-                currentNote.setChecklistConvertedToString(checkListString.toString());
-                RealmSingleton.get(context).commitTransaction();
-                holder.note_preview.setText(checkListString.toString());
+                if (searchQuery != null && !searchQuery.isEmpty()) {
+                    holder.note_preview.setMaxLines(20);
+                    setHighlightedBoxText(activity, holder.note_preview, checkListStringWithSublist.toString(), searchQuery, 5);
+                } else {
+                    RealmSingleton.get(context).beginTransaction();
+                    currentNote.setChecklistConvertedToString(checkListString.toString());
+                    RealmSingleton.get(context).commitTransaction();
+                    holder.note_preview.setText(checkListString.toString());
+                }
                 holder.note_preview.setTextSize(13);
                 holder.note_preview.setGravity(Gravity.LEFT);
             } else
@@ -644,4 +668,121 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
         mParams.setMargins(mParams.leftMargin, topMargin, mParams.rightMargin, mParams.bottomMargin);
         view.setLayoutParams(mParams);
     }
+
+    public static void setHighlightedBoxText(
+            Activity activity,
+            TextView textView,
+            String fullText,
+            String searchQuery,
+            int contextWords
+    ) {
+
+        if (fullText == null || fullText.isEmpty()) {
+            textView.setText("");
+            return;
+        }
+
+        if (searchQuery == null || searchQuery.trim().isEmpty()) {
+            textView.setText(fullText);
+            return;
+        }
+
+        String lowerFull = fullText.toLowerCase();
+        String lowerQuery = searchQuery.trim().toLowerCase();
+
+        int matchIndex = lowerFull.indexOf(lowerQuery);
+        if (matchIndex < 0) {
+            textView.setText(fullText);
+            return;
+        }
+
+        String[] words = fullText.split("\\s+");
+
+        // ---- FIND WORD INDEX SAFELY ----
+        int wordIndex = -1;
+        int runningIndex = 0;
+
+        for (int i = 0; i < words.length; i++) {
+
+            int wordStart = lowerFull.indexOf(words[i].toLowerCase(), runningIndex);
+            if (wordStart == -1) continue;
+
+            int wordEnd = wordStart + words[i].length();
+
+            if (matchIndex >= wordStart && matchIndex < wordEnd) {
+                wordIndex = i;
+                break;
+            }
+
+            runningIndex = wordEnd;
+        }
+
+        if (wordIndex == -1) {
+            textView.setText(fullText);
+            return;
+        }
+
+        int startWordIndex = Math.max(0, wordIndex - contextWords);
+        int endWordIndex = Math.min(words.length - 1, wordIndex + contextWords);
+
+        // 🚫 STOP at checklist boundary (•)
+        for (int i = wordIndex + 1; i <= endWordIndex; i++) {
+            if (words[i].equals("•")) {
+                endWordIndex = i - 1;
+                break;
+            }
+        }
+
+        // ---- BUILD SNIPPET ----
+        StringBuilder snippet = new StringBuilder();
+
+        if (startWordIndex > 0) {
+            snippet.append("… ");
+        }
+
+        for (int i = startWordIndex; i <= endWordIndex; i++) {
+            if (!words[i].equals("•")) {   // extra safety
+                snippet.append(words[i]);
+                if (i < endWordIndex) snippet.append(" ");
+            }
+        }
+
+        if (endWordIndex < words.length - 1) {
+            snippet.append(" …");
+        }
+
+        String snippetStr = snippet.toString();
+        SpannableString spannable = new SpannableString(snippetStr);
+
+        int strokeColor = UiHelper.getColorFromTheme(activity, R.attr.primaryBackgroundColor);
+
+        String lowerSnippet = snippetStr.toLowerCase();
+        int highlightStart = lowerSnippet.indexOf(lowerQuery);
+
+        if (highlightStart >= 0) {
+            int highlightEnd = highlightStart + searchQuery.length();
+
+            spannable.setSpan(
+                    new BoxedSpan(strokeColor, 3, 16f, 8f),
+                    highlightStart,
+                    highlightEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+
+        textView.setPadding(
+                textView.getPaddingLeft(),
+                dpToPx(textView.getContext(), 1),
+                textView.getPaddingRight(),
+                textView.getPaddingBottom()
+        );
+
+        textView.setText(spannable);
+    }
+
+
+    private static int dpToPx(Context context, float dp) {
+        return (int) (dp * context.getResources().getDisplayMetrics().density + 0.5f);
+    }
 }
+

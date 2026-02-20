@@ -579,9 +579,11 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
 
         photosScrollView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+        String passedCategory = getIntent().getStringExtra("category");
+
         // if it's a new note, create it
         if (isNewNote || noteId == -1)
-            addNote();
+            addNote(passedCategory);
 
         photosNote.setVisibility(View.VISIBLE);
         pinNoteIcon.setVisibility(View.VISIBLE);
@@ -1369,7 +1371,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
     }
 
     // adds note
-    private void addNote() {
+    private void addNote(String category) {
         String[] currentItems = new String[0];
         if (noteFromOtherApp != null && !noteFromOtherApp.isEmpty()) {
             // [V] for ColorNote, idk they changed it to V instead of x
@@ -1410,8 +1412,11 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
 
         if (getRealm().where(Note.class).equalTo("noteId", newNote.getNoteId()).findAll().size() != 0) {
             // note id for new note already exists, try to add again with a NEW unique note id
-            addNote();
+            addNote(category);
         } else {
+            if(category != null && !category.isEmpty()) {
+                newNote.setCategory(category);
+            }
             newNote.setPin(currentPin);
             newNote.setIsCheckList(isCheckList);
             newNote.setUsePreviewAsNoteBackground(getUser().isUsePreviewColorAsBackground());

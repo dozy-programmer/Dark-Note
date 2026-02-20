@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,14 +42,12 @@ import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
-import com.akapps.dailynote.classes.helpers.RealmQueryBuilder;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.ExportNotesSheet;
 import com.akapps.dailynote.classes.other.FilterSheet;
 import com.akapps.dailynote.classes.other.GenericInfoSheet;
 import com.akapps.dailynote.classes.other.InfoSheet;
-import com.akapps.dailynote.classes.other.WhatsNewSheet;
 import com.akapps.dailynote.recyclerview.notes_recyclerview;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -60,8 +56,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -90,6 +84,8 @@ public class notes extends BaseFragment {
     private RecyclerView recyclerViewNotes;
     private RecyclerView.Adapter adapterNotes;
     private FloatingActionButton addNote;
+
+    private FloatingActionButton closeFilter;
     private FloatingActionButton addCheckList;
     private FloatingActionMenu addMenu;
     private FloatingActionButton addNoteTwo;
@@ -102,12 +98,14 @@ public class notes extends BaseFragment {
 
     // activity data
     private boolean isSearchingNotes;
+    private boolean showCloseFilter;
     private boolean deletingMultipleNotes;
     private boolean isAllSelected;
     private boolean isTrashSelected;
     public boolean enableSelectMultiple;
     private int numMultiSelect = -1;
     private int lightColor;
+    public String filterCategory = "";
 
     // dialog
     private boolean isNotesFiltered;
@@ -338,6 +336,7 @@ public class notes extends BaseFragment {
         settingsIcon = view.findViewById(R.id.settings_icon);
         addMenu = view.findViewById(R.id.menu);
         addNote = view.findViewById(R.id.add_note);
+        closeFilter = view.findViewById(R.id.close_filter);
         addCheckList = view.findViewById(R.id.add_checklist);
         addMenuLarge = view.findViewById(R.id.menu_2);
         addNoteTwo = view.findViewById(R.id.add_note_2);
@@ -374,7 +373,7 @@ public class notes extends BaseFragment {
         }
 
         settings.setOnClickListener(v -> {
-            if(enableSelectMultiple && isTrashSelected){
+            if (enableSelectMultiple && isTrashSelected) {
                 isAllSelected = false;
                 InfoSheet info = new InfoSheet(3, true, notes.this, isTrashSelected, true);
                 info.show(getActivity().getSupportFragmentManager(), info.getTag());
@@ -391,7 +390,7 @@ public class notes extends BaseFragment {
                 closeMultipleNotesLayout();
                 isListEmpty(0, false);
                 showData();
-            } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
+            } else if (isTrashSelected || enableSelectMultiple || (!showCloseFilter && isNotesFiltered))
                 clearMultipleSelect();
             else {
                 if (addMenuLarge.isOpened()) {
@@ -407,7 +406,7 @@ public class notes extends BaseFragment {
                 closeMultipleNotesLayout();
                 isListEmpty(0, false);
                 showData();
-            } else if (isNotesFiltered || isTrashSelected || enableSelectMultiple)
+            } else if (isTrashSelected || enableSelectMultiple || (!showCloseFilter && isNotesFiltered))
                 clearMultipleSelect();
             else {
                 if (addMenu.isOpened()) {
@@ -416,6 +415,10 @@ public class notes extends BaseFragment {
                     newNoteButtonAction();
                 }
             }
+        });
+
+        closeFilter.setOnClickListener(v -> {
+            clearMultipleSelect();
         });
 
         filterNotes.setOnClickListener(v -> {
@@ -510,6 +513,9 @@ public class notes extends BaseFragment {
 
     private void openNewNote() {
         Intent note = new Intent(getActivity(), NoteEdit.class);
+        if (!filterCategory.isEmpty()) {
+            note.putExtra("category", filterCategory);
+        }
         startActivity(note);
         closeMenuButton();
     }
@@ -517,6 +523,9 @@ public class notes extends BaseFragment {
     private void openNewChecklist() {
         Intent checklist = new Intent(getActivity(), NoteEdit.class);
         checklist.putExtra("isChecklist", true);
+        if (!filterCategory.isEmpty()) {
+            checklist.putExtra("category", filterCategory);
+        }
         startActivity(checklist);
         closeMenuButton();
     }
@@ -581,12 +590,13 @@ public class notes extends BaseFragment {
             boolean viewCategoryNotes = data.getBooleanExtra("viewing", false);
 
             if (id != -1) {
-                String currentCategory = getRealm().where(Folder.class).equalTo("id", id)
+                filterCategory = getRealm().where(Folder.class).equalTo("id", id)
                         .findFirst().getName();
                 RealmResults<Note> category = getRealm().where(Note.class)
                         .equalTo("trash", false)
                         .equalTo("archived", false)
-                        .equalTo("category", currentCategory).findAll();
+                        .equalTo("category", filterCategory).findAll();
+                showCloseFilter = true;
                 filteringByCategory(category, true);
                 if (!viewCategoryNotes) {
                     Helper.showMessage(getActivity(), "Added", "Note(s) have been added to " +
@@ -596,6 +606,7 @@ public class notes extends BaseFragment {
             }
         } else if (resultCode == -4 || resultCode == -2) {
             if (resultCode == -2) {
+                showCloseFilter = false;
                 filteringByCategory(getRealm().where(Note.class).findAll(), true);
                 restoreNotes.setVisibility(View.GONE);
             } else {
@@ -610,6 +621,7 @@ public class notes extends BaseFragment {
                     .equalTo("trash", false)
                     .equalTo("archived", false)
                     .equalTo("category", "none").findAll();
+            showCloseFilter = false;
             filteringByCategory(category, true);
         } else if (resultCode == -5) {
             RealmResults<Note> queryDeletedNotes = getRealm().where(Note.class).equalTo("trash", true).findAll();
@@ -624,6 +636,7 @@ public class notes extends BaseFragment {
             searchLayout.setVisibility(View.GONE);
             unSelectAllNotes();
             isNotesFiltered = true;
+            showCloseFilter = false;
             closeFilter();
         } else if (resultCode == -10 || resultCode == -9 || resultCode == -8) {
             RealmResults<Note> queryArchivedNotes =
@@ -641,8 +654,10 @@ public class notes extends BaseFragment {
             if (enableSelectMultiple) {
                 closeMultipleNotesLayout();
                 showData();
-            } else
+            } else {
+                showCloseFilter = false;
                 filteringAllNotesRealm(queryArchivedNotes, true);
+            }
         } else if (resultCode == -11 || resultCode == -12 || resultCode == -13) {
             RealmResults<Note> queryPinnedNotes =
                     getRealm().where(Note.class)
@@ -658,19 +673,22 @@ public class notes extends BaseFragment {
             if (enableSelectMultiple) {
                 closeMultipleNotesLayout();
                 showData();
-            } else
+            } else {
+                showCloseFilter = false;
                 filteringAllNotesRealm(queryPinnedNotes, true);
+            }
         } else if (resultCode == -14) {
             RealmResults<Note> queryLockedNotes =
                     getRealm().where(Note.class)
                             .greaterThan("pinNumber", 0).findAll();
-
+            showCloseFilter = false;
             filteringAllNotesRealm(queryLockedNotes, true);
         } else if (resultCode == -15) {
             RealmResults<Note> queryRemindNotes =
                     getRealm().where(Note.class)
                             .isNotEmpty("reminderDateTime").findAll();
 
+            showCloseFilter = false;
             filteringAllNotesRealm(queryRemindNotes, true);
         } else if (resultCode == -16) {
             RealmResults<Photo> allNotePhotos = getRealm().where(Photo.class).distinct("noteId").findAll();
@@ -686,6 +704,7 @@ public class notes extends BaseFragment {
                     getRealm().where(Note.class)
                             .in("noteId", allNotePhotosId).findAll();
 
+            showCloseFilter = false;
             filteringAllNotesRealm(queryNotesWithPhotos, true);
         }
     }
@@ -720,8 +739,10 @@ public class notes extends BaseFragment {
 
         result = result.where().sort("pin", Sort.DESCENDING).findAll();
 
-        if (result != null)
+        if (result != null) {
+            showCloseFilter = false;
             filteringAllNotesRealm(result, false);
+        }
     }
 
     private void filteringAllNotesRealm(RealmResults<Note> query, boolean isCategory) {
@@ -783,7 +804,14 @@ public class notes extends BaseFragment {
     private void populateAdapter(RealmResults<Note> allNotes) {
         filteredNotes = allNotes;
         adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes : allNotes, context, getActivity(),
-                notes.this, getUser().isShowPreview(), getUser().isShowPreviewNoteInfo(), getUser().isShowPreviewNoteInfoAtBottom());
+                notes.this, getUser().isShowPreview(), getUser().isShowPreviewNoteInfo(), getUser().isShowPreviewNoteInfoAtBottom(), "");
+        recyclerViewNotes.setAdapter(adapterNotes);
+    }
+
+    private void populateSearchAdapter(RealmResults<Note> allNotes, String searchQuery) {
+        filteredNotes = allNotes;
+        adapterNotes = new notes_recyclerview(isNotesFiltered ? filteredNotes : allNotes, context, getActivity(),
+                notes.this, getUser().isShowPreview(), getUser().isShowPreviewNoteInfo(), getUser().isShowPreviewNoteInfoAtBottom(), searchQuery);
         recyclerViewNotes.setAdapter(adapterNotes);
     }
 
@@ -791,10 +819,14 @@ public class notes extends BaseFragment {
         isNotesFiltered = true;
         categoryNotes.setCardBackgroundColor(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
         categoryIcon.setImageDrawable(context.getDrawable(R.drawable.folder_open_icon));
-        addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
-        addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
-        addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
-        addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+        if (!isTrashSelected && showCloseFilter) {
+            closeFilter.setVisibility(View.VISIBLE);
+        } else {
+            addMenu.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+            addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor));
+            addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.close_icon));
+        }
     }
 
     private void searchNotesAndUpdate(String target) {
@@ -807,29 +839,23 @@ public class notes extends BaseFragment {
             return;
         }
 
-        String[] words = target
-                .trim()
-                .replaceAll("\\s+", " ")
-                .split(" ");
-
-        RealmQuery<Note> query = realm.where(Note.class);
-
-        for (String word : words) {
-            query.beginGroup()
-                    .contains("title", word, Case.INSENSITIVE)
-                    .or()
-                    .contains("note", word, Case.INSENSITIVE)
-                    .or()
-                    .contains("checklist.text", word, Case.INSENSITIVE)
-                    .or()
-                    .contains("checklist.subChecklist.text", word, Case.INSENSITIVE)
-                    .endGroup();
-        }
+        RealmQuery<Note> query = realm.where(Note.class)
+                .beginGroup()
+                .contains("title", target, Case.INSENSITIVE)
+                .or()
+                .contains("checklistConvertedToString", target, Case.INSENSITIVE)
+                .or()
+                .contains("note", target, Case.INSENSITIVE)
+                .or()
+                .contains("checklist.text", target, Case.INSENSITIVE)
+                .or()
+                .contains("checklist.subChecklist.text", target, Case.INSENSITIVE)
+                .endGroup();
 
         RealmResults<Note> results = query.findAll();
 
         isListEmpty(results.size(), results.isEmpty());
-        populateAdapter(results);
+        populateSearchAdapter(results, target); // pass raw query for highlighting
     }
 
 
@@ -893,6 +919,7 @@ public class notes extends BaseFragment {
         addMenu.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
         addMenuLarge.setMenuButtonColorNormal(getColorFromTheme(getActivity(), R.attr.primaryButtonColor));
         addMenuLarge.getMenuIconView().setImageDrawable(context.getDrawable(R.drawable.add_icon));
+        closeFilter.setVisibility(View.GONE);
     }
 
     public void deleteMultipleNotesLayout() {
@@ -914,6 +941,7 @@ public class notes extends BaseFragment {
     public void closeMultipleNotesLayout() {
         enableSelectMultiple = false;
         deletingMultipleNotes = false;
+        filterCategory = "";
         unSelectAllNotes();
         clearVariables();
         hideSearchBar();
@@ -1033,6 +1061,7 @@ public class notes extends BaseFragment {
 
     private void clearVariables() {
         isSearchingNotes = false;
+        showCloseFilter = false;
         searchEditText.setQuery("", false);
         isNotesFiltered = false;
         deletingMultipleNotes = false;

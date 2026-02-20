@@ -270,11 +270,13 @@
         android:id="@+id/menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
         android:elevation="2dp"
-        android:layout_margin="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintBottom_toTopOf="@id/close_filter"
         app:layout_constraintEnd_toEndOf="parent"
         app:menu_icon="@drawable/add_icon"
+
         fab:menu_backgroundColor="@android:color/transparent"
         fab:menu_buttonSpacing="0dp"
         fab:menu_colorNormal="?primaryButtonColor"
@@ -329,14 +331,30 @@
 
     </com.github.clans.fab.FloatingActionMenu>
 
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/close_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/close_icon"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        fab:fab_colorNormal="?tertiaryButtonColor"
+        fab:fab_colorPressed="?primaryBackgroundColor"
+        fab:fab_size="mini" />
+
+
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/menu_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="2dp"
-        android:layout_margin="10dp"
+        android:layout_marginHorizontal="10dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/close_filter"
         app:layout_constraintEnd_toEndOf="parent"
         app:menu_icon="@drawable/add_icon"
         fab:menu_backgroundColor="@android:color/transparent"
