@@ -149,7 +149,7 @@
             app:cornerRadius="20dp"
             app:iconTint="?primaryIconTintColor"
             android:text=""
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/subchecklist"
@@ -172,7 +172,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="100"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/redirect_to_note"

@@ -1,7 +1,5 @@
 package com.akapps.dailynote.classes.other.insertsheet;
 
-import static com.akapps.dailynote.classes.helpers.RealmHelper.getRealm;
-
 import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +19,6 @@ import androidx.annotation.Nullable;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
-import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.Helper;
 import com.akapps.dailynote.classes.helpers.ImagePickerManager;
 import com.akapps.dailynote.classes.helpers.MediaHelper;
@@ -374,7 +371,7 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             } else {
                 cameraPermissionLauncher.launch(MediaHelper.getCameraPermission());
             }
-        } else if(selection == 3) {
+        } else if (selection == 3) {
             imagePickerManager.openImagePicker(true);
         }
     }

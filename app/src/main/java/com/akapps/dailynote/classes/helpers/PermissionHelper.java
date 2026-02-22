@@ -17,33 +17,42 @@ import java.util.Map;
 
 public class PermissionHelper {
 
-    /** Media permissions */
+    /**
+     * Media permissions
+     */
     public static String[] getMediaPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String[]{ Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO };
+            return new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
         } else {
-            return new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE };
+            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
         }
     }
 
-    /** Camera permissions */
+    /**
+     * Camera permissions
+     */
     public static String[] getCameraPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String[]{ Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES };
+            return new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_MEDIA_IMAGES};
         } else {
-            return new String[]{ Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            return new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         }
     }
 
-    /** Check if all permissions are granted */
+    /**
+     * Check if all permissions are granted
+     */
     private static boolean arePermissionsGranted(Context context, String[] permissions) {
         for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) return false;
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED)
+                return false;
         }
         return true;
     }
 
-    /** Show GenericInfoSheet for denied permissions */
+    /**
+     * Show GenericInfoSheet for denied permissions
+     */
     private static void showPermissionInfo(FragmentActivity activity, String title, String message) {
         GenericInfoSheet infoSheet = new GenericInfoSheet(title, message, "Proceed", 1);
         infoSheet.show(activity.getSupportFragmentManager(), infoSheet.getTag());
@@ -54,7 +63,9 @@ public class PermissionHelper {
         infoSheet.show(fragment.getParentFragmentManager(), infoSheet.getTag());
     }
 
-    /** --- UNIVERSAL METHODS --- */
+    /**
+     * --- UNIVERSAL METHODS ---
+     */
 
     public static void checkAndRequestPermissions(Fragment fragment,
                                                   String[] permissions,

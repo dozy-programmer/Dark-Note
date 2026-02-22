@@ -1,6 +1,5 @@
 package com.akapps.dailynote.activity;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
 import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentNote;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
@@ -24,7 +23,6 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -292,9 +290,9 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(getThemeStyle(this));
         super.onCreate(savedInstanceState);
-        try{
+        try {
             setContentView(R.layout.activity_note_edit);
-        } catch (Exception e){
+        } catch (Exception e) {
             if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WEBVIEW)) {
                 Toast.makeText(this, "Device not supported -> WebView is required!", Toast.LENGTH_LONG).show();
                 GenericInfoSheet infoSheet = new GenericInfoSheet("Error -> WebView Missing", "" +
@@ -1464,7 +1462,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             // note id for new note already exists, try to add again with a NEW unique note id
             addNote(category);
         } else {
-            if(category != null && !category.isEmpty()) {
+            if (category != null && !category.isEmpty()) {
                 newNote.setCategory(category);
             }
             newNote.setPin(currentPin);

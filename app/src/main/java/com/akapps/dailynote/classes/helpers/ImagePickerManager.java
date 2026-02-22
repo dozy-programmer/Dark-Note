@@ -17,7 +17,9 @@ public class ImagePickerManager {
 
     public interface ImagePickCallback {
         void onImagesPicked(List<Uri> uris);
+
         void onCanceled();
+
         void onError(Exception e);
     }
 

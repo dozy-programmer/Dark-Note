@@ -14,7 +14,6 @@ import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.insertsheet.InsertImageSheet;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +25,8 @@ public class MediaSelectionSheet extends RoundedBottomSheetDialogFragment {
     private InsertImageSheet imageSheet;
     private ChecklistItemSheet checklistItemSheet;
 
-    public MediaSelectionSheet() { }
+    public MediaSelectionSheet() {
+    }
 
     public MediaSelectionSheet(int action) {
         this.action = action;
