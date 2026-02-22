@@ -15,6 +15,7 @@ import com.akapps.dailynote.classes.other.insertsheet.InsertImageSheet;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,11 +46,13 @@ public class MediaSelectionSheet extends RoundedBottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_select_image_type, container, false);
 
-        MaterialButton galleryButton = view.findViewById(R.id.gallery_media);
-        MaterialButton cameraButton = view.findViewById(R.id.camera_media);
+        MaterialCardView galleryButton = view.findViewById(R.id.gallery_media);
+        MaterialCardView cameraButton = view.findViewById(R.id.camera_media);
+        MaterialCardView localFilesButton = view.findViewById(R.id.local_files_media);
 
         galleryButton.setOnClickListener(view1 -> openSelectedBottomSheet(0));
         cameraButton.setOnClickListener(view1 -> openSelectedBottomSheet(1));
+        localFilesButton.setOnClickListener(view1 -> openSelectedBottomSheet(3));
 
         return view;
     }

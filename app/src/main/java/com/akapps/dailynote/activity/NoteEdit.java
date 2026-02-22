@@ -1,5 +1,6 @@
 package com.akapps.dailynote.activity;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
 import static com.akapps.dailynote.classes.helpers.RealmHelper.getCurrentNote;
 import static com.akapps.dailynote.classes.helpers.UiHelper.getThemeStyle;
 
@@ -23,6 +24,7 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -62,6 +64,7 @@ import com.akapps.dailynote.classes.helpers.AlertReceiver;
 import com.akapps.dailynote.classes.helpers.AppConstants;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.ImagePickerManager;
 import com.akapps.dailynote.classes.helpers.MediaHelper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -283,6 +286,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                 }
             });
 
+    private ImagePickerManager imagePickerManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(getThemeStyle(this));
@@ -448,6 +453,41 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                 }
             }
         });
+
+        imagePickerManager = ImagePickerManager.register(
+                this,
+                context,
+                new ImagePickerManager.ImagePickCallback() {
+
+                    @Override
+                    public void onImagesPicked(List<Uri> uris) {
+                        if (!uris.isEmpty()) {
+                            for (Uri image : uris) {
+                                File newFile = Helper.createFile(NoteEdit.this, "image", ".png");
+                                String filePath = Helper.createFile(context, image, newFile).getAbsolutePath();
+                                Photo currentPhoto = new Photo(noteId, filePath);
+                                getRealm().beginTransaction();
+                                getRealm().insert(currentPhoto);
+                                getRealm().commitTransaction();
+                            }
+                            updateSaveDateEdited();
+                            scrollAdapter.notifyDataSetChanged();
+                            showPhotos(View.VISIBLE);
+                        } else {
+                            Log.d("Here", "No media selected");
+                        }
+                    }
+
+                    @Override
+                    public void onCanceled() {
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
 
     private void swap(int initialFrom, int initialTo) {
@@ -2151,6 +2191,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             } else {
                 cameraPermissionLauncher.launch(MediaHelper.getCameraPermission());
             }
+        } else {
+            imagePickerManager.openImagePicker(true);
         }
     }
 

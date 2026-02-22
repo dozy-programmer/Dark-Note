@@ -41,6 +41,7 @@ import com.akapps.dailynote.classes.data.SubCheckListItem;
 import com.akapps.dailynote.classes.data.User;
 import com.akapps.dailynote.classes.helpers.AppData;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.ImagePickerManager;
 import com.akapps.dailynote.classes.helpers.MediaHelper;
 import com.akapps.dailynote.classes.helpers.RealmHelper;
 import com.akapps.dailynote.classes.helpers.RealmSingleton;
@@ -185,6 +186,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                     tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
                 }
             });
+
+    private ImagePickerManager imagePickerManager;
 
     // adding
     public ChecklistItemSheet() {
@@ -394,8 +397,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                         redirectToNote.setText(RealmHelper.getTitleUsingId(getContext(), currentItem.getRedirectToOtherNote()));
 
                     if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
-                        Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
                         photo_info.setVisibility(View.VISIBLE);
+                        Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
                         dateCreated.setGravity(Gravity.LEFT);
                     }
 
@@ -478,6 +481,46 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 info.setText(info.getText().toString().split("\n")[0] + "\n");
             }
         });
+
+        imagePickerManager = ImagePickerManager.register(
+                this,
+                requireContext(),
+                new ImagePickerManager.ImagePickCallback() {
+
+                    @Override
+                    public void onImagesPicked(List<Uri> uris) {
+                        if (uris != null && uris.size() == 1) {
+                            File createImageFile = Helper.createFile(getActivity(), "image", ".png");
+                            String filePath = Helper.createFile(getContext(), uris.get(0), createImageFile).getAbsolutePath();
+
+                            if (currentItem.getItemImage() != null && !currentItem.getItemImage().isEmpty()) {
+                                File fdelete = new File(currentItem.getItemImage());
+                                if (fdelete.exists()) fdelete.delete();
+                            }
+
+                            getRealm().beginTransaction();
+                            currentItem.setItemImage(filePath);
+                            getRealm().commitTransaction();
+
+                            photo_info.setVisibility(View.VISIBLE);
+                            Glide.with(getContext()).load(currentItem.getItemImage()).into(itemImage);
+                            dateCreated.setGravity(Gravity.LEFT);
+                            adapter.notifyItemChanged(itemPosition);
+                        } else {
+                            Log.d("Here", "No media selected");
+                        }
+                    }
+
+                    @Override
+                    public void onCanceled() {
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
 
         return view;
     }
@@ -629,6 +672,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             } else {
                 cameraPermissionLauncher.launch(MediaHelper.getCameraPermission());
             }
+        } else {
+            imagePickerManager.openImagePicker(false);
         }
     }
 

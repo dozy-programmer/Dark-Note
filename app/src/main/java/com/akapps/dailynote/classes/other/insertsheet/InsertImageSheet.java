@@ -1,5 +1,7 @@
 package com.akapps.dailynote.classes.other.insertsheet;
 
+import static com.akapps.dailynote.classes.helpers.RealmHelper.getRealm;
+
 import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +21,9 @@ import androidx.annotation.Nullable;
 
 import com.akapps.dailynote.R;
 import com.akapps.dailynote.activity.NoteEdit;
+import com.akapps.dailynote.classes.data.Photo;
 import com.akapps.dailynote.classes.helpers.Helper;
+import com.akapps.dailynote.classes.helpers.ImagePickerManager;
 import com.akapps.dailynote.classes.helpers.MediaHelper;
 import com.akapps.dailynote.classes.helpers.UiHelper;
 import com.akapps.dailynote.classes.other.GenericInfoSheet;
@@ -34,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import jp.wasabeef.richeditor.RichEditor;
 
@@ -131,6 +136,8 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                 }
             });
 
+    private ImagePickerManager imagePickerManager;
+
     public InsertImageSheet() {
     }
 
@@ -199,6 +206,48 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                 dismiss();
             }
         });
+
+        imagePickerManager = ImagePickerManager.register(
+                this,
+                requireContext(),
+                new ImagePickerManager.ImagePickCallback() {
+
+                    @Override
+                    public void onImagesPicked(List<Uri> uris) {
+                        if (!uris.isEmpty()) {
+                            Log.d("Here", "returning images " + uris.size());
+                            for (int i = 0; i < uris.size(); i++) {
+                                File newFile = Helper.createFile(getActivity(), "image", ".png");
+                                filePaths.add(Helper.createFile(getContext(), uris.get(i), newFile).getPath());
+
+                                if (i == 0) setImage(false, false);
+                            }
+                            message.setVisibility(View.VISIBLE);
+                            imageEditor.setVisibility(View.VISIBLE);
+                            widthLayout.setVisibility(View.VISIBLE);
+                            heightLayout.setVisibility(View.VISIBLE);
+                            confirm.setVisibility(View.VISIBLE);
+                            if (uris.size() > 1) {
+                                numImages.setText("+" + (uris.size() - 1));
+                                numImages.setVisibility(View.VISIBLE);
+                                title.setText("Photo(s) Selected");
+                            } else
+                                title.setText("Photo Selected");
+                        } else {
+                            Log.d("Here", "No media selected");
+                        }
+                    }
+
+                    @Override
+                    public void onCanceled() {
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
 
         return view;
     }
@@ -325,6 +374,8 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             } else {
                 cameraPermissionLauncher.launch(MediaHelper.getCameraPermission());
             }
+        } else if(selection == 3) {
+            imagePickerManager.openImagePicker(true);
         }
     }
 
