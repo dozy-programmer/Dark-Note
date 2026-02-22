@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -533,7 +531,6 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
     private void deleteItem(CheckListItem checkListItem) {
         RealmHelper.deleteChecklistItem(checkListItem, getContext(), false);
         getRealm().beginTransaction();
-        checkListItem.setDateLastEdited(Calendar.getInstance().getTime().getTime());
         currentNote.setDateEdited(new SimpleDateFormat("E, MMM dd, yyyy\nhh:mm:ss aa").format(Calendar.getInstance().getTime()));
         getRealm().commitTransaction();
         ((NoteEdit) getActivity()).updateDateEdited();
@@ -674,7 +671,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                 noteMenu.addItem(0, new IconPowerMenuItem(getContext().getDrawable(R.drawable.add_location_icon), "Location"));
             }
         }
-        if(!isAdding) {
+        if (!isAdding) {
             noteMenu.addItem(new IconPowerMenuItem(getContext().getDrawable(R.drawable.info_icon), "Info"));
         }
 
@@ -686,16 +683,15 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
         public void onItemClick(int position, IconPowerMenuItem item) {
             if (item.getTitle().equals("Location")) {
                 startLocationSearch();
-            } else if(item.getTitle().equals("Comment")) {
+            } else if (item.getTitle().equals("Comment")) {
                 CommentItemSheet commentSheet;
-                if(isSubChecklist){
+                if (isSubChecklist) {
                     commentSheet = new CommentItemSheet(currentSubItem, adapter, itemPosition);
                 } else {
                     commentSheet = new CommentItemSheet(currentItem, adapter, itemPosition);
                 }
                 commentSheet.show(getActivity().getSupportFragmentManager(), commentSheet.getTag());
-            }
-            else if (item.getTitle().equals("Copy Text")) {
+            } else if (item.getTitle().equals("Copy Text")) {
                 // copy text
                 ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip;

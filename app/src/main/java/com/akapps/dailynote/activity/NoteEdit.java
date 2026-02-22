@@ -383,7 +383,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             if (checkIfStringIsFound(AppData.getInstance().getNoteSearch(), false)) {
                 showSearchBar();
                 searchEditText.setText(AppData.getInstance().getNoteSearch());
-                searchEditText.setSelection(searchEditText.getText().length());
+                searchEditText.clearFocus();
+                Helper.toggleKeyboard(context, searchEditText, false);
             } else {
                 isSearchingNotes = false;
             }
@@ -1050,6 +1051,15 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                     AppData.getInstance().addWordFoundPositions(i);
                     Log.d("Here", "checklist word found -> true");
                     counter++;
+                } else {
+                    for (int j = 0; j < item.getSubChecklist().size(); j++) {
+                        SubCheckListItem subItem = item.getSubChecklist().get(j);
+                        if (subItem.getText().toString().toLowerCase().contains(s.toString().toLowerCase())) {
+                            AppData.getInstance().addWordFoundPositions(i);
+                            Log.d("Here", "sub checklist word found -> true");
+                            counter++;
+                        }
+                    }
                 }
             }
             sortChecklist(s.toString());

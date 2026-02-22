@@ -302,7 +302,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
             if (showPreview) {
                 if (searchQuery != null && !searchQuery.isEmpty()) {
                     holder.note_preview.setMaxLines(20);
-                    setHighlightedBoxText(activity, holder.note_preview, checkListStringWithSublist.toString(), searchQuery, 5);
+                    setHighlightedBoxText(activity, holder.note_preview, checkListStringWithSublist.toString(), searchQuery, 10);
                 } else {
                     RealmSingleton.get(context).beginTransaction();
                     currentNote.setChecklistConvertedToString(checkListString.toString());
