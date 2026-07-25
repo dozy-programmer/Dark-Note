@@ -32,7 +32,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:paddingVertical="10dp"
-            android:text="Credits"
+            android:text="@string/credits"
             android:textColor="?secondaryTextColor"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"

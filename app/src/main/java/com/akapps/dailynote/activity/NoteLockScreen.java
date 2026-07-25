@@ -163,8 +163,8 @@ public class NoteLockScreen extends BaseActivity {
             @Override
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
-                Helper.showMessage(NoteLockScreen.this, "Fingerprint Error",
-                        "Fingerprint not read, try again!",
+                Helper.showMessage(NoteLockScreen.this, getString(R.string.msg_fingerprint_error),
+                        getString(R.string.msg_fingerprint_not_read),
                         MotionToast.TOAST_ERROR);
             }
         });
@@ -206,8 +206,8 @@ public class NoteLockScreen extends BaseActivity {
     // shows fingerprint dialog for user to use fingerprint
     private void fingerprintDialog() {
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Biometric login for note")
-                .setNegativeButtonText("Use pin instead")
+                .setTitle(getString(R.string.msg_biometric_login_note))
+                .setNegativeButtonText(getString(R.string.msg_use_pin_instead))
                 .build();
         biometricPrompt.authenticate(promptInfo);
     }

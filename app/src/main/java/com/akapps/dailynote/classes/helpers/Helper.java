@@ -742,7 +742,7 @@ public class Helper {
 
             activity.startActivity(Intent.createChooser(emailIntent, fileExtension.equals("mp3") ? "Share Audio" : "Share Photo"));
         } catch (Exception e) {
-            Helper.showMessage(activity, "Sharing Error", "Size too large v7, email developer", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_sharing_error), activity.getString(R.string.msg_size_too_large_email_dev), MotionToast.TOAST_ERROR);
         }
     }
 
@@ -751,9 +751,9 @@ public class Helper {
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.setType("text/plain");
             emailIntent.putExtra(Intent.EXTRA_TEXT, text);
-            activity.startActivity(Intent.createChooser(emailIntent, "Share Text"));
+            activity.startActivity(Intent.createChooser(emailIntent, activity.getString(R.string.msg_share_text)));
         } catch (Exception e) {
-            Helper.showMessage(activity, "Sharing Error", "Size too large v10, email developer", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_sharing_error), activity.getString(R.string.msg_size_too_large_email_dev), MotionToast.TOAST_ERROR);
         }
     }
 
@@ -777,7 +777,7 @@ public class Helper {
             emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
             activity.startActivity(Intent.createChooser(emailIntent, "Export Files"));
         } catch (Exception e) {
-            Helper.showMessage(activity, "Sharing Error", "Size too large v2, email developer", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_sharing_error), activity.getString(R.string.msg_size_too_large_email_dev), MotionToast.TOAST_ERROR);
         }
     }
 
@@ -845,7 +845,7 @@ public class Helper {
 
             activity.startActivity(Intent.createChooser(emailIntent, "Share Note"));
         } catch (Exception e) {
-            Helper.showMessage(activity, "Sharing Error", "Size too large v1, email developer", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_sharing_error), activity.getString(R.string.msg_size_too_large_email_dev), MotionToast.TOAST_ERROR);
         }
     }
 
@@ -983,12 +983,10 @@ public class Helper {
 
         if (lockedNotes.size() > 0) {
             selectedNotes = null;
-            Helper.showMessage(activity, "Locked Notes", "Locked notes " +
-                    "can only be exported individually", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_locked_notes), activity.getString(R.string.msg_locked_notes_export_individually), MotionToast.TOAST_ERROR);
         } else {
             if (selectedNotes.size() == 0) {
-                Helper.showMessage(activity, "Not Deleted", "Nothing was selected " +
-                        "and thus not exported", MotionToast.TOAST_ERROR);
+                Helper.showMessage(activity, activity.getString(R.string.msg_not_deleted), activity.getString(R.string.msg_nothing_selected_not_exported), MotionToast.TOAST_ERROR);
             }
         }
         return selectedNotes;

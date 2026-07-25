@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:gravity="center"
-        android:text="Select note for widget"
+        android:text="@string/select_note_for_widget"
         android:paddingVertical="10dp"
         android:textSize="18sp"
         android:fontFamily="@font/baloo_bhai"
@@ -39,7 +39,7 @@
             android:id="@+id/search_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search for note"
+            android:hint="@string/search_for_note"
             android:textColor="@color/white"
             android:textColorHint="@color/azure"
             android:windowSoftInputMode="adjustPan|adjustResize" />

@@ -390,7 +390,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                             dateCreated.setGravity(Gravity.RIGHT);
                         }
                 } else {
-                    title.setText("Editing");
+                    title.setText(getString(R.string.msg_editing));
                     itemName.setText(currentItem.getText());
 
                     if (currentItem.getRedirectToOtherNote() != 0)

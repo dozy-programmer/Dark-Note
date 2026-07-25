@@ -310,7 +310,7 @@ public class SettingsScreen extends BaseActivity {
             if (mAuth.getCurrentUser() != null) {
                 if (mAuth.getCurrentUser().isEmailVerified()) {
                     signUp.setVisibility(View.GONE);
-                    logIn.setText("Log Out");
+                    logIn.setText(getString(R.string.msg_log_out));
                     syncLayout.setVisibility(View.VISIBLE);
                     accountInfo.setVisibility(View.VISIBLE);
                     accountInfo.setText(mAuth.getCurrentUser().getEmail());
@@ -448,7 +448,7 @@ public class SettingsScreen extends BaseActivity {
 
         addButtonShortcut.setOnClickListener(view -> {
             List<IconPowerMenuItem> options = new ArrayList<>();
-            options.add(new IconPowerMenuItem(null, "Note + Checklist (Default)"));
+            options.add(new IconPowerMenuItem(null, getString(R.string.msg_note_checklist_default)));
             options.add(new IconPowerMenuItem(null, "Note"));
             options.add(new IconPowerMenuItem(null, "Checklist"));
             isEditingButtonShortcut = true;
@@ -561,7 +561,7 @@ public class SettingsScreen extends BaseActivity {
                 InfoSheet info = new InfoSheet(1, unUsedFiles);
                 info.show(getSupportFragmentManager(), info.getTag());
             } else {
-                Helper.showMessage(this, "No Broken Links Found", "No further action needed", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(this, getString(R.string.msg_no_broken_links), getString(R.string.msg_no_further_action), MotionToast.TOAST_SUCCESS);
             }
         });
 
@@ -861,8 +861,8 @@ public class SettingsScreen extends BaseActivity {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 continueWithBackup();
             else
-                Helper.showMessage(this, "Permission Denied",
-                        "Permission [Required] to Backup + Restore", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, getString(R.string.msg_permission_denied),
+                        getString(R.string.msg_permission_required_backup_restore), MotionToast.TOAST_ERROR);
         }
     }
 
@@ -905,7 +905,7 @@ public class SettingsScreen extends BaseActivity {
                 if (backupPath != null) {
                     backupHelper.shareFile(new File(backupPath));
                 } else {
-                    Helper.showMessage(this, "Backup Failed", "Could not create backup file.", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(this, getString(R.string.msg_backup_failed), getString(R.string.msg_could_not_create_backup), MotionToast.TOAST_ERROR);
                 }
             }
         } else
@@ -1063,7 +1063,7 @@ public class SettingsScreen extends BaseActivity {
         } else if (id == 2) {
             return "Checklist";
         }
-        return "Note + Checklist";
+        return getString(R.string.msg_note_checklist);
     }
 
     private void updateSelectedLines(int position) {

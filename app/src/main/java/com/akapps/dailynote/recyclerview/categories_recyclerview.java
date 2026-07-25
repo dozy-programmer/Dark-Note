@@ -129,7 +129,7 @@ public class categories_recyclerview extends RecyclerView.Adapter<categories_rec
                     activity.setResult(5, home);
                     activity.finish();
                 }else if (allSelectedNotes.size() == 0 && numberOfNotesInCategory == 0) {
-                    Helper.showMessage(activity, "Folder Empty", "Folder is empty, cannot open",
+                    Helper.showMessage(activity, activity.getString(R.string.msg_empty), activity.getString(R.string.msg_cannot_open_empty_folder),
                             MotionToast.TOAST_ERROR);
                 } else {
                     RealmSingleton.get(context).beginTransaction();

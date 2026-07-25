@@ -146,7 +146,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             title.setText("Adding");
             delete.setVisibility(View.GONE);
         } else {
-            title.setText("Editing");
+            title.setText(getString(R.string.msg_editing));
             try {
                 itemName.setText(currentFolder.get().getName());
                 folderColor.setCardBackgroundColor(currentFolder.get().getColor() == 0 ? getContext().getResources().getColor(R.color.azure) : currentFolder.get().getColor());

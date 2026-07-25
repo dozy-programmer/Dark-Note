@@ -32,7 +32,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Select Media"
+            android:text="@string/select_media"
             android:textColor="?secondaryTextColor"
             android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@id/drag_handle"
@@ -82,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:text="Camera"
+                        android:text="@string/camera"
                         android:textSize="16sp"
                         android:textColor="?primaryTextColor"
                         android:fontFamily="@font/baloo_bhai" />
@@ -118,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:text="System Photo Picker"
+                        android:text="@string/system_photo_picker"
                         android:textSize="16sp"
                         android:textColor="?primaryTextColor"
                         android:fontFamily="@font/baloo_bhai" />
@@ -154,7 +154,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:text="Browse Files"
+                        android:text="@string/browse_files"
                         android:textSize="16sp"
                         android:textColor="?primaryTextColor"
                         android:fontFamily="@font/baloo_bhai" />

@@ -600,8 +600,7 @@ public class notes extends BaseFragment {
                 showCloseFilter = true;
                 filteringByCategory(category, true);
                 if (!viewCategoryNotes) {
-                    Helper.showMessage(getActivity(), "Added", "Note(s) have been added to " +
-                            "category", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_added), getString(R.string.msg_notes_added_to_category), MotionToast.TOAST_SUCCESS);
                     clearMultipleSelect();
                 }
             }
@@ -612,8 +611,7 @@ public class notes extends BaseFragment {
                 restoreNotes.setVisibility(View.GONE);
             } else {
                 closeMultipleNotesLayout();
-                Helper.showMessage(getActivity(), "UnSelected", "All Selected note(s) have " +
-                        "been unselected from category", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_unselected), getString(R.string.msg_all_selected_unselected_from_category), MotionToast.TOAST_SUCCESS);
                 clearMultipleSelect();
             }
         } else if (resultCode == -3) {
@@ -646,11 +644,9 @@ public class notes extends BaseFragment {
                             .equalTo("trash", false).findAll();
 
             if (resultCode == -8)
-                Helper.showMessage(getActivity(), "Archived", "All Selected note(s) have " +
-                        "been archived", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_archived), getString(R.string.msg_all_selected_archived), MotionToast.TOAST_SUCCESS);
             else if (resultCode == -9)
-                Helper.showMessage(getActivity(), "Un-Archived", "All Selected note(s) have " +
-                        "been un-archived", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_unarchived), getString(R.string.msg_all_selected_unarchived), MotionToast.TOAST_SUCCESS);
 
             if (enableSelectMultiple) {
                 closeMultipleNotesLayout();
@@ -665,11 +661,9 @@ public class notes extends BaseFragment {
                             .equalTo("pin", true).findAll();
 
             if (resultCode == -13)
-                Helper.showMessage(getActivity(), "Pinned", "All Selected note(s) have " +
-                        "been pinned", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_pinned), getString(R.string.msg_all_selected_pinned), MotionToast.TOAST_SUCCESS);
             else if (resultCode == -12)
-                Helper.showMessage(getActivity(), "Un-Pinned", "All Selected note(s) have " +
-                        "been un-pinned", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_unpinned), getString(R.string.msg_all_selected_unpinned), MotionToast.TOAST_SUCCESS);
 
             if (enableSelectMultiple) {
                 closeMultipleNotesLayout();
@@ -889,7 +883,7 @@ public class notes extends BaseFragment {
     }
 
     private void hideSearchBar() {
-        fragmentTitle.setText("Dark Note");
+        fragmentTitle.setText(getString(R.string.dark_note));
         fragmentTitle.setTextSize(28);
         searchEditText.setQuery("", false);
         searchEditText.setVisibility(View.GONE);
@@ -956,8 +950,7 @@ public class notes extends BaseFragment {
                 .findAll();
 
         if (lockedNotes.size() > 0) {
-            Helper.showMessage(getActivity(), "Locked Notes", "Locked notes " +
-                    "cannot be deleted", MotionToast.TOAST_ERROR);
+            Helper.showMessage(getActivity(), getString(R.string.msg_locked_notes), getString(R.string.msg_locked_notes_cannot_delete), MotionToast.TOAST_ERROR);
         } else {
             if (selectedNotes.size() != 0) {
                 int number = selectedNotes.size();
@@ -966,8 +959,7 @@ public class notes extends BaseFragment {
                         RealmHelper.deleteNote(getContext(), deleteCurrentNote.getNoteId());
                     isListEmpty(getAllNotes().size(), false);
                     numberSelected(0, 0, 0);
-                    Helper.showMessage(getActivity(), "Deleted", number + " selected " +
-                            "have been deleted", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_deleted), getString(R.string.msg_selected_deleted, number), MotionToast.TOAST_SUCCESS);
                     closeMultipleNotesLayout();
                     showData();
                 } else {
@@ -975,14 +967,12 @@ public class notes extends BaseFragment {
                     selectedNotes.setBoolean("trash", true);
                     getRealm().commitTransaction();
                     isListEmpty(getAllNotes().size(), false);
-                    Helper.showMessage(getActivity(), "Sent to trash", number + " selected " +
-                            "have been sent to trash", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_sent_to_trash), getString(R.string.msg_selected_sent_to_trash, number), MotionToast.TOAST_SUCCESS);
                     numberSelected(0, 0, 0);
                     clearMultipleSelect();
                 }
             } else
-                Helper.showMessage(getActivity(), "Not Deleted", "Nothing was selected " +
-                        "and thus not deleted", MotionToast.TOAST_ERROR);
+                Helper.showMessage(getActivity(), getString(R.string.msg_not_deleted), getString(R.string.msg_nothing_selected_not_deleted), MotionToast.TOAST_ERROR);
             adapterNotes.notifyDataSetChanged();
         }
     }
@@ -997,12 +987,10 @@ public class notes extends BaseFragment {
             selectedNotes.setBoolean("trash", false);
             getRealm().commitTransaction();
             adapterNotes.notifyDataSetChanged();
-            Helper.showMessage(getActivity(), "Restored", number + " selected " +
-                    "have been restored", MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(getActivity(), getString(R.string.msg_restored), getString(R.string.msg_selected_restored, number), MotionToast.TOAST_SUCCESS);
             clearMultipleSelect();
         } else
-            Helper.showMessage(getActivity(), "Not Restored", "Nothing was selected " +
-                    "and thus not restored", MotionToast.TOAST_ERROR);
+            Helper.showMessage(getActivity(), getString(R.string.msg_not_restored), getString(R.string.msg_nothing_selected_not_restored), MotionToast.TOAST_ERROR);
     }
 
     public void numberSelected(int add, int subtract, int number) {
@@ -1017,7 +1005,7 @@ public class notes extends BaseFragment {
             currentlySelected = number;
 
         numMultiSelect = currentlySelected;
-        fragmentTitle.setText(currentlySelected + " Selected");
+        fragmentTitle.setText(getString(R.string.msg_n_selected, currentlySelected));
         fragmentTitle.setTextSize(24);
     }
 

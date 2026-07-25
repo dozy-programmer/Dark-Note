@@ -95,7 +95,7 @@ public class WidgetListView extends RemoteViewsService {
                     remoteView.setViewVisibility(R.id.sublist_spacing, View.GONE);
 
                 if (currentItem.contains("♬")) {
-                    currentItem = currentItem.equals("♬") ? "[Audio]" : currentItem.replace("♬", "");
+                    currentItem = currentItem.equals("♬") ? getString(R.string.msg_audio_placeholder) : currentItem.replace("♬", "");
                     remoteView.setViewVisibility(R.id.widget_check_status, View.GONE);
                     remoteView.setViewVisibility(R.id.audio, View.VISIBLE);
                 } else {
@@ -109,7 +109,7 @@ public class WidgetListView extends RemoteViewsService {
             }
 
             String checklistItemText = currentItem.replace("~~", "").replace("-Note-", "");
-            checklistItemText += checklistItemText.isEmpty() ? "[Audio]" : "";
+            checklistItemText += checklistItemText.isEmpty() ? getString(R.string.msg_audio_placeholder) : "";
 
             remoteView.setTextViewText(R.id.checklist_text, Html.fromHtml(checklistItemText, Html.FROM_HTML_MODE_COMPACT));
             remoteView.setTextViewTextSize(R.id.checklist_text, COMPLEX_UNIT_SP, textSize);

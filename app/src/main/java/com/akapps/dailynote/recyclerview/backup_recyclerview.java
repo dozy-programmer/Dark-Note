@@ -84,11 +84,11 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
             holder.file_size.setText(fileSize);
         } catch (Exception e) {
             holder.file_name.setText("00_00_00_" + fileName);
-            holder.file_date.setText("Date ?");
-            holder.file_size.setText("? MB");
+            holder.file_date.setText(activity.getString(R.string.msg_date_unknown));
+            holder.file_size.setText(activity.getString(R.string.msg_size_unknown));
         }
 
-        holder.sync.setOnClickListener(view -> Helper.showMessage(activity, "Sync File", "Long click to sync", MotionToast.TOAST_WARNING));
+        holder.sync.setOnClickListener(view -> Helper.showMessage(activity, activity.getString(R.string.msg_sync_file), activity.getString(R.string.msg_long_click_to_sync), MotionToast.TOAST_WARNING));
 
         String finalFileSize = fileSize;
         holder.sync.setOnLongClickListener(view -> {
@@ -97,7 +97,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
         });
 
         holder.delete.setOnClickListener(view -> {
-            Helper.showMessage(activity, "Delete File", "Long click to delete", MotionToast.TOAST_WARNING);
+            Helper.showMessage(activity, activity.getString(R.string.msg_delete_file), activity.getString(R.string.msg_long_click_to_delete), MotionToast.TOAST_WARNING);
         });
 
         holder.delete.setOnLongClickListener(view -> {
@@ -126,7 +126,7 @@ public class backup_recyclerview extends RecyclerView.Adapter<backup_recyclervie
             RealmSingleton.get(context).commitTransaction();
             notifyDataSetChanged();
         }).addOnFailureListener(exception -> {
-            Helper.showMessage(activity, "Backup Error", "Not Deleted. Try again", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_backup_error), activity.getString(R.string.msg_not_deleted_try_again), MotionToast.TOAST_ERROR);
         });
     }
 }

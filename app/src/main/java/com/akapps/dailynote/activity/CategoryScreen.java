@@ -201,7 +201,7 @@ public class CategoryScreen extends BaseActivity {
         pinned.setText(pinned.getText());
 
         if (editingRegularNote) {
-            title.setText("Current:\n" + getSelectedNotes().get(0).getCategory());
+            title.setText(getString(R.string.msg_current_category, getSelectedNotes().get(0).getCategory()));
             if (getSelectedNotes().get(0).getCategory().equals("none"))
                 unselectCategories.setVisibility(View.GONE);
 
@@ -222,14 +222,14 @@ public class CategoryScreen extends BaseActivity {
             noCategoryNotesSize += uncategorizedNotes.size();
             allSelected += getSelectedNotes().size();
 
-            showAllNotes.setText("All Notes");
+            showAllNotes.setText(getString(R.string.all_notes));
 
-            noCategory.setText("Folderless Notes");
+            noCategory.setText(getString(R.string.msg_folderless_notes));
 
             if (allSelected == 0)
                 unselectCategories.setVisibility(View.GONE);
             else
-                title.setText(allSelected + " Selected");
+                title.setText(getString(R.string.msg_n_selected, allSelected));
 
             // make padding shorter since there isn't a folder opened
             title.setPadding(0, 20, 0, 0);
@@ -241,9 +241,9 @@ public class CategoryScreen extends BaseActivity {
                 trash.setVisibility(View.GONE);
                 archived.setVisibility(View.VISIBLE);
                 unpinned.setVisibility(View.VISIBLE);
-                showAllNotes.setText("Archive");
-                noCategory.setText("Un-Archive");
-                archived.setText("Pin");
+                showAllNotes.setText(getString(R.string.msg_archive));
+                noCategory.setText(getString(R.string.msg_unarchive));
+                archived.setText(getString(R.string.msg_pin));
                 archived.setTextColor(textColor);
                 showAllNotes.setTextColor(textColor);
                 noCategory.setTextColor(textColor);
@@ -401,8 +401,8 @@ public class CategoryScreen extends BaseActivity {
             selections.setVisibility(View.GONE);
             edit.setVisibility(View.GONE);
             titleBefore = title.getText().toString();
-            title.setText("Editing");
-            Helper.showMessage(this, "Editing", "Click on item to edit", MotionToast.TOAST_SUCCESS);
+            title.setText(getString(R.string.msg_editing));
+            Helper.showMessage(this, getString(R.string.msg_editing), getString(R.string.msg_click_item_to_edit), MotionToast.TOAST_SUCCESS);
             info.setImageDrawable(getDrawable(R.drawable.cancel));
         });
 
@@ -537,17 +537,15 @@ public class CategoryScreen extends BaseActivity {
         // user is locking folder for the first time
         RealmHelper.lockNotesInsideFolder(this, context, folderId);
         categoriesAdapter.notifyDataSetChanged();
-        Helper.showMessage(this, "Folder Locked", "Folder and notes inside have been " +
-                "locked", MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(this, getString(R.string.msg_folder_locked), getString(R.string.msg_folder_and_notes_locked), MotionToast.TOAST_SUCCESS);
     }
 
     private void showErrorMessage() {
-        Helper.showMessage(this, "Select Folder", "You need to select a folder" +
-                " to put all the notes you selected", MotionToast.TOAST_ERROR);
+        Helper.showMessage(this, getString(R.string.msg_select_folder), getString(R.string.msg_need_select_folder), MotionToast.TOAST_ERROR);
     }
 
     private void showEmptyMessage() {
-        Helper.showMessage(this, "Empty", "Cannot open empty folder", MotionToast.TOAST_ERROR);
+        Helper.showMessage(this, getString(R.string.msg_empty), getString(R.string.msg_cannot_open_empty_folder), MotionToast.TOAST_ERROR);
     }
 
     private void checkEmpty() {

@@ -33,7 +33,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Sort"
+            android:text="@string/sort"
             android:textColor="?secondaryTextColor"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="By Date"
+                android:text="@string/by_date"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_gravity="center|top"
@@ -112,7 +112,7 @@
                             android:layout_marginBottom="2dp"
                             android:paddingHorizontal="25dp"
                             android:paddingVertical="10dp"
-                            android:text="Created Date"
+                            android:text="@string/created_date"
                             android:textColor="?tertiaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="bold"></TextView>
@@ -139,7 +139,7 @@
                             android:layout_marginBottom="2dp"
                             android:paddingHorizontal="25dp"
                             android:paddingVertical="10dp"
-                            android:text="Edited Date"
+                            android:text="@string/edited_date"
                             android:textColor="?tertiaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="bold"></TextView>
@@ -173,7 +173,7 @@
                             android:layout_marginBottom="2dp"
                             android:paddingHorizontal="25dp"
                             android:paddingVertical="10dp"
-                            android:text="Oldest Note ➙ Most Recent"
+                            android:text="@string/oldest_note_most_recent"
                             android:textColor="?tertiaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="bold"></TextView>
@@ -200,7 +200,7 @@
                             android:layout_marginBottom="2dp"
                             android:paddingHorizontal="25dp"
                             android:paddingVertical="10dp"
-                            android:text="Most Recent Note ➙ Oldest"
+                            android:text="@string/most_recent_note_oldest"
                             android:textColor="?tertiaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="bold"></TextView>
@@ -233,7 +233,7 @@
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginVertical="8dp"
                 android:gravity="center"
-                android:text="Alphabetically"
+                android:text="@string/alphabetically"
                 android:textColor="?primaryTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -266,7 +266,7 @@
                         android:gravity="center"
                         android:paddingHorizontal="25dp"
                         android:paddingVertical="10dp"
-                        android:text="A - Z"
+                        android:text="@string/a_z"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -292,7 +292,7 @@
                         android:gravity="center"
                         android:paddingHorizontal="25dp"
                         android:paddingVertical="10dp"
-                        android:text="Z - A"
+                        android:text="@string/z_a"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -311,7 +311,7 @@
             android:layout_weight="10"
             android:checked="false"
             android:gravity="center"
-            android:text="SAVE\t\t"
+            android:text="@string/save_t_t"
             android:scaleX="0.85"
             android:scaleY="0.85"
             android:textColor="?primaryTextColor"
@@ -328,7 +328,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="15dp"
             android:padding="15dp"
-            android:text="Apply"
+            android:text="@string/apply"
             android:textColor="?primaryTextColor"
             android:textSize="16sp"
             app:backgroundTint="?secondaryBackgroundColor"

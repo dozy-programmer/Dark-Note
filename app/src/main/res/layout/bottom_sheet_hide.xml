@@ -34,7 +34,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:paddingVertical="10dp"
-            android:text="Checklist Items Visibility"
+            android:text="@string/checklist_items_visibility"
             android:textColor="?secondaryTextColor"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Toggled -> Items are Visible"
+                android:text="@string/toggled_items_are_visible"
                 android:textSize="14sp"
                 android:paddingBottom="10dp"
                 android:textColor="?primaryTextColor"/>
@@ -69,7 +69,7 @@
                 android:checked="true"
                 android:layout_marginBottom="10dp"
                 android:drawablePadding="20dp"
-                android:text="Un-Checked Items"
+                android:text="@string/un_checked_items"
                 android:textColor="?secondaryTextColor" />
 
             <CheckBox
@@ -79,7 +79,7 @@
                 android:buttonTint="?primaryButtonColor"
                 android:checked="true"
                 android:drawablePadding="20dp"
-                android:text="Checked Items"
+                android:text="@string/checked_items"
                 android:textColor="?secondaryTextColor" />
         </LinearLayout>
 
@@ -91,7 +91,7 @@
             android:layout_marginVertical="15dp"
             android:paddingHorizontal="30dp"
             android:paddingVertical="13dp"
-            android:text="Confirm"
+            android:text="@string/confirm"
             android:textColor="?primaryTextColor"
             app:backgroundTint="?secondaryBackgroundColor"
             app:cornerRadius="20dp"
