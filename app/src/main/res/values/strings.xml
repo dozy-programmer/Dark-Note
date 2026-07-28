@@ -547,4 +547,45 @@
     <string name="msg_delete_status">Delete Status</string>
     <string name="msg_photo_deleted">Photo has been deleted</string>
 
+    <!-- Sheet & helper strings -->
+    <string name="msg_lock_app">Lock App</string>
+    <string name="msg_lock_folder">Lock Folder</string>
+    <string name="msg_min_3_letters">Min = 3 Letters</string>
+    <string name="msg_min_4_max_9">Min = 4 , Max = 9</string>
+    <string name="msg_not_supported_device">Not Supported by this device</string>
+    <string name="msg_inserting_youtube_video">Inserting Youtube Video...</string>
+    <string name="msg_add_video">Add Video</string>
+    <string name="msg_youtube_video_retrieved">Youtube Video Retrieved</string>
+    <string name="msg_link_error">Link Error</string>
+    <string name="msg_link_not_valid">Link is not valid, try again!</string>
+    <string name="msg_add_link">Add Link</string>
+    <string name="msg_edit_image">Edit Image</string>
+    <string name="msg_image_added">Image Added</string>
+    <string name="msg_image_downloading">Image Downloading...</string>
+    <string name="msg_after_download_reopen">After download complete, close and open note to see it</string>
+    <string name="msg_photo_selected">Photo Selected</string>
+    <string name="msg_photos_selected">Photo(s) Selected</string>
+    <string name="msg_selecting_photos">Selecting Photo(s)</string>
+    <string name="msg_media_permission_required_details">This permission is required so that you can select images from your phone.\n\nTo enable, go to Dark Note Settings -&gt; App Settings -&gt; Permissions\n\nor Click Proceed</string>
+    <string name="msg_camera_permission_required_details">This permission is required so that you can use the camera.\n\nTo enable, go to Dark Note Settings -&gt; App Settings -&gt; Permissions\n\nor Click Proceed</string>
+    <string name="msg_adding">Adding</string>
+    <string name="msg_unlock_folder">Unlock Folder</string>
+    <string name="msg_folder_unlocked">Folder Unlocked</string>
+    <string name="msg_folder_has_been_unlocked">Folder has been unlocked</string>
+    <string name="msg_unlocked">Unlocked</string>
+    <string name="msg_folder_and_notes_unlocked">Folder &amp; notes inside have been unlocked</string>
+    <string name="msg_folder_not_unlocked">Folder not Unlocked</string>
+    <string name="msg_unlock_folder_to_open">Unlock folder to open</string>
+    <string name="msg_unlock_folder_to_delete">Unlock folder to delete</string>
+    <string name="msg_duplicate">Duplicate</string>
+    <string name="msg_category_name_exists">A category with that name exists</string>
+    <string name="msg_adding_sub_item_to">Adding Sub-Item to\n%1$s</string>
+    <string name="msg_editing_sub_item">Editing Sub-Item</string>
+    <string name="msg_confirm_delete">Are you sure you want to delete?</string>
+    <string name="msg_reset_password_failed">Account does not exists or no internet connection</string>
+    <string name="msg_empty_checklist_houston">\"Houston, we have a problem...\"</string>
+    <string name="msg_empty_checklist_loneliness">\"Ah, the loneliness...\"</string>
+    <string name="msg_empty_checklist_add_lonely">Tap the bottom right button to add to checklist and help me be less lonely</string>
+    <string name="msg_empty_checklist_add">Tap the bottom right button to add to checklist</string>
+
 </resources>

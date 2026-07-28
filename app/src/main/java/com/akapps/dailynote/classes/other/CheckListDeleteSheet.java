@@ -47,13 +47,13 @@ public class CheckListDeleteSheet extends RoundedBottomSheetDialogFragment {
 
         confirmButton.setOnClickListener(view1 -> {
             if (isSelected.get() == 0) {
-                title.setText("Please Select One to Delete");
+                title.setText(R.string.select_one_to_delete);
             } else if (counter.get() == 0) {
                 confirmButton.setStrokeColor(ColorStateList.valueOf(
                         UiHelper.getColorFromTheme(getActivity(), R.attr.tertiaryButtonColor)
                 ));
-                title.setText("Are you sure you want to delete?");
-                confirmButton.setText("YES");
+                title.setText(R.string.msg_confirm_delete);
+                confirmButton.setText(R.string.msg_yes);
                 counter.getAndIncrement();
             } else {
                 String selectedText = selected.get().getText().toString().replace("Items", "").trim().toLowerCase();

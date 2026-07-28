@@ -369,10 +369,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             info.setVisibility(View.VISIBLE);
             dropDownMenu.setVisibility(View.GONE);
             if (isSubChecklist) {
-                title.setText("Adding Sub-Item to\n" + parentNode);
+                title.setText(getString(R.string.msg_adding_sub_item_to, parentNode));
                 addLocation.setVisibility(View.GONE);
             } else
-                title.setText("Adding");
+                title.setText(R.string.msg_adding);
             info.setText(multipleItemsMessage);
             delete.setVisibility(View.GONE);
         } else {
@@ -380,7 +380,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             dropDownMenu.setVisibility(View.VISIBLE);
             try {
                 if (isSubChecklist) {
-                    title.setText("Editing Sub-Item");
+                    title.setText(R.string.msg_editing_sub_item);
                     itemName.setText(currentSubItem.getText());
 
                     if (currentSubItem.getDateCreated() != null)

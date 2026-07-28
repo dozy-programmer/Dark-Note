@@ -522,4 +522,45 @@
     <string name="msg_delete_status">Статус удаления</string>
     <string name="msg_photo_deleted">Фотография была удалена</string>
 
+    <!-- Sheet & helper strings -->
+    <string name="msg_lock_app">Заблокировать приложение</string>
+    <string name="msg_lock_folder">Заблокировать папку</string>
+    <string name="msg_min_3_letters">Мин. = 3 символа</string>
+    <string name="msg_min_4_max_9">Мин. = 4, Макс. = 9</string>
+    <string name="msg_not_supported_device">Не поддерживается этим устройством</string>
+    <string name="msg_inserting_youtube_video">Вставка видео YouTube...</string>
+    <string name="msg_add_video">Добавить видео</string>
+    <string name="msg_youtube_video_retrieved">Видео YouTube получено</string>
+    <string name="msg_link_error">Ошибка ссылки</string>
+    <string name="msg_link_not_valid">Ссылка недействительна, попробуйте снова!</string>
+    <string name="msg_add_link">Добавить ссылку</string>
+    <string name="msg_edit_image">Редактировать изображение</string>
+    <string name="msg_image_added">Изображение добавлено</string>
+    <string name="msg_image_downloading">Скачивание изображения...</string>
+    <string name="msg_after_download_reopen">После завершения скачивания закройте и откройте заметку</string>
+    <string name="msg_photo_selected">Фотография выбрана</string>
+    <string name="msg_photos_selected">Фотографии выбраны</string>
+    <string name="msg_selecting_photos">Выбор фото</string>
+    <string name="msg_media_permission_required_details">Это разрешение требуется для выбора изображений с вашего телефона.\n\nДля включения перейдите в Настройки Dark Note -&gt; Настройки приложения -&gt; Разрешения\n\nили нажмите Продолжить</string>
+    <string name="msg_camera_permission_required_details">Это разрешение требуется для использования камеры.\n\nДля включения перейдите в Настройки Dark Note -&gt; Настройки приложения -&gt; Разрешения\n\nили нажмите Продолжить</string>
+    <string name="msg_adding">Добавление</string>
+    <string name="msg_unlock_folder">Разблокировать папку</string>
+    <string name="msg_folder_unlocked">Папка разблокирована</string>
+    <string name="msg_folder_has_been_unlocked">Папка была разблокирована</string>
+    <string name="msg_unlocked">Разблокировано</string>
+    <string name="msg_folder_and_notes_unlocked">Папка и заметки внутри разблокированы</string>
+    <string name="msg_folder_not_unlocked">Папка не разблокирована</string>
+    <string name="msg_unlock_folder_to_open">Разблокируйте папку, чтобы открыть</string>
+    <string name="msg_unlock_folder_to_delete">Разблокируйте папку, чтобы удалить</string>
+    <string name="msg_duplicate">Дубликат</string>
+    <string name="msg_category_name_exists">Категория с таким именем уже существует</string>
+    <string name="msg_adding_sub_item_to">Добавление подпункта в\n%1$s</string>
+    <string name="msg_editing_sub_item">Редактирование подпункта</string>
+    <string name="msg_confirm_delete">Вы уверены, что хотите удалить?</string>
+    <string name="msg_reset_password_failed">Аккаунт не существует или отсутствует подключение к интернету</string>
+    <string name="msg_empty_checklist_houston">«Хьюстон, у нас проблема…»</string>
+    <string name="msg_empty_checklist_loneliness">«Ох, это одиночество…»</string>
+    <string name="msg_empty_checklist_add_lonely">Нажмите кнопку в правом нижнем углу, чтобы добавить пункт в чеклист и помочь мне быть менее одиноким</string>
+    <string name="msg_empty_checklist_add">Нажмите кнопку в правом нижнем углу, чтобы добавить пункт в чеклист</string>
+
 </resources>

@@ -76,7 +76,8 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                     onLockClick();
                 } else {
                     isFolderUnlocked = false;
-                    Helper.showMessage(getActivity(), "Folder not Unlocked", "Unlock folder to open", MotionToast.TOAST_WARNING);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_folder_not_unlocked),
+                            getString(R.string.msg_unlock_folder_to_open), MotionToast.TOAST_WARNING);
                 }
             }
     );
@@ -90,7 +91,8 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                         dismiss();
                     }
                 } else {
-                    Helper.showMessage(getActivity(), "Folder not Unlocked", "Unlock folder to delete", MotionToast.TOAST_WARNING);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_folder_not_unlocked),
+                            getString(R.string.msg_unlock_folder_to_delete), MotionToast.TOAST_WARNING);
                 }
             }
     );
@@ -143,7 +145,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         currentFolder = new AtomicReference<>(getCurrentFolder(getContext(), folderId));
 
         if (isAdding) {
-            title.setText("Adding");
+            title.setText(R.string.msg_adding);
             delete.setVisibility(View.GONE);
         } else {
             title.setText(getString(R.string.msg_editing));
@@ -169,7 +171,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                 if (getFolderSize(getContext(), folderId) > 0 && getCurrentFolder(getContext(), folderId).getPin() > 0) {
                     Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
                     lockScreen.putExtra("id", -12);
-                    lockScreen.putExtra("title", "Unlock Folder");
+                    lockScreen.putExtra("title", getString(R.string.msg_unlock_folder));
                     lockScreen.putExtra("pin", currentFolder.get().getPin());
                     lockScreen.putExtra("securityWord", currentFolder.get().getSecurityWord());
                     lockScreen.putExtra("fingerprint", currentFolder.get().isFingerprintAdded());
@@ -206,7 +208,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             if (AppData.getInstance().getPin() > 0) {
                 AppData.getInstance().updateLockData(0, "", false);
                 lockFolder.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
-                Helper.showMessage(getActivity(), "Folder Unlocked", "Folder has been unlocked", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_folder_unlocked), getString(R.string.msg_folder_has_been_unlocked), MotionToast.TOAST_SUCCESS);
             } else {
                 LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, lockFolder);
                 lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
@@ -222,11 +224,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                     adapter.notifyDataSetChanged();
                     RealmHelper.unlockNotesInsideFolder(getContext(), folderId);
                     next.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
-                    Helper.showMessage(getActivity(), "Unlocked", "Folder & notes inside have been unlocked", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_unlocked), getString(R.string.msg_folder_and_notes_unlocked), MotionToast.TOAST_SUCCESS);
                 } else {
                     Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
                     lockScreen.putExtra("id", -12);
-                    lockScreen.putExtra("title", "Unlock Folder");
+                    lockScreen.putExtra("title", getString(R.string.msg_unlock_folder));
                     lockScreen.putExtra("pin", currentFolder.get().getPin());
                     lockScreen.putExtra("securityWord", currentFolder.get().getSecurityWord());
                     lockScreen.putExtra("fingerprint", currentFolder.get().isFingerprintAdded());

@@ -89,7 +89,7 @@ public class ExportNotesSheet extends RoundedBottomSheetDialogFragment {
             numNotesSelectedText.setText("" + numNotesSelected);
             info.setVisibility(View.GONE);
         } else
-            title.setText("Export Note");
+            title.setText(R.string.export_note);
 
         exportText.setOnClickListener(view12 -> {
             if (isOneNoteSelected)

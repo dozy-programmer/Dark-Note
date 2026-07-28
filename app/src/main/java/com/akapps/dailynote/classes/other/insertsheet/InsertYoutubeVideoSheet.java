@@ -85,10 +85,10 @@ public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
         heightLayout.setVisibility(View.GONE);
         confirm.setVisibility(View.GONE);
 
-        title.setText("Inserting Youtube Video...");
+        title.setText(R.string.msg_inserting_youtube_video);
         linkLayout.setVisibility(View.VISIBLE);
         confirm.setVisibility(View.VISIBLE);
-        confirm.setText("Add Video");
+        confirm.setText(R.string.msg_add_video);
 
         maxWidth = (int) Helper.getScreenWidth(getActivity()) - 15;
         width = maxWidth;
@@ -98,11 +98,11 @@ public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
         Log.d("Here", "height " + height);
 
         confirm.setOnClickListener(view1 -> {
-            if (confirm.getText().toString().equals("Add Video")) {
+            if (confirm.getText().toString().equals(getString(R.string.msg_add_video))) {
                 String inputText = linkInput.getText().toString();
                 if (URLUtil.isValidUrl(inputText)) {
-                    confirm.setText("Confirm");
-                    title.setText("Youtube Video Retrieved");
+                    confirm.setText(R.string.confirm);
+                    title.setText(R.string.msg_youtube_video_retrieved);
                     linkLayout.setVisibility(View.GONE);
                     imageEditor.setVisibility(View.VISIBLE);
                     setYoutubeVideo(inputText, false, true);
@@ -111,7 +111,8 @@ public class InsertYoutubeVideoSheet extends RoundedBottomSheetDialogFragment {
                     message.setVisibility(View.VISIBLE);
                     addSizeListeners();
                 } else {
-                    Helper.showMessage(getActivity(), "Link Error", "Link is not valid, try again!", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_link_error),
+                            getString(R.string.msg_link_not_valid), MotionToast.TOAST_ERROR);
                 }
             } else {
                 if (!note.hasFocus()) note.focusEditor();

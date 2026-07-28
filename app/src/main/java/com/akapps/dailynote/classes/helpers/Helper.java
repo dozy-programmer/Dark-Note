@@ -351,31 +351,31 @@ public class Helper {
                 }
             } else if (!emptyView.isAnimating())
                 emptyView.setAnimation(R.raw.waiting_astronaut);
-            title.setText("No Results");
+            title.setText(R.string.msg_no_results);
             title.setTextSize(20);
             subTitle.setText("");
             subSubTitle.setText("");
         } else if (isChecklist) {
             title.setText("");
-            subTitle.setText("\"Houston, we have a problem...\"");
+            subTitle.setText(R.string.msg_empty_checklist_houston);
             subTitle.setTextSize(18);
             if (RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
                 emptyViewNoAnimation.setImageDrawable(context.getDrawable(R.drawable.empty_checklist_icon));
-                subTitle.setText("\"Ah, the loneliness...\"");
-                subSubTitle.setText("Tap the bottom right button to add to checklist and help me be less lonely");
+                subTitle.setText(R.string.msg_empty_checklist_loneliness);
+                subSubTitle.setText(R.string.msg_empty_checklist_add_lonely);
             } else {
                 emptyView.setAnimation(R.raw.waiting_astronaut);
-                subTitle.setText("\"Houston, we have a problem...\"");
-                subSubTitle.setText("Tap the bottom right button to add to checklist");
+                subTitle.setText(R.string.msg_empty_checklist_houston);
+                subSubTitle.setText(R.string.msg_empty_checklist_add);
             }
             subSubTitle.setTextSize(16);
         } else {
             title.setTextSize(18);
-            title.setText("Avoid getting lost in the universe trying to remember");
-            subTitle.setText("Let me do it for you");
-            subSubTitle.setText("Tap the bottom right button to create a note");
+            title.setText(R.string.don_t_get_lost_in_the_universe_trying_to_remember);
+            subTitle.setText(R.string.let_me_do_it_for_you);
+            subSubTitle.setText(R.string.tap_the_bottom_right_button_to_create_a_note);
             if (RealmHelper.getUser(context, "in space").isDisableAnimation()) {
                 emptyView.setVisibility(View.GONE);
                 emptyViewNoAnimation.setVisibility(View.VISIBLE);
