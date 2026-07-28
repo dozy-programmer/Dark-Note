@@ -243,12 +243,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
                 if (lockedNotesInsideFolder.size() > 0) {
                     StringBuilder lockedNotes = new StringBuilder();
-                    lockedNotes.append("\n\nThe following notes need to be unlocked:");
+                    lockedNotes.append(getString(R.string.msg_locked_notes_list));
                     for (Note lockedNote : lockedNotesInsideFolder) {
-                        lockedNotes.append("\n" + (lockedNote.getTitle().isEmpty() ? "~ No Title ~" : lockedNote.getTitle()));
+                        lockedNotes.append("\n" + (lockedNote.getTitle().isEmpty() ? getString(R.string.msg_no_title) : lockedNote.getTitle()));
                     }
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Lock Folder", "To" +
-                            " lock a folder, all notes inside of it need to be unlocked for security purposes." + lockedNotes);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_lock_folder_title), getString(R.string.msg_lock_folder_body) + lockedNotes);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder, isEditing);
@@ -269,11 +268,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         // opens dialog to choose a color
         AlertDialog colorPickerView = ColorPickerDialogBuilder
                 .with(getContext(), R.style.ColorPickerDialogTheme)
-                .setTitle("Select Folder Color")
+                .setTitle(getString(R.string.msg_select_folder_color))
                 .initialColor(initialColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(10)
-                .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
+                .setPositiveButton(getString(R.string.msg_select_uppercase), (dialog, selectedColor, allColors) -> {
                     if (isAdding) {
                         color = selectedColor;
                         folderColor.setCardBackgroundColor(color);

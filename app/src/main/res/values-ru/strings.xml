@@ -564,5 +564,19 @@
     <string name="msg_empty_checklist_add">Нажмите кнопку в правом нижнем углу, чтобы добавить пункт в чеклист</string>
     <string name="msg_disabled">отключено</string>
     <string name="msg_enabled">включено</string>
+    <string name="msg_select_uppercase">ВЫБРАТЬ</string>
+    <string name="msg_close_uppercase">ЗАКРЫТЬ</string>
+    <string name="msg_select_folder_color">Выберите цвет папки</string>
+    <string name="msg_select_text_color">Выберите цвет текста</string>
+    <string name="msg_welcome_title">Добро пожаловать</string>
+    <string name="msg_welcome_body">Спасибо, что используете Dark Note!\n\nDark Note абсолютно бесплатен и не содержит рекламы. К сожалению, сейчас приложение доступно только на английском и русском языках. Прошу прощения у тех, кто хочет перевода на другие языки, но у меня нет ресурсов, так как я единственный разработчик \uD83D\uDE14.\n\nНадеюсь, Dark Note поможет вам организовать ваши мысли, а возможно, и бюджет \uD83D\uDE09 — попробуйте функцию бюджета!</string>
+    <string name="msg_happy">Рад</string>
+    <string name="msg_sad">Грустно</string>
+    <string name="msg_lock_folder_title">Блокировка папки</string>
+    <string name="msg_lock_folder_body">Чтобы заблокировать папку, все заметки внутри нее должны быть разблокированы в целях безопасности.</string>
+    <string name="msg_locked_notes_list">\n\nСледующие заметки необходимо разблокировать:</string>
+    <string name="msg_to_enable_permission_proceed">Чтобы включить, перейдите в Настройки Dark Note -> Настройки приложения -> Разрешения\n\nили нажмите Продолжить</string>
+    <string name="msg_proceed">Продолжить</string>
+    <string name="msg_no_title">~ Без названия ~</string>
 
 </resources>

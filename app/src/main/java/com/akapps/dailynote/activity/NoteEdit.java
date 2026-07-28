@@ -262,9 +262,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
-                            "permission is required so that you can select images from your phone.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_media_permission), getString(R.string.msg_media_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     MediaHelper.openMedia(pickMultipleMedia);
@@ -275,9 +274,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
-                            "permission is required so that you can use the camera.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_camera_permission), getString(R.string.msg_camera_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     tempCameraPhotoPath = MediaHelper.openCamera(this, context, takePictureLauncher);
@@ -294,10 +292,9 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             setContentView(R.layout.activity_note_edit);
         } catch (Exception e) {
             if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WEBVIEW)) {
-                Toast.makeText(this, "Device not supported -> WebView is required!", Toast.LENGTH_LONG).show();
-                GenericInfoSheet infoSheet = new GenericInfoSheet("Error -> WebView Missing", "" +
-                        "Your device is missing WebView, which is needed for the app to function. " +
-                        "Try using another device or add WebView", "Close", "Ok");
+                Toast.makeText(this, getString(R.string.msg_device_not_supported_webview), Toast.LENGTH_LONG).show();
+                GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_webview_missing_title),
+                        getString(R.string.msg_webview_missing_body), getString(R.string.msg_close), getString(R.string.ok));
                 infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
             }
             return;
@@ -2454,14 +2451,14 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             else {
                 colorPickerView = ColorPickerDialogBuilder
                         .with(context, R.style.ColorPickerDialogTheme)
-                        .setTitle("Select Text Color")
+                        .setTitle(getString(R.string.msg_select_text_color))
                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                         .density(10)
-                        .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
+                        .setPositiveButton(getString(R.string.msg_select_uppercase), (dialog, selectedColor, allColors) -> {
                             note.setTextColor(selectedColor);
                             note.focusEditor();
                         })
-                        .setNegativeButton("CLOSE", (dialog, which) ->
+                        .setNegativeButton(getString(R.string.msg_close_uppercase), (dialog, which) ->
                                 dialog.dismiss())
                         .build();
                 colorPickerView.show();

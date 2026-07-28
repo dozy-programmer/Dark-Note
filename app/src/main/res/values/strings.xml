@@ -589,5 +589,19 @@
     <string name="msg_empty_checklist_add">Tap the bottom right button to add to checklist</string>
     <string name="msg_disabled">disabled</string>
     <string name="msg_enabled">enabled</string>
+    <string name="msg_select_uppercase">SELECT</string>
+    <string name="msg_close_uppercase">CLOSE</string>
+    <string name="msg_select_folder_color">Select Folder Color</string>
+    <string name="msg_select_text_color">Select Text Color</string>
+    <string name="msg_welcome_title">Welcome</string>
+    <string name="msg_welcome_body">Thank you for trying out Dark Note!\n\nDark Note is totally free and has no ads. Sadly, Dark Note is English only. I apologize for those that want it to be translated to other languages, but I do not have the resources as I am only one developer \uD83D\uDE14.\n\nOther than that, I hope Dark Note can help you organize your thoughts and maybe your budget too \uD83D\uDE09 - try out the budget feature!!</string>
+    <string name="msg_happy">Happy</string>
+    <string name="msg_sad">Sad</string>
+    <string name="msg_lock_folder_title">Lock Folder</string>
+    <string name="msg_lock_folder_body">To lock a folder, all notes inside of it need to be unlocked for security purposes.</string>
+    <string name="msg_locked_notes_list">\n\nThe following notes need to be unlocked:</string>
+    <string name="msg_to_enable_permission_proceed">To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed</string>
+    <string name="msg_proceed">Proceed</string>
+    <string name="msg_no_title">~ No Title ~</string>
 
 </resources>

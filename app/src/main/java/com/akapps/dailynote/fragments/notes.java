@@ -193,14 +193,7 @@ public class notes extends BaseFragment {
         allNotes = allNotes.where().sort("pin", Sort.DESCENDING).findAll();
 
         if (!Helper.getBooleanPreference(context, AppConstants.LANGUAGE_SUPPORT_MESSAGE) && getAllNotes().isEmpty()) {
-            String message = "" +
-                    "Thank you for trying out Dark Note!\n\n" +
-                    "Dark Note is totally free and has no ads. Sadly, Dark Note is English " +
-                    "only. I apologize for those that want it to be translated to other languages, " +
-                    "but I do not have the resources as I am only one developer \uD83D\uDE14.\n\n" +
-                    "Other than that, I hope Dark Note can help you organize your thoughts and " +
-                    "maybe your budget too \uD83D\uDE09 - try out the budget feature!!";
-            GenericInfoSheet infoSheet = new GenericInfoSheet("Welcome", message, "Happy", "Sad");
+            GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_welcome_title), getString(R.string.msg_welcome_body), getString(R.string.msg_happy), getString(R.string.msg_sad));
             infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
             Helper.saveBooleanPreference(context, true, AppConstants.LANGUAGE_SUPPORT_MESSAGE);
         } else if (!Helper.getBooleanPreference(context, getString(R.string.app_version))) {

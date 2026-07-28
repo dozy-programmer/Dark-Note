@@ -165,9 +165,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
-                            "permission is required so that you can select images from your phone.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_media_permission), getString(R.string.msg_media_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     MediaHelper.openMedia(pickMultipleMedia);
@@ -178,9 +177,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
-                            "permission is required so that you can use the camera.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_camera_permission), getString(R.string.msg_camera_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
