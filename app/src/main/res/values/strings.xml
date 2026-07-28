@@ -509,4 +509,42 @@
     <string name="msg_sec"> sec</string>
     <string name="msg_added_to_category_named">Note(s) have been added to %1$s</string>
 
+    <!-- InfoSheet strings -->
+    <string name="msg_info_lock_screen_reminder">Lock screen will not show after clicking reminder notification since reminder was set before locking note. To fix this, just reset reminder </string>
+    <string name="msg_guide">Guide</string>
+    <string name="msg_guide_folder_info">Change folder name/color/delete by clicking on edit icon on the top right and then select desired folder.\n\n2 ways to add notes to a folder:\n\nYou can select multiple notes in the homepage by long clicking a note and then clicking the folder icon\n\nOr individually when editing a note by clicking on \"none\" next to Folder</string>
+    <string name="msg_unused_files">Unused Files</string>
+    <string name="msg_unused_files_prompt">The following are unused files (not referenced by any note), would you like to delete?\n\n%1$s</string>
+    <string name="msg_deleting">Deleting...</string>
+    <string name="msg_deleting_link">Deleting Link to Other Note...</string>
+    <string name="msg_confirm_delete_link">Are you sure you want to delete link?</string>
+    <string name="msg_yes">YES</string>
+    <string name="msg_no">No</string>
+    <string name="msg_trash_button">TRASH</string>
+    <string name="msg_are_you_sure">Are you sure?</string>
+    <string name="msg_unlock">Unlock</string>
+    <string name="msg_enter_security_word_to_unlock">Enter Security Word to Unlock %1$s</string>
+    <string name="msg_app">App</string>
+    <string name="msg_note_target">Note</string>
+    <string name="msg_max_uploads_reached">Max Uploads of 100 has been reached. Please delete a backup by pressing sync button.</string>
+    <string name="msg_backups">Backups</string>
+    <string name="msg_select_file_loading">Select file\n\nLoading...</string>
+    <string name="msg_no_files_to_sync">No files to sync</string>
+    <string name="msg_error_retrieving_internet">Error Retrieving, check internet connection</string>
+    <string name="msg_failed_to_get_backups">Failed to get backups</string>
+    <string name="msg_logout">Logout</string>
+    <string name="msg_logout_button">LOGOUT</string>
+    <string name="msg_remove_all_formatting">Remove All Formatting</string>
+    <string name="msg_remove">REMOVE</string>
+    <string name="msg_budget_guide">Budget $ Guide</string>
+    <string name="msg_audio_info">Audio Info</string>
+    <string name="msg_export_info">Export Info</string>
+    <string name="msg_permission_explanation">This permission needs to be enabled so that you can use the %1$s feature. %2$s\n\nDark Note will only ever ask for you to allow a permission when it is required by the system in order for a feature to work.</string>
+    <string name="msg_photos_allow_all_hint">\n\nPlease Select [ALLOW ALL] for best image picking experience</string>
+    <string name="msg_enter_security_word_attempts">Enter Security word used to lock note \n(%1$d attempts)</string>
+    <string name="msg_files_deleted">Files Deleted</string>
+    <string name="msg_unused_files_deleted">Unused files no longer on device</string>
+    <string name="msg_delete_status">Delete Status</string>
+    <string name="msg_photo_deleted">Photo has been deleted</string>
+
 </resources>

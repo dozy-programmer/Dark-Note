@@ -484,4 +484,42 @@
     <string name="msg_sec"> сек.</string>
     <string name="msg_added_to_category_named">Заметка(и) добавлены в «%1$s»</string>
 
+    <!-- InfoSheet strings -->
+    <string name="msg_info_lock_screen_reminder">Экран блокировки не появится после нажатия на уведомление напоминания, так как напоминание было установлено до блокировки заметки. Чтобы исправить это, просто сбросьте напоминание </string>
+    <string name="msg_guide">Руководство</string>
+    <string name="msg_guide_folder_info">Изменяйте название/цвет папки или удаляйте её, нажав значок редактирования вверху справа и выбрав нужную папку.\n\n2 способа добавить заметки в папку:\n\nМожно выбрать несколько заметок на главной странице долгим нажатием на заметку и нажатием на значок папки\n\nИли по отдельности при редактировании заметки, нажав «нет» рядом с Папкой</string>
+    <string name="msg_unused_files">Неиспользуемые файлы</string>
+    <string name="msg_unused_files_prompt">Следующие файлы не используются (на них нет ссылок из заметок), вы хотите их удалить?\n\n%1$s</string>
+    <string name="msg_deleting">Удаление...</string>
+    <string name="msg_deleting_link">Удаление ссылки на другую заметку...</string>
+    <string name="msg_confirm_delete_link">Вы уверены, что хотите удалить ссылку?</string>
+    <string name="msg_yes">ДА</string>
+    <string name="msg_no">Нет</string>
+    <string name="msg_trash_button">В КОРЗИНУ</string>
+    <string name="msg_are_you_sure">Вы уверены?</string>
+    <string name="msg_unlock">Разблокировать</string>
+    <string name="msg_enter_security_word_to_unlock">Введите секретное слово, чтобы разблокировать %1$s</string>
+    <string name="msg_app">приложение</string>
+    <string name="msg_note_target">заметку</string>
+    <string name="msg_max_uploads_reached">Достигнут лимит в 100 загрузок. Пожалуйста, удалите резервную копию, нажав кнопку синхронизации.</string>
+    <string name="msg_backups">Резервные копии</string>
+    <string name="msg_select_file_loading">Выберите файл\n\nЗагрузка...</string>
+    <string name="msg_no_files_to_sync">Нет файлов для синхронизации</string>
+    <string name="msg_error_retrieving_internet">Ошибка получения данных, проверьте подключение к интернету</string>
+    <string name="msg_failed_to_get_backups">Не удалось получить резервные копии</string>
+    <string name="msg_logout">Выход</string>
+    <string name="msg_logout_button">ВЫЙТИ</string>
+    <string name="msg_remove_all_formatting">Удалить всё форматирование</string>
+    <string name="msg_remove">УДАЛИТЬ</string>
+    <string name="msg_budget_guide">Руководство по бюджету $</string>
+    <string name="msg_audio_info">Аудио инфо</string>
+    <string name="msg_export_info">Экспорт инфо</string>
+    <string name="msg_permission_explanation">Это разрешение должно быть включено, чтобы вы могли использовать функцию «%1$s». %2$s\n\nDark Note запрашивает разрешение только тогда, когда оно необходимо системе для работы функции.</string>
+    <string name="msg_photos_allow_all_hint">\n\nПожалуйста, выберите [РАЗРЕШИТЬ ВСЕ] для наилучшего выбора изображений</string>
+    <string name="msg_enter_security_word_attempts">Введите секретное слово для разблокировки заметки \n(%1$d попыток)</string>
+    <string name="msg_files_deleted">Файлы удалены</string>
+    <string name="msg_unused_files_deleted">Неиспользуемые файлы больше не хранятся на устройстве</string>
+    <string name="msg_delete_status">Статус удаления</string>
+    <string name="msg_photo_deleted">Фотография была удалена</string>
+
 </resources>
