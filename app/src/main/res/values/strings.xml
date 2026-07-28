@@ -587,5 +587,7 @@
     <string name="msg_empty_checklist_loneliness">\"Ah, the loneliness...\"</string>
     <string name="msg_empty_checklist_add_lonely">Tap the bottom right button to add to checklist and help me be less lonely</string>
     <string name="msg_empty_checklist_add">Tap the bottom right button to add to checklist</string>
+    <string name="msg_disabled">disabled</string>
+    <string name="msg_enabled">enabled</string>
 
 </resources>

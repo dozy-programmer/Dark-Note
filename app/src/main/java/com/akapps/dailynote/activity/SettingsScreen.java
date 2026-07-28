@@ -872,8 +872,7 @@ public class SettingsScreen extends BaseActivity {
         getUser().setSecurityWord(securityWord);
         getUser().setFingerprint(fingerprint);
         RealmSingleton.get(this).commitTransaction();
-        Helper.showMessage(this, "App Locked", "App has been " +
-                "locked", MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(this, getString(R.string.msg_app_locked), getString(R.string.msg_app_has_been_locked), MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.lock_icon));
         lockApp.setColorFilter(UiHelper.getColorFromTheme(this, R.attr.primaryIconTintColor));
     }
@@ -884,8 +883,7 @@ public class SettingsScreen extends BaseActivity {
         getUser().setSecurityWord("");
         getUser().setFingerprint(false);
         RealmSingleton.get(this).commitTransaction();
-        Helper.showMessage(this, "App un-Locked", "App has been " +
-                "un-locked", MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(this, getString(R.string.msg_app_unlocked), getString(R.string.msg_app_lock_removed), MotionToast.TOAST_SUCCESS);
         lockApp.setImageDrawable(getDrawable(R.drawable.unlock_icon));
         lockApp.setColorFilter(UiHelper.getColorFromTheme(this, R.attr.primaryIconTintColor));
     }
@@ -909,8 +907,7 @@ public class SettingsScreen extends BaseActivity {
                 }
             }
         } else
-            Helper.showMessage(this, "Backup Failed", "\uD83D\uDE10No " +
-                    "data to backup\uD83D\uDE10", MotionToast.TOAST_ERROR);
+            Helper.showMessage(this, getString(R.string.msg_backup_failed), getString(R.string.msg_no_data_to_backup), MotionToast.TOAST_ERROR);
     }
 
     private void showBackupRestoreInfo(int selection) {
@@ -942,20 +939,20 @@ public class SettingsScreen extends BaseActivity {
                 try {
                     List<String> missingFiles = FileHelper.zip(context, getAllAppFiles, data.getData());
                     if (missingFiles.isEmpty()) {
-                        Helper.showMessage(this, "Backup", "" +
-                                "All your notes and associated files successfully backed up!", MotionToast.TOAST_SUCCESS);
+                        Helper.showMessage(this, getString(R.string.backup),
+                                getString(R.string.msg_backup_success), MotionToast.TOAST_SUCCESS);
                     } else {
                         StringBuilder missingFilesString = new StringBuilder();
                         for (int i = 0; i < missingFiles.size(); i++) {
                             missingFilesString.append(i + 1).append(". ").append(missingFiles.get(i)).append("\n");
                         }
-                        String message = "Backup completed with warnings. The following " + missingFiles.size() + " files were not found and were skipped:\n\n" + missingFilesString.toString();
-                        GenericInfoSheet infoSheet = new GenericInfoSheet("Backup Warning", message, "OK", 2);
+                        String message = getString(R.string.msg_backup_completed_warnings, missingFiles.size(), missingFilesString.toString());
+                        GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_backup_warning), message, getString(R.string.ok), 2);
                         infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
                     }
                 } catch (IOException e) {
                     Log.e("SettingsScreen", "Error backing up notes", e);
-                    Helper.showMessage(this, "Backup Failed", "Error: " + e.getMessage(), MotionToast.TOAST_ERROR);
+                    Helper.showMessage(this, getString(R.string.msg_backup_failed), getString(R.string.msg_error_prefix, e.getMessage()), MotionToast.TOAST_ERROR);
                 }
             }
         }
