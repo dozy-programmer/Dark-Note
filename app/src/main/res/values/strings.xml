@@ -603,5 +603,10 @@
     <string name="msg_to_enable_permission_proceed">To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed</string>
     <string name="msg_proceed">Proceed</string>
     <string name="msg_no_title">~ No Title ~</string>
+    <string name="msg_select_color_for">Select Color for %1$s</string>
+    <string name="msg_background">Background</string>
+    <string name="msg_title_color">Title</string>
+    <string name="msg_text_color">Text</string>
+    <string name="msg_last_edit_color">Last Edit</string>
 
 </resources>

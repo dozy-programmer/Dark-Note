@@ -284,7 +284,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                         folderColor.setCardBackgroundColor(selectedColor);
                     }
                 })
-                .setNegativeButton("CLOSE", (dialog, which) ->
+                .setNegativeButton(getString(R.string.msg_close_uppercase), (dialog, which) ->
                         dialog.dismiss())
                 .build();
         colorPickerView.show();

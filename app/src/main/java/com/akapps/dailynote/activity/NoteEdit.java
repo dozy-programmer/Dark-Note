@@ -309,7 +309,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         if (noteId > 0 && getRealm().where(Note.class).equalTo("noteId", noteId).count() == 0) {
             RealmSingleton.setCloseRealm(false);
             // this catches a widget whose associated note has been deleted
-            Toast.makeText(this, "Note has been deleted, please delete widget!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msg_note_deleted_delete_widget), Toast.LENGTH_LONG).show();
             RealmSingleton.closeRealmInstance("NoteEdit onDestroy - Deleted Note is being accessed via widget");
             finish();
             return;

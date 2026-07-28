@@ -578,5 +578,10 @@
     <string name="msg_to_enable_permission_proceed">Чтобы включить, перейдите в Настройки Dark Note -> Настройки приложения -> Разрешения\n\nили нажмите Продолжить</string>
     <string name="msg_proceed">Продолжить</string>
     <string name="msg_no_title">~ Без названия ~</string>
+    <string name="msg_select_color_for">Выберите цвет для %1$s</string>
+    <string name="msg_background">фона</string>
+    <string name="msg_title_color">заголовка</string>
+    <string name="msg_text_color">текста</string>
+    <string name="msg_last_edit_color">последнего изменения</string>
 
 </resources>
