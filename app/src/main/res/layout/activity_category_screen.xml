@@ -33,7 +33,7 @@
             android:gravity="center"
             android:ellipsize="end"
             android:fontFamily="@font/baloo_bhai"
-            android:text="Folders"
+            android:text="@string/folders"
             android:maxLines="2"
             android:textColor="?secondaryTextColor"
             android:textSize="24sp"></TextView>
@@ -73,7 +73,7 @@
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
             android:paddingRight="15dp"
-            android:text="All Notes"
+            android:text="@string/all_notes"
             android:textColor="?primaryTextColor"
             android:textSize="18sp" />
 
@@ -84,7 +84,7 @@
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
             android:paddingRight="15dp"
-            android:text="Notes Without Folders"
+            android:text="@string/notes_without_folders"
             android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
@@ -98,7 +98,7 @@
             android:drawableTint="?tertiaryIconTintColor"
             android:drawablePadding="10dp"
             android:paddingVertical="2dp"
-            android:text="Trash"
+            android:text="@string/trash"
             android:textColor="?primaryTextColor"
             android:textSize="20sp"></TextView>
 
@@ -112,7 +112,7 @@
             android:drawablePadding="10dp"
             android:drawableTint="?primaryButtonColor"
             android:paddingVertical="2dp"
-            android:text="Archived"
+            android:text="@string/archived"
             android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
@@ -123,7 +123,7 @@
             android:visibility="gone"
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
-            android:text="Un-Pin"
+            android:text="@string/un_pin"
             android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
@@ -148,7 +148,7 @@
                 app:strokeWidth="2dp"
                 app:strokeColor="?primaryStrokeColor"
                 android:layout_weight="1"
-                android:text="Pinned"
+                android:text="@string/pinned"
                 android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
 
@@ -164,7 +164,7 @@
                 android:layout_marginLeft="5dp"
                 android:backgroundTint="?secondaryBackgroundColor"
                 android:paddingVertical="2dp"
-                android:text="Reminders"
+                android:text="@string/reminders"
                 android:layout_weight="1"
                 android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
@@ -192,7 +192,7 @@
                 android:layout_marginRight="5dp"
                 android:backgroundTint="?secondaryBackgroundColor"
                 android:paddingVertical="2dp"
-                android:text="Locked"
+                android:text="@string/locked"
                 android:layout_weight="1"
                 android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
@@ -209,7 +209,7 @@
                 android:layout_marginLeft="5dp"
                 android:backgroundTint="?secondaryBackgroundColor"
                 android:paddingVertical="2dp"
-                android:text="   Photos   "
+                android:text="@string/photos"
                 android:layout_weight="1"
                 android:textColor="?primaryTextColor"
                 android:textSize="12sp"/>
@@ -222,7 +222,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:paddingVertical="2dp"
-            android:text="Remove from Folder"
+            android:text="@string/remove_from_folder"
             android:textColor="?primaryTextColor"
             android:textSize="18sp"></TextView>
 
@@ -272,7 +272,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:gravity="center"
-        android:text="Don't mind me, just passing some time...\n\nIn the meantime, press the add button to add a folder"
+        android:text="@string/don_t_mind_me_just_passing_some_time_in_the_meanti"
         android:textColor="?secondaryTextColor"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/add_category"

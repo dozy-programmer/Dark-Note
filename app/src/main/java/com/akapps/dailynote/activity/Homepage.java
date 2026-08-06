@@ -77,8 +77,7 @@ public class Homepage extends FragmentActivity {
         RealmHelper.getUser(this, "home").setSecurityWord("");
         RealmHelper.getUser(this, "home").setFingerprint(false);
         RealmSingleton.get(this).commitTransaction();
-        Helper.showMessage(this, "App un-Locked", "App lock has " +
-                "been removed", MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(this, getString(R.string.msg_app_unlocked), getString(R.string.msg_app_lock_removed), MotionToast.TOAST_SUCCESS);
     }
 
     @Override

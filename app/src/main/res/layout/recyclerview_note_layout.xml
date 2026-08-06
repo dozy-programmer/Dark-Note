@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Note title"
+                android:text="@string/note_title_2"
                 android:textColor="@color/black"
                 android:textSize="18sp"></TextView>
 
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="5dp"
-                android:text="note preview"
+                android:text="@string/note_preview"
                 android:textColor="@color/gray"
                 android:textSize="12sp"></TextView>
 
@@ -237,7 +237,7 @@
                         android:gravity="center"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="5dp"
-                        android:text="insert category"
+                        android:text="@string/insert_category"
                         android:textColor="?primaryTextColor"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -355,7 +355,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:maxLines="2"
-                    android:text="December 12, 2020"
+                    android:text="@string/december_12_2020"
                     android:textColor="@color/gray"
                     android:textSize="10sp"></TextView>
 

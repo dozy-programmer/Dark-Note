@@ -76,7 +76,7 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                             widthLayout.setVisibility(View.VISIBLE);
                             heightLayout.setVisibility(View.VISIBLE);
                             confirm.setVisibility(View.VISIBLE);
-                            title.setText("Photo Selected");
+                            title.setText(R.string.msg_photo_selected);
                             tempCameraPhotoPath = null;
                         }
                     });
@@ -99,9 +99,9 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                     if (uris.size() > 1) {
                         numImages.setText("+" + (uris.size() - 1));
                         numImages.setVisibility(View.VISIBLE);
-                        title.setText("Photo(s) Selected");
+                        title.setText(R.string.msg_photos_selected);
                     } else
-                        title.setText("Photo Selected");
+                        title.setText(R.string.msg_photo_selected);
                 } else {
                     Log.d("Here", "No media selected");
                 }
@@ -111,9 +111,8 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
-                            "permission is required so that you can select images from your phone.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_media_permission),
+                            getString(R.string.msg_media_permission_required_details), getString(R.string.proceed), 1);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     MediaHelper.openMedia(pickMultipleMedia);
@@ -124,9 +123,8 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
-                            "permission is required so that you can use the camera.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_camera_permission),
+                            getString(R.string.msg_camera_permission_required_details), getString(R.string.proceed), 1);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
@@ -170,8 +168,8 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
         heightLayout.setVisibility(View.GONE);
         confirm.setVisibility(View.GONE);
 
-        title.setText("Selecting Photo(s)");
-        confirm.setText("Confirm");
+        title.setText(R.string.msg_selecting_photos);
+        confirm.setText(R.string.confirm);
 
         maxWidth = (int) Helper.getScreenWidth(getActivity()) - 30;
         Log.d("Here", "width " + width);
@@ -227,9 +225,9 @@ public class InsertImageSheet extends RoundedBottomSheetDialogFragment {
                             if (uris.size() > 1) {
                                 numImages.setText("+" + (uris.size() - 1));
                                 numImages.setVisibility(View.VISIBLE);
-                                title.setText("Photo(s) Selected");
+                                title.setText(R.string.msg_photos_selected);
                             } else
-                                title.setText("Photo Selected");
+                                title.setText(R.string.msg_photo_selected);
                         } else {
                             Log.d("Here", "No media selected");
                         }

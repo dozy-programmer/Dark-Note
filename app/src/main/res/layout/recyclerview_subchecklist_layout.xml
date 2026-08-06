@@ -55,7 +55,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginVertical="10dp"
                     android:autoLink="web"
-                    android:text="Note"
+                    android:text="@string/note_2"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 

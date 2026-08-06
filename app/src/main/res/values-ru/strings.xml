@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Russian localization for Dark Note -->
+    <!-- schema/app_version intentionally inherit from default values -->
+
+    <string name="app_name">Dark Note</string>
+    <string name="new_note_shortcut">Новая заметка</string>
+    <string name="new_checklist_shortcut">Новый чеклист</string>
+    <string name="login_error_title">Неверный логин или пароль</string>
+    <string name="login_error_message">Попробуйте ещё раз.</string>
+    <string name="password_reset_title">Сброс пароля</string>
+    <string name="password_reset_message">Проверьте почту или папку «Спам», чтобы сменить пароль</string>
+    <string name="login_max_title">Слишком много попыток</string>
+    <string name="login_max_message">Обратитесь к администратору</string>
+    <string name="input_error">Некорректный ввод</string>
+    <string name="preview_description">Быстрый просмотр заметок</string>
+    <string name="shortcut_description">Ярлык для быстрого создания заметок</string>
+    <string name="try_out_budget">Как пользоваться:\n\n• добавьте бюджет через «+$»\n\t\t\t• +$3 000 бюджет на январь\n\n• добавляйте расходы через «$»\n\t\t\t• $50 кафе\n\t\t\t• $20 netflix\n\t\t\t• должен Майку $20\n\t\t\t• возврат amazon −$50\n\t\t\t• Аренда $1500\n\n• группируйте расходы подсписками\n\t\t\t• Расходы на квартиру\n\t\t\t• \t\t\t↳ Аренда $1000\n\t\t\t• \t\t\t↳ Вода $40\n\t\t\t• \t\t\t↳ Электричество $97\n\nСкриншоты ниже (нажмите, чтобы развернуть):</string>
+    <string name="try_out_budget_message">\nБюджет не найден (попробуйте)\nНажмите значок «Инфо», чтобы узнать больше…\n</string>
+    <string name="support_me_message">Dark Note — <u><b>бесплатное</b></u> приложение без <u><b>рекламы</b></u>\nВы можете поддержать меня, угостив меня необходимой <u><b>чашкой кофе</b></u> или оставив честный отзыв — даже на 1 ⭐</string>
+    <string name="credits_text">
+
+        <font color='#7A9CC7'>Dark Note — бесплатное ПО с открытым исходным кодом</font>\n
+        https://github.com/dozy-programmer/Dark-Note\n\n
+
+        <font color='#7A9CC7'>Иконки с Flaticon</font>\n
+        www.flaticon.com\n\n
+
+        Используемые библиотеки:\n\n
+
+        <font color='#7A9CC7'>Messages</font>\n
+        https://github.com/Spikeysanju/MotionToast\n\n
+
+        <font color='#7A9CC7'>Loading Images</font>\n
+        https://github.com/bumptech/glide\n\n
+
+        <font color='#7A9CC7'>Color Picker</font>\n
+        https://github.com/QuadFlask/colorpicker\n\n
+
+        <font color='#7A9CC7'>Pop up Menu</font>\n
+        https://github.com/skydoves/PowerMenu\n\n
+
+        <font color='#7A9CC7'>Image Picker</font>\n
+        https://github.com/Dhaval2404/ImagePicker\n\n
+
+        <font color='#7A9CC7'>Date Picker</font>\n
+        https://github.com/wdullaer/MaterialDateTimePicker\n\n
+
+        <font color='#7A9CC7'>Lock Screen</font>\n
+        https://github.com/aritraroy/PinLockView\n\n
+
+        <font color='#7A9CC7'>Bottom Sheet</font>\n
+        https://github.com/Deishelon/RoundedBottomSheet \n\n
+
+        <font color='#7A9CC7'>Formatting Notes</font>\n
+        https://github.com/wasabeef/richeditor-android\n\n
+
+        <font color='#7A9CC7'>Circular Buttons</font>\n
+        https://github.com/Clans/FloatingActionButton\n\n
+
+        <font color='#7A9CC7'>Loading Indicator</font>\n
+        https://github.com/yash786agg/AnimatedLoadingIndicator\n\n
+
+        <font color='#7A9CC7'>Full Screen Images</font>\n
+        https://github.com/stfalcon-studio/StfalconImageViewer\n\n
+
+        <font color='#7A9CC7'>Budget Graph</font>\n
+        https://github.com/futuredapp/donut\n\n
+
+        <font color='#7A9CC7'>Country Picker</font>\n
+        https://github.com/vplacinta-dev/currency-picker-android\n\n
+
+    </string>
+    <string name="version_19_4_whats_new_text">Присоединяйтесь к сообществу Dark Note за обновлениями, обратной связью, помощью или просто поздороваться 😊
+
+Настройки ➡ прокрутите вниз ➡ Dark Note Sub-Reddit Feedback
+
+
+        <font color='#8CA9CF'><b>Новое 🎉</b></font>
+
+        • Поддержка Android 16
+
+        • Улучшенный поиск (превью найденного слова в чеклистах)
+
+        • Улучшения резервного копирования при импорте и экспорте
+
+        • Можно создавать заметки, находясь внутри папки
+
+
+
+        <font color='#8CA9CF'><b>Исправления</b></font>
+
+        • Мы постоянно работаем над стабильностью: у 99%%+ пользователей нет сбоев!
+
+    </string>
+    <string name="folders">Папки</string>
+    <string name="all_notes">Все заметки</string>
+    <string name="notes_without_folders">Заметки без папок</string>
+    <string name="trash">Корзина</string>
+    <string name="archived">В архиве</string>
+    <string name="un_pin">Открепить</string>
+    <string name="pinned">Закреплённые</string>
+    <string name="reminders">Напоминания</string>
+    <string name="locked">Заблокированные</string>
+    <string name="photos">   Фото   </string>
+    <string name="remove_from_folder">Убрать из папки</string>
+    <string name="don_t_mind_me_just_passing_some_time_in_the_meanti">Не обращайте внимания, я просто коротаю время…\n\nА пока нажмите «+», чтобы добавить папку</string>
+    <string name="dark_note">Dark Note</string>
+    <string name="beautiful_intuitive">Красиво и понятно</string>
+    <string name="i_am_sorry_an_error_occured_app_restart_required">К сожалению, произошла ошибка 😔\nТребуется перезапуск приложения…</string>
+    <string name="notification">Уведомление</string>
+    <string name="date">Дата</string>
+    <string name="folder">Папка:</string>
+    <string name="none">нет</string>
+    <string name="don_t_get_lost_in_the_universe_trying_to_remember">Не теряйтесь во вселенной, пытаясь всё запомнить.</string>
+    <string name="let_me_do_it_for_you">Позвольте мне сделать это за вас</string>
+    <string name="tap_the_bottom_right_button_to_create_a_note">Нажмите кнопку в правом нижнем углу, чтобы создать заметку</string>
+    <string name="confirm_cancel_reorder">ПОДТВЕРДИТЬ / ОТМЕНИТЬ ПЕРЕСТАНОВКУ</string>
+    <string name="rtl">Справа налево</string>
+    <string name="search_inside_note">Поиск в заметке</string>
+    <string name="title">Заголовок</string>
+    <string name="note_title">[ Заголовок заметки ]</string>
+    <string name="enter_your_pin_to_unlock">Введите PIN, чтобы разблокировать</string>
+    <string name="forgot_passcode">Забыли код\n😔</string>
+    <string name="settings">Настройки</string>
+    <string name="support">Поддержка</string>
+    <string name="account">Аккаунт</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="login">Вход</string>
+    <string name="sync">Синхронизация</string>
+    <string name="upload">Загрузить</string>
+    <string name="backup_restore">Резервная копия и восстановление</string>
+    <string name="backup">Резервная копия</string>
+    <string name="restore_backup">Восстановить копию</string>
+    <string name="note_preview_settings">Настройки превью заметки</string>
+    <string name="title_lines">Строки заголовка</string>
+    <string name="default_label">По умолчанию</string>
+    <string name="content_lines">Строки содержимого</string>
+    <string name="show_preview">Показывать превью</string>
+    <string name="show_info_icon">Показывать значок «Инфо»</string>
+    <string name="move_info_icon_to_bottom">Переместить «Инфо» вниз</string>
+    <string name="layout">Макет</string>
+    <string name="checklist_settings">Настройки чеклиста</string>
+    <string name="checklist_separator">Разделитель чеклиста</string>
+    <string name="sublist_separator">Разделитель подсписка</string>
+    <string name="budget_symbol">Символ бюджета</string>
+    <string name="expense_symbol">Символ расхода</string>
+    <string name="only_crossed_budget_expenses_are_counted">Учитывать только зачёркнутые расходы бюджета</string>
+    <string name="enable_sub_lists_for_checklist">Включить подсписки в чеклисте</string>
+    <string name="show_delete_icon_in_checklist">Показывать значок удаления в чеклисте</string>
+    <string name="disable_audio_for_checklists">Отключить аудио в чеклистах</string>
+    <string name="disable_budget_for_checklists">Отключить бюджет в чеклистах</string>
+    <string name="square_style_for_checklist_checkboxes">Квадратные флажки в чеклисте</string>
+    <string name="folder_settings">Настройки папок</string>
+    <string name="show_folders_on_launch">Открывать папки при запуске</string>
+    <string name="organize_notes_inside_folders">Хранить заметки в папках</string>
+    <string name="display_only_uncategorized_notes_in_home_screen">На главном экране показывать только заметки без папки</string>
+    <string name="note_settings">Настройки заметок</string>
+    <string name="allow_blank_title_note">Разрешить пустой заголовок и заметку</string>
+    <string name="hide_editor">Скрыть редактор</string>
+    <string name="n_24_hour_date_format">24-часовой формат времени</string>
+    <string name="notes_are_view_only_by_default">Заметки только для чтения по умолчанию</string>
+    <string name="hide_last_edit_info">Скрыть дату последнего изменения</string>
+    <string name="background_color_customization">Настройка цвета фона</string>
+    <string name="other_settings">Другие настройки</string>
+    <string name="widget_text_size">Размер текста виджета</string>
+    <string name="new_note_button_toggles">Кнопка «Новая заметка» переключает</string>
+    <string name="new_note_button_enlarge">Кнопка «Новая заметка» (увеличить)</string>
+    <string name="turn_off_screen_animation">Отключить анимацию экранов</string>
+    <string name="app_settings">Настройки приложения</string>
+    <string name="about">О приложении</string>
+    <string name="frequently_asked_questions_faq">Частые вопросы (FAQ)</string>
+    <string name="contact_developer">Связаться с разработчиком</string>
+    <string name="dark_note_sub_reddit_feedback">Обратная связь (Subreddit Dark Note)</string>
+    <string name="removed_unused_files">Удалены неиспользуемые файлы</string>
+    <string name="leave_a_review">Оставить отзыв</string>
+    <string name="select_note_for_widget">Выберите заметку для виджета</string>
+    <string name="search_for_note">Поиск заметки</string>
+    <string name="sign_up_2">Регистрация</string>
+    <string name="forgot_password">Забыли пароль</string>
+    <string name="email">Эл. почта</string>
+    <string name="password">Пароль</string>
+    <string name="info">Инфо</string>
+    <string name="images">Изображения</string>
+    <string name="audio">Аудио</string>
+    <string name="backup_2">КОПИЯ</string>
+    <string name="budget">Бюджет</string>
+    <string name="error_message">сообщение об ошибке</string>
+    <string name="xxxx_xx">$XXXX.XX</string>
+    <string name="alphabetical_a_z">По алфавиту ➙ А – Я</string>
+    <string name="alphabetical_z_a">По алфавиту ➙ Я – А</string>
+    <string name="checked_items_bottom">Отмеченные ➙ вниз</string>
+    <string name="checked_items_top">Отмеченные ➙ вверх</string>
+    <string name="new_items_top">Новые ➙ вверх   *</string>
+    <string name="new_items_bottom">Новые ➙ вниз   *</string>
+    <string name="sort">Сортировка</string>
+    <string name="custom_sorting_supported_drag_and_drop">* Поддерживается своя сортировка (перетаскивание)</string>
+    <string name="apply_to_all_checklists">Применить ко всем чеклистам</string>
+    <string name="adding_new_item">Добавление элемента</string>
+    <string name="created">Создано: </string>
+    <string name="long_click_photo_to_delete">Долгое нажатие на фото — удалить</string>
+    <string name="place_info">place_info</string>
+    <string name="redirect">redirect</string>
+    <string name="item_name">Название пункта</string>
+    <string name="color_menu">Меню цвета</string>
+    <string name="preview_background">Фон превью</string>
+    <string name="use_as_note_background">Использовать как фон заметки</string>
+    <string name="last_edit_folder_text">Текст «изменён» + папка</string>
+    <string name="note_text">Текст заметки</string>
+    <string name="icons_editor_background_transparency">Прозрачность фона значков и редактора</string>
+    <string name="comment">Комментарий</string>
+    <string name="enter_comment">Введите комментарий</string>
+    <string name="credits">Благодарности</string>
+    <string name="select_one_to_delete">Выберите, что удалить</string>
+    <string name="checked_items">Отмеченные</string>
+    <string name="un_checked_items">Неотмеченные</string>
+    <string name="all_items">Все пункты</string>
+    <string name="delete">УДАЛИТЬ</string>
+    <string name="export_notes">Экспорт заметок</string>
+    <string name="markdown_file">Файл Markdown</string>
+    <string name="text_file">Текстовый файл</string>
+    <string name="text">Текст</string>
+    <string name="text_markdown">Текст (Markdown)</string>
+    <string name="export_note">Экспортировать заметку</string>
+    <string name="by_date">По дате</string>
+    <string name="created_date">Дата создания</string>
+    <string name="edited_date">Дата изменения</string>
+    <string name="oldest_note_most_recent">Старые ➙ новые</string>
+    <string name="most_recent_note_oldest">Новые ➙ старые</string>
+    <string name="alphabetically">По алфавиту</string>
+    <string name="a_z">А – Я</string>
+    <string name="z_a">Я – А</string>
+    <string name="save_t_t">СОХРАНИТЬ\t\t</string>
+    <string name="apply">Применить</string>
+    <string name="folder_name">Название папки</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">ОК</string>
+    <string name="checklist_items_visibility">Видимость пунктов чеклиста</string>
+    <string name="toggled_items_are_visible">Вкл. → пункты видны</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="security_word">Секретное слово</string>
+    <string name="select_image_type">Тип изображения</string>
+    <string name="adjust_size_of_image_this_is_how_it_will_look_in_y">Подгоните размер — так изображение будет выглядеть в заметке</string>
+    <string name="width">Ширина</string>
+    <string name="height">Высота</string>
+    <string name="adjust_size_of_image_this_is_how_it_will_look_in_y_2">Подгоните размер — так изображение будет выглядеть в заметке.</string>
+    <string name="download_t_t">Скачать\t\t</string>
+    <string name="image_link">Ссылка на изображение</string>
+    <string name="insert_youtube_video">Вставить видео YouTube</string>
+    <string name="adjust_size_of_image_this_is_how_it_will_look_in_y_3">Подгоните размер — так это будет выглядеть в заметке. Размер видео YouTube после вставки изменить нельзя.</string>
+    <string name="video_link">Ссылка на видео</string>
+    <string name="locked_folder">Заблокированная папка</string>
+    <string name="proceed">Продолжить</string>
+    <string name="see_faq_for_explanation">* Подробности в FAQ</string>
+    <string name="lock">Блокировка</string>
+    <string name="fingerprint_t_t">Отпечаток\t\t</string>
+    <string name="pin">PIN</string>
+    <string name="note">Заметка: </string>
+    <string name="date_created">Дата создания: </string>
+    <string name="date_edited">Дата изменения: </string>
+    <string name="folder_2">Папка: </string>
+    <string name="photos_2">Фото: </string>
+    <string name="words">Слов: </string>
+    <string name="characters">Символов: </string>
+    <string name="open">ОТКРЫТЬ</string>
+    <string name="voice_note">Голосовая заметка</string>
+    <string name="done">Готово</string>
+    <string name="select_media">Выбор медиа</string>
+    <string name="camera">Камера</string>
+    <string name="system_photo_picker">Системный выбор фото</string>
+    <string name="browse_files">Обзор файлов</string>
+    <string name="select_media_type">Тип медиа</string>
+    <string name="storage">Хранилище</string>
+    <string name="online">Онлайн</string>
+    <string name="what_s_new_vxx_x">Что нового? vXX.X</string>
+    <string name="sorted_by">Сортировка: </string>
+    <string name="item">Пункт</string>
+    <string name="file_name">Имя файла</string>
+    <string name="n_0_mb">0 МБ</string>
+    <string name="sync_2">СИНХР.</string>
+    <string name="insert_category">вставить категорию</string>
+    <string name="note_2">Заметка</string>
+    <string name="expense">Расход</string>
+    <string name="note_title_2">Заголовок заметки</string>
+    <string name="note_preview">превью заметки</string>
+    <string name="december_12_2020">12 декабря 2020</string>
+    <string name="n_0_b">0 Б</string>
+    <string name="amount">Сумма</string>
+    <string name="loading">Загрузка…</string>
+    <string name="preview">Превью</string>
+    <string name="notes_checklists">Заметки и чеклисты</string>
+    <string name="msg_added">Добавлено</string>
+    <string name="msg_notes_added_to_category">Заметка(и) добавлены в категорию</string>
+    <string name="msg_unselected">Снято выделение</string>
+    <string name="msg_all_selected_unselected_from_category">Выделение снято со всех выбранных заметок в категории</string>
+    <string name="msg_archived">В архиве</string>
+    <string name="msg_all_selected_archived">Все выбранные заметки перемещены в архив</string>
+    <string name="msg_unarchived">Из архива</string>
+    <string name="msg_all_selected_unarchived">Все выбранные заметки извлечены из архива</string>
+    <string name="msg_pinned">Закреплено</string>
+    <string name="msg_all_selected_pinned">Все выбранные заметки закреплены</string>
+    <string name="msg_unpinned">Откреплено</string>
+    <string name="msg_all_selected_unpinned">Все выбранные заметки откреплены</string>
+    <string name="msg_locked_notes">Заблокированные заметки</string>
+    <string name="msg_locked_notes_cannot_delete">Заблокированные заметки нельзя удалить</string>
+    <string name="msg_deleted">Удалено</string>
+    <string name="msg_selected_deleted">Удалено выбранных: %1$d</string>
+    <string name="msg_sent_to_trash">В корзине</string>
+    <string name="msg_selected_sent_to_trash">В корзину отправлено: %1$d</string>
+    <string name="msg_not_deleted">Не удалено</string>
+    <string name="msg_nothing_selected_not_deleted">Ничего не выбрано — удаление не выполнено</string>
+    <string name="msg_restored">Восстановлено</string>
+    <string name="msg_selected_restored">Восстановлено выбранных: %1$d</string>
+    <string name="msg_not_restored">Не восстановлено</string>
+    <string name="msg_nothing_selected_not_restored">Ничего не выбрано — восстановление не выполнено</string>
+    <string name="msg_n_selected">Выбрано: %1$d</string>
+    <string name="msg_folderless_notes">Заметки без папки</string>
+    <string name="msg_archive">В архив</string>
+    <string name="msg_unarchive">Из архива</string>
+    <string name="msg_pin">Закрепить</string>
+    <string name="msg_editing">Редактирование</string>
+    <string name="msg_click_item_to_edit">Нажмите на элемент для редактирования</string>
+    <string name="msg_folder_locked">Папка заблокирована</string>
+    <string name="msg_folder_and_notes_locked">Папка и заметки внутри заблокированы</string>
+    <string name="msg_select_folder">Выберите папку</string>
+    <string name="msg_need_select_folder">Выберите папку для выбранных заметок</string>
+    <string name="msg_empty">Пусто</string>
+    <string name="msg_cannot_open_empty_folder">Нельзя открыть пустую папку</string>
+    <string name="msg_current_category">Сейчас:\n%1$s</string>
+    <string name="msg_unlock_app">Разблокировать приложение</string>
+    <string name="msg_app_unlocked">Приложение разблокировано</string>
+    <string name="msg_app_lock_removed">Блокировка приложения снята</string>
+    <string name="msg_media_permission">Доступ к медиа</string>
+    <string name="msg_media_permission_required">Это разрешение нужно, чтобы выбирать изображения с телефона.\n\n</string>
+    <string name="msg_camera_permission">Доступ к камере</string>
+    <string name="msg_camera_permission_required">Это разрешение нужно для работы с камерой.\n\n</string>
+    <string name="msg_webview_missing_title">Ошибка: нет WebView</string>
+    <string name="msg_webview_missing_body">На устройстве нет WebView, без которого приложение не работает. Попробуйте другое устройство или установите WebView</string>
+    <string name="msg_device_not_supported_webview">Устройство не поддерживается — нужен WebView!</string>
+    <string name="msg_close">Закрыть</string>
+    <string name="msg_note_deleted_delete_widget">Заметка удалена — удалите виджет!</string>
+    <string name="msg_alarm_not_set">Будильник не установлен</string>
+    <string name="msg_alarm_permission_needed">Нужно разрешить будильники</string>
+    <string name="msg_edited">Изменено</string>
+    <string name="msg_note_has_been_edited">Заметка изменена</string>
+    <string name="msg_type_something">Начните ввод…</string>
+    <string name="msg_reminder_passed">Напоминание прошло</string>
+    <string name="msg_delete_reminder_to_clear">Удалите напоминание, чтобы убрать это сообщение!</string>
+    <string name="msg_searching_impossible">Нельзя найти то, чего нет</string>
+    <string name="msg_reminder">Напоминание</string>
+    <string name="msg_reminder_deleted">Напоминание удалено</string>
+    <string name="msg_mic_permission_required">Нужен доступ к микрофону</string>
+    <string name="msg_mic_error">Ошибка микрофона</string>
+    <string name="msg_no_mic_detected">Микрофон на устройстве не обнаружен</string>
+    <string name="msg_photos_empty">Нет фото</string>
+    <string name="msg_add_photos_to_note">Добавьте фото к заметке</string>
+    <string name="msg_note_deleted_change_settings">Заметка удалена — измените в настройках</string>
+    <string name="msg_picture_corrupted">Изображение повреждено или удалено из галереи</string>
+    <string name="msg_not_found_suffix">%1$s не найдено</string>
+    <string name="msg_undo_delete">Отменить удаление</string>
+    <string name="msg_text_size">Размер текста</string>
+    <string name="msg_export">Экспорт</string>
+    <string name="msg_delete_label">Удалить</string>
+    <string name="msg_select_all">Выбрать все</string>
+    <string name="msg_deselect_all">Снять выделение</string>
+    <string name="msg_delete_items">Удалить пункты</string>
+    <string name="msg_hide_items">Скрыть пункты</string>
+    <string name="msg_sub_list">Подсписок</string>
+    <string name="msg_show_formatter">Показать форматирование</string>
+    <string name="msg_hide_formatter">Скрыть форматирование</string>
+    <string name="msg_alarm_exists">Напоминание уже есть</string>
+    <string name="msg_delete_reminder_to_add_another">Удалите напоминание, чтобы добавить новое</string>
+    <string name="msg_notification_permission_required">Нужно разрешение на уведомления</string>
+    <string name="msg_formatter">Форматирование</string>
+    <string name="msg_success">Готово</string>
+    <string name="msg_all_items_selected">Выбраны все пункты</string>
+    <string name="msg_all_items_unselected">Выделение со всех пунктов снято</string>
+    <string name="msg_note_restored">Заметка восстановлена</string>
+    <string name="msg_note_restored_from_trash">Заметка восстановлена из корзины</string>
+    <string name="msg_reminder_permission">Доступ к напоминаниям</string>
+    <string name="msg_accept_permission_reminder">Разрешите уведомления, чтобы получать напоминания</string>
+    <string name="msg_microphone_permission">Доступ к микрофону</string>
+    <string name="msg_permission_record_voice">Разрешите доступ, чтобы записывать голосовые заметки</string>
+    <string name="msg_all_items_deleted">Все пункты удалены</string>
+    <string name="msg_checked_items_deleted">Отмеченные пункты удалены</string>
+    <string name="msg_unchecked_items_deleted">Неотмеченные пункты удалены</string>
+    <string name="msg_lock_note">Заблокировать</string>
+    <string name="msg_note_is_locked">Заблокирована</string>
+    <string name="msg_note_locked">Заметка заблокирована</string>
+    <string name="msg_note_has_been_locked">Заметка заблокирована</string>
+    <string name="msg_note_unlock">Заметка разблокирована</string>
+    <string name="msg_note_has_been_unlocked">Заметка разблокирована</string>
+    <string name="msg_reminder_issue">Проблема с напоминанием</string>
+    <string name="msg_reminders_android7">Напоминания не работают на Android 7</string>
+    <string name="msg_reminder_set">Напоминание установлено</string>
+    <string name="msg_will_remind_you">Напомним через %1$s</string>
+    <string name="msg_enable_alarms_try_again">Включите будильники и попробуйте снова</string>
+    <string name="msg_reminder_not_set">Напоминание не установлено</string>
+    <string name="msg_reminder_cannot_be_past">Напоминание не может быть в прошлом</string>
+    <string name="msg_archived_status">Статус архива</string>
+    <string name="msg_note_unarchived">Заметка извлечена из архива</string>
+    <string name="msg_note_archived_folder">Заметка перемещена в архив</string>
+    <string name="msg_sublist_status">Статус подсписка</string>
+    <string name="msg_it_has_been">Стало: %1$s</string>
+    <string name="msg_now_in_trash"> [Сейчас в корзине]</string>
+    <string name="msg_last_edit">Изменено: %1$s</string>
+    <string name="msg_select_text_color">Выберите цвет текста</string>
+    <string name="msg_fingerprint_error">Ошибка отпечатка</string>
+    <string name="msg_fingerprint_not_read">Отпечаток не распознан, попробуйте снова!</string>
+    <string name="msg_biometric_login_note">Вход по биометрии для заметки</string>
+    <string name="msg_use_pin_instead">Использовать PIN</string>
+    <string name="msg_log_out">Выйти</string>
+    <string name="msg_last_upload">Последняя загрузка: %1$s</string>
+    <string name="msg_backup_permission_required">Нужно разрешение для резервной копии</string>
+    <string name="msg_note_checklist_default">Заметка + чеклист (по умолчанию)</string>
+    <string name="msg_note_only">Заметка</string>
+    <string name="msg_checklist_only">Чеклист</string>
+    <string name="msg_no_broken_links">Битых ссылок нет</string>
+    <string name="msg_no_further_action">Дополнительных действий не требуется</string>
+    <string name="msg_upgrade_successful">Обновление успешно</string>
+    <string name="msg_thank_you_enjoy">Спасибо и приятного пользования!😄</string>
+    <string name="msg_downgrade_successful">Понижение версии успешно</string>
+    <string name="msg_enjoy">Приятного пользования!😄</string>
+    <string name="msg_permission_denied">Доступ запрещён</string>
+    <string name="msg_permission_required_backup_restore">Нужно разрешение для резервной копии и восстановления</string>
+    <string name="msg_app_locked">Приложение заблокировано</string>
+    <string name="msg_app_has_been_locked">Приложение заблокировано</string>
+    <string name="msg_backup_failed">Сбой резервной копии</string>
+    <string name="msg_could_not_create_backup">Не удалось создать файл резервной копии.</string>
+    <string name="msg_no_data_to_backup">😐Нет данных для резервной копии😐</string>
+    <string name="msg_backup_success">Все заметки и связанные файлы успешно сохранены!</string>
+    <string name="msg_backup_warning">Предупреждение о копии</string>
+    <string name="msg_backup_completed_warnings">Копия создана с предупреждениями. Не найдены и пропущены файлы (%1$s):\n\n%2$s</string>
+    <string name="msg_error_prefix">Ошибка: %1$s</string>
+    <string name="msg_note_checklist">Заметка + чеклист</string>
+    <string name="msg_feedback_subject">Dark Note: отзыв о чеклистах и бюджете</string>
+    <string name="msg_no_notes_search">Заметки и чеклисты не найдены — попробуйте другой запрос…</string>
+    <string name="msg_audio_placeholder">[Аудио]</string>
+    <string name="msg_no_title">— Без заголовка —</string>
+    <string name="msg_widget_note_deleted">* Заметка удалена — удалите виджет * -Note-</string>
+    <string name="msg_widget_note_locked">* Заметка заблокирована * -Note-</string>
+    <string name="msg_backup_error">Ошибка резервной копии</string>
+    <string name="msg_cannot_restore_notes">Не удалось восстановить заметки</string>
+    <string name="msg_upload_failed">Ошибка загрузки</string>
+    <string name="msg_file_too_big_backup_locally">Файл слишком большой — сделайте локальную копию</string>
+    <string name="msg_uploading">Загрузка…\n%1$s</string>
+    <string name="msg_file_name_exists">Файл с таким именем уже есть — подождите минуту и повторите</string>
+    <string name="msg_upload_error">Ошибка загрузки</string>
+    <string name="msg_error_uploading_try_again">Ошибка при загрузке данных — попробуйте снова</string>
+    <string name="msg_upload_success">Загрузка успешна</string>
+    <string name="msg_data_uploaded">Данные загружены</string>
+    <string name="msg_files_lost_in_transfer">Файлы потеряны при передаче — загрузите снова!</string>
+    <string name="msg_syncing">Синхронизация…</string>
+    <string name="msg_syncing_progress">Синхронизация…\n%1$s</string>
+    <string name="msg_error">Ошибка</string>
+    <string name="msg_restoring_error_clear_storage">Ошибка восстановления из базы — очистите хранилище приложения и повторите</string>
+    <string name="msg_notes_restored">Заметки восстановлены</string>
+    <string name="msg_error_restoring">Ошибка восстановления</string>
+    <string name="msg_restoring_error">Ошибка восстановления</string>
+    <string name="msg_file_not_received">Файл не получен из‑за ошибки</string>
+    <string name="msg_backup_wrong_extension">Файлы резервных копий Dark Note оканчиваются на «.zip» или «.realm». Попробуйте снова!</string>
+    <string name="msg_restore_error">Ошибка восстановления</string>
+    <string name="msg_issue_restoring">Проблема при восстановлении — закройте приложение и повторите…</string>
+    <string name="msg_share_backup_file">Поделиться файлом копии Dark Note</string>
+    <string name="msg_sharing_error">Ошибка отправки</string>
+    <string name="msg_size_too_large_email_dev">Слишком большой размер — напишите разработчику</string>
+    <string name="msg_share_text">Поделиться текстом</string>
+    <string name="msg_locked_notes_export_individually">Заблокированные заметки можно экспортировать только по одной</string>
+    <string name="msg_nothing_selected_not_exported">Ничего не выбрано — экспорт не выполнен</string>
+    <string name="msg_sync_file">Синхронизация файла</string>
+    <string name="msg_long_click_to_sync">Долгое нажатие — синхронизировать</string>
+    <string name="msg_delete_file">Удалить файл</string>
+    <string name="msg_long_click_to_delete">Долгое нажатие — удалить</string>
+    <string name="msg_not_deleted_try_again">Не удалено. Попробуйте снова</string>
+    <string name="msg_date_unknown">Дата ?</string>
+    <string name="msg_size_unknown">? МБ</string>
+    <string name="msg_no_results">Нет результатов</string>
+    <string name="msg_year"> г.</string>
+    <string name="msg_month"> мес.</string>
+    <string name="msg_day"> дн.</string>
+    <string name="msg_hour"> ч.</string>
+    <string name="msg_min"> мин.</string>
+    <string name="msg_sec"> сек.</string>
+    <string name="msg_added_to_category_named">Заметка(и) добавлены в «%1$s»</string>
+
+    <!-- InfoSheet strings -->
+    <string name="msg_info_lock_screen_reminder">Экран блокировки не появится после нажатия на уведомление напоминания, так как напоминание было установлено до блокировки заметки. Чтобы исправить это, просто сбросьте напоминание </string>
+    <string name="msg_guide">Руководство</string>
+    <string name="msg_guide_folder_info">Изменяйте название/цвет папки или удаляйте её, нажав значок редактирования вверху справа и выбрав нужную папку.\n\n2 способа добавить заметки в папку:\n\nМожно выбрать несколько заметок на главной странице долгим нажатием на заметку и нажатием на значок папки\n\nИли по отдельности при редактировании заметки, нажав «нет» рядом с Папкой</string>
+    <string name="msg_unused_files">Неиспользуемые файлы</string>
+    <string name="msg_unused_files_prompt">Следующие файлы не используются (на них нет ссылок из заметок), вы хотите их удалить?\n\n%1$s</string>
+    <string name="msg_deleting">Удаление...</string>
+    <string name="msg_deleting_link">Удаление ссылки на другую заметку...</string>
+    <string name="msg_confirm_delete_link">Вы уверены, что хотите удалить ссылку?</string>
+    <string name="msg_yes">ДА</string>
+    <string name="msg_no">Нет</string>
+    <string name="msg_trash_button">В КОРЗИНУ</string>
+    <string name="msg_are_you_sure">Вы уверены?</string>
+    <string name="msg_unlock">Разблокировать</string>
+    <string name="msg_enter_security_word_to_unlock">Введите секретное слово, чтобы разблокировать %1$s</string>
+    <string name="msg_app">приложение</string>
+    <string name="msg_note_target">заметку</string>
+    <string name="msg_max_uploads_reached">Достигнут лимит в 100 загрузок. Пожалуйста, удалите резервную копию, нажав кнопку синхронизации.</string>
+    <string name="msg_backups">Резервные копии</string>
+    <string name="msg_select_file_loading">Выберите файл\n\nЗагрузка...</string>
+    <string name="msg_no_files_to_sync">Нет файлов для синхронизации</string>
+    <string name="msg_error_retrieving_internet">Ошибка получения данных, проверьте подключение к интернету</string>
+    <string name="msg_failed_to_get_backups">Не удалось получить резервные копии</string>
+    <string name="msg_logout">Выход</string>
+    <string name="msg_logout_button">ВЫЙТИ</string>
+    <string name="msg_remove_all_formatting">Удалить всё форматирование</string>
+    <string name="msg_remove">УДАЛИТЬ</string>
+    <string name="msg_budget_guide">Руководство по бюджету $</string>
+    <string name="msg_audio_info">Аудио инфо</string>
+    <string name="msg_export_info">Экспорт инфо</string>
+    <string name="msg_permission_explanation">Это разрешение должно быть включено, чтобы вы могли использовать функцию «%1$s». %2$s\n\nDark Note запрашивает разрешение только тогда, когда оно необходимо системе для работы функции.</string>
+    <string name="msg_photos_allow_all_hint">\n\nПожалуйста, выберите [РАЗРЕШИТЬ ВСЕ] для наилучшего выбора изображений</string>
+    <string name="msg_enter_security_word_attempts">Введите секретное слово для разблокировки заметки \n(%1$d попыток)</string>
+    <string name="msg_files_deleted">Файлы удалены</string>
+    <string name="msg_unused_files_deleted">Неиспользуемые файлы больше не хранятся на устройстве</string>
+    <string name="msg_delete_status">Статус удаления</string>
+    <string name="msg_photo_deleted">Фотография была удалена</string>
+
+    <!-- Sheet & helper strings -->
+    <string name="msg_lock_app">Заблокировать приложение</string>
+    <string name="msg_lock_folder">Заблокировать папку</string>
+    <string name="msg_min_3_letters">Мин. = 3 символа</string>
+    <string name="msg_min_4_max_9">Мин. = 4, Макс. = 9</string>
+    <string name="msg_not_supported_device">Не поддерживается этим устройством</string>
+    <string name="msg_inserting_youtube_video">Вставка видео YouTube...</string>
+    <string name="msg_add_video">Добавить видео</string>
+    <string name="msg_youtube_video_retrieved">Видео YouTube получено</string>
+    <string name="msg_link_error">Ошибка ссылки</string>
+    <string name="msg_link_not_valid">Ссылка недействительна, попробуйте снова!</string>
+    <string name="msg_add_link">Добавить ссылку</string>
+    <string name="msg_edit_image">Редактировать изображение</string>
+    <string name="msg_image_added">Изображение добавлено</string>
+    <string name="msg_image_downloading">Скачивание изображения...</string>
+    <string name="msg_after_download_reopen">После завершения скачивания закройте и откройте заметку</string>
+    <string name="msg_photo_selected">Фотография выбрана</string>
+    <string name="msg_photos_selected">Фотографии выбраны</string>
+    <string name="msg_selecting_photos">Выбор фото</string>
+    <string name="msg_media_permission_required_details">Это разрешение требуется для выбора изображений с вашего телефона.\n\nДля включения перейдите в Настройки Dark Note -&gt; Настройки приложения -&gt; Разрешения\n\nили нажмите Продолжить</string>
+    <string name="msg_camera_permission_required_details">Это разрешение требуется для использования камеры.\n\nДля включения перейдите в Настройки Dark Note -&gt; Настройки приложения -&gt; Разрешения\n\nили нажмите Продолжить</string>
+    <string name="msg_adding">Добавление</string>
+    <string name="msg_unlock_folder">Разблокировать папку</string>
+    <string name="msg_folder_unlocked">Папка разблокирована</string>
+    <string name="msg_folder_has_been_unlocked">Папка была разблокирована</string>
+    <string name="msg_unlocked">Разблокировано</string>
+    <string name="msg_folder_and_notes_unlocked">Папка и заметки внутри разблокированы</string>
+    <string name="msg_folder_not_unlocked">Папка не разблокирована</string>
+    <string name="msg_unlock_folder_to_open">Разблокируйте папку, чтобы открыть</string>
+    <string name="msg_unlock_folder_to_delete">Разблокируйте папку, чтобы удалить</string>
+    <string name="msg_duplicate">Дубликат</string>
+    <string name="msg_category_name_exists">Категория с таким именем уже существует</string>
+    <string name="msg_adding_sub_item_to">Добавление подпункта в\n%1$s</string>
+    <string name="msg_editing_sub_item">Редактирование подпункта</string>
+    <string name="msg_confirm_delete">Вы уверены, что хотите удалить?</string>
+    <string name="msg_reset_password_failed">Аккаунт не существует или отсутствует подключение к интернету</string>
+    <string name="msg_empty_checklist_houston">«Хьюстон, у нас проблема…»</string>
+    <string name="msg_empty_checklist_loneliness">«Ох, это одиночество…»</string>
+    <string name="msg_empty_checklist_add_lonely">Нажмите кнопку в правом нижнем углу, чтобы добавить пункт в чеклист и помочь мне быть менее одиноким</string>
+    <string name="msg_empty_checklist_add">Нажмите кнопку в правом нижнем углу, чтобы добавить пункт в чеклист</string>
+    <string name="msg_disabled">отключено</string>
+    <string name="msg_enabled">включено</string>
+    <string name="msg_select_uppercase">ВЫБРАТЬ</string>
+    <string name="msg_close_uppercase">ЗАКРЫТЬ</string>
+    <string name="msg_select_folder_color">Выберите цвет папки</string>
+    <string name="msg_select_text_color">Выберите цвет текста</string>
+    <string name="msg_welcome_title">Добро пожаловать</string>
+    <string name="msg_welcome_body">Спасибо, что используете Dark Note!\n\nDark Note абсолютно бесплатен и не содержит рекламы. К сожалению, сейчас приложение доступно только на английском и русском языках. Прошу прощения у тех, кто хочет перевода на другие языки, но у меня нет ресурсов, так как я единственный разработчик \uD83D\uDE14.\n\nНадеюсь, Dark Note поможет вам организовать ваши мысли, а возможно, и бюджет \uD83D\uDE09 — попробуйте функцию бюджета!</string>
+    <string name="msg_happy">Рад</string>
+    <string name="msg_sad">Грустно</string>
+    <string name="msg_lock_folder_title">Блокировка папки</string>
+    <string name="msg_lock_folder_body">Чтобы заблокировать папку, все заметки внутри нее должны быть разблокированы в целях безопасности.</string>
+    <string name="msg_locked_notes_list">\n\nСледующие заметки необходимо разблокировать:</string>
+    <string name="msg_to_enable_permission_proceed">Чтобы включить, перейдите в Настройки Dark Note -> Настройки приложения -> Разрешения\n\nили нажмите Продолжить</string>
+    <string name="msg_proceed">Продолжить</string>
+    <string name="msg_no_title">~ Без названия ~</string>
+    <string name="msg_select_color_for">Выберите цвет для %1$s</string>
+    <string name="msg_background">фона</string>
+    <string name="msg_title_color">заголовка</string>
+    <string name="msg_text_color">текста</string>
+    <string name="msg_last_edit_color">последнего изменения</string>
+
+</resources>

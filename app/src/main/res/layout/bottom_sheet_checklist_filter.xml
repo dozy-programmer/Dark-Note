@@ -49,7 +49,7 @@
                     android:layout_marginBottom="2dp"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
-                    android:text="Alphabetical ➙ A - Z"
+                    android:text="@string/alphabetical_a_z"
                     android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -78,7 +78,7 @@
                     android:gravity="bottom|center"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
-                    android:text="Alphabetical ➙ Z - A"
+                    android:text="@string/alphabetical_z_a"
                     android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -107,7 +107,7 @@
                     android:paddingHorizontal="15dp"
                     android:gravity="bottom|center"
                     android:paddingVertical="10dp"
-                    android:text="Checked Items ➙ Bottom"
+                    android:text="@string/checked_items_bottom"
                     android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -136,7 +136,7 @@
                     android:paddingHorizontal="15dp"
                     android:gravity="bottom|center"
                     android:paddingVertical="10dp"
-                    android:text="Checked Items ➙ Top"
+                    android:text="@string/checked_items_top"
                     android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -165,7 +165,7 @@
                     android:gravity="bottom|center"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
-                    android:text="New Items ➙ Top   *"
+                    android:text="@string/new_items_top"
                     android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -194,7 +194,7 @@
                     android:gravity="bottom|center"
                     android:paddingHorizontal="15dp"
                     android:paddingVertical="10dp"
-                    android:text="New Items ➙ Bottom   *"
+                    android:text="@string/new_items_bottom"
                     android:textColor="?primaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -211,7 +211,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/baloo_bhai"
         android:gravity="center"
-        android:text="Sort"
+        android:text="@string/sort"
         android:layout_marginTop="10dp"
         android:textColor="?secondaryTextColor"
         android:textSize="24sp"
@@ -252,7 +252,7 @@
         app:strokeColor="?tertiaryStrokeColor"
         app:iconTint="?primaryIconTintColor"
         android:paddingHorizontal="40dp"
-        android:text="Sort"
+        android:text="@string/sort"
         android:textColor="?primaryTextColor"
         android:textSize="14sp"
         app:cornerRadius="15dp"
@@ -267,7 +267,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
-        android:text="* Custom Sorting Supported (drag and drop)"
+        android:text="@string/custom_sorting_supported_drag_and_drop"
         android:textColor="?primaryTextColor"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -289,7 +289,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:buttonTint="?primaryButtonColor"
-            android:text="Apply to All Checklists"
+            android:text="@string/apply_to_all_checklists"
             android:textColor="?secondaryTextColor" />
     </LinearLayout>
 

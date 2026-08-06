@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="0 B"
+            android:text="@string/n_0_b"
             android:textColor="?primaryTextColor"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"

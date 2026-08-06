@@ -262,9 +262,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
-                            "permission is required so that you can select images from your phone.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_media_permission), getString(R.string.msg_media_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     MediaHelper.openMedia(pickMultipleMedia);
@@ -275,9 +274,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
-                            "permission is required so that you can use the camera.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_camera_permission), getString(R.string.msg_camera_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     tempCameraPhotoPath = MediaHelper.openCamera(this, context, takePictureLauncher);
@@ -294,10 +292,9 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             setContentView(R.layout.activity_note_edit);
         } catch (Exception e) {
             if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WEBVIEW)) {
-                Toast.makeText(this, "Device not supported -> WebView is required!", Toast.LENGTH_LONG).show();
-                GenericInfoSheet infoSheet = new GenericInfoSheet("Error -> WebView Missing", "" +
-                        "Your device is missing WebView, which is needed for the app to function. " +
-                        "Try using another device or add WebView", "Close", "Ok");
+                Toast.makeText(this, getString(R.string.msg_device_not_supported_webview), Toast.LENGTH_LONG).show();
+                GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_webview_missing_title),
+                        getString(R.string.msg_webview_missing_body), getString(R.string.msg_close), getString(R.string.ok));
                 infoSheet.show(getSupportFragmentManager(), infoSheet.getTag());
             }
             return;
@@ -312,7 +309,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         if (noteId > 0 && getRealm().where(Note.class).equalTo("noteId", noteId).count() == 0) {
             RealmSingleton.setCloseRealm(false);
             // this catches a widget whose associated note has been deleted
-            Toast.makeText(this, "Note has been deleted, please delete widget!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.msg_note_deleted_delete_widget), Toast.LENGTH_LONG).show();
             RealmSingleton.closeRealmInstance("NoteEdit onDestroy - Deleted Note is being accessed via widget");
             finish();
             return;
@@ -401,7 +398,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                             if (dateSelected != null && alarmManager.canScheduleExactAlarms())
                                 startAlarm(dateSelected);
                             else
-                                Helper.showMessage(this, "Alarm not set", "Alarm permission needs to be enabled",
+                                Helper.showMessage(this, getString(R.string.msg_alarm_not_set), getString(R.string.msg_alarm_permission_needed),
                                         MotionToast.TOAST_ERROR);
                         }
                     }
@@ -443,7 +440,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                     }
                 } else {
                     if (noteChanged() && !isNewNote)
-                        Helper.showMessage(NoteEdit.this, "Edited", "Note has been edited", MotionToast.TOAST_SUCCESS);
+                        Helper.showMessage(NoteEdit.this, getString(R.string.msg_edited), getString(R.string.msg_note_has_been_edited), MotionToast.TOAST_SUCCESS);
 
                     finish("on-back press");
                     if (!AppData.getInstance().isDisableAnimation())
@@ -609,7 +606,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         searchLayout = findViewById(R.id.search_padding);
 
         note.setEditorFontSize(20);
-        note.setPlaceholder("Type something...");
+        note.setPlaceholder(getString(R.string.msg_type_something));
         note.setEditorFontColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
         note.setPadding(5, 10, 0, 100);
         note.getSettings().setAllowFileAccess(true);
@@ -698,8 +695,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             Date now = new Date();
             if (now.after(reminderDate)) {
                 remindNoteDate.setTextColor(UiHelper.getColorFromTheme(this, R.attr.tertiaryButtonColor));
-                Helper.showMessage(NoteEdit.this, "Reminder Passed", "Please delete reminder to " +
-                        "get rid of this message!", MotionToast.TOAST_WARNING);
+                Helper.showMessage(NoteEdit.this, getString(R.string.msg_reminder_passed),
+                        getString(R.string.msg_delete_reminder_to_clear), MotionToast.TOAST_WARNING);
             }
         }
 
@@ -747,8 +744,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             } else if (!note.getHtml().isEmpty()) {
                 showSearchBar();
             } else
-                Helper.showMessage(this, "Empty", "Searching for something " +
-                        "that does not exist is impossible", MotionToast.TOAST_WARNING);
+                Helper.showMessage(this, getString(R.string.msg_empty),
+                        getString(R.string.msg_searching_impossible), MotionToast.TOAST_WARNING);
         });
 
         scrollView.setOnClickListener(view -> {
@@ -981,7 +978,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         remindNote.setOnClickListener(v -> {
             cancelAlarm(getCurrentNote(context, noteId).getNoteId());
             remindNote.setVisibility(View.GONE);
-            showMessage("Reminder", "Reminder was deleted", false);
+            showMessage(getString(R.string.msg_reminder), getString(R.string.msg_reminder_deleted), false);
         });
 
         closeNote.setOnClickListener(v -> {
@@ -1007,12 +1004,12 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                 if (isMicrophonePermissionEnabled())
                     checkMicrophonePermission();
                 else {
-                    InfoSheet permissionInfo = new InfoSheet("Microphone Permission Required", Manifest.permission.RECORD_AUDIO);
+                    InfoSheet permissionInfo = new InfoSheet(getString(R.string.msg_mic_permission_required), Manifest.permission.RECORD_AUDIO);
                     permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
                 }
             } else
-                Helper.showMessage(NoteEdit.this, "Mic Error",
-                        "No mic detected on device", MotionToast.TOAST_ERROR);
+                Helper.showMessage(NoteEdit.this, getString(R.string.msg_mic_error),
+                        getString(R.string.msg_no_mic_detected), MotionToast.TOAST_ERROR);
             return true;
         });
 
@@ -1021,12 +1018,12 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                 if (isMicrophonePermissionEnabled())
                     checkMicrophonePermission();
                 else {
-                    InfoSheet permissionInfo = new InfoSheet("Microphone Permission Required", Manifest.permission.RECORD_AUDIO);
+                    InfoSheet permissionInfo = new InfoSheet(getString(R.string.msg_mic_permission_required), Manifest.permission.RECORD_AUDIO);
                     permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
                 }
             } else
-                Helper.showMessage(NoteEdit.this, "Mic Error",
-                        "No mic detected on device", MotionToast.TOAST_ERROR);
+                Helper.showMessage(NoteEdit.this, getString(R.string.msg_mic_error),
+                        getString(R.string.msg_no_mic_detected), MotionToast.TOAST_ERROR);
         });
 
         photosNote.setOnClickListener(v -> {
@@ -1039,8 +1036,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                     textSizeLayout.setVisibility(View.VISIBLE);
             } else {
                 if (getRealm().where(Photo.class).equalTo("noteId", noteId).findAll().size() == 0) {
-                    Helper.showMessage(NoteEdit.this, "Photos Empty",
-                            "Add photos to note", MotionToast.TOAST_WARNING);
+                    Helper.showMessage(NoteEdit.this, getString(R.string.msg_photos_empty),
+                            getString(R.string.msg_add_photos_to_note), MotionToast.TOAST_WARNING);
                 }
                 photosAllExist();
                 showPhotos(View.VISIBLE);
@@ -1122,7 +1119,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                 && getCurrentNote(context, noteId).getChecklist().isEmpty()) {
             if (!getUser().isEnableEmptyNote() && getPhotos() != null && getPhotos().isEmpty()) {
                 RealmHelper.deleteNote(context, getCurrentNote(context, noteId).getNoteId());
-                Helper.showMessage(this, "Deleted", "Note has been deleted, change in settings", MotionToast.TOAST_WARNING);
+                Helper.showMessage(this, getString(R.string.msg_deleted), getString(R.string.msg_note_deleted_change_settings), MotionToast.TOAST_WARNING);
             }
         }
         finish("Closing and maybe deleting note");
@@ -1641,24 +1638,24 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
     }
 
     private void openMenuDialog() {
-        String archivedStatus = "Archive";
-        String lockStatus = "Lock";
-        if (getCurrentNote(context, noteId).isArchived())
-            archivedStatus += "d";
-        if (getCurrentNote(context, noteId).getPinNumber() != 0)
-            lockStatus += "ed";
+        String archivedStatus = getCurrentNote(context, noteId).isArchived()
+                ? getString(R.string.archived)
+                : getString(R.string.msg_archive);
+        String lockStatus = getCurrentNote(context, noteId).getPinNumber() != 0
+                ? getString(R.string.msg_note_is_locked)
+                : getString(R.string.msg_lock_note);
 
-        IconPowerMenuItem restoreFromTrash = new IconPowerMenuItem(getDrawable(R.drawable.restore_icon), "Undo Delete");
-        IconPowerMenuItem reminderItem = new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), "Reminder");
+        IconPowerMenuItem restoreFromTrash = new IconPowerMenuItem(getDrawable(R.drawable.restore_icon), getString(R.string.msg_undo_delete));
+        IconPowerMenuItem reminderItem = new IconPowerMenuItem(getDrawable(R.drawable.reminder_icon), getString(R.string.msg_reminder));
         noteMenu = new CustomPowerMenu.Builder<>(context, new IconMenuAdapter(false))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.archive_icon), archivedStatus))
                 .addItem(reminderItem)
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.format_size_icon), "Text Size"))
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.export_icon), "Export"))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.format_size_icon), getString(R.string.msg_text_size)))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.export_icon), getString(R.string.msg_export)))
                 .addItem(new IconPowerMenuItem(getDrawable(R.drawable.lock_icon), lockStatus))
                 .addItem(restoreFromTrash)
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), "Delete"))
-                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.info_icon), "Info"))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.delete_icon), getString(R.string.msg_delete_label)))
+                .addItem(new IconPowerMenuItem(getDrawable(R.drawable.info_icon), getString(R.string.info)))
                 .setBackgroundColor(UiHelper.getColorFromTheme(this, R.attr.secondaryBackgroundColor))
                 .setOnMenuItemClickListener(onIconMenuItemClickListener)
                 .setAnimation(MenuAnimation.SHOW_UP_CENTER)
@@ -1670,24 +1667,24 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             noteMenu.removeItem(reminderItem);
 
         if (getCurrentNote(context, noteId).isCheckList()) {
-            noteMenu.addItem(2, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), "Select All"));
-            noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), "Deselect All"));
-            noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), "Delete Items"));
-            noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.hide_icon), "Hide Items"));
-            noteMenu.addItem(7, new IconPowerMenuItem(getDrawable(R.drawable.filter_icon), "Sort"));
+            noteMenu.addItem(2, new IconPowerMenuItem(getDrawable(R.drawable.check_icon), getString(R.string.msg_select_all)));
+            noteMenu.addItem(3, new IconPowerMenuItem(getDrawable(R.drawable.box_icon), getString(R.string.msg_deselect_all)));
+            noteMenu.addItem(4, new IconPowerMenuItem(getDrawable(R.drawable.delete_all_icon), getString(R.string.msg_delete_items)));
+            noteMenu.addItem(5, new IconPowerMenuItem(getDrawable(R.drawable.hide_icon), getString(R.string.msg_hide_items)));
+            noteMenu.addItem(7, new IconPowerMenuItem(getDrawable(R.drawable.filter_icon), getString(R.string.sort)));
             if (getUser().isEnableSublists()) {
                 String sublistStatus = "";
                 if (getCurrentNote(context, noteId).isEnableSublist()) {
-                    sublistStatus = sublistStatus + "Sub-List";
+                    sublistStatus = sublistStatus + getString(R.string.msg_sub_list);
                     noteMenu.addItem(6, new IconPowerMenuItem(getDrawable(R.drawable.visible_false_icon), sublistStatus));
                 } else {
-                    sublistStatus = sublistStatus + "Sub-List";
+                    sublistStatus = sublistStatus + getString(R.string.msg_sub_list);
                     noteMenu.addItem(6, new IconPowerMenuItem(getDrawable(R.drawable.visible_icon), sublistStatus));
                 }
             }
         } else {
             if (getUser().isHideRichTextEditor()) {
-                String formatStatus = hideRichTextStatus ? "Show Formatter" : "Hide Formatter";
+                String formatStatus = hideRichTextStatus ? getString(R.string.msg_show_formatter) : getString(R.string.msg_hide_formatter);
                 IconPowerMenuItem formatIcon = new IconPowerMenuItem(getDrawable(R.drawable.text_format_icon), formatStatus);
                 noteMenu.addItem(3, formatIcon);
             }
@@ -1702,81 +1699,81 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
     private final OnMenuItemClickListener<IconPowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuItem>() {
         @Override
         public void onItemClick(int position, IconPowerMenuItem item) {
-            if (item.getTitle().contains("Archive")) {
+            if (item.getTitle().equals(getString(R.string.msg_archive))
+                    || item.getTitle().equals(getString(R.string.archived))) {
                 updateArchivedStatus();
-            } else if (item.getTitle().equals("Export")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_export))) {
                 ExportNotesSheet exportNotesSheet = new ExportNotesSheet(noteId,
                         true, getCurrentNote(context, noteId).isCheckList() ?
                         Helper.getNoteString(context, noteId, getRealm()) : getCurrentNote(context, noteId).getNote());
                 exportNotesSheet.show(getSupportFragmentManager(), exportNotesSheet.getTag());
-            } else if (item.getTitle().equals("Reminder")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_reminder))) {
                 if (!getCurrentNote(context, noteId).getReminderDateTime().isEmpty()) {
-                    Helper.showMessage(NoteEdit.this, "Alarm Exists",
-                            "Delete Reminder to add another one", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(NoteEdit.this, getString(R.string.msg_alarm_exists),
+                            getString(R.string.msg_delete_reminder_to_add_another), MotionToast.TOAST_ERROR);
                 } else {
                     if (isNotificationPermissionEnabled())
                         checkNotificationPermission();
                     else {
-                        InfoSheet permissionInfo = new InfoSheet("Notification Permission Required", Manifest.permission.POST_NOTIFICATIONS);
+                        InfoSheet permissionInfo = new InfoSheet(getString(R.string.msg_notification_permission_required), Manifest.permission.POST_NOTIFICATIONS);
                         permissionInfo.show(getSupportFragmentManager(), permissionInfo.getTag());
                     }
                 }
-            } else if (item.getTitle().equals("Delete")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_delete_label))) {
                 dismissDialog = true;
                 openDialog();
-            } else if (item.getTitle().equals("Sort")) {
+            } else if (item.getTitle().equals(getString(R.string.sort))) {
                 FilterChecklistSheet filter = new FilterChecklistSheet(noteId);
                 filter.show(getSupportFragmentManager(), filter.getTag());
-            } else if (item.getTitle().equals("Lock")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_lock_note))) {
                 LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_NOTE, null);
                 lockSheet.show(getSupportFragmentManager(), lockSheet.getTag());
-            } else if (item.getTitle().equals("Locked")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_note_is_locked))) {
                 unLockNote();
-            } else if (item.getTitle().contains("Formatter")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_show_formatter))
+                    || item.getTitle().equals(getString(R.string.msg_hide_formatter))) {
                 hideRichTextStatus = !hideRichTextStatus;
 
                 if (hideRichTextStatus)
                     formatMenu.setVisibility(View.GONE);
                 else
                     formatMenu.setVisibility(View.VISIBLE);
-            } else if (item.getTitle().equals("Select All")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_select_all))) {
                 if (getCurrentNote(context, noteId).getChecklist().sort("positionInList").size() != 0) {
                     RealmHelper.selectAllChecklists(getCurrentNote(context, noteId), context, true);
                     checkNote(true);
                     checklistAdapter.notifyDataSetChanged();
-                    Helper.showMessage(NoteEdit.this, "Success", "All items " +
-                            "have been selected", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(NoteEdit.this, getString(R.string.msg_success), getString(R.string.msg_all_items_selected), MotionToast.TOAST_SUCCESS);
                 }
-            } else if (item.getTitle().equals("Deselect All")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_deselect_all))) {
                 if (getCurrentNote(context, noteId).getChecklist().sort("positionInList").size() != 0) {
                     RealmHelper.selectAllChecklists(getCurrentNote(context, noteId), context, false);
                     checkNote(false);
                     checklistAdapter.notifyDataSetChanged();
-                    Helper.showMessage(NoteEdit.this, "Success", "All items " +
-                            "have been unselected", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(NoteEdit.this, getString(R.string.msg_success), getString(R.string.msg_all_items_unselected), MotionToast.TOAST_SUCCESS);
                 }
-            } else if (item.getTitle().equals("Delete Items")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_delete_items))) {
                 showChecklistItemsDeleteBottomSheet();
-            } else if (item.getTitle().equals("Hide Items")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_hide_items))) {
                 showChecklistItemsHideBottomSheet();
-            } else if (item.getTitle().contains("Text")) {
+            } else if (item.getTitle().equals(getString(R.string.msg_text_size))) {
                 isChangingTextSize = true;
                 textSizeLayout.setVisibility(View.VISIBLE);
                 addAudioItem.setVisibility(View.GONE);
                 addCheckListItem.setVisibility(View.GONE);
                 decreaseTextSize.setAlpha(new Float(1.0));
                 increaseTextSize.setAlpha(new Float(1.0));
-            } else if (item.getTitle().equals("Info")) {
+            } else if (item.getTitle().equals(getString(R.string.info))) {
                 NoteInfoSheet noteInfoSheet = new NoteInfoSheet(getCurrentNote(context, noteId).getNoteId(), false);
                 noteInfoSheet.show(getSupportFragmentManager(), noteInfoSheet.getTag());
-            } else if (item.getTitle().contains("Sub-List"))
+            } else if (item.getTitle().contains(getString(R.string.msg_sub_list)))
                 updateSublistEnabledStatus();
-            else if (item.getTitle().equals("Undo Delete")) {
+            else if (item.getTitle().equals(getString(R.string.msg_undo_delete))) {
                 getRealm().beginTransaction();
                 getCurrentNote(context, noteId).setTrash(false);
                 getRealm().commitTransaction();
-                Helper.showMessage(NoteEdit.this, "Note Restored",
-                        "Note restored from trash", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(NoteEdit.this, getString(R.string.msg_note_restored),
+                        getString(R.string.msg_note_restored_from_trash), MotionToast.TOAST_SUCCESS);
             }
 
             noteMenu.dismiss();
@@ -1815,14 +1812,12 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 showDatePickerDialog();
             else
-                Helper.showMessage(this, "Reminder Permission", "Accept permission " +
-                        "to send yourself a reminder", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, getString(R.string.msg_reminder_permission), getString(R.string.msg_accept_permission_reminder), MotionToast.TOAST_ERROR);
         } else if (requestCode == 3) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 openRecordingSheet();
             else
-                Helper.showMessage(this, "Microphone Permission", "Accept permission " +
-                        "to record voice notes", MotionToast.TOAST_ERROR);
+                Helper.showMessage(this, getString(R.string.msg_microphone_permission), getString(R.string.msg_permission_record_voice), MotionToast.TOAST_ERROR);
         }
     }
 
@@ -1837,17 +1832,17 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
                 Log.d("Here", "Selected Button -> " + selectedToDelete);
                 RealmHelper.deleteChecklist(getCurrentNote(context, noteId), context);
                 checkNote(false);
-                Helper.showMessage(NoteEdit.this, "Success", "All items deleted", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(NoteEdit.this, getString(R.string.msg_success), getString(R.string.msg_all_items_deleted), MotionToast.TOAST_SUCCESS);
                 break;
             case "checked":
                 Log.d("Here", "Selected Button -> " + selectedToDelete);
                 RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context, true, false);
-                Helper.showMessage(NoteEdit.this, "Success", "Checked items deleted", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(NoteEdit.this, getString(R.string.msg_success), getString(R.string.msg_checked_items_deleted), MotionToast.TOAST_SUCCESS);
                 break;
             case "un-checked":
                 Log.d("Here", "Selected Button -> " + selectedToDelete);
                 RealmHelper.deleteChecklistItems(getCurrentNote(context, noteId), context, false, false);
-                Helper.showMessage(NoteEdit.this, "Success", "Un-Checked items deleted", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(NoteEdit.this, getString(R.string.msg_success), getString(R.string.msg_unchecked_items_deleted), MotionToast.TOAST_SUCCESS);
                 break;
             default:
                 return;
@@ -1962,8 +1957,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
     public void lockNote(int pin, String securityWord, boolean fingerprint) {
         RealmHelper.lockNote(context, noteId, pin, securityWord, fingerprint);
         updateSaveDateEdited();
-        Helper.showMessage(this, "Note Locked", "Note has been " +
-                "locked", MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(this, getString(R.string.msg_note_locked), getString(R.string.msg_note_has_been_locked), MotionToast.TOAST_SUCCESS);
 
         if (getCurrentNote(context, noteId).getReminderDateTime().length() > 1) {
             InfoSheet info = new InfoSheet(-1);
@@ -1978,8 +1972,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         getCurrentNote(context, noteId).setFingerprint(false);
         getRealm().commitTransaction();
         updateSaveDateEdited();
-        Helper.showMessage(this, "Note un-Lock", "Note has been " +
-                "un-locked", MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(this, getString(R.string.msg_note_unlock), getString(R.string.msg_note_has_been_unlocked), MotionToast.TOAST_SUCCESS);
     }
 
     private void updateReminderLayout(int visibility, int color) {
@@ -2077,7 +2070,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             datePickerDialog.setCancelColor(UiHelper.getColorFromTheme(this, R.attr.primaryTextColor));
             datePickerDialog.show(getSupportFragmentManager(), "DatePickerDialog");
         } else
-            Helper.showMessage(this, "Reminder Issue", "Reminders do not work on Android 7 devices", MotionToast.TOAST_ERROR);
+            Helper.showMessage(this, getString(R.string.msg_reminder_issue), getString(R.string.msg_reminders_android7), MotionToast.TOAST_ERROR);
     }
 
     @Override
@@ -2102,15 +2095,15 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             intent.putExtra("fingerprint", getCurrentNote(context, noteId).isFingerprint());
             updateReminderDate(currentDateTimeSelected);
             updateReminderLayout(View.VISIBLE, UiHelper.getColorFromTheme(this, R.attr.secondaryTextColor));
-            Helper.showMessage(this, "Reminder set", "Will Remind you " +
-                    "in " + Helper.getTimeDifference(c, true), MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(this, getString(R.string.msg_reminder_set),
+                    getString(R.string.msg_will_remind_you, Helper.getTimeDifference(c, true)), MotionToast.TOAST_SUCCESS);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, noteId, intent,
                     PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 if (!alarmManager.canScheduleExactAlarms()) {
-                    Helper.showMessage(this, "Alarm Not Set", "Enable " +
-                            "Alarms & try again", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(this, getString(R.string.msg_alarm_not_set),
+                            getString(R.string.msg_enable_alarms_try_again), MotionToast.TOAST_ERROR);
                     startAlarmPermission.launch(new Intent(
                             Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                             Uri.parse("package:" + getPackageName())
@@ -2122,7 +2115,7 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             AlarmManager.AlarmClockInfo clock = new AlarmManager.AlarmClockInfo(c.getTimeInMillis(), pendingIntent);
             alarmManager.setAlarmClock(clock, pendingIntent);
         } else
-            showMessage("Reminder not set", "Reminder cannot be in the past", true);
+            showMessage(getString(R.string.msg_reminder_not_set), getString(R.string.msg_reminder_cannot_be_past), true);
     }
 
     private void updateReminderDate(String date) {
@@ -2146,11 +2139,9 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         updateSaveDateEdited();
 
         if (isNoteArchived) {
-            Helper.showMessage(this, "Archived Status", "Note has been " +
-                    "un-archived", MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(this, getString(R.string.msg_archived_status), getString(R.string.msg_note_unarchived), MotionToast.TOAST_SUCCESS);
         } else {
-            Helper.showMessage(this, "Archived Status", "Note has been " +
-                    "archived and put in the archived folder", MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(this, getString(R.string.msg_archived_status), getString(R.string.msg_note_archived_folder), MotionToast.TOAST_SUCCESS);
         }
     }
 
@@ -2160,8 +2151,8 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         getRealm().beginTransaction();
         getCurrentNote(context, noteId).setEnableSublist(!isSublistEnabled);
         getRealm().commitTransaction();
-        Helper.showMessage(this, "Sublist Status", "It has been " +
-                (isSublistEnabled ? "disabled" : "enabled"), MotionToast.TOAST_SUCCESS);
+        Helper.showMessage(this, getString(R.string.msg_sublist_status), getString(R.string.msg_it_has_been,
+                isSublistEnabled ? getString(R.string.msg_disabled) : getString(R.string.msg_enabled)), MotionToast.TOAST_SUCCESS);
         updateSaveDateEdited();
         checklistAdapter.notifyDataSetChanged();
     }
@@ -2220,12 +2211,12 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
         if (getCurrentNote(context, noteId).isTrash() || deleteNote) {
             String noteTitle = getCurrentNote(context, noteId).getTitle();
             RealmHelper.deleteNote(context, getCurrentNote(context, noteId).getNoteId());
-            Helper.showMessage(NoteEdit.this, "Deleted", noteTitle, MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(NoteEdit.this, getString(R.string.msg_deleted), noteTitle, MotionToast.TOAST_SUCCESS);
         } else {
             getRealm().beginTransaction();
             getCurrentNote(context, noteId).setTrash(true);
             getRealm().commitTransaction();
-            Helper.showMessage(NoteEdit.this, "Sent to trash", getCurrentNote(context, noteId).getTitle(), MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(NoteEdit.this, getString(R.string.msg_sent_to_trash), getCurrentNote(context, noteId).getTitle(), MotionToast.TOAST_SUCCESS);
         }
         finish("Deleting note");
     }
@@ -2460,14 +2451,14 @@ public class NoteEdit extends BaseActivity implements DatePickerDialog.OnDateSet
             else {
                 colorPickerView = ColorPickerDialogBuilder
                         .with(context, R.style.ColorPickerDialogTheme)
-                        .setTitle("Select Text Color")
+                        .setTitle(getString(R.string.msg_select_text_color))
                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                         .density(10)
-                        .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
+                        .setPositiveButton(getString(R.string.msg_select_uppercase), (dialog, selectedColor, allColors) -> {
                             note.setTextColor(selectedColor);
                             note.focusEditor();
                         })
-                        .setNegativeButton("CLOSE", (dialog, which) ->
+                        .setNegativeButton(getString(R.string.msg_close_uppercase), (dialog, which) ->
                                 dialog.dismiss())
                         .build();
                 colorPickerView.show();

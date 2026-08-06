@@ -34,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:fontFamily="@font/baloo_bhai"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textColor="?primaryTextColor"
                 android:textSize="24sp" />
 
@@ -56,7 +56,7 @@
             android:layout_marginTop="-20dp"
             android:elevation="10dp"
             android:stateListAnimator="@null"
-            android:text="Support"
+            android:text="@string/support"
             android:textColor="?primaryTextColor"
             android:textSize="10sp"
             app:cardBackgroundColor="?secondaryBackgroundColor"
@@ -142,7 +142,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Account"
+            android:text="@string/account"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -245,7 +245,7 @@
                         app:strokeColor="?secondaryStrokeColor"
                         app:strokeWidth="2dp"
                         android:gravity="center"
-                        android:text="Sign Up"
+                        android:text="@string/sign_up"
                         android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp" />
@@ -261,7 +261,7 @@
                         app:strokeColor="?secondaryStrokeColor"
                         app:strokeWidth="2dp"
                         android:gravity="center"
-                        android:text="Login"
+                        android:text="@string/login"
                         android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp" />
@@ -294,7 +294,7 @@
                         app:strokeColor="?secondaryStrokeColor"
                         app:strokeWidth="2dp"
                         android:gravity="center"
-                        android:text="Sync"
+                        android:text="@string/sync"
                         android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp"
@@ -313,7 +313,7 @@
                         app:strokeColor="?secondaryStrokeColor"
                         app:strokeWidth="2dp"
                         android:gravity="center"
-                        android:text="Upload"
+                        android:text="@string/upload"
                         android:textColor="?primaryTextColor"
                         android:textSize="14sp"
                         app:cornerRadius="15dp"
@@ -365,7 +365,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Backup &amp; Restore"
+            android:text="@string/backup_restore"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -405,7 +405,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="99"
                         android:gravity="center_vertical"
-                        android:text="Backup"
+                        android:text="@string/backup"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -438,7 +438,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="99"
                         android:gravity="center_vertical"
-                        android:text="Restore Backup"
+                        android:text="@string/restore_backup"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -465,7 +465,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Note Preview Settings"
+            android:text="@string/note_preview_settings"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -508,7 +508,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Title Lines"
+                        android:text="@string/title_lines"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -519,7 +519,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="9"
                         android:gravity="center|right"
-                        android:text="Default"
+                        android:text="@string/default_label"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -556,7 +556,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Content Lines"
+                        android:text="@string/content_lines"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -567,7 +567,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="9"
                         android:gravity="center|right"
-                        android:text="Default"
+                        android:text="@string/default_label"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -604,7 +604,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Show Preview"
+                        android:text="@string/show_preview"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -640,7 +640,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Show Info Icon"
+                        android:text="@string/show_info_icon"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -676,7 +676,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Move Info Icon to Bottom"
+                        android:text="@string/move_info_icon_to_bottom"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -703,7 +703,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Layout"
+            android:text="@string/layout"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -808,7 +808,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Checklist Settings"
+            android:text="@string/checklist_settings"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -851,7 +851,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Checklist Separator"
+                        android:text="@string/checklist_separator"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -862,7 +862,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="9"
                         android:gravity="center|right"
-                        android:text="Default"
+                        android:text="@string/default_label"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -898,7 +898,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Sublist Separator"
+                        android:text="@string/sublist_separator"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -909,7 +909,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="9"
                         android:gravity="center|right"
-                        android:text="Default"
+                        android:text="@string/default_label"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -945,7 +945,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Budget Symbol"
+                        android:text="@string/budget_symbol"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -956,7 +956,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="9"
                         android:gravity="center|right"
-                        android:text="Default"
+                        android:text="@string/default_label"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -992,7 +992,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Expense Symbol"
+                        android:text="@string/expense_symbol"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1003,7 +1003,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="9"
                         android:gravity="center|right"
-                        android:text="Default"
+                        android:text="@string/default_label"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1039,7 +1039,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Only Crossed Budget Expenses are counted"
+                        android:text="@string/only_crossed_budget_expenses_are_counted"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1074,7 +1074,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Enable Sub-Lists for Checklist"
+                        android:text="@string/enable_sub_lists_for_checklist"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1109,7 +1109,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Show Delete Icon in Checklist"
+                        android:text="@string/show_delete_icon_in_checklist"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1144,7 +1144,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Disable Audio for Checklists"
+                        android:text="@string/disable_audio_for_checklists"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1179,7 +1179,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Disable Budget for Checklists"
+                        android:text="@string/disable_budget_for_checklists"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1214,7 +1214,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Square Style for Checklist Checkboxes"
+                        android:text="@string/square_style_for_checklist_checkboxes"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1243,7 +1243,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Folder Settings"
+            android:text="@string/folder_settings"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -1284,7 +1284,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Show Folders on Launch"
+                        android:text="@string/show_folders_on_launch"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1325,7 +1325,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:text="Organize Notes inside Folders"
+                            android:text="@string/organize_notes_inside_folders"
                             android:textColor="?tertiaryTextColor"
                             android:textSize="14sp"
                             android:textStyle="bold"></TextView>
@@ -1336,7 +1336,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="2dp"
                             android:gravity="center_vertical"
-                            android:text="Display only uncategorized notes in home screen"
+                            android:text="@string/display_only_uncategorized_notes_in_home_screen"
                             android:textColor="?tertiaryTextColor"
                             android:textSize="10sp"
                             android:textStyle="bold"></TextView>
@@ -1366,7 +1366,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Note Settings"
+            android:text="@string/note_settings"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -1409,7 +1409,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Allow Blank Title &amp; Note"
+                        android:text="@string/allow_blank_title_note"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1444,7 +1444,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Hide Editor"
+                        android:text="@string/hide_editor"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1479,7 +1479,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="24 Hour Date Format"
+                        android:text="@string/n_24_hour_date_format"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1514,7 +1514,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Notes are View-Only by Default"
+                        android:text="@string/notes_are_view_only_by_default"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1549,7 +1549,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Hide Last Edit Info"
+                        android:text="@string/hide_last_edit_info"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1584,7 +1584,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_weight="90"
                         android:gravity="center_vertical"
-                        android:text="Background Color Customization"
+                        android:text="@string/background_color_customization"
                         android:textColor="?tertiaryTextColor"
                         android:textSize="14sp"
                         android:textStyle="bold"></TextView>
@@ -1612,7 +1612,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
-            android:text="Other Settings"
+            android:text="@string/other_settings"
             android:textColor="?secondaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -1648,7 +1648,7 @@
                     android:layout_weight="90"
                     android:paddingRight="10dp"
                     android:gravity="center_vertical"
-                    android:text="Widget Text Size"
+                    android:text="@string/widget_text_size"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
@@ -1707,7 +1707,7 @@
                     android:layout_weight="90"
                     android:paddingRight="10dp"
                     android:gravity="center_vertical"
-                    android:text="New Note Button Toggles"
+                    android:text="@string/new_note_button_toggles"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
@@ -1718,7 +1718,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="9"
                     android:gravity="center|right"
-                    android:text="Default"
+                    android:text="@string/default_label"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
@@ -1765,7 +1765,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="90"
                     android:gravity="center_vertical"
-                    android:text="New Note Button (Enlarge)"
+                    android:text="@string/new_note_button_enlarge"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -1811,7 +1811,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="90"
                     android:gravity="center_vertical"
-                    android:text="Turn Off Screen Animation"
+                    android:text="@string/turn_off_screen_animation"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -1857,7 +1857,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="9"
                     android:gravity="center|left"
-                    android:text="App Settings"
+                    android:text="@string/app_settings"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -1918,7 +1918,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:gravity="center|left"
-                    android:text="About"
+                    android:text="@string/about"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -1966,7 +1966,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="8"
                     android:gravity="center|left"
-                    android:text="Frequently Asked Questions (FAQ)"
+                    android:text="@string/frequently_asked_questions_faq"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -2010,7 +2010,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="9"
                     android:gravity="center|left"
-                    android:text="Contact Developer"
+                    android:text="@string/contact_developer"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -2054,7 +2054,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="9"
                     android:gravity="center|left"
-                    android:text="Dark Note Sub-Reddit Feedback"
+                    android:text="@string/dark_note_sub_reddit_feedback"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -2099,7 +2099,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="9"
                     android:gravity="center|left"
-                    android:text="Removed Unused Files"
+                    android:text="@string/removed_unused_files"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>
@@ -2144,7 +2144,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="9"
                     android:gravity="center|left"
-                    android:text="Leave a Review"
+                    android:text="@string/leave_a_review"
                     android:textColor="?tertiaryTextColor"
                     android:textSize="14sp"
                     android:textStyle="bold"></TextView>

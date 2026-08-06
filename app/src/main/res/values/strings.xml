@@ -1,18 +1,16 @@
 <resources>
 
-    <!-- App Data !-->
+    <!-- App Data -->
     <string name="app_name">Dark Note</string>
     <string name="schema">57</string>
-    <!-- Changed for every update !-->
-    <!-- Also update versionCode !-->
     <string name="app_version">v19.4</string>
     <string name="app_version_int">19.4</string>
 
-    <!-- App Shortcuts !-->
+    <!-- App Shortcuts -->
     <string name="new_note_shortcut">New Note</string>
     <string name="new_checklist_shortcut">New Checklist</string>
 
-    <!-- Account Login Sheet !-->
+    <!-- Account / system messages -->
     <string name="login_error_title">Wrong Login/Password</string>
     <string name="login_error_message">Please try again.</string>
     <string name="password_reset_title">Reset Password</string>
@@ -20,12 +18,8 @@
     <string name="login_max_title">Too many attempts</string>
     <string name="login_max_message">Please contact admin</string>
     <string name="input_error">Incorrect Input</string>
-
-    <!-- Widget Preview !-->
     <string name="preview_description">Preview Your Notes Quickly</string>
     <string name="shortcut_description">Shortcut for Adding Notes Quickly</string>
-
-    <!-- Note Info Sheet !-->
     <string name="try_out_budget">
         How to use:\n\n
 
@@ -47,20 +41,16 @@
 
         See screenshots below (click to expand):
     </string>
-
     <string name="try_out_budget_message">
         \n
         No Budget Found (Try it Out)\n
         Click on Info icon to learn more…
         \n
     </string>
-
-    <!-- Settings !-->
     <string name="support_me_message">Dark Note is <u><b>free</b></u> and has
         <u><b>no ads</b></u>  \nYou can support me by buying
         me some much needed <u><b>coffee</b></u> or
         leaving an honest review, even if it is a 1 ⭐</string>
-
     <string name="credits_text">
 
         <font color='#7A9CC7'>Dark Note is Free and Open Sourced</font>\n
@@ -114,7 +104,6 @@
         https://github.com/vplacinta-dev/currency-picker-android\n\n
 
     </string>
-
     <string name="version_19_4_whats_new_text">Please join the Dark Note Community for updates, feedback, help, or to say HELLO 😊\n\nGo to Settings ➡ Scroll to bottom ➡ Dark Note Sub-Reddit Feedback\n\n
         <font color='#8CA9CF'><b>New 🎉</b></font>\n
         • Support for Android 16\n
@@ -124,7 +113,500 @@
 
         <font color='#8CA9CF'><b>Bug and Behavior Fixes</b></font>\n
         • Always working hard to ensure a pleasant crash-free experience:
-        99%+ of users do not experience any issues or crashes!\n
+        99%%+ of users do not experience any issues or crashes!\n
     </string>
+
+    <!-- UI strings (layouts) -->
+    <string name="folders">Folders</string>
+    <string name="all_notes">All Notes</string>
+    <string name="notes_without_folders">Notes Without Folders</string>
+    <string name="trash">Trash</string>
+    <string name="archived">Archived</string>
+    <string name="un_pin">Un-Pin</string>
+    <string name="pinned">Pinned</string>
+    <string name="reminders">Reminders</string>
+    <string name="locked">Locked</string>
+    <string name="photos">   Photos   </string>
+    <string name="remove_from_folder">Remove from Folder</string>
+    <string name="don_t_mind_me_just_passing_some_time_in_the_meanti">Don\'t mind me, just passing some time...\n\nIn the meantime, press the add button to add a folder</string>
+    <string name="dark_note">Dark Note</string>
+    <string name="beautiful_intuitive">Beautiful &amp; Intuitive</string>
+    <string name="i_am_sorry_an_error_occured_app_restart_required">I am sorry, an error occured 😔\nApp Restart Required...</string>
+    <string name="notification">Notification</string>
+    <string name="date">Date</string>
+    <string name="folder">Folder:</string>
+    <string name="none">none</string>
+    <string name="don_t_get_lost_in_the_universe_trying_to_remember">Don\'t get lost in the universe trying to remember.</string>
+    <string name="let_me_do_it_for_you">Let me do it for you</string>
+    <string name="tap_the_bottom_right_button_to_create_a_note">Tap the bottom right button to create a note</string>
+    <string name="confirm_cancel_reorder">CONFIRM / CANCEL REORDER</string>
+    <string name="rtl">RTL</string>
+    <string name="search_inside_note">Search inside note</string>
+    <string name="title">Title</string>
+    <string name="note_title">[ Note Title ]</string>
+    <string name="enter_your_pin_to_unlock">Enter your PIN to unlock</string>
+    <string name="forgot_passcode">Forgot Passcode\n😔</string>
+    <string name="settings">Settings</string>
+    <string name="support">Support</string>
+    <string name="account">Account</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Login</string>
+    <string name="sync">Sync</string>
+    <string name="upload">Upload</string>
+    <string name="backup_restore">Backup &amp; Restore</string>
+    <string name="backup">Backup</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="note_preview_settings">Note Preview Settings</string>
+    <string name="title_lines">Title Lines</string>
+    <string name="default_label">Default</string>
+    <string name="content_lines">Content Lines</string>
+    <string name="show_preview">Show Preview</string>
+    <string name="show_info_icon">Show Info Icon</string>
+    <string name="move_info_icon_to_bottom">Move Info Icon to Bottom</string>
+    <string name="layout">Layout</string>
+    <string name="checklist_settings">Checklist Settings</string>
+    <string name="checklist_separator">Checklist Separator</string>
+    <string name="sublist_separator">Sublist Separator</string>
+    <string name="budget_symbol">Budget Symbol</string>
+    <string name="expense_symbol">Expense Symbol</string>
+    <string name="only_crossed_budget_expenses_are_counted">Only Crossed Budget Expenses are counted</string>
+    <string name="enable_sub_lists_for_checklist">Enable Sub-Lists for Checklist</string>
+    <string name="show_delete_icon_in_checklist">Show Delete Icon in Checklist</string>
+    <string name="disable_audio_for_checklists">Disable Audio for Checklists</string>
+    <string name="disable_budget_for_checklists">Disable Budget for Checklists</string>
+    <string name="square_style_for_checklist_checkboxes">Square Style for Checklist Checkboxes</string>
+    <string name="folder_settings">Folder Settings</string>
+    <string name="show_folders_on_launch">Show Folders on Launch</string>
+    <string name="organize_notes_inside_folders">Organize Notes inside Folders</string>
+    <string name="display_only_uncategorized_notes_in_home_screen">Display only uncategorized notes in home screen</string>
+    <string name="note_settings">Note Settings</string>
+    <string name="allow_blank_title_note">Allow Blank Title &amp; Note</string>
+    <string name="hide_editor">Hide Editor</string>
+    <string name="n_24_hour_date_format">24 Hour Date Format</string>
+    <string name="notes_are_view_only_by_default">Notes are View-Only by Default</string>
+    <string name="hide_last_edit_info">Hide Last Edit Info</string>
+    <string name="background_color_customization">Background Color Customization</string>
+    <string name="other_settings">Other Settings</string>
+    <string name="widget_text_size">Widget Text Size</string>
+    <string name="new_note_button_toggles">New Note Button Toggles</string>
+    <string name="new_note_button_enlarge">New Note Button (Enlarge)</string>
+    <string name="turn_off_screen_animation">Turn Off Screen Animation</string>
+    <string name="app_settings">App Settings</string>
+    <string name="about">About</string>
+    <string name="frequently_asked_questions_faq">Frequently Asked Questions (FAQ)</string>
+    <string name="contact_developer">Contact Developer</string>
+    <string name="dark_note_sub_reddit_feedback">Dark Note Sub-Reddit Feedback</string>
+    <string name="removed_unused_files">Removed Unused Files</string>
+    <string name="leave_a_review">Leave a Review</string>
+    <string name="select_note_for_widget">Select note for widget</string>
+    <string name="search_for_note">Search for note</string>
+    <string name="sign_up_2">Sign up</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="info">Info</string>
+    <string name="images">Images</string>
+    <string name="audio">Audio</string>
+    <string name="backup_2">BACKUP</string>
+    <string name="budget">Budget</string>
+    <string name="error_message">error message</string>
+    <string name="xxxx_xx">$XXXX.XX</string>
+    <string name="alphabetical_a_z">Alphabetical ➙ A - Z</string>
+    <string name="alphabetical_z_a">Alphabetical ➙ Z - A</string>
+    <string name="checked_items_bottom">Checked Items ➙ Bottom</string>
+    <string name="checked_items_top">Checked Items ➙ Top</string>
+    <string name="new_items_top">New Items ➙ Top   *</string>
+    <string name="new_items_bottom">New Items ➙ Bottom   *</string>
+    <string name="sort">Sort</string>
+    <string name="custom_sorting_supported_drag_and_drop">* Custom Sorting Supported (drag and drop)</string>
+    <string name="apply_to_all_checklists">Apply to All Checklists</string>
+    <string name="adding_new_item">Adding New Item</string>
+    <string name="created">Created: </string>
+    <string name="long_click_photo_to_delete">Long Click photo to delete</string>
+    <string name="place_info">place_info</string>
+    <string name="redirect">redirect</string>
+    <string name="item_name">Item name</string>
+    <string name="color_menu">Color Menu</string>
+    <string name="preview_background">Preview Background</string>
+    <string name="use_as_note_background">Use as Note Background</string>
+    <string name="last_edit_folder_text">Last Edit + Folder Text</string>
+    <string name="note_text">Note Text</string>
+    <string name="icons_editor_background_transparency">Icons + Editor Background Transparency</string>
+    <string name="comment">Comment</string>
+    <string name="enter_comment">Enter Comment</string>
+    <string name="credits">Credits</string>
+    <string name="select_one_to_delete">Select One to Delete</string>
+    <string name="checked_items">Checked Items</string>
+    <string name="un_checked_items">Un-Checked Items</string>
+    <string name="all_items">All Items</string>
+    <string name="delete">DELETE</string>
+    <string name="export_notes">Export Notes</string>
+    <string name="markdown_file">Markdown File</string>
+    <string name="text_file">Text File</string>
+    <string name="text">Text</string>
+    <string name="text_markdown">Text (Markdown)</string>
+    <string name="export_note">Export Note</string>
+    <string name="by_date">By Date</string>
+    <string name="created_date">Created Date</string>
+    <string name="edited_date">Edited Date</string>
+    <string name="oldest_note_most_recent">Oldest Note ➙ Most Recent</string>
+    <string name="most_recent_note_oldest">Most Recent Note ➙ Oldest</string>
+    <string name="alphabetically">Alphabetically</string>
+    <string name="a_z">A - Z</string>
+    <string name="z_a">Z - A</string>
+    <string name="save_t_t">SAVE\t\t</string>
+    <string name="apply">Apply</string>
+    <string name="folder_name">Folder name</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="checklist_items_visibility">Checklist Items Visibility</string>
+    <string name="toggled_items_are_visible">Toggled -&gt; Items are Visible</string>
+    <string name="confirm">Confirm</string>
+    <string name="security_word">Security Word</string>
+    <string name="select_image_type">Select Image Type</string>
+    <string name="adjust_size_of_image_this_is_how_it_will_look_in_y">Adjust size of image, this is how it will look in your note</string>
+    <string name="width">Width</string>
+    <string name="height">Height</string>
+    <string name="adjust_size_of_image_this_is_how_it_will_look_in_y_2">Adjust size of image, this is how it will look in your note.</string>
+    <string name="download_t_t">Download\t\t</string>
+    <string name="image_link">Image Link</string>
+    <string name="insert_youtube_video">Insert Youtube Video</string>
+    <string name="adjust_size_of_image_this_is_how_it_will_look_in_y_3">Adjust size of image, this is how it will look in your note. Please note that you cannot edit the size of Youtube videos afterwards.</string>
+    <string name="video_link">Video Link</string>
+    <string name="locked_folder">Locked Folder</string>
+    <string name="proceed">Proceed</string>
+    <string name="see_faq_for_explanation">* See FAQ for explanation</string>
+    <string name="lock">Lock</string>
+    <string name="fingerprint_t_t">Fingerprint\t\t</string>
+    <string name="pin">Pin</string>
+    <string name="note">Note : </string>
+    <string name="date_created">Date Created : </string>
+    <string name="date_edited">Date Edited : </string>
+    <string name="folder_2">Folder : </string>
+    <string name="photos_2">Photos : </string>
+    <string name="words">Words : </string>
+    <string name="characters">Characters : </string>
+    <string name="open">OPEN</string>
+    <string name="voice_note">Voice Note</string>
+    <string name="done">Done</string>
+    <string name="select_media">Select Media</string>
+    <string name="camera">Camera</string>
+    <string name="system_photo_picker">System Photo Picker</string>
+    <string name="browse_files">Browse Files</string>
+    <string name="select_media_type">Select Media Type</string>
+    <string name="storage">Storage</string>
+    <string name="online">Online</string>
+    <string name="what_s_new_vxx_x">What\'s New? vXX.X</string>
+    <string name="sorted_by">Sorted by: </string>
+    <string name="item">Item</string>
+    <string name="file_name">File Name</string>
+    <string name="n_0_mb">0 MB</string>
+    <string name="sync_2">SYNC</string>
+    <string name="insert_category">insert category</string>
+    <string name="note_2">Note</string>
+    <string name="expense">Expense</string>
+    <string name="note_title_2">Note title</string>
+    <string name="note_preview">note preview</string>
+    <string name="december_12_2020">December 12, 2020</string>
+    <string name="n_0_b">0 B</string>
+    <string name="amount">Amount</string>
+    <string name="loading">Loading...</string>
+    <string name="preview">Preview</string>
+    <string name="notes_checklists">Notes &amp; Checklists</string>
+
+    <!-- Runtime messages (Java) -->
+    <string name="msg_added">Added</string>
+    <string name="msg_notes_added_to_category">Note(s) have been added to category</string>
+    <string name="msg_unselected">UnSelected</string>
+    <string name="msg_all_selected_unselected_from_category">All Selected note(s) have been unselected from category</string>
+    <string name="msg_archived">Archived</string>
+    <string name="msg_all_selected_archived">All Selected note(s) have been archived</string>
+    <string name="msg_unarchived">Un-Archived</string>
+    <string name="msg_all_selected_unarchived">All Selected note(s) have been un-archived</string>
+    <string name="msg_pinned">Pinned</string>
+    <string name="msg_all_selected_pinned">All Selected note(s) have been pinned</string>
+    <string name="msg_unpinned">Un-Pinned</string>
+    <string name="msg_all_selected_unpinned">All Selected note(s) have been un-pinned</string>
+    <string name="msg_locked_notes">Locked Notes</string>
+    <string name="msg_locked_notes_cannot_delete">Locked notes cannot be deleted</string>
+    <string name="msg_deleted">Deleted</string>
+    <string name="msg_selected_deleted">%1$d selected have been deleted</string>
+    <string name="msg_sent_to_trash">Sent to trash</string>
+    <string name="msg_selected_sent_to_trash">%1$d selected have been sent to trash</string>
+    <string name="msg_not_deleted">Not Deleted</string>
+    <string name="msg_nothing_selected_not_deleted">Nothing was selected and thus not deleted</string>
+    <string name="msg_restored">Restored</string>
+    <string name="msg_selected_restored">%1$d selected have been restored</string>
+    <string name="msg_not_restored">Not Restored</string>
+    <string name="msg_nothing_selected_not_restored">Nothing was selected and thus not restored</string>
+    <string name="msg_n_selected">%1$d Selected</string>
+    <string name="msg_folderless_notes">Folderless Notes</string>
+    <string name="msg_archive">Archive</string>
+    <string name="msg_unarchive">Un-Archive</string>
+    <string name="msg_pin">Pin</string>
+    <string name="msg_editing">Editing</string>
+    <string name="msg_click_item_to_edit">Click on item to edit</string>
+    <string name="msg_folder_locked">Folder Locked</string>
+    <string name="msg_folder_and_notes_locked">Folder and notes inside have been locked</string>
+    <string name="msg_select_folder">Select Folder</string>
+    <string name="msg_need_select_folder">You need to select a folder to put all the notes you selected</string>
+    <string name="msg_empty">Empty</string>
+    <string name="msg_cannot_open_empty_folder">Cannot open empty folder</string>
+    <string name="msg_current_category">Current:\n%1$s</string>
+    <string name="msg_unlock_app">Unlock App</string>
+    <string name="msg_app_unlocked">App un-Locked</string>
+    <string name="msg_app_lock_removed">App lock has been removed</string>
+    <string name="msg_media_permission">Media Permission</string>
+    <string name="msg_media_permission_required">This permission is required so that you can select images from your phone.\n\n</string>
+    <string name="msg_camera_permission">Camera Permission</string>
+    <string name="msg_camera_permission_required">This permission is required so that you can use the camera.\n\n</string>
+    <string name="msg_webview_missing_title">Error -> WebView Missing</string>
+    <string name="msg_webview_missing_body">Your device is missing WebView, which is needed for the app to function. Try using another device or add WebView</string>
+    <string name="msg_device_not_supported_webview">Device not supported -> WebView is required!</string>
+    <string name="msg_close">Close</string>
+    <string name="msg_note_deleted_delete_widget">Note has been deleted, please delete widget!</string>
+    <string name="msg_alarm_not_set">Alarm not set</string>
+    <string name="msg_alarm_permission_needed">Alarm permission needs to be enabled</string>
+    <string name="msg_edited">Edited</string>
+    <string name="msg_note_has_been_edited">Note has been edited</string>
+    <string name="msg_type_something">Type something...</string>
+    <string name="msg_reminder_passed">Reminder Passed</string>
+    <string name="msg_delete_reminder_to_clear">Please delete reminder to get rid of this message!</string>
+    <string name="msg_searching_impossible">Searching for something that does not exist is impossible</string>
+    <string name="msg_reminder">Reminder</string>
+    <string name="msg_reminder_deleted">Reminder was deleted</string>
+    <string name="msg_mic_permission_required">Microphone Permission Required</string>
+    <string name="msg_mic_error">Mic Error</string>
+    <string name="msg_no_mic_detected">No mic detected on device</string>
+    <string name="msg_photos_empty">Photos Empty</string>
+    <string name="msg_add_photos_to_note">Add photos to note</string>
+    <string name="msg_note_deleted_change_settings">Note has been deleted, change in settings</string>
+    <string name="msg_picture_corrupted">Picture(s) corrupted or has been deleted from photos</string>
+    <string name="msg_not_found_suffix">%1$s not found</string>
+    <string name="msg_undo_delete">Undo Delete</string>
+    <string name="msg_text_size">Text Size</string>
+    <string name="msg_export">Export</string>
+    <string name="msg_delete_label">Delete</string>
+    <string name="msg_select_all">Select All</string>
+    <string name="msg_deselect_all">Deselect All</string>
+    <string name="msg_delete_items">Delete Items</string>
+    <string name="msg_hide_items">Hide Items</string>
+    <string name="msg_sub_list">Sub-List</string>
+    <string name="msg_show_formatter">Show Formatter</string>
+    <string name="msg_hide_formatter">Hide Formatter</string>
+    <string name="msg_alarm_exists">Alarm Exists</string>
+    <string name="msg_delete_reminder_to_add_another">Delete Reminder to add another one</string>
+    <string name="msg_notification_permission_required">Notification Permission Required</string>
+    <string name="msg_formatter">Formatter</string>
+    <string name="msg_success">Success</string>
+    <string name="msg_all_items_selected">All items have been selected</string>
+    <string name="msg_all_items_unselected">All items have been unselected</string>
+    <string name="msg_note_restored">Note Restored</string>
+    <string name="msg_note_restored_from_trash">Note restored from trash</string>
+    <string name="msg_reminder_permission">Reminder Permission</string>
+    <string name="msg_accept_permission_reminder">Accept permission to send yourself a reminder</string>
+    <string name="msg_microphone_permission">Microphone Permission</string>
+    <string name="msg_permission_record_voice">Accept permission to record voice notes</string>
+    <string name="msg_all_items_deleted">All items deleted</string>
+    <string name="msg_checked_items_deleted">Checked items deleted</string>
+    <string name="msg_unchecked_items_deleted">Un-Checked items deleted</string>
+    <string name="msg_lock_note">Lock</string>
+    <string name="msg_note_is_locked">Locked</string>
+    <string name="msg_note_locked">Note Locked</string>
+    <string name="msg_note_has_been_locked">Note has been locked</string>
+    <string name="msg_note_unlock">Note un-Lock</string>
+    <string name="msg_note_has_been_unlocked">Note has been un-locked</string>
+    <string name="msg_reminder_issue">Reminder Issue</string>
+    <string name="msg_reminders_android7">Reminders do not work on Android 7 devices</string>
+    <string name="msg_reminder_set">Reminder set</string>
+    <string name="msg_will_remind_you">Will remind you in %1$s</string>
+    <string name="msg_enable_alarms_try_again">Enable Alarms &amp; try again</string>
+    <string name="msg_reminder_not_set">Reminder not set</string>
+    <string name="msg_reminder_cannot_be_past">Reminder cannot be in the past</string>
+    <string name="msg_archived_status">Archived Status</string>
+    <string name="msg_note_unarchived">Note has been un-archived</string>
+    <string name="msg_note_archived_folder">Note has been archived and put in the archived folder</string>
+    <string name="msg_sublist_status">Sublist Status</string>
+    <string name="msg_it_has_been">It has been %1$s</string>
+    <string name="msg_now_in_trash"> [Now in Trash]</string>
+    <string name="msg_last_edit">Last Edit: %1$s</string>
+    <string name="msg_select_text_color">Select Text Color</string>
+    <string name="msg_fingerprint_error">Fingerprint Error</string>
+    <string name="msg_fingerprint_not_read">Fingerprint not read, try again!</string>
+    <string name="msg_biometric_login_note">Biometric login for note</string>
+    <string name="msg_use_pin_instead">Use pin instead</string>
+    <string name="msg_log_out">Log Out</string>
+    <string name="msg_last_upload">Last Upload : %1$s</string>
+    <string name="msg_backup_permission_required">Backup Permission Required</string>
+    <string name="msg_note_checklist_default">Note + Checklist (Default)</string>
+    <string name="msg_note_only">Note</string>
+    <string name="msg_checklist_only">Checklist</string>
+    <string name="msg_no_broken_links">No Broken Links Found</string>
+    <string name="msg_no_further_action">No further action needed</string>
+    <string name="msg_upgrade_successful">Upgrade Successful</string>
+    <string name="msg_thank_you_enjoy">Thank you and Enjoy!😄</string>
+    <string name="msg_downgrade_successful">Downgrade Successful</string>
+    <string name="msg_enjoy">Enjoy!😄</string>
+    <string name="msg_permission_denied">Permission Denied</string>
+    <string name="msg_permission_required_backup_restore">Permission [Required] to Backup + Restore</string>
+    <string name="msg_app_locked">App Locked</string>
+    <string name="msg_app_has_been_locked">App has been locked</string>
+    <string name="msg_backup_failed">Backup Failed</string>
+    <string name="msg_could_not_create_backup">Could not create backup file.</string>
+    <string name="msg_no_data_to_backup">😐No data to backup😐</string>
+    <string name="msg_backup_success">All your notes and associated files successfully backed up!</string>
+    <string name="msg_backup_warning">Backup Warning</string>
+    <string name="msg_backup_completed_warnings">Backup completed with warnings. The following %1$s files were not found and were skipped:\n\n%2$s</string>
+    <string name="msg_error_prefix">Error: %1$s</string>
+    <string name="msg_note_checklist">Note + Checklist</string>
+    <string name="msg_feedback_subject">Dark Note: Checklists &amp; Budget Feedback</string>
+    <string name="msg_no_notes_search">No notes or checklists found, search something else...</string>
+    <string name="msg_audio_placeholder">[Audio]</string>
+    <string name="msg_no_title">- No Title -</string>
+    <string name="msg_widget_note_deleted">* Note has been deleted, delete this widget * -Note-</string>
+    <string name="msg_widget_note_locked">* Note is Locked * -Note-</string>
+    <string name="msg_backup_error">Backup Error</string>
+    <string name="msg_cannot_restore_notes">Cannot restore your notes</string>
+    <string name="msg_upload_failed">Upload Failed</string>
+    <string name="msg_file_too_big_backup_locally">File size is too big, backup locally</string>
+    <string name="msg_uploading">Uploading...\n%1$s</string>
+    <string name="msg_file_name_exists">File name exists, please wait a minute and try again</string>
+    <string name="msg_upload_error">Upload error</string>
+    <string name="msg_error_uploading_try_again">Error Uploading data, try again</string>
+    <string name="msg_upload_success">Upload Success</string>
+    <string name="msg_data_uploaded">Data Uploaded</string>
+    <string name="msg_files_lost_in_transfer">Files lost in transfer, please upload again!</string>
+    <string name="msg_syncing">Syncing...</string>
+    <string name="msg_syncing_progress">Syncing...\n%1$s</string>
+    <string name="msg_error">Error</string>
+    <string name="msg_restoring_error_clear_storage">Restoring Error from database, please clear app storage &amp; try again</string>
+    <string name="msg_notes_restored">Notes have been restored</string>
+    <string name="msg_error_restoring">Error Restoring</string>
+    <string name="msg_restoring_error">Restoring Error</string>
+    <string name="msg_file_not_received">File not received due to error</string>
+    <string name="msg_backup_wrong_extension">Dark Note Backup Files end in \'.zip\' or \'.realm\'. Try again!</string>
+    <string name="msg_restore_error">Restore Error</string>
+    <string name="msg_issue_restoring">Issue Restoring, close app and try again...</string>
+    <string name="msg_share_backup_file">Share Dark Note Backup File</string>
+    <string name="msg_sharing_error">Sharing Error</string>
+    <string name="msg_size_too_large_email_dev">Size too large, email developer</string>
+    <string name="msg_share_text">Share Text</string>
+    <string name="msg_locked_notes_export_individually">Locked notes can only be exported individually</string>
+    <string name="msg_nothing_selected_not_exported">Nothing was selected and thus not exported</string>
+    <string name="msg_sync_file">Sync File</string>
+    <string name="msg_long_click_to_sync">Long click to sync</string>
+    <string name="msg_delete_file">Delete File</string>
+    <string name="msg_long_click_to_delete">Long click to delete</string>
+    <string name="msg_not_deleted_try_again">Not Deleted. Try again</string>
+    <string name="msg_date_unknown">Date ?</string>
+    <string name="msg_size_unknown">? MB</string>
+    <string name="msg_no_results">No Results</string>
+    <string name="msg_year"> year</string>
+    <string name="msg_month"> month</string>
+    <string name="msg_day"> day</string>
+    <string name="msg_hour"> hour</string>
+    <string name="msg_min"> min</string>
+    <string name="msg_sec"> sec</string>
+    <string name="msg_added_to_category_named">Note(s) have been added to %1$s</string>
+
+    <!-- InfoSheet strings -->
+    <string name="msg_info_lock_screen_reminder">Lock screen will not show after clicking reminder notification since reminder was set before locking note. To fix this, just reset reminder </string>
+    <string name="msg_guide">Guide</string>
+    <string name="msg_guide_folder_info">Change folder name/color/delete by clicking on edit icon on the top right and then select desired folder.\n\n2 ways to add notes to a folder:\n\nYou can select multiple notes in the homepage by long clicking a note and then clicking the folder icon\n\nOr individually when editing a note by clicking on \"none\" next to Folder</string>
+    <string name="msg_unused_files">Unused Files</string>
+    <string name="msg_unused_files_prompt">The following are unused files (not referenced by any note), would you like to delete?\n\n%1$s</string>
+    <string name="msg_deleting">Deleting...</string>
+    <string name="msg_deleting_link">Deleting Link to Other Note...</string>
+    <string name="msg_confirm_delete_link">Are you sure you want to delete link?</string>
+    <string name="msg_yes">YES</string>
+    <string name="msg_no">No</string>
+    <string name="msg_trash_button">TRASH</string>
+    <string name="msg_are_you_sure">Are you sure?</string>
+    <string name="msg_unlock">Unlock</string>
+    <string name="msg_enter_security_word_to_unlock">Enter Security Word to Unlock %1$s</string>
+    <string name="msg_app">App</string>
+    <string name="msg_note_target">Note</string>
+    <string name="msg_max_uploads_reached">Max Uploads of 100 has been reached. Please delete a backup by pressing sync button.</string>
+    <string name="msg_backups">Backups</string>
+    <string name="msg_select_file_loading">Select file\n\nLoading...</string>
+    <string name="msg_no_files_to_sync">No files to sync</string>
+    <string name="msg_error_retrieving_internet">Error Retrieving, check internet connection</string>
+    <string name="msg_failed_to_get_backups">Failed to get backups</string>
+    <string name="msg_logout">Logout</string>
+    <string name="msg_logout_button">LOGOUT</string>
+    <string name="msg_remove_all_formatting">Remove All Formatting</string>
+    <string name="msg_remove">REMOVE</string>
+    <string name="msg_budget_guide">Budget $ Guide</string>
+    <string name="msg_audio_info">Audio Info</string>
+    <string name="msg_export_info">Export Info</string>
+    <string name="msg_permission_explanation">This permission needs to be enabled so that you can use the %1$s feature. %2$s\n\nDark Note will only ever ask for you to allow a permission when it is required by the system in order for a feature to work.</string>
+    <string name="msg_photos_allow_all_hint">\n\nPlease Select [ALLOW ALL] for best image picking experience</string>
+    <string name="msg_enter_security_word_attempts">Enter Security word used to lock note \n(%1$d attempts)</string>
+    <string name="msg_files_deleted">Files Deleted</string>
+    <string name="msg_unused_files_deleted">Unused files no longer on device</string>
+    <string name="msg_delete_status">Delete Status</string>
+    <string name="msg_photo_deleted">Photo has been deleted</string>
+
+    <!-- Sheet & helper strings -->
+    <string name="msg_lock_app">Lock App</string>
+    <string name="msg_lock_folder">Lock Folder</string>
+    <string name="msg_min_3_letters">Min = 3 Letters</string>
+    <string name="msg_min_4_max_9">Min = 4 , Max = 9</string>
+    <string name="msg_not_supported_device">Not Supported by this device</string>
+    <string name="msg_inserting_youtube_video">Inserting Youtube Video...</string>
+    <string name="msg_add_video">Add Video</string>
+    <string name="msg_youtube_video_retrieved">Youtube Video Retrieved</string>
+    <string name="msg_link_error">Link Error</string>
+    <string name="msg_link_not_valid">Link is not valid, try again!</string>
+    <string name="msg_add_link">Add Link</string>
+    <string name="msg_edit_image">Edit Image</string>
+    <string name="msg_image_added">Image Added</string>
+    <string name="msg_image_downloading">Image Downloading...</string>
+    <string name="msg_after_download_reopen">After download complete, close and open note to see it</string>
+    <string name="msg_photo_selected">Photo Selected</string>
+    <string name="msg_photos_selected">Photo(s) Selected</string>
+    <string name="msg_selecting_photos">Selecting Photo(s)</string>
+    <string name="msg_media_permission_required_details">This permission is required so that you can select images from your phone.\n\nTo enable, go to Dark Note Settings -&gt; App Settings -&gt; Permissions\n\nor Click Proceed</string>
+    <string name="msg_camera_permission_required_details">This permission is required so that you can use the camera.\n\nTo enable, go to Dark Note Settings -&gt; App Settings -&gt; Permissions\n\nor Click Proceed</string>
+    <string name="msg_adding">Adding</string>
+    <string name="msg_unlock_folder">Unlock Folder</string>
+    <string name="msg_folder_unlocked">Folder Unlocked</string>
+    <string name="msg_folder_has_been_unlocked">Folder has been unlocked</string>
+    <string name="msg_unlocked">Unlocked</string>
+    <string name="msg_folder_and_notes_unlocked">Folder &amp; notes inside have been unlocked</string>
+    <string name="msg_folder_not_unlocked">Folder not Unlocked</string>
+    <string name="msg_unlock_folder_to_open">Unlock folder to open</string>
+    <string name="msg_unlock_folder_to_delete">Unlock folder to delete</string>
+    <string name="msg_duplicate">Duplicate</string>
+    <string name="msg_category_name_exists">A category with that name exists</string>
+    <string name="msg_adding_sub_item_to">Adding Sub-Item to\n%1$s</string>
+    <string name="msg_editing_sub_item">Editing Sub-Item</string>
+    <string name="msg_confirm_delete">Are you sure you want to delete?</string>
+    <string name="msg_reset_password_failed">Account does not exists or no internet connection</string>
+    <string name="msg_empty_checklist_houston">\"Houston, we have a problem...\"</string>
+    <string name="msg_empty_checklist_loneliness">\"Ah, the loneliness...\"</string>
+    <string name="msg_empty_checklist_add_lonely">Tap the bottom right button to add to checklist and help me be less lonely</string>
+    <string name="msg_empty_checklist_add">Tap the bottom right button to add to checklist</string>
+    <string name="msg_disabled">disabled</string>
+    <string name="msg_enabled">enabled</string>
+    <string name="msg_select_uppercase">SELECT</string>
+    <string name="msg_close_uppercase">CLOSE</string>
+    <string name="msg_select_folder_color">Select Folder Color</string>
+    <string name="msg_select_text_color">Select Text Color</string>
+    <string name="msg_welcome_title">Welcome</string>
+    <string name="msg_welcome_body">Thank you for trying out Dark Note!\n\nDark Note is totally free and has no ads. Sadly, Dark Note is English only. I apologize for those that want it to be translated to other languages, but I do not have the resources as I am only one developer \uD83D\uDE14.\n\nOther than that, I hope Dark Note can help you organize your thoughts and maybe your budget too \uD83D\uDE09 - try out the budget feature!!</string>
+    <string name="msg_happy">Happy</string>
+    <string name="msg_sad">Sad</string>
+    <string name="msg_lock_folder_title">Lock Folder</string>
+    <string name="msg_lock_folder_body">To lock a folder, all notes inside of it need to be unlocked for security purposes.</string>
+    <string name="msg_locked_notes_list">\n\nThe following notes need to be unlocked:</string>
+    <string name="msg_to_enable_permission_proceed">To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed</string>
+    <string name="msg_proceed">Proceed</string>
+    <string name="msg_no_title">~ No Title ~</string>
+    <string name="msg_select_color_for">Select Color for %1$s</string>
+    <string name="msg_background">Background</string>
+    <string name="msg_title_color">Title</string>
+    <string name="msg_text_color">Text</string>
+    <string name="msg_last_edit_color">Last Edit</string>
 
 </resources>

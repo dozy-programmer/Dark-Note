@@ -20,7 +20,7 @@
             android:textSize="10sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:text="Dark Note"
+            android:text="@string/dark_note"
             android:textColor="@color/gray_300"
             android:layout_marginRight="10dp"/>
 

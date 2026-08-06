@@ -1,5 +1,7 @@
 package com.akapps.dailynote.classes.helpers;
 
+
+import com.akapps.dailynote.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -152,7 +154,7 @@ public class BackupHelper {
         AtomicReference<User> currentUser = new AtomicReference<>(RealmHelper.getUser(context, "backupHelper"));
         String backupPath = backUpZip(true, true);
         if (backupPath == null) {
-            Helper.showMessage(activity, "Upload Failed", "Could not create backup file.", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_upload_failed), activity.getString(R.string.msg_could_not_create_backup), MotionToast.TOAST_ERROR);
             return;
         }
         File backupFile = new File(backupPath);
@@ -162,7 +164,7 @@ public class BackupHelper {
 
         if (!fileSize.toLowerCase().contains("b") && !fileSize.toLowerCase().contains("kb")
                 && !fileSize.toLowerCase().contains("mb")) {
-            Helper.showMessage(activity, "Upload Failed", "File size is too big, backup locally",
+            Helper.showMessage(activity, activity.getString(R.string.msg_upload_failed), activity.getString(R.string.msg_file_too_big_backup_locally),
                     MotionToast.TOAST_ERROR);
             return;
         }
@@ -171,7 +173,7 @@ public class BackupHelper {
             try {
                 double fileSizeNumber = Double.parseDouble(fileSize.toLowerCase().replace("mb", "").trim());
                 if (fileSizeNumber > 30) {
-                    Helper.showMessage(activity, "Upload Failed", "File size is too big, backup locally",
+                    Helper.showMessage(activity, activity.getString(R.string.msg_upload_failed), activity.getString(R.string.msg_file_too_big_backup_locally),
                             MotionToast.TOAST_ERROR);
                     return;
                 }
@@ -214,7 +216,7 @@ public class BackupHelper {
                     currentUser.get().setLastUpload(Helper.getCurrentDate());
                     RealmSingleton.get(activity).commitTransaction();
                     progressDialog.cancel();
-                    Helper.showMessage(activity, "Upload Success", "Data Uploaded", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(activity, activity.getString(R.string.msg_upload_success), activity.getString(R.string.msg_data_uploaded), MotionToast.TOAST_SUCCESS);
                 } else {
                     // deleting file since it was missing files
                     storageRef.delete()
@@ -223,7 +225,7 @@ public class BackupHelper {
                             .addOnFailureListener(exception -> {
                             });
                     progressDialog.cancel();
-                    Helper.showMessage(activity, "Upload Error", "Files lost in transfer, please upload again!", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(activity, activity.getString(R.string.msg_upload_error), activity.getString(R.string.msg_files_lost_in_transfer), MotionToast.TOAST_ERROR);
                 }
             });
         }
@@ -252,7 +254,7 @@ public class BackupHelper {
                     if (progressDialog != null) progressDialog.dismiss();
                 }).addOnFailureListener(exception -> {
                     if (progressDialog != null) progressDialog.dismiss();
-                    Helper.showMessage(activity, "Error", "Restoring Error from database, please clear app storage & try again", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(activity, activity.getString(R.string.msg_error), activity.getString(R.string.msg_restoring_error_clear_storage), MotionToast.TOAST_ERROR);
                 });
     }
 
@@ -295,7 +297,7 @@ public class BackupHelper {
             updateRecordings(context, recordings);
             resetWidgets(context);
 
-            Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(activity, activity.getString(R.string.msg_restored), activity.getString(R.string.msg_notes_restored), MotionToast.TOAST_SUCCESS);
 
             Helper.deleteZipFile(context);
             return true;
@@ -312,7 +314,7 @@ public class BackupHelper {
             String fileName = getFileName(uri);
 
             if (fileName == null) {
-                Helper.showMessage(activity, "Restoring Error", "File not received due to error", MotionToast.TOAST_ERROR);
+                Helper.showMessage(activity, activity.getString(R.string.msg_restoring_error), activity.getString(R.string.msg_file_not_received), MotionToast.TOAST_ERROR);
                 return;
             }
 
@@ -327,7 +329,7 @@ public class BackupHelper {
                     }
                 }
             } else {
-                Helper.showMessage(activity, "Error\uD83D\uDE14", "Dark Note Backup Files end in '.zip' or '.realm'. Try again!", MotionToast.TOAST_ERROR);
+                Helper.showMessage(activity, activity.getString(R.string.msg_error), activity.getString(R.string.msg_backup_wrong_extension), MotionToast.TOAST_ERROR);
             }
         }
     }
@@ -339,7 +341,7 @@ public class BackupHelper {
             if (!showBackupFailStatus(isSuccessful)) return;
 
             backupRealm.restore(uri, AppConstants.REALM_EXPORT_FILE_NAME);
-            Helper.showMessage(activity, "Restored", "Notes have been restored", MotionToast.TOAST_SUCCESS);
+            Helper.showMessage(activity, activity.getString(R.string.msg_restored), activity.getString(R.string.msg_notes_restored), MotionToast.TOAST_SUCCESS);
 
             Realm realm = RealmSingleton.get(context);
             updateAlarms(activity, realm.where(Note.class)
@@ -460,7 +462,7 @@ public class BackupHelper {
             Intent shareIntent = Intent.createChooser(emailIntent, "Share Dark Note Backup File");
             activity.startActivityForResult(shareIntent, 2);
         } catch (Exception e){
-            Helper.showMessage(activity, "Sharing Error", "Size too large v3, email developer", MotionToast.TOAST_ERROR);        }
+            Helper.showMessage(activity, activity.getString(R.string.msg_sharing_error), activity.getString(R.string.msg_size_too_large_email_dev), MotionToast.TOAST_ERROR);        }
     }
 
     private void shareFileAndroid10Under(File backup) {
@@ -477,7 +479,7 @@ public class BackupHelper {
             Intent shareIntent = Intent.createChooser(emailIntent, "Share Dark Note Backup File");
             activity.startActivity(shareIntent);
         } catch (Exception e) {
-            Helper.showMessage(activity, "Sharing Error", "Size too large v4, email developer", MotionToast.TOAST_ERROR);
+            Helper.showMessage(activity, activity.getString(R.string.msg_sharing_error), activity.getString(R.string.msg_size_too_large_email_dev), MotionToast.TOAST_ERROR);
         }
     }
 

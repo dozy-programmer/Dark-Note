@@ -58,7 +58,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="10dp"
-                        android:text="File Name"
+                        android:text="@string/file_name"
                         android:textColor="?primaryTextColor"
                         android:textSize="15sp"></TextView>
 
@@ -67,7 +67,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="10dp"
-                        android:text="Date"
+                        android:text="@string/date"
                         android:textColor="?secondaryTextColor"
                         android:textSize="15sp"></TextView>
 
@@ -80,7 +80,7 @@
                     android:layout_weight="70"
                     android:layout_marginRight="20dp"
                     android:gravity="right|center_vertical"
-                    android:text="0 MB"
+                    android:text="@string/n_0_mb"
                     android:textColor="?primaryTextColor"
                     android:textSize="15sp"></TextView>
 
@@ -99,7 +99,7 @@
             app:strokeWidth="2dp"
             app:strokeColor="?tertiaryButtonColor"
             app:iconTint="?primaryIconTintColor"
-            android:text="DELETE"
+            android:text="@string/delete"
             android:textColor="?primaryTextColor"
             android:textSize="14sp"
             app:cornerRadius="10dp"
@@ -117,7 +117,7 @@
             app:strokeWidth="2dp"
             app:strokeColor="?primaryButtonColor"
             app:iconTint="?primaryIconTintColor"
-            android:text="SYNC"
+            android:text="@string/sync_2"
             android:textColor="?primaryTextColor"
             android:textSize="14sp"
             app:cornerRadius="10dp"

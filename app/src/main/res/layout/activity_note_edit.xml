@@ -80,7 +80,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp"
                         android:backgroundTint="@android:color/transparent"
-                        android:hint="Search inside note"
+                        android:hint="@string/search_inside_note"
                         android:maxLines="1"
                         android:textColor="?primaryTextColor"
                         android:textColorHint="?secondaryTextColor"
@@ -212,7 +212,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="10dp"
             android:gravity="right"
-            android:text="Notification"
+            android:text="@string/notification"
             android:textColor="?secondaryTextColor"
             android:textSize="14sp"></TextView>
 
@@ -232,7 +232,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="-10dp"
         android:backgroundTint="@android:color/transparent"
-        android:hint="Title"
+        android:hint="@string/title"
         android:inputType="textCapSentences"
         android:textColor="?primaryTextColor"
         android:textColorHint="?quaternaryBackgroundColor"
@@ -273,7 +273,7 @@
         android:autoSizeTextType="uniform"
         android:gravity="left"
         android:maxLines="2"
-        android:text="Date"
+        android:text="@string/date"
         android:textColor="?primaryTextColor"
         android:textSize="14sp"
         android:visibility="gone"
@@ -298,7 +298,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:gravity="left"
-            android:text="Folder:"
+            android:text="@string/folder"
             android:textColor="?primaryTextColor"
             android:textSize="15sp"
             android:visibility="gone"></TextView>
@@ -309,7 +309,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:gravity="left|bottom"
-            android:text="none"
+            android:text="@string/none"
             android:textColor="?primaryTextColor"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -383,7 +383,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="20dp"
                 android:gravity="center"
-                android:text="Don't get lost in the universe trying to remember."
+                android:text="@string/don_t_get_lost_in_the_universe_trying_to_remember"
                 android:textColor="?secondaryTextColor"
                 android:textSize="20sp" />
 
@@ -413,7 +413,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Let me do it for you"
+                android:text="@string/let_me_do_it_for_you"
                 android:textColor="?secondaryTextColor"
                 android:textSize="18sp" />
 
@@ -424,7 +424,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="44dp"
                 android:gravity="center_horizontal|center_vertical"
-                android:text="Tap the bottom right button to create a note"
+                android:text="@string/tap_the_bottom_right_button_to_create_a_note"
                 android:textColor="?primaryTextColor"
                 android:textSize="18sp" />
 
@@ -506,7 +506,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="18dp"
         android:layout_marginBottom="15dp"
-        android:text="CONFIRM / CANCEL REORDER"
+        android:text="@string/confirm_cancel_reorder"
         android:textSize="12sp"
         android:visibility="gone"
         app:backgroundTint="?primaryButtonColor"
@@ -634,7 +634,7 @@
                     android:gravity="center"
                     android:paddingLeft="10dp"
                     android:paddingRight="5dp"
-                    android:text="RTL"
+                    android:text="@string/rtl"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:textColor="?primaryIconTintColor"

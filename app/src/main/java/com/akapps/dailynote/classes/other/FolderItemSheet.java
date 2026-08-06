@@ -76,7 +76,8 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                     onLockClick();
                 } else {
                     isFolderUnlocked = false;
-                    Helper.showMessage(getActivity(), "Folder not Unlocked", "Unlock folder to open", MotionToast.TOAST_WARNING);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_folder_not_unlocked),
+                            getString(R.string.msg_unlock_folder_to_open), MotionToast.TOAST_WARNING);
                 }
             }
     );
@@ -90,7 +91,8 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                         dismiss();
                     }
                 } else {
-                    Helper.showMessage(getActivity(), "Folder not Unlocked", "Unlock folder to delete", MotionToast.TOAST_WARNING);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_folder_not_unlocked),
+                            getString(R.string.msg_unlock_folder_to_delete), MotionToast.TOAST_WARNING);
                 }
             }
     );
@@ -143,10 +145,10 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         currentFolder = new AtomicReference<>(getCurrentFolder(getContext(), folderId));
 
         if (isAdding) {
-            title.setText("Adding");
+            title.setText(R.string.msg_adding);
             delete.setVisibility(View.GONE);
         } else {
-            title.setText("Editing");
+            title.setText(getString(R.string.msg_editing));
             try {
                 itemName.setText(currentFolder.get().getName());
                 folderColor.setCardBackgroundColor(currentFolder.get().getColor() == 0 ? getContext().getResources().getColor(R.color.azure) : currentFolder.get().getColor());
@@ -169,7 +171,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                 if (getFolderSize(getContext(), folderId) > 0 && getCurrentFolder(getContext(), folderId).getPin() > 0) {
                     Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
                     lockScreen.putExtra("id", -12);
-                    lockScreen.putExtra("title", "Unlock Folder");
+                    lockScreen.putExtra("title", getString(R.string.msg_unlock_folder));
                     lockScreen.putExtra("pin", currentFolder.get().getPin());
                     lockScreen.putExtra("securityWord", currentFolder.get().getSecurityWord());
                     lockScreen.putExtra("fingerprint", currentFolder.get().isFingerprintAdded());
@@ -206,7 +208,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
             if (AppData.getInstance().getPin() > 0) {
                 AppData.getInstance().updateLockData(0, "", false);
                 lockFolder.setIcon(getActivity().getDrawable(R.drawable.lock_icon));
-                Helper.showMessage(getActivity(), "Folder Unlocked", "Folder has been unlocked", MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_folder_unlocked), getString(R.string.msg_folder_has_been_unlocked), MotionToast.TOAST_SUCCESS);
             } else {
                 LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, lockFolder);
                 lockSheet.show(getActivity().getSupportFragmentManager(), lockSheet.getTag());
@@ -222,11 +224,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                     adapter.notifyDataSetChanged();
                     RealmHelper.unlockNotesInsideFolder(getContext(), folderId);
                     next.setIcon(getActivity().getDrawable(R.drawable.unlock_icon));
-                    Helper.showMessage(getActivity(), "Unlocked", "Folder & notes inside have been unlocked", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_unlocked), getString(R.string.msg_folder_and_notes_unlocked), MotionToast.TOAST_SUCCESS);
                 } else {
                     Intent lockScreen = new Intent(getActivity(), NoteLockScreen.class);
                     lockScreen.putExtra("id", -12);
-                    lockScreen.putExtra("title", "Unlock Folder");
+                    lockScreen.putExtra("title", getString(R.string.msg_unlock_folder));
                     lockScreen.putExtra("pin", currentFolder.get().getPin());
                     lockScreen.putExtra("securityWord", currentFolder.get().getSecurityWord());
                     lockScreen.putExtra("fingerprint", currentFolder.get().isFingerprintAdded());
@@ -241,12 +243,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
 
                 if (lockedNotesInsideFolder.size() > 0) {
                     StringBuilder lockedNotes = new StringBuilder();
-                    lockedNotes.append("\n\nThe following notes need to be unlocked:");
+                    lockedNotes.append(getString(R.string.msg_locked_notes_list));
                     for (Note lockedNote : lockedNotesInsideFolder) {
-                        lockedNotes.append("\n" + (lockedNote.getTitle().isEmpty() ? "~ No Title ~" : lockedNote.getTitle()));
+                        lockedNotes.append("\n" + (lockedNote.getTitle().isEmpty() ? getString(R.string.msg_no_title) : lockedNote.getTitle()));
                     }
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Lock Folder", "To" +
-                            " lock a folder, all notes inside of it need to be unlocked for security purposes." + lockedNotes);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_lock_folder_title), getString(R.string.msg_lock_folder_body) + lockedNotes);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     LockSheet lockSheet = new LockSheet(AppConstants.LockType.LOCK_FOLDER, folderId, lockFolder, isEditing);
@@ -267,11 +268,11 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
         // opens dialog to choose a color
         AlertDialog colorPickerView = ColorPickerDialogBuilder
                 .with(getContext(), R.style.ColorPickerDialogTheme)
-                .setTitle("Select Folder Color")
+                .setTitle(getString(R.string.msg_select_folder_color))
                 .initialColor(initialColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(10)
-                .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
+                .setPositiveButton(getString(R.string.msg_select_uppercase), (dialog, selectedColor, allColors) -> {
                     if (isAdding) {
                         color = selectedColor;
                         folderColor.setCardBackgroundColor(color);
@@ -283,7 +284,7 @@ public class FolderItemSheet extends RoundedBottomSheetDialogFragment {
                         folderColor.setCardBackgroundColor(selectedColor);
                     }
                 })
-                .setNegativeButton("CLOSE", (dialog, which) ->
+                .setNegativeButton(getString(R.string.msg_close_uppercase), (dialog, which) ->
                         dialog.dismiss())
                 .build();
         colorPickerView.show();

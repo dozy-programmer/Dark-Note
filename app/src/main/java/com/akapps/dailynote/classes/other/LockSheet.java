@@ -69,13 +69,13 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
         TextView title = view.findViewById(R.id.title);
 
         if (lockType == LockType.LOCK_APP) {
-            title.setText("Lock App");
+            title.setText(R.string.msg_lock_app);
             if (lockIcon != null) lockIcon.setVisibility(View.GONE);
         } else if (lockType == LockType.LOCK_NOTE) {
-            title.setText("Lock Note");
+            title.setText(R.string.msg_lock_note);
             if (lockIcon != null) lockIcon.setVisibility(View.GONE);
         } else if (lockType == LockType.LOCK_FOLDER)
-            title.setText("Lock Folder");
+            title.setText(R.string.msg_lock_folder);
 
         boolean fingerprintFeatureExists;
         final boolean[] isFingerprintSelected = new boolean[1];
@@ -98,8 +98,8 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
                     RealmSingleton.get(getContext()).beginTransaction();
                     currentUser.setUltimateUser(true);
                     RealmSingleton.get(getContext()).commitTransaction();
-                    Helper.showMessage(getActivity(), "Upgrade Successful", "" +
-                            "Thank you and Enjoy!\uD83D\uDE04", MotionToast.TOAST_SUCCESS);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_upgrade_successful),
+                            getString(R.string.msg_thank_you_enjoy), MotionToast.TOAST_SUCCESS);
                     this.dismiss();
                     Helper.restart((getActivity()));
                 }
@@ -118,16 +118,17 @@ public class LockSheet extends RoundedBottomSheetDialogFragment {
                     }
                     this.dismiss();
                 } else
-                    securityWordLayout.setError("Min = 3 Letters");
+                    securityWordLayout.setError(getString(R.string.msg_min_3_letters));
             } else
-                pinLayout.setError("Min = 4 , Max = 9");
+                pinLayout.setError(getString(R.string.msg_min_4_max_9));
         });
 
         fingerprint.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 if (!fingerprintFeatureExists) {
                     buttonView.setChecked(false);
-                    Helper.showMessage(getActivity(), "Error", "Not Supported by this device",
+                    Helper.showMessage(getActivity(), getString(R.string.msg_error),
+                            getString(R.string.msg_not_supported_device),
                             MotionToast.TOAST_ERROR);
                 } else
                     isFingerprintSelected[0] = true;

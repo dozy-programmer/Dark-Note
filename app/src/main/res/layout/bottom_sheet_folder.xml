@@ -33,7 +33,7 @@
             android:gravity="center"
             android:paddingVertical="10dp"
             android:fontFamily="@font/baloo_bhai"
-            android:text="Adding New Item"
+            android:text="@string/adding_new_item"
             android:textColor="?secondaryTextColor"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +81,7 @@
                 android:id="@+id/item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Folder name"
+                android:hint="@string/folder_name"
                 android:textColor="?primaryTextColor"
                 android:textColorHint="?secondaryTextColor"
                 android:windowSoftInputMode="adjustPan|adjustResize" />

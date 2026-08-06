@@ -165,9 +165,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Media Permission", "This " +
-                            "permission is required so that you can select images from your phone.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_media_permission), getString(R.string.msg_media_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     MediaHelper.openMedia(pickMultipleMedia);
@@ -178,9 +177,8 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             new ActivityResultContracts.RequestMultiplePermissions(),
             isGranted -> {
                 if (isGranted.containsValue(false)) {
-                    GenericInfoSheet infoSheet = new GenericInfoSheet("Camera Permission", "This " +
-                            "permission is required so that you can use the camera.\n\n" +
-                            "To enable, go to Dark Note Settings -> App Settings -> Permissions\n\nor Click Proceed", "Proceed", 1);
+                    GenericInfoSheet infoSheet = new GenericInfoSheet(getString(R.string.msg_camera_permission), getString(R.string.msg_camera_permission_required) +
+                            getString(R.string.msg_to_enable_permission_proceed), getString(R.string.msg_proceed), 1);
                     infoSheet.show(getActivity().getSupportFragmentManager(), infoSheet.getTag());
                 } else {
                     tempCameraPhotoPath = MediaHelper.openCamera(getActivity(), getContext(), takePictureLauncher);
@@ -369,10 +367,10 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             info.setVisibility(View.VISIBLE);
             dropDownMenu.setVisibility(View.GONE);
             if (isSubChecklist) {
-                title.setText("Adding Sub-Item to\n" + parentNode);
+                title.setText(getString(R.string.msg_adding_sub_item_to, parentNode));
                 addLocation.setVisibility(View.GONE);
             } else
-                title.setText("Adding");
+                title.setText(R.string.msg_adding);
             info.setText(multipleItemsMessage);
             delete.setVisibility(View.GONE);
         } else {
@@ -380,7 +378,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
             dropDownMenu.setVisibility(View.VISIBLE);
             try {
                 if (isSubChecklist) {
-                    title.setText("Editing Sub-Item");
+                    title.setText(R.string.msg_editing_sub_item);
                     itemName.setText(currentSubItem.getText());
 
                     if (currentSubItem.getDateCreated() != null)
@@ -390,7 +388,7 @@ public class ChecklistItemSheet extends RoundedBottomSheetDialogFragment {
                             dateCreated.setGravity(Gravity.RIGHT);
                         }
                 } else {
-                    title.setText("Editing");
+                    title.setText(getString(R.string.msg_editing));
                     itemName.setText(currentItem.getText());
 
                     if (currentItem.getRedirectToOtherNote() != 0)

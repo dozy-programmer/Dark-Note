@@ -101,11 +101,11 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
 
         confirm.setOnClickListener(view1 -> {
             Log.d("Here", "Button pressed");
-            if (confirm.getText().toString().equals("Add Link")) {
+            if (confirm.getText().toString().equals(getString(R.string.msg_add_link))) {
                 String inputText = linkInput.getText().toString();
                 if (URLUtil.isValidUrl(inputText)) {
-                    confirm.setText("Confirm");
-                    title.setText(isEditing ? "Edit Image" : "Image Added");
+                    confirm.setText(R.string.confirm);
+                    title.setText(isEditing ? R.string.msg_edit_image : R.string.msg_image_added);
                     linkLayout.setVisibility(View.VISIBLE);
                     imageEditor.setVisibility(View.VISIBLE);
                     setLinkImage(inputText, false, false);
@@ -114,7 +114,8 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
                     message.setVisibility(View.VISIBLE);
                     addSizeListeners();
                 } else {
-                    Helper.showMessage(getActivity(), "Link Error", "Link is not valid, try again!", MotionToast.TOAST_ERROR);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_link_error),
+                            getString(R.string.msg_link_not_valid), MotionToast.TOAST_ERROR);
                 }
             } else {
                 if (!note.hasFocus()) note.focusEditor();
@@ -124,8 +125,8 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
                     path = "";
                     if(!path.isEmpty()) {
                         note.insertImage(path, "image", width, height);
-                        Helper.showMessage(getActivity(), "Image Downloading...",
-                                "After download complete, close and open note to see it",
+                        Helper.showMessage(getActivity(), getString(R.string.msg_image_downloading),
+                                getString(R.string.msg_after_download_reopen),
                                 MotionToast.TOAST_WARNING);
                     }
                     else {
@@ -137,12 +138,12 @@ public class InsertLinkSheet extends RoundedBottomSheetDialogFragment {
         });
 
         if (isEditing) {
-            confirm.setText("Add Link");
+            confirm.setText(R.string.msg_add_link);
             linkInput.setText(srcImage);
             confirm.callOnClick();
         } else {
-            title.setText("Insert Image Link");
-            confirm.setText("Add Link");
+            title.setText(R.string.image_link);
+            confirm.setText(R.string.msg_add_link);
             widthLayout.setVisibility(View.GONE);
             heightLayout.setVisibility(View.GONE);
         }

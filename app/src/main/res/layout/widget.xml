@@ -15,7 +15,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:text="Loading..."
+        android:text="@string/loading"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold" />

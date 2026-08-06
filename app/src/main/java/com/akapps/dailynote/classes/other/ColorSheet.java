@@ -118,14 +118,20 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                 break;
         }
 
+        String localizedColorTarget = colorChanging;
+        if (colorChanging.equals("Background")) localizedColorTarget = getString(R.string.msg_background);
+        else if (colorChanging.equals("Title")) localizedColorTarget = getString(R.string.msg_title_color);
+        else if (colorChanging.equals("Text")) localizedColorTarget = getString(R.string.msg_text_color);
+        else if (colorChanging.equals("Last Edit")) localizedColorTarget = getString(R.string.msg_last_edit_color);
+
         // opens dialog to choose a color
         colorPickerView = ColorPickerDialogBuilder
                 .with(getContext(), R.style.ColorPickerDialogTheme)
-                .setTitle("Select Color for " + colorChanging)
+                .setTitle(getString(R.string.msg_select_color_for, localizedColorTarget))
                 .initialColor(initialColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(10)
-                .setPositiveButton("SELECT", (dialog, selectedColor, allColors) -> {
+                .setPositiveButton(getString(R.string.msg_select_uppercase), (dialog, selectedColor, allColors) -> {
                     Realm realm = RealmSingleton.get(getContext());
                     realm.beginTransaction();
                     switch (colorChanging) {
@@ -155,7 +161,7 @@ public class ColorSheet extends RoundedBottomSheetDialogFragment {
                     ((NoteEdit) getActivity()).updateColors();
                     updateColors();
                 })
-                .setNegativeButton("CLOSE", (dialog, which) ->
+                .setNegativeButton(getString(R.string.msg_close_uppercase), (dialog, which) ->
                         dialog.dismiss())
                 .build();
         colorPickerView.show();

@@ -77,7 +77,7 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
         realm = RealmSingleton.get(getContext());
 
         if (!signUp)
-            title.setText("Log in");
+            title.setText(R.string.login);
         else
             forgotPassword.setVisibility(View.INVISIBLE);
 
@@ -94,8 +94,8 @@ public class AccountSheet extends RoundedBottomSheetDialogFragment {
                                         MotionToast.TOAST_SUCCESS);
                                 dismiss();
                             } else {
-                                Helper.showMessage(activity, "Reset Password",
-                                        "Account does not exists or no internet connection",
+                                Helper.showMessage(activity, getString(R.string.password_reset_title),
+                                        getString(R.string.msg_reset_password_failed),
                                         MotionToast.TOAST_ERROR);
                             }
                         });

@@ -169,7 +169,7 @@ public class notes_recyclerview extends RecyclerView.Adapter<notes_recyclerview.
 
         // populates note data into the recyclerview
         if (currentNote.getTitle().replaceAll("\n", " ").isEmpty()) {
-            holder.note_title.setText("~ No Title ~");
+            holder.note_title.setText(R.string.msg_no_title);
             holder.note_title.setAlpha(0.40f);
         } else {
             holder.note_title.setText(currentNote.getTitle().replaceAll("\n", " "));

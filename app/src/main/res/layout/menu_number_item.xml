@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="30dp"
             android:paddingVertical="10dp"
-            android:text="Item"
+            android:text="@string/item"
             android:gravity="center"
             android:textSize="17sp"
             android:textColor="?primaryTextColor">

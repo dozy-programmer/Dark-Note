@@ -154,55 +154,47 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
         ImageView budgetGraph = view.findViewById(R.id.budget_graph);
 
         if (message == -1) {
-            title.setText("Info");
+            title.setText(R.string.info);
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
-            info.setText("Lock screen will not show after clicking reminder notification " +
-                    "since reminder was set before locking note. To fix this, just reset reminder ");
+            info.setText(R.string.msg_info_lock_screen_reminder);
             info.setGravity(Gravity.CENTER);
         } else if (message == 0) {
-            title.setText("Guide");
+            title.setText(R.string.msg_guide);
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
-            info.setText("Change folder name/color/delete" +
-                    " by clicking on edit icon on the top right and then select desired folder.\n\n" +
-                    "2 ways to add notes to a folder:\n\n" +
-                    "You can select multiple notes " +
-                    "in the homepage by long clicking a note " +
-                    "and then clicking the folder icon\n\n" +
-                    "Or individually when editing a note " +
-                    "by clicking on \"none\" next to Folder");
+            info.setText(R.string.msg_guide_folder_info);
         } else if (message == 1) {
-            title.setText("Unused Files");
+            title.setText(R.string.msg_unused_files);
             securityWord.setVisibility(View.GONE);
             backup.setVisibility(View.VISIBLE);
-            backup.setText("CONFIRM");
+            backup.setText(R.string.confirm);
             StringBuilder formattedFilesNames = new StringBuilder();
             if (unUsedFiles != null) {
                 for (int i = 0; i < unUsedFiles.size(); i++) {
                     formattedFilesNames.append("\n").append(i + 1).append(": ").append(unUsedFiles.get(i));
                 }
             }
-            info.setText("The following are unused files (not referenced by any note), would you like to delete?\n\n" + formattedFilesNames);
+            info.setText(getString(R.string.msg_unused_files_prompt, formattedFilesNames.toString()));
             info.setGravity(Gravity.CENTER);
         } else if (message == 3 || message == -3 || message == 14) {
-            title.setText("Deleting...");
+            title.setText(R.string.msg_deleting);
             backup.setVisibility(View.VISIBLE);
             securityWord.setVisibility(View.GONE);
-            backup.setText("DELETE");
+            backup.setText(R.string.delete);
             if (message == 14) {
-                title.setText("Deleting Link to Other Note...");
-                info.setText("Are you sure you want to delete link?");
-                backup.setText("YES");
-                delete.setText("No");
+                title.setText(R.string.msg_deleting_link);
+                info.setText(R.string.msg_confirm_delete_link);
+                backup.setText(R.string.msg_yes);
+                delete.setText(R.string.msg_no);
                 delete.setVisibility(View.VISIBLE);
             } else {
                 if (message == 3 && !isTrashSelected) {
                     delete.setVisibility(View.VISIBLE);
-                    backup.setText("TRASH");
+                    backup.setText(R.string.msg_trash_button);
                     info.setVisibility(View.GONE);
                 } else if (message == -3) {
-                    backup.setText("DELETE");
+                    backup.setText(R.string.delete);
                     info.setVisibility(View.GONE);
                 } else if (isTrashSelected)
                     info.setVisibility(View.GONE);
@@ -214,19 +206,19 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             currentPhoto = allNotePhotos.get(position);
             adapter = ((NoteEdit) getActivity()).scrollAdapter;
             // initialize layout
-            title.setText("Deleting...");
+            title.setText(R.string.msg_deleting);
             backup.setVisibility(View.VISIBLE);
-            backup.setText("DELETE");
-            info.setText("Are you sure?");
+            backup.setText(R.string.delete);
+            info.setText(R.string.msg_are_you_sure);
             info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
         } else if (message == 5) {
             securityWordLayout.setVisibility(View.VISIBLE);
             securityWord.setVisibility(View.VISIBLE);
             unlock.setVisibility(View.VISIBLE);
-            title.setText("Unlock");
+            title.setText(R.string.msg_unlock);
             backup.setVisibility(View.GONE);
-            info.setText("Enter Security Word to Unlock " + (isAppLocked ? "App" : "Note"));
+            info.setText(getString(R.string.msg_enter_security_word_to_unlock, isAppLocked ? getString(R.string.msg_app) : getString(R.string.msg_note_target)));
             info.setGravity(Gravity.CENTER);
         } else if (message == 6) {
             User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
@@ -237,21 +229,21 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 this.dismiss();
             } else {
                 // initialize layout
-                title.setText("Upload");
-                info.setText("Max Uploads of 100 has been reached. Please delete a backup by pressing sync button.");
+                title.setText(R.string.upload);
+                info.setText(R.string.msg_max_uploads_reached);
                 info.setGravity(Gravity.CENTER);
                 securityWord.setVisibility(View.GONE);
             }
         } else if (message == 7) {
             // initialize layout
-            title.setText("Backups");
+            title.setText(R.string.msg_backups);
             info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
 
             User currentUser = RealmHelper.getUser(getContext(), "bottom sheet");
             // recyclerview
             allBackups = RealmSingleton.get(getContext()).where(Backup.class).equalTo("userId", currentUser.getUserId()).findAll();
-            info.setText("Select file\n\nLoading...");
+            info.setText(R.string.msg_select_file_loading);
             backupRecyclerview = view.findViewById(R.id.backup_recyclerview);
             backupRecyclerview.setVisibility(View.VISIBLE);
             backupRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -273,7 +265,7 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                                 .sort("upLoadTime", Sort.DESCENDING).findAll();
 
                         if (allBackups.size() == 0)
-                            info.setText("No files to sync");
+                            info.setText(R.string.msg_no_files_to_sync);
                         else {
                             info.setVisibility(View.GONE);
                             backupAdapter = new backup_recyclerview(allBackups, getActivity(), getContext());
@@ -281,31 +273,31 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                         }
                     })
                     .addOnFailureListener(e -> {
-                        info.setText("Error Retrieving, check internet connection");
+                        info.setText(R.string.msg_error_retrieving_internet);
                         // Uh-oh, an error occurred!
-                        Helper.showMessage(getActivity(), "Error", "" +
-                                "Failed to get backups", MotionToast.TOAST_ERROR);
+                        Helper.showMessage(getActivity(), getString(R.string.msg_error),
+                                getString(R.string.msg_failed_to_get_backups), MotionToast.TOAST_ERROR);
                         dismiss();
                     });
         } else if (message == 8) {
             // initialize layout
-            title.setText("Logout");
+            title.setText(R.string.msg_logout);
             backup.setVisibility(View.VISIBLE);
-            backup.setText("LOGOUT");
-            info.setText("Are you sure?");
+            backup.setText(R.string.msg_logout_button);
+            info.setText(R.string.msg_are_you_sure);
             info.setGravity(Gravity.CENTER);
             securityWord.setVisibility(View.GONE);
         } else if (message == 9) {
-            title.setText("Remove All Formatting");
+            title.setText(R.string.msg_remove_all_formatting);
             backup.setVisibility(View.VISIBLE);
             securityWord.setVisibility(View.GONE);
-            backup.setText("REMOVE");
-            info.setText("Are you sure?");
+            backup.setText(R.string.msg_remove);
+            info.setText(R.string.msg_are_you_sure);
             info.setGravity(Gravity.CENTER);
         } else if (message == 10) {
             String budgetChar = ((NoteEdit) getActivity()).getUser(getContext()).getBudgetCharacter();
             String expenseChar = ((NoteEdit) getActivity()).getUser(getContext()).getExpenseCharacter();
-            title.setText("Budget $ Guide");
+            title.setText(R.string.msg_budget_guide);
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
             info.setText(getContext().getString(R.string.try_out_budget)
@@ -346,12 +338,12 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                     .withTransitionFrom(budgetGraph)
                     .show());
         } else if (message == 11) {
-            title.setText("Audio Info");
+            title.setText(R.string.msg_audio_info);
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
         } else if (message == 12) {
-            title.setText("Export Info");
+            title.setText(R.string.msg_export_info);
             securityWord.setVisibility(View.GONE);
             info.setText(messageText);
             info.setGravity(Gravity.LEFT);
@@ -359,20 +351,18 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
             title.setText(titleText);
             backup.setVisibility(View.GONE);
             securityWord.setVisibility(View.GONE);
-            String feature = "Backup";
+            String feature = getString(R.string.backup);
             if (permission.equals(Manifest.permission.POST_NOTIFICATIONS))
-                feature = "Reminders";
+                feature = getString(R.string.reminders);
             else if (permission.equals(Manifest.permission.RECORD_AUDIO))
-                feature = "Audio";
+                feature = getString(R.string.audio);
             else if (permission.equals(Manifest.permission.READ_MEDIA_IMAGES))
-                feature = "Photos";
-            info.setText("This permission needs to be enabled so that you can use the " + feature + " feature. " +
-                    (feature.equals("Photos") ? "\n\nPlease Select [ALLOW ALL] for best image picking experience" : "") +
-                    "\n\nDark Note will only ever ask for you to allow a permission when it is required by the system " +
-                    "in order for a feature to work.");
+                feature = getString(R.string.photos).trim();
+            info.setText(getString(R.string.msg_permission_explanation, feature,
+                    permission.equals(Manifest.permission.READ_MEDIA_IMAGES) ? getString(R.string.msg_photos_allow_all_hint) : ""));
             info.setGravity(Gravity.CENTER);
             backup.setVisibility(View.VISIBLE);
-            backup.setText("PROCEED");
+            backup.setText(R.string.proceed);
         }
 
         unlock.setOnClickListener(v -> {
@@ -385,14 +375,15 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 ((NoteLockScreen) getActivity()).openNote(true);
             }
             else
-                info.setText("Enter Security word used to lock note \n(" + attempts + " attempts)");
+                info.setText(getString(R.string.msg_enter_security_word_attempts, attempts));
         });
 
         backup.setOnClickListener(v -> {
             if (message == 1) {
                 if (unUsedFiles != null & unUsedFiles.size() > 0) {
                     Helper.showFloatingFiles(getActivity(), true);
-                    Helper.showMessage(getActivity(), "Files Deleted", "Unused files no longer on device", MotionToast.TOAST_WARNING);
+                    Helper.showMessage(getActivity(), getString(R.string.msg_files_deleted),
+                            getString(R.string.msg_unused_files_deleted), MotionToast.TOAST_WARNING);
                 }
             } else if (message == 3 || message == -3 || message == 14) {
                 if (message == 14) {
@@ -414,8 +405,8 @@ public class InfoSheet extends RoundedBottomSheetDialogFragment {
                 ((NoteEdit) getActivity()).getPhotos().get(position).deleteFromRealm();
                 RealmSingleton.get(getContext()).commitTransaction();
                 adapter.notifyDataSetChanged();
-                Helper.showMessage(getActivity(), "Delete Status", "Photo has been deleted",
-                        MotionToast.TOAST_SUCCESS);
+                Helper.showMessage(getActivity(), getString(R.string.msg_delete_status),
+                        getString(R.string.msg_photo_deleted), MotionToast.TOAST_SUCCESS);
             } else if (message == 8) {
                 FirebaseAuth.getInstance().signOut();
                 User currentUser = RealmHelper.getUser(getContext(), "");

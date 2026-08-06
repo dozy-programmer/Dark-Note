@@ -34,7 +34,7 @@
             android:fontFamily="@font/baloo_bhai"
             android:gravity="center"
             android:paddingTop="10dp"
-            android:text="Select Image Type"
+            android:text="@string/select_image_type"
             android:textColor="?secondaryTextColor"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="Adjust size of image, this is how it will look in your note."
+            android:text="@string/adjust_size_of_image_this_is_how_it_will_look_in_y_2"
             android:textColor="?primaryTextColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
-                android:hint="Image Link"
+                android:hint="@string/image_link"
                 android:textColorHint="?primaryTextColor"
                 android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
                 android:visibility="gone"
@@ -137,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
                     android:layout_weight="50"
-                    android:hint="Width"
+                    android:hint="@string/width"
                     android:textColorHint="?primaryTextColor"
                     android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
                     app:boxBackgroundColor="?primaryBackgroundColor"
@@ -164,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
                     android:layout_weight="50"
-                    android:hint="Height"
+                    android:hint="@string/height"
                     android:textColorHint="?primaryTextColor"
                     android:theme="@style/ThemeOverlay.AppTheme.TextInputEditText.Outlined"
                     app:boxBackgroundColor="?primaryBackgroundColor"
@@ -195,7 +195,7 @@
             android:layout_marginVertical="10dp"
             android:backgroundTint="?secondaryBackgroundColor"
             android:padding="15dp"
-            android:text="Confirm"
+            android:text="@string/confirm"
             android:textColor="?primaryTextColor"
             android:textSize="14sp"
             app:cornerRadius="10dp"
@@ -215,7 +215,7 @@
 <!--            android:gravity="center"-->
 <!--            android:scaleX="0.85"-->
 <!--            android:scaleY="0.85"-->
-<!--            android:text="Download\t\t"-->
+<!--            android:text="@string/download_t_t"-->
 <!--            android:textColor="?primaryTextColor"-->
 <!--            android:textSize="16sp"-->
 <!--            android:textStyle="bold"-->

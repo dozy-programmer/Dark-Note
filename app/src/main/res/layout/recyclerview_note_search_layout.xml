@@ -28,7 +28,7 @@
             android:id="@+id/note_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text="@string/title"
             android:textSize="16sp"
             android:padding="5dp"
             android:layout_marginVertical="5dp"
